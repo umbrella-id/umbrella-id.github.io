@@ -5,11 +5,23 @@
     --color-glow: rgba(168, 85, 247, 0.5);
 }
 
-/* Styling agar Logo SVG bisa berubah warna */
-svg path {
-    fill: var(--color-primary); /* Warna logo ikut variabel CSS */
-    filter: drop-shadow(0 0 5px var(--color-glow));
-    transition: 0.3s;
+/* --- Bagian Logo di style.css --- */
+
+#logo-container svg {
+    /* Warnanya jangan disentuh, biarkan warna asli file SVG Abang */
+    
+    /* Kita cuma tambah EFEK GLOW DI BELAKANG/BORDER */
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8)); /* Glow Ungu kuat */
+    
+    /* Opsional: Tambah glow kedua biar lebih 'deep' */
+    /* filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4)); */
+
+    transition: all 0.3s ease; /* Biar pas menciut mulus */
+}
+
+/* Saat menciut (Mini Mode), glow-nya dikecilin dikit biar gak norak */
+#logo-container.mini svg {
+    filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.6));
 }
 
 /* Layout Stack-Scroll Mobile */
@@ -28,4 +40,39 @@ svg path {
     border: 1px solid var(--color-primary);
     border-radius: 15px;
     padding: 20px;
+}
+
+/* --- Bagian Content di style.css --- */
+
+/* Reset Dasar */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #020617; /* Backgroud Gelap */
+}
+
+.content-panggung {
+    padding: 20px;
+    display: flex; /* Default HP: Jejer samping */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+}
+
+/* --- MODE PC (Biar jadi Bento Grid 3 Kolom) --- */
+@media (min-width: 1024px) {
+    .content-panggung {
+        display: grid;
+        /* Bagi jadi 3 kolom sama rata */
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 30px;
+        overflow-x: hidden; /* Matikan scroll samping */
+        padding: 40px;
+        max-width: 1400px; /* Biar gak terlalu lebar di monitor gede */
+        margin: 0 auto; /* Tengahin */
+    }
+    
+    .card {
+        min-width: auto; /* Matikan paksaan lebar HP */
+    }
 }
