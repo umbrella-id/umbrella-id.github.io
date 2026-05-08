@@ -1,0 +1,31 @@
+:root {
+    --bg-dark: #020617;
+    --bg-panel: rgba(15, 23, 42, 0.9);
+    --color-primary: #a855f7; /* UNGU NEON */
+    --color-glow: rgba(168, 85, 247, 0.5);
+}
+
+/* Styling agar Logo SVG bisa berubah warna */
+svg path {
+    fill: var(--color-primary); /* Warna logo ikut variabel CSS */
+    filter: drop-shadow(0 0 5px var(--color-glow));
+    transition: 0.3s;
+}
+
+/* Layout Stack-Scroll Mobile */
+.content-panggung {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    min-width: 85vw;
+    scroll-snap-align: center;
+    background: var(--bg-panel);
+    border: 1px solid var(--color-primary);
+    border-radius: 15px;
+    padding: 20px;
+}
