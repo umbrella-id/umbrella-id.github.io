@@ -125,7 +125,7 @@
     btn.innerText = "MENGIRIM...";
 
     // --- BAGIAN PENGIRIMAN KE ENGINE ---
-    const urlEngine = "URL_ENGINE_A_ABANG_DISINI"; 
+    const urlEngine = "https://script.google.com/macros/s/AKfycbwygVRRewbs7dUdxfjNQvgWAMdp-ZJnnmTqfO7pxP4iNck5aAo9vUFgW6ou_AqTGTKRjw/exec"; 
 
     const payload = {
       method: "handleSubmitSurat", // Meniru nama fungsi lama
