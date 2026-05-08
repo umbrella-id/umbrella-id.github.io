@@ -1,6 +1,6 @@
 // 1. Fungsi panggil Logo SVG
 async function loadLogo() {
-    const response = await fetch('logo-umbrela.svg');
+    const response = await fetch('logo-umbrella.svg');
     const svgText = await response.text();
     document.getElementById('logo-container').innerHTML = svgText;
 }
