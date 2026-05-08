@@ -1,0 +1,43 @@
+<div class="card-custom" id="module-surat" style="padding: 20px; animation: fadeIn 0.5s;">
+  <h3 class="glow-effect">FORMULIR KOTAK SURAT</h3>
+  
+  <div style="display: flex; gap: 10px; margin-top: 15px;">
+    <div style="flex: 1;">
+      <label>Nama / IGN</label>
+      <input type="text" id="user-name" placeholder="Nama Anda...">
+    </div>
+    <div style="flex: 1;">
+      <label>Kategori</label>
+      <select id="surat-cat" onchange="toggleWA()">
+        <option value="Umum">Umum</option>
+        <option value="Permintaan">Ajukan Bergabung</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="wa-group" style="display:none; margin-top: 10px;">
+    <label>Nomor WhatsApp</label>
+    <input type="tel" id="wa-num" placeholder="08xx...">
+  </div>
+  
+  <label style="margin-top: 10px; display: block;">Isi Pesan</label>
+  <textarea id="surat-msg" rows="4" style="width:100%; background:#0f1419; color:white; border:1px solid var(--border-color); border-radius:8px; padding:10px;"></textarea>
+  
+  <button id="send-btn" onclick="kirimSurat()" class="btn-umbrella" style="width:100%; margin-top: 15px;">KIRIM SEKARANG</button>
+</div>
+
+<script>
+  // Logika lokal modul surat
+  function toggleWA() {
+    const isPermintaan = document.getElementById('surat-cat').value === "Permintaan";
+    document.getElementById('wa-group').style.display = isPermintaan ? "block" : "none";
+  }
+
+  // Nama user otomatis dari LocalStorage panggung utama
+  if (localStorage.getItem('UG_NAME')) {
+    document.getElementById('user-name').value = localStorage.getItem('UG_NAME');
+    document.getElementById('user-name').disabled = true;
+  }
+  
+  // Fungsi kirimSurat() di sini tetap sama seperti sebelumnya...
+</script>
