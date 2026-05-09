@@ -74,3 +74,40 @@ body {
         min-width: auto;
     }
 }
+
+/* Sembunyikan elemen berdasarkan perangkat */
+.pc-only { display: none; }
+.mobile-only { display: block; }
+
+@media (min-width: 1024px) {
+    .pc-only { display: block; }
+    .mobile-only { display: none; }
+
+    /* Judul Headline di Header PC */
+    #pc-headline-title h1 {
+        font-size: 3.5rem;
+        text-transform: uppercase;
+        color: var(--color-primary);
+        text-shadow: 0 0 20px var(--color-glow);
+        margin-left: 50px;
+    }
+
+    /* Isi Headline di Footer PC */
+    #pc-headline-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.9);
+        padding: 15px 10%;
+        border-top: 1px solid var(--color-primary);
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    /* Bento Grid tetap 3 kolom tapi slot headline hilang (karena display:none) */
+    .content-panggung {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Jadi 2 kolom besar (Profile & Gallery) */
+        padding: 40px 10%;
+    }
+}
