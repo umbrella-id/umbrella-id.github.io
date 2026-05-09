@@ -20,12 +20,13 @@ async function loadLogo() {
             container.innerHTML = svgText;
             const svg = container.querySelector('svg');
             if (svg) {
-                // PAKSA JADI CAIR: Hapus paksa angka width/height bawaan file
+                // PAKSA JADI CAIR: Hapus paksa angka width/height bawaan file asli
                 svg.removeAttribute('width');
                 svg.removeAttribute('height');
-                // Paksa ikut kotak CSS
+                // Paksa ikut kotak CSS Master
                 svg.style.width = '100%';
                 svg.style.height = '100%';
+                svg.style.display = 'block';
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
