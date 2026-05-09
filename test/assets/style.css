@@ -1,10 +1,7 @@
 /* ============================================================
-   ENGINE PONDASI - LOGIKA ZOOM PROPORSIONAL
+   ENGINE PONDASI - LOGIKA ZOOM BLOK SOLID 16:10
    ============================================================ */
 :root {
-    /* 1rem dinamis: minimal 12px, ideal 1.1vw, maksimal 18px */
-    font-size: clamp(12px, 1.1vw, 18px); 
-    
     --color-primary: #a855f7;
     --color-glow: rgba(168, 85, 247, 0.4);
     --bg-dark: #020617;
@@ -14,15 +11,8 @@
 
 body {
     background-color: var(--bg-dark);
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden; /* MATIKAN SCROLL VERTIKAL */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0;
     font-family: 'Segoe UI', Roboto, sans-serif;
-    
-    /* Background Grid Layer Dasar */
     background-image: 
         linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
@@ -30,110 +20,83 @@ body {
 }
 
 /* ============================================================
-   THE MASTER FRAME (NAMPAN 16:10)
+   1. MODE MEWAH (LANDSCAPE >= 768px)
    ============================================================ */
-.master-frame {
-    aspect-ratio: 16 / 10;
-    width: 95vw;
-    max-height: 90vh; /* SYARAT LOGIKA MASTER: MAX 90% TINGGI LAYAR */
-    
-    display: grid;
-    grid-template-columns: 32% 68%;
-    grid-template-rows: 15% 65% 20%;
-    grid-template-areas: 
-        "head head"
-        "side stage"
-        "foot foot";
-    position: relative;
-    padding: 1rem;
-}
+@media (min-width: 768px) and (orientation: landscape) {
+    /* UNIT ZOOM: Mengunci seluruh blok agar menciut bareng */
+    :root { --zoom: min(0.9vh, 0.56vw); }
 
-/* --- HEADLINE AREA --- */
-#headline-pc-area { 
-    grid-area: head; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-}
-#headline-title { 
-    font-size: 4rem; font-weight: 900; letter-spacing: 1rem; color: #fff;
-    text-shadow: 0 0 1.5rem var(--color-primary);
-}
+    body {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden; /* LOCK VERTIKAL */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-/* --- LOGO & SLOGAN AREA --- */
-.main-header { 
-    grid-area: side; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 2rem;
-}
-#logo-container svg { width: 90%; max-width: 28rem; filter: drop-shadow(0 0 2.5rem var(--color-glow)); }
-.slogan-box { margin-top: 1.5rem; text-align: center; }
-.slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1.3rem; display: block; text-shadow: 0 0 1rem var(--color-glow); }
-.slogan-sub { color: #fff; font-style: italic; font-size: 1rem; opacity: 0.8; line-height: 1.6; }
+    .master-frame {
+        display: grid;
+        height: calc(100 * var(--zoom));
+        width: calc(160 * var(--zoom));
+        max-width: 98vw;
+        max-height: 92vh;
+        grid-template-columns: 32% 68%;
+        grid-template-rows: 15% 65% 20%;
+        grid-template-areas: "head head" "side stage" "foot foot";
+        background: rgba(15, 23, 42, 0.2);
+        border: calc(0.1 * var(--zoom)) solid rgba(168, 85, 247, 0.15);
+        border-radius: calc(4 * var(--zoom));
+        padding: calc(1.5 * var(--zoom));
+        position: relative;
+    }
 
-/* --- PANGGUNG BENTO (BINGKAI PENYAJIAN) --- */
-.content-panggung {
-    grid-area: stage;
-    background: rgba(15, 23, 42, 0.3);
-    border: 1px solid rgba(168, 85, 247, 0.1);
-    border-radius: 4rem 0 0 4rem;
-    display: flex;
-    gap: 3rem;
-    overflow-x: auto;
-    align-items: center;
-    padding: 0 5rem;
-    box-shadow: inset 2rem 0 5rem rgba(0,0,0,0.4);
-    scrollbar-width: none;
-}
-.content-panggung::-webkit-scrollbar { display: none; }
+    /* ISI KONTEN IKUT SKALA ZOOM */
+    #headline-title { 
+        font-size: calc(7 * var(--zoom)); 
+        font-weight: 900; letter-spacing: calc(1.5 * var(--zoom)); color: #fff;
+        text-shadow: 0 0 calc(2 * var(--zoom)) var(--color-primary);
+    }
 
-/* KARTU BENTO (KUNCI REM) */
-.card {
-    width: 32rem !important;
-    min-width: 32rem !important;
-    height: 85%;
-    flex-shrink: 0;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(168, 85, 247, 0.2);
-    border-radius: 2.5rem;
-    padding: 3rem;
-    backdrop-filter: blur(12px);
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.card:hover { transform: translateY(-1rem); border-color: var(--color-primary); box-shadow: 0 1.5rem 3rem rgba(0,0,0,0.5); }
-.card h2 { font-size: 2.5rem !important; text-align: center; margin-bottom: 1.5rem; color: var(--color-primary); }
+    .content-panggung {
+        grid-area: stage;
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: calc(4 * var(--zoom)) 0 0 calc(4 * var(--zoom));
+        display: flex; gap: calc(3 * var(--zoom)); overflow-x: auto; align-items: center;
+        padding: 0 calc(5 * var(--zoom)); height: 100%; scrollbar-width: none;
+    }
 
-/* --- FOOTER AREA --- */
-.pc-footer { 
-    grid-area: foot; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 0 10%;
+    .card {
+        width: calc(52 * var(--zoom)) !important;
+        min-width: calc(52 * var(--zoom)) !important;
+        height: 85%; flex-shrink: 0; background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(168, 85, 247, 0.2); border-radius: calc(3 * var(--zoom));
+        padding: calc(3 * var(--zoom)); transition: 0.4s;
+    }
+
+    .card:hover { transform: translateY(calc(-1 * var(--zoom))); border-color: var(--color-primary); }
+
+    .mode-simple { display: none; }
 }
-#headline-pc-footer { font-size: 1.3rem; color: #fff; opacity: 0.8; letter-spacing: 2px; text-align: center; }
 
 /* ============================================================
-   FLOATING ELEMENTS (TETAP DI POJOK LAYAR)
+   2. MODE SIMPLE (PORTRAIT / LAYAR < 768px)
    ============================================================ */
-.top-tools { 
-    position: fixed; top: 2.5rem; right: 4rem; 
-    display: flex; align-items: center; gap: 1rem; 
-    cursor: pointer; z-index: 100; transition: 0.3s;
-}
-.top-tools:hover { transform: scale(1.1); }
-.top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
+@media (max-width: 767px), (orientation: portrait) {
+    .master-frame { display: none; }
+    
+    body { overflow-y: auto; }
 
-.floating-chat { position: fixed; bottom: 3rem; right: 4rem; z-index: 100; }
-.chat-trigger { 
-    width: 5rem; height: 5rem; 
-    background: var(--color-primary); 
-    border-radius: 50%; /* BULAT SESUAI REQUEST */
-    display: flex; align-items: center; justify-content: center; 
-    cursor: pointer; box-shadow: 0 0 2.5rem var(--color-glow); 
-    transition: 0.4s;
+    .mode-simple {
+        display: flex;
+        flex-direction: column;
+        padding: 2rem;
+        gap: 2rem;
+    }
 }
-.chat-trigger:hover { transform: scale(1.1) rotate(15deg); }
+
+/* FLOATING TOOLS (Sesuai Syarat: Nempel Layar) */
+.top-tools { position: fixed; top: 4%; right: 4%; display: flex; align-items: center; gap: 0.8rem; cursor: pointer; z-index: 500; }
+.top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.8rem; }
+.floating-chat { position: fixed; bottom: 4%; right: 4%; z-index: 500; }
+.chat-trigger { width: 4.5rem; height: 4.5rem; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 2rem var(--color-glow); }
