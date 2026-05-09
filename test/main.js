@@ -1,24 +1,22 @@
-// --- SAKTI: MOUSE WHEEL SCROLL ---
-const panggung = document.getElementById('main-stage');
-if (panggung) {
-    panggung.addEventListener('wheel', (evt) => {
-        if (evt.deltaY !== 0) {
-            evt.preventDefault();
-            panggung.scrollLeft += evt.deltaY;
-        }
-    }, { passive: false });
-}
-
 async function loadLogo() {
     try {
-        const res = await fetch('assets/logo-umbrella.svg');
-        if (!res.ok) throw new Error();
+        const res = await fetch('assets/logo-umbrella.svg'); // DOUBLE L
+        if(!res.ok) throw new Error();
         const svg = await res.text();
         document.getElementById('logo-container').innerHTML = svg;
     } catch (e) {
-        console.error("Logo SVG gak ketemu di folder assets/");
+        console.error("Gagal muat logo. Cek folder assets!");
     }
 }
+
+// Fungsi Scroll Mouse (Wajib ada biar nyaman)
+const panggung = document.getElementById('main-stage');
+panggung.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+        e.preventDefault();
+        panggung.scrollLeft += e.deltaY;
+    }
+}, { passive: false });
 
 async function muatHeadline() {
     try {
