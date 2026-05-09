@@ -9,24 +9,23 @@ async function loadLogo() {
 
 // --- 2. FUNGSI KHUSUS HEADLINE (Si Bunglon) ---
 async function muatHeadline() {
-    try {
-        const res = await fetch('headline.html');
-        const text = await res.text();
-        const temp = document.createElement('div');
-        temp.innerHTML = text;
+    // ... kode fetch yang sudah ada ...
+    const judul = temp.querySelector('h2').innerHTML;
+    const detail = temp.querySelector('p').innerHTML;
 
-        const judul = temp.querySelector('h2').innerHTML;
-        const detail = temp.querySelector('p').innerHTML;
-
-        if (window.innerWidth > 1024) {
-            // Sebar ke Atas dan Bawah (PC)
-            document.getElementById('headline-title').innerHTML = judul;
-            document.getElementById('headline-pc-footer').innerHTML = detail;
-        } else {
-            // Gabung di Kartu Pertama (Mobile)
-            document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
-        }
-    } catch (e) { console.error("Headline gagal dimuat"); }
+    if (window.innerWidth > 1024) {
+        // Mode PC: Suntik ke Header & Footer
+        document.getElementById('headline-title').innerHTML = judul;
+        document.getElementById('headline-pc-footer').innerHTML = detail;
+        
+        // --- JANGAN SEMBUNYIKAN KARTU PERTAMA ---
+        // Suntik juga ke kartu pertama (card-headline)
+        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+        document.getElementById('card-headline').style.display = 'block'; // Pastikan muncul
+    } else {
+        // Mode HP: Gabung di Kartu Pertama
+        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+    }
 }
 
 // --- 3. FUNGSI UMUM UNTUK KARTU LAIN ---
