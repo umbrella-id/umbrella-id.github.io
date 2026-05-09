@@ -15,98 +15,84 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kita bagi layar jadi 10 kolom kecil biar presisi */
-        grid-template-columns: repeat(10, 1fr);
-        grid-template-rows: 20% 65% 15%; /* Baris Judul, Baris Konten, Baris Footer */
+        /* Kolom 1 (Logo), Kolom 2 (Headline & Kartu) */
+        grid-template-columns: 35% 65%;
+        /* Baris 1 (Headline), Baris 2 (Kartu), Baris 3 (Footer) */
+        grid-template-rows: 150px 1fr 100px; 
         height: 100vh;
         overflow: hidden;
-        background-color: #020617;
+        padding: 0 5%;
     }
 
-    /* LOGO: Kita taruh melayang di sisi kiri tengah */
+    /* LOGO: Kita paksa dia memakan baris 1 & 2 di sisi kiri */
     .main-header {
-        grid-column: 1 / 5; /* Kolom 1 sampai 4 */
-        grid-row: 1 / 3;    /* Baris 1 sampai 2 */
+        grid-column: 1;
+        grid-row: 1 / 3;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10;
     }
 
     #logo-container svg {
-        width: 80%;
-        max-width: 450px;
-        filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));
+        width: 300px; /* Ukuran logo yang pas */
+        filter: drop-shadow(0 0 20px var(--color-glow));
     }
 
-    /* JUDUL RAKSASA: Kita paksa ke Kolom Kanan Atas */
+    /* HEADLINE PC: Harus di Kolom 2, Baris 1 (DI ATAS KARTU) */
     #headline-pc-area {
-        grid-column: 5 / 11; /* Kolom 5 sampai 10 */
-        grid-row: 1;         /* Baris paling atas */
+        grid-column: 2;
+        grid-row: 1;
         display: flex;
-        align-items: flex-end;
+        align-items: flex-end; /* Nempel ke kartu di bawahnya */
         padding-bottom: 20px;
     }
 
     #headline-title {
-        font-size: 4.5rem; /* Pastikan ukurannya raksasa */
+        font-size: 4rem;
         font-weight: 900;
-        text-transform: uppercase;
-        line-height: 1;
         margin: 0;
-        
-        /* Warna gradasi Putih ke Ungu */
-        background: linear-gradient(to bottom, #ffffff 50%, #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        
-        /* Efek Cahaya (Glow) Ungu Ngeri */
-        filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8))
-                drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
+        text-shadow: 0 0 15px var(--color-glow);
     }
 
-    /* PANGGUNG KARTU: Di bawah Judul Raksasa */
+    /* PANGGUNG KARTU: Kolom 2, Baris 2 */
     .content-panggung {
-        grid-column: 5 / 11; /* Kolom 5 sampai 10 */
-        grid-row: 2;         /* Baris tengah */
+        grid-column: 2;
+        grid-row: 2;
         display: flex;
-        gap: 25px;
+        gap: 20px;
         overflow-x: auto;
         padding: 10px 0;
+        align-items: stretch; /* Biar tinggi kartu sama */
     }
 
+    /* KARTU BENTO (Biar gak kaku) */
     .card {
-        /* ... kode yang sudah ada ... */
-        background: rgba(15, 23, 42, 0.7); /* Biar agak transparan dikit */
-        border: 2px solid #a855f7; /* Bingkai Ungu */
-        
-        /* Efek Neon Dalam & Luar */
-        box-shadow: 0 0 15px rgba(168, 85, 247, 0.3),
-                    inset 0 0 15px rgba(168, 85, 247, 0.2);
-        
-        backdrop-filter: blur(10px); /* Efek blur di belakang kartu */
-        transition: transform 0.3s ease;
-    }
-    
-    /* Efek pas Mouse lewat di atas kartu */
-    .card:hover {
-        transform: translateY(-5px); /* Kartu ngangkat dikit */
-        box-shadow: 0 0 25px rgba(168, 85, 247, 0.5),
-                    inset 0 0 20px rgba(168, 85, 247, 0.3);
+        min-width: 350px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        border-radius: 20px; /* Bikin lebih bulat biar modern */
+        padding: 25px;
+        backdrop-filter: blur(15px);
+        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.1);
+        transition: 0.3s;
     }
 
-    /* FOOTER DESKRIPSI: Full Lebar di paling bawah */
+    .card:hover {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+    }
+
+    /* FOOTER PC: Baris 3, melintang dari ujung ke ujung */
     .pc-footer {
-        grid-column: 1 / 11;
+        grid-column: 1 / 3;
         grid-row: 3;
         display: flex;
         align-items: center;
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
-        color: #94a3b8;
-        padding: 0 10%;
     }
 }
+
 
 /* --- MODE HP (Tetap Stack) --- */
 @media (max-width: 1023px) {
