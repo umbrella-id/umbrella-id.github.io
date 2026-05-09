@@ -11,10 +11,19 @@ if (panggung) {
 
 // 2. Fungsi Load Logo
 async function loadLogo() {
-    const res = await fetch('./logo-umbrella.html'); // Panggil file HTML baru
-    const html = await res.text();
-    document.getElementById('logo-container').innerHTML = html;
-    console.log("Logo Umbrella resmi jadi HTML!");
+    try {
+        const res = await fetch('./logo-umbrella.html');
+        if (!res.ok) throw new Error("File logo.html gak ketemu");
+        const data = await res.text();
+        
+        const container = document.getElementById('logo-container');
+        if (container) {
+            container.innerHTML = data;
+            console.log("Logo Umbrella: Mission Accomplished!");
+        }
+    } catch (e) {
+        console.error("Gagal total:", e);
+    }
 }
 
 // 3. Fungsi Suntik Kartu (Otomatis)
