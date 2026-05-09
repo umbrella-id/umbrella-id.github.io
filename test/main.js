@@ -33,9 +33,9 @@ async function muatHeadline() {
         console.log("Headline Ditemukan:", judul);
 
         if (window.innerWidth > 1024) {
-            // Mode PC: Suntik ke area atas dan bawah
-            document.getElementById('headline-title').innerHTML = judul;
-            document.getElementById('headline-pc-footer').innerHTML = detail;
+            // Mode PC
+            document.getElementById('headline-title').innerHTML = judul; // Masuk ke area atas kartu
+            document.getElementById('headline-pc-footer').innerHTML = detail; // Masuk ke area paling bawah
         } else {
             // Mode HP: Masukkan ke kartu pertama
             document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
@@ -50,3 +50,5 @@ window.addEventListener('DOMContentLoaded', () => {
     loadLogo();
     muatHeadline();
 });
+
+
