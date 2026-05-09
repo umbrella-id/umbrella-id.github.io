@@ -1,13 +1,30 @@
 async function loadLogo() {
+    console.log("Mencoba memanggil logo...");
     try {
-        const res = await fetch('assets/logo-umbrella.svg'); // DOUBLE L
-        if(!res.ok) throw new Error();
+        // Pastikan path-nya benar. Jika main.js ada di root, pakai 'assets/...'
+        const res = await fetch('assets/logo-umbrella.svg'); 
+        if (!res.ok) throw new Error("File SVG tidak ditemukan di folder assets");
+        
         const svg = await res.text();
-        document.getElementById('logo-container').innerHTML = svg;
+        const container = document.getElementById('logo-container');
+        
+        if (container) {
+            container.innerHTML = svg;
+            console.log("Logo Berhasil Disuntik!");
+        }
     } catch (e) {
-        console.error("Gagal muat logo. Cek folder assets!");
+        console.error("EROR LOGO:", e.message);
+        // Emergency Fallback: Jika SVG gagal, tampilkan teks dulu biar gak kosong
+        document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
     }
 }
+
+// Panggil fungsi saat web siap
+window.addEventListener('DOMContentLoaded', () => {
+    loadLogo();
+    muatHeadline();
+    // ... panggil fungsi lainnya
+});
 
 // Fungsi Scroll Mouse (Wajib ada biar nyaman)
 const panggung = document.getElementById('main-stage');
