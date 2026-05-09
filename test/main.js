@@ -9,8 +9,7 @@ if (panggung) {
     }, { passive: false });
 }
 
-// 2. Fungsi Load Logo (Double Check Path)
-// MODIFIKASI FUNGSI LOAD LOGO
+// 2. Fungsi Load Logo
 async function loadLogo() {
     try {
         const res = await fetch('./logo-umbrella.svg'); 
@@ -22,24 +21,32 @@ async function loadLogo() {
         if (container) {
             container.innerHTML = svgText;
             
-            // --- LOGIKA PENJINAK SVG ---
             const svgElement = container.querySelector('svg');
             if (svgElement) {
-                // Hapus width/height bawaan file agar nurut ke CSS (max-width/max-height)
+                // 1. BUANG DIMENSI STATIS (Penyebab Offside)
                 svgElement.removeAttribute('width');
                 svgElement.removeAttribute('height');
-                // Pastikan dia tetap punya viewbox agar tidak gepeng
+                
+                // 2. PAKSA DIMENSI FLEXIBEL
                 svgElement.style.width = "100%";
                 svgElement.style.height = "100%";
+                svgElement.style.maxWidth = "100%";
+                svgElement.style.maxHeight = "100%";
                 svgElement.style.display = "block";
+
+                // 3. JAGA ASPECT RATIO ASLI
+                if (!svgElement.getAttribute('viewBox')) {
+                    // Jika SVG tidak punya viewbox, kita beri fallback agar tidak gepeng
+                    svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                }
             }
-            console.log("Logo Berhasil Dijinakkan!");
         }
     } catch (e) {
         console.error("Logo Error:", e);
-        document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
+        document.getElementById('logo-container').innerHTML = "<h1>UMBRELLA</h1>";
     }
 }
+
 // 3. Fungsi Suntik Kartu (Otomatis)
 async function suntikKartu(file, idSlot) {
     try {
