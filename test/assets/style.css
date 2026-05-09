@@ -68,63 +68,59 @@ body {
         position: relative;
     }
 
-/* --- 1. JINAKKAN HEADLINE (Biar Panjang Sesuai Area) --- */
-#headline-title {
-    grid-area: head;
-    width: 100%; /* Paksa penuhi area */
-    font-size: calc(7 * var(--u));
-    letter-spacing: calc(1.5 * var(--u));
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid rgba(168, 85, 247, 0.1);
-}
-
-/* --- 2. JINAKKAN SIDE PANEL (Logo & Slogan) --- */
-.side-panel {
-    grid-area: side;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    padding: calc(1 * var(--u)); /* Perkecil padding biar gak sesak */
-    overflow: hidden;
-}
-
-#logo-container {
-    flex: 0 0 60%; /* Jatah Tinggi 60% */
-    width: 100%;
-    display: flex;
-    align-items: flex-end; /* DEKATKAN KE BAWAH (Ke arah Slogan) */
-    justify-content: center;
-    padding-bottom: calc(1 * var(--u)); /* Jarak halus ke slogan */
-}
-
-#logo-container svg, #logo-container img {
-    max-width: 90%;
-    max-height: 100%; 
-    object-fit: contain;
-    /* Hilangkan bayangan berat yang bisa bikin ilusi offside */
-    filter: drop-shadow(0 0 calc(1.5 * var(--u)) var(--color-glow));
-}
-
-.slogan-box {
-    flex: 0 0 40%; /* Jatah Tinggi 40% */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* DEKATKAN KE ATAS (Ke arah Logo) */
-    align-items: center;
-    text-align: center;
-    padding-top: 0; /* Hapus padding atas */
-}
-
-.slogan-main {
-    font-size: calc(2.2 * var(--u));
-    margin-bottom: calc(0.3 * var(--u));
-    white-space: nowrap; /* Jangan biarkan teks slogan bungkus ke bawah */
-}
-    /* 3. JINAKKAN PANGGUNG (STAGE) */
+   /* --- 1. JINAKKAN HEADLINE (Biar Panjang Sesuai Area) --- */
+   #headline-title {
+       grid-area: head;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       font-size: calc(6 * var(--u)); /* Perkecil dikit biar gak nabrak */
+       width: 100%;
+   }
+   
+   /* --- 2. JINAKKAN SIDE PANEL (Logo & Slogan) --- */
+   .side-panel {
+       grid-area: side;
+       display: flex;
+       flex-direction: column;
+       height: 100%;
+       width: 100%;
+       min-height: 0; /* KUNCI: Biar isi gak bisa nembus grid */
+       padding: calc(3 * var(--u));
+   }
+   
+   #logo-container {
+       flex: 0 0 65%; /* Fix jatah 65% tinggi area side */
+       width: 100%;
+       min-height: 0; 
+       display: flex;
+       align-items: flex-end; /* Mendekat ke slogan */
+       justify-content: center;
+       overflow: hidden; /* Potong kalau bandel */
+   }
+   
+   #logo-container svg {
+       max-width: 85%; /* Kasih margin samping */
+       max-height: 100%; /* JANGAN LEBIH DARI JATAH 65% TADI */
+       object-fit: contain;
+   }
+   
+   .slogan-box {
+       flex: 0 0 35%; /* Sisa 35% buat slogan */
+       display: flex;
+       flex-direction: column;
+       justify-content: flex-start; /* Mendekat ke logo */
+       align-items: center;
+       text-align: center;
+       padding-top: calc(1 * var(--u));
+   }
+   
+   .slogan-main {
+       font-size: calc(2 * var(--u));
+       line-height: 1.1;
+       white-space: nowrap; /* Biar gak pecah baris */
+   }
+   /* 3. JINAKKAN PANGGUNG (STAGE) */
     .stage, .content-panggung {
         grid-area: stage;
         display: flex;
