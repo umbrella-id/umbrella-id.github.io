@@ -45,68 +45,108 @@ body {
    3. MODE PC (SANDWICH GRID - 4 ZONA)
    ============================================================ */
 @media (min-width: 1024px) {
-    /* --- POLESAN BACKGROUND (Scanline Effect) --- */
-    body::before {
-        content: " ";
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        background-size: 100% 4px, 3px 100%;
-        pointer-events: none;
-        z-index: 100;
+    body {
+        display: grid;
+        /* Kolom: Kiri (Logo) 30%, Kanan (Konten) 70% */
+        grid-template-columns: 30% 70%;
+        /* Baris: Atas (Fixed), Tengah (Flexible), Bawah (Fixed) */
+        grid-template-rows: 120px 1fr 150px;
+        grid-template-areas: 
+            "head head"
+            "side main"
+            "foot foot";
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background-color: #020617;
+        /* Background Motif Grid */
+        background-image: linear-gradient(rgba(168,85,247,0.05) 1px, transparent 1px), 
+                          linear-gradient(90deg, rgba(168,85,247,0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
     }
 
-    /* --- ZONA 1: HEADLINE ATAS (Wow Look) --- */
+    /* --- ZONA 1: HEADLINE ATAS (SUPER WOW) --- */
     #headline-pc-area {
-        grid-area: head-pc;
+        grid-area: head;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%);
+        background: rgba(15, 23, 42, 0.8);
         border-bottom: 2px solid var(--color-primary);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        position: relative;
-        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(168, 85, 247, 0.3);
+        z-index: 50;
     }
 
     #headline-title {
-        font-size: 4rem; /* Ukuran raksasa */
+        font-size: 3.5rem;
         font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 15px; /* Jarak antar huruf biar elegan */
-        margin: 0;
-        
-        /* Efek Teks Gaming (Metallic Glow) */
+        letter-spacing: 12px;
         color: #fff;
-        text-shadow: 
-            0 0 10px var(--color-primary),
-            0 0 20px var(--color-primary),
-            0 0 40px var(--color-primary);
-        
-        /* Animasi Bernapas (Pulse) */
-        animation: neonPulse 3s infinite ease-in-out;
+        /* Efek Gaming Glow */
+        text-shadow: 0 0 10px var(--color-primary), 0 0 30px var(--color-primary);
+        animation: neonPulse 2s infinite alternate;
     }
 
-    @keyframes neonPulse {
-        0%, 100% { 
-            transform: scale(1);
-            filter: brightness(1);
-            text-shadow: 0 0 10px var(--color-primary), 0 0 20px var(--color-primary);
-        }
-        50% { 
-            transform: scale(1.02);
-            filter: brightness(1.3);
-            text-shadow: 0 0 20px var(--color-primary), 0 0 50px var(--color-primary), 0 0 100px var(--color-primary);
-        }
+    /* --- ZONA 2: LOGO & SLOGAN (KIRI) --- */
+    .main-header {
+        grid-area: side;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        border-right: 1px solid rgba(168, 85, 247, 0.1);
     }
 
-    /* --- POLESAN SLOGAN (Lebih Bold) --- */
-    .slogan-main {
-        font-size: 1.3rem;
-        letter-spacing: 2px;
-        text-shadow: 0 0 15px var(--color-primary);
+    #logo-container svg {
+        width: 100% !important;
+        max-width: 280px;
+        filter: drop-shadow(0 0 15px var(--color-glow));
     }
+
+    .slogan-box { margin-top: 20px; text-align: center; }
+    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1rem; display: block; }
+    .slogan-sub { color: #fff; font-style: italic; font-size: 0.85rem; display: block; opacity: 0.7; line-height: 1.5; }
+
+    /* --- ZONA 3: PANGGUNG KARTU (KANAN) --- */
+    .content-panggung {
+        grid-area: main;
+        display: flex !important;
+        gap: 40px;
+        overflow-x: auto;
+        align-items: center;
+        padding: 0 50px;
+        scrollbar-width: none;
+    }
+    .content-panggung::-webkit-scrollbar { display: none; }
+
+    .card {
+        min-width: 450px !important;
+        height: 80% !important;
+        flex-shrink: 0;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        background: rgba(15, 23, 42, 0.9);
+    }
+
+    /* --- ZONA 4: FOOTER (BAWAH) --- */
+    .pc-footer {
+        grid-area: foot;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.9);
+        border-top: 2px solid var(--color-primary);
+        padding: 0 15%;
+        text-align: center;
+    }
+
+    #headline-pc-footer { font-size: 1.1rem; line-height: 1.6; color: var(--text-dim); }
+}
+
+@keyframes neonPulse {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.5); text-shadow: 0 0 20px var(--color-primary), 0 0 40px var(--color-primary); }
 }
 
 /* ============================================================
