@@ -24,15 +24,16 @@ async function muatHeadline() {
     const temp = document.createElement('div');
     temp.innerHTML = text;
 
+    // Ambil Judul dari h2 dan Detail dari p di headline.html
     const judul = temp.querySelector('h2').innerText;
     const detail = temp.querySelector('p').innerText;
 
     if (window.innerWidth > 1024) {
-        // Mode PC: Judul ke ATAS, Detail ke BAWAH
+        // Mode PC
         document.getElementById('headline-title').innerText = judul;
         document.getElementById('headline-pc-footer').innerText = detail;
     } else {
-        // Mode HP: Semua masuk ke kartu pertama
+        // Mode HP
         document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
     }
 }
