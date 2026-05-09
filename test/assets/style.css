@@ -62,84 +62,58 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1: Logo (35%), Kolom 2: Konten (65%) */
+        /* Kolom 1 (Logo) 35%, Kolom 2 (Panggung) 65% */
         grid-template-columns: 35% 65%;
-        /* Baris 1: Headline, Baris 2: Panggung, Baris 3: Footer */
-        grid-template-rows: 20vh 65vh 15vh;
+        /* Baris 1 (Atas), Baris 2 (Tengah), Baris 3 (Bawah) */
+        grid-template-rows: 15vh 65vh 20vh;
+        grid-template-areas: 
+            "headline-pc headline-pc" /* MELINTANG PENUH DI ATAS */
+            "logo-area panggung-area"  /* TENGAH TERBAGI DUA */
+            "footer-pc footer-pc";     /* MELINTANG PENUH DI BAWAH */
         height: 100vh;
         padding: 0 5%;
-        overflow: hidden; /* Lock layar utama PC */
+        overflow: hidden;
     }
 
-    /* POSISI LOGO (Kiri) */
+    /* ZONA 1: HEADLINE ATAS (Melintang Penuh) */
+    #headline-pc-area {
+        grid-area: headline-pc;
+        display: flex !important;
+        align-items: center;
+        justify-content: center; /* Judul di tengah atas agar fokus */
+        border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    /* ZONA 2: LOGO (Kiri Tengah) */
     .main-header {
-        grid-column: 1;
-        grid-row: 1 / 3;
+        grid-area: logo-area;
         display: flex !important;
         align-items: center;
         justify-content: center;
     }
 
-    #logo-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    #logo-container svg {
-        width: 320px !important;
-        height: auto !important;
-        filter: drop-shadow(0 0 25px var(--color-glow));
-    }
-
-    /* POSISI JUDUL RAKSASA (Kanan Atas) */
-    #headline-pc-area {
-        grid-column: 2;
-        grid-row: 1;
-        display: flex !important;
-        align-items: flex-end;
-        padding-bottom: 20px;
-    }
-
-    #headline-title {
-        font-size: 4rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        background: linear-gradient(to bottom, #ffffff, var(--color-primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* POSISI PANGGUNG KARTU (Kanan Tengah) */
+    /* ZONA 3: PANGGUNG KARTU (Kanan Tengah) */
     .content-panggung {
-        grid-column: 2;
-        grid-row: 2;
+        grid-area: panggung-area;
         display: flex !important;
         gap: 30px;
         overflow-x: auto;
-        padding: 10px 0;
-        align-items: stretch;
+        align-items: center;
     }
 
-    .card {
-        min-width: 420px;
-        max-width: 500px;
-        flex-shrink: 0;
-    }
-
-    /* POSISI FOOTER (Bawah) */
+    /* ZONA 4: FOOTER BAWAH (Melintang Penuh berisi Body Headline) */
     .pc-footer {
-        grid-column: 1 / 3;
-        grid-row: 3;
+        grid-area: footer-pc;
         display: flex !important;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
-        color: var(--text-dim);
+        text-align: center;
+        padding: 0 10%;
     }
-
-    .mobile-only { display: none !important; }
 }
+
 
 /* ============================================================
    4. AUTO-BODY (LOGIKA OTOMATIS BERDASARKAN ID)
