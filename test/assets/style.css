@@ -67,53 +67,55 @@ body {
         /* Baris 1 (Atas), Baris 2 (Tengah), Baris 3 (Bawah) */
         grid-template-rows: 15vh 65vh 20vh;
         grid-template-areas: 
-            "headline-pc headline-pc" /* MELINTANG PENUH DI ATAS */
-            "logo-area panggung-area"  /* TENGAH TERBAGI DUA */
-            "footer-pc footer-pc";     /* MELINTANG PENUH DI BAWAH */
+            "head-pc head-pc"
+            "logo-pc stage-pc"
+            "foot-pc foot-pc";
         height: 100vh;
-        padding: 0 5%;
+        width: 100vw;
         overflow: hidden;
+        background-color: #020617;
     }
 
-    /* ZONA 1: HEADLINE ATAS (Melintang Penuh) */
-    #headline-pc-area {
-        grid-area: headline-pc;
-        display: flex !important;
-        align-items: center;
-        justify-content: center; /* Judul di tengah atas agar fokus */
-        border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    #headline-pc-area { 
+        grid-area: head-pc; 
+        display: flex !important; 
+        align-items: center; 
+        justify-content: center;
+        z-index: 10;
     }
 
-    /* ZONA 2: LOGO (Kiri Tengah) */
-    .main-header {
-        grid-area: logo-area;
-        display: flex !important;
-        align-items: center;
+    .main-header { 
+        grid-area: logo-pc; 
+        display: flex !important; 
+        align-items: center; 
         justify-content: center;
     }
 
-    /* ZONA 3: PANGGUNG KARTU (Kanan Tengah) */
-    .content-panggung {
-        grid-area: panggung-area;
-        display: flex !important;
-        gap: 30px;
-        overflow-x: auto;
-        align-items: center;
+    .content-panggung { 
+        grid-area: stage-pc; 
+        display: flex !important; 
+        gap: 30px; 
+        overflow-x: auto; 
+        align-items: center; 
+        padding: 0 20px;
     }
 
-    /* ZONA 4: FOOTER BAWAH (Melintang Penuh berisi Body Headline) */
-    .pc-footer {
-        grid-area: footer-pc;
-        display: flex !important;
-        flex-direction: column;
-        align-items: center;
+    .pc-footer { 
+        grid-area: foot-pc; 
+        display: flex !important; 
+        align-items: center; 
         justify-content: center;
-        border-top: 1px solid rgba(168, 85, 247, 0.2);
         text-align: center;
-        padding: 0 10%;
+        border-top: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    /* Ukuran Logo Biar Gak Tabrakan */
+    #logo-container svg {
+        width: 80% !important;
+        max-width: 350px;
+        height: auto;
     }
 }
-
 
 /* ============================================================
    4. AUTO-BODY (LOGIKA OTOMATIS BERDASARKAN ID)
