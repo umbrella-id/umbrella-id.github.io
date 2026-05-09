@@ -79,38 +79,36 @@ body {
         align-self: center;
     }
 
-   /* --- AREA SIDE (KOLOM KIRI) --- */
-   .main-header {
-       grid-area: side;
-       display: flex;
-       flex-direction: column;
-       /* Hilangkan semua padding manual yang bisa bikin offside */
-       padding: calc(2 * var(--u)); 
-       box-sizing: border-box;
-       height: 100%;
-       width: 100%;
-       overflow: hidden; /* Kunci mati agar tidak ada elemen yang tumpah */
-   }
+      /* --- AREA SIDE (KOLOM KIRI) --- */
+   /* TAMBAHAN UNTUK LOGO: Biar tidak Offside */
+       .main-header {
+           grid-area: side;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: center;
+           padding: calc(3 * var(--u));
+           overflow: hidden; /* Kunci biar tidak meluber */
+           width: 100%;
+           height: 100%;
+           box-sizing: border-box;
+       }
    
-   /* LANTAI ATAS: KHUSUS LOGO */
-   #logo-container {
-       width: 100%;
-       height: 60%; /* Jatah 60% tinggi kolom untuk Logo */
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       position: relative;
-   }
+       #logo-container {
+           width: 100%;
+           height: 60%; /* Jatah logo cuma 60% tinggi kolom */
+           display: flex;
+           align-items: center;
+           justify-content: center;
+       }
    
-   #logo-container img {
-       /* Ini rahasianya: Jangan kasih width/height fix dalam px */
-       max-width: 90%;
-       max-height: 90%;
-       /* Paksa logo tetap di dalam kotak tanpa merusak rasio */
-       object-fit: contain; 
-       display: block;
-   }
-   
+       #logo-container img {
+           max-width: 90%; /* Jangan biarkan logo menyentuh dinding kiri-kanan */
+           max-height: 100%; /* Jangan biarkan logo menyentuh judul/slogan */
+           object-fit: contain; /* Kunci proporsi */
+       }
+   }   
+
    /* LANTAI BAWAH: KHUSUS SLOGAN */
    .slogan-box {
        width: 100%;
@@ -166,6 +164,8 @@ body {
         font-size: calc(1.5 * var(--u));
         opacity: 0.5;
     }
+   .mode-simple { 
+        display: none !important;   
 }
 
 /* --- MODE SIMPLE (MOBILE) --- */
