@@ -57,7 +57,7 @@ body {
         position: relative;
     }
 
-    /* HEADLINE TITLE */
+ /* HEADLINE TITLE */
    #headline-title {
        grid-area: head;
        width: 100%; 
@@ -68,47 +68,50 @@ body {
        font-size: calc(6 * var(--u));
        font-weight: 900;
    }
-    /* SIDE PANEL (LOGO & SLOGAN) */
+   
+   /* --- 2. SIDE PANEL: Kunci Logo di Kiri Area --- */
    .side-panel {
        grid-area: side;
        display: flex;
        flex-direction: column;
        height: 100%;
        width: 100%;
-       min-height: 0; /* KUNCI MATI: Jangan biarkan isi melarin grid Master */
+       min-height: 0;
        padding: calc(2 * var(--u));
-       border-right: 1px solid rgba(168, 85, 247, 0.1);
    }
    
    #logo-container {
-       flex: 0 0 65%; /* Jatah Tinggi 65% */
+       flex: 0 0 65%;
        width: 100%;
-       min-height: 0; 
        display: flex;
-       align-items: flex-end; /* Deketin ke slogan */
-       justify-content: center;
-       overflow: hidden; /* Potong kalau ada yang offside */
+       align-items: center; 
+       justify-content: center; /* Tetap center di dalam box-nya */
+       overflow: hidden;
    }
    
    #logo-container svg {
-       /* Ini batas suci: Gak boleh lebih dari jatah areanya sendiri */
-       max-width: 90%; 
-       max-height: 100%; 
+       max-width: 95%; /* Besarin dikit biar gagah */
+       max-height: 100%;
        object-fit: contain;
-       filter: drop-shadow(0 0 calc(2 * var(--u)) var(--color-glow));
    }
-    .slogan-box {
-        flex: 0 0 35%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        text-align: center;
-        padding: 0 calc(2 * var(--u));
-    }
-
+   
     .slogan-main { font-size: calc(2 * var(--u)); font-weight: 800; color: var(--color-primary); }
     .slogan-sub { font-size: calc(1.2 * var(--u)); opacity: 0.7; font-style: italic; }
+
+      /* --- 3. FLOATING TOOLS: Balikin ke Posisi Semula --- */
+   .top-tools { 
+       position: fixed !important; 
+       top: 5vh; 
+       right: 5vw; 
+       z-index: 9999; /* Paksa paling atas */
+   }
+   
+   .floating-chat { 
+       position: fixed !important; 
+       bottom: 5vh; 
+       right: 5vw; 
+       z-index: 9999; 
+   }
 
     /* PANGGUNG KARTU */
     .content-panggung, .stage {
