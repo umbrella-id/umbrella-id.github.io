@@ -20,17 +20,16 @@ async function loadLogo() {
             container.innerHTML = svgText;
             const svg = container.querySelector('svg');
             if (svg) {
-                // PAKSA SVG JADI CAIR
+                // PAKSA JADI CAIR: Hapus paksa angka width/height bawaan file
                 svg.removeAttribute('width');
                 svg.removeAttribute('height');
+                // Paksa ikut kotak CSS
                 svg.style.width = '100%';
                 svg.style.height = '100%';
-                svg.style.display = 'block';
-                // Biar gak gepeng
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Logo Ngadat:", e); }
 }
 
 // 3. Fungsi Suntik Kartu (Otomatis)
