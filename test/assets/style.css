@@ -47,101 +47,125 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom: Kiri (Logo) 30%, Kanan (Konten) 70% */
-        grid-template-columns: 30% 70%;
-        /* Baris: Atas (Fixed), Tengah (Flexible), Bawah (Fixed) */
-        grid-template-rows: 120px 1fr 150px;
+        grid-template-columns: 35% 65%;
+        grid-template-rows: 15vh 65vh 20vh;
         grid-template-areas: 
             "head head"
-            "side main"
+            "side stage"
             "foot foot";
         height: 100vh;
-        width: 100vw;
         overflow: hidden;
         background-color: #020617;
-        /* Background Motif Grid */
-        background-image: linear-gradient(rgba(168,85,247,0.05) 1px, transparent 1px), 
-                          linear-gradient(90deg, rgba(168,85,247,0.05) 1px, transparent 1px);
-        background-size: 30px 30px;
+        /* Background Grid Halus Tanpa Border Kaku */
+        background-image: 
+            linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
     }
 
-    /* --- ZONA 1: HEADLINE ATAS (SUPER WOW) --- */
+    /* --- ZONA 1: HEADLINE (Floating) --- */
     #headline-pc-area {
         grid-area: head;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        background: rgba(15, 23, 42, 0.8);
-        border-bottom: 2px solid var(--color-primary);
-        box-shadow: 0 5px 20px rgba(168, 85, 247, 0.3);
-        z-index: 50;
     }
-
     #headline-title {
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 12px;
+        letter-spacing: 15px;
         color: #fff;
-        /* Efek Gaming Glow */
-        text-shadow: 0 0 10px var(--color-primary), 0 0 30px var(--color-primary);
-        animation: neonPulse 2s infinite alternate;
+        text-shadow: 0 0 20px var(--color-primary), 0 0 40px var(--color-glow);
+        animation: neonPulse 3s infinite ease-in-out;
     }
 
-    /* --- ZONA 2: LOGO & SLOGAN (KIRI) --- */
+    /* --- ZONA 2: LOGO & SLOGAN --- */
     .main-header {
         grid-area: side;
         display: flex !important;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 20px;
-        border-right: 1px solid rgba(168, 85, 247, 0.1);
     }
-
     #logo-container svg {
-        width: 100% !important;
-        max-width: 280px;
-        filter: drop-shadow(0 0 15px var(--color-glow));
+        width: 100%;
+        max-width: 320px;
+        filter: drop-shadow(0 0 25px var(--color-glow));
     }
 
-    .slogan-box { margin-top: 20px; text-align: center; }
-    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1rem; display: block; }
-    .slogan-sub { color: #fff; font-style: italic; font-size: 0.85rem; display: block; opacity: 0.7; line-height: 1.5; }
-
-    /* --- ZONA 3: PANGGUNG KARTU (KANAN) --- */
+    /* --- ZONA 3: PANGGUNG BENTO --- */
     .content-panggung {
-        grid-area: main;
+        grid-area: stage;
         display: flex !important;
-        gap: 40px;
+        gap: 30px;
         overflow-x: auto;
         align-items: center;
-        padding: 0 50px;
+        padding: 20px 40px;
         scrollbar-width: none;
     }
     .content-panggung::-webkit-scrollbar { display: none; }
 
+    /* KARTU BENTO BOX (Uniform & Interactive) */
     .card {
-        min-width: 450px !important;
-        height: 80% !important;
+        width: 480px !important;    /* LEBAR MUTLAK */
+        min-width: 480px !important; 
+        height: 85%;
         flex-shrink: 0;
-        border: 1px solid rgba(168, 85, 247, 0.3);
-        background: rgba(15, 23, 42, 0.9);
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 30px;
+        padding: 40px;
+        backdrop-filter: blur(15px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    .card:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--color-primary);
+        background: rgba(15, 23, 42, 0.8);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(168, 85, 247, 0.2);
+    }
+    .card h2 { font-size: 2.5rem !important; margin-bottom: 25px; }
 
-    /* --- ZONA 4: FOOTER (BAWAH) --- */
+    /* --- ZONA 4: FOOTER (Clean) --- */
     .pc-footer {
         grid-area: foot;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        background: rgba(15, 23, 42, 0.9);
-        border-top: 2px solid var(--color-primary);
         padding: 0 15%;
         text-align: center;
     }
 
-    #headline-pc-footer { font-size: 1.1rem; line-height: 1.6; color: var(--text-dim); }
+    /* --- FLOATING ACTION BUTTONS (Surat & Chat) --- */
+    .floating-tools {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        z-index: 1000;
+    }
+    .btn-float {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        transition: 0.3s;
+    }
+    .btn-float:hover {
+        transform: scale(1.1) rotate(10deg);
+        filter: brightness(1.2);
+        box-shadow: 0 0 20px var(--color-primary);
+    }
 }
 
 @keyframes neonPulse {
