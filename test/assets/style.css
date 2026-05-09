@@ -1,44 +1,53 @@
-/* --- RESET DASAR --- */
+/* --- DASAR (Pastikan ini ada di paling atas file CSS, di luar media query) --- */
 :root {
-    --color-primary: #a855f7;
+    --bg-dark: #020617; /* Biru Gelap Ngeri */
+    --bg-panel: rgba(15, 23, 42, 0.7); /* Transparan dikit buat glassmorphism */
+    --color-primary: #a855f7; /* Ungu Neon */
     --color-glow: rgba(168, 85, 247, 0.6);
+    --text-main: #ffffff;
+    --text-dim: #94a3b8;
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background-color: #020617;
-    color: white;
-    margin: 0;
-    font-family: sans-serif;
+    background-color: var(--bg-dark); /* INI BIAR GAK PUTIH JELAS */
+    color: var(--text-main);
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* --- MODE PC (DESKTOP) --- */
+/* --- MODE PC MASTER (THE FIX) --- */
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1 (Logo), Kolom 2 (Headline & Kartu) */
-        grid-template-columns: 35% 65%;
-        /* Baris 1 (Headline), Baris 2 (Kartu), Baris 3 (Footer) */
-        grid-template-rows: 150px 1fr 100px; 
+        /* Kita bagi jadi 2 kolom: Kiri(40%) buat Logo, Kanan(60%) buat Konten */
+        grid-template-columns: 40% 60%;
+        /* Kita bagi jadi 3 baris: Atas(Headline), Tengah(Kartu), Bawah(Footer) */
+        grid-template-rows: 20vh 65vh 15vh;
         height: 100vh;
-        overflow: hidden;
         padding: 0 5%;
     }
 
-    /* LOGO: Kita paksa dia memakan baris 1 & 2 di sisi kiri */
+    /* LOGO: Kunci di Kolom 1, melintang dari baris 1 sampai 2 */
     .main-header {
         grid-column: 1;
         grid-row: 1 / 3;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 50px;
     }
 
     #logo-container svg {
-        width: 300px; /* Ukuran logo yang pas */
+        width: 100%;
+        max-width: 400px; /* Logo dominan tapi gak maruk */
+        height: auto;
         filter: drop-shadow(0 0 20px var(--color-glow));
     }
 
-    /* HEADLINE PC: Harus di Kolom 2, Baris 1 (DI ATAS KARTU) */
+    /* HEADLINE PC (Judul Raksasa): Kunci di Kolom 2, Baris 1 */
     #headline-pc-area {
         grid-column: 2;
         grid-row: 1;
@@ -48,60 +57,52 @@ body {
     }
 
     #headline-title {
-        font-size: 4rem;
+        font-size: 4.5rem;
         font-weight: 900;
+        text-transform: uppercase;
         margin: 0;
+        line-height: 1;
+        background: linear-gradient(to bottom, #fff, var(--color-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-shadow: 0 0 15px var(--color-glow);
     }
 
-    /* PANGGUNG KARTU: Kolom 2, Baris 2 */
+    /* PANGGUNG KARTU: Kunci di Kolom 2, Baris 2 */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
         display: flex;
-        gap: 20px;
-        overflow-x: auto;
+        gap: 30px;
+        overflow-x: auto; /* Biar bisa geser kartu di area kanan */
         padding: 10px 0;
-        align-items: stretch; /* Biar tinggi kartu sama */
+        align-items: stretch;
     }
 
-    /* KARTU BENTO (Biar gak kaku) */
+    /* KARTU BENTO (Style Desain 03) */
     .card {
-        min-width: 350px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(168, 85, 247, 0.4);
-        border-radius: 20px; /* Bikin lebih bulat biar modern */
-        padding: 25px;
-        backdrop-filter: blur(15px);
-        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.1);
-        transition: 0.3s;
+        min-width: 400px;
+        background-color: var(--bg-panel);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 15px;
+        padding: 30px;
+        backdrop-filter: blur(10px); /* Efek kaca */
+        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.05);
     }
 
-    .card:hover {
-        border-color: var(--color-primary);
-        box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
-    }
-
-    /* FOOTER PC: Baris 3, melintang dari ujung ke ujung */
+    /* FOOTER (Deskripsi Panjang): Melintang penuh di Baris 3 */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 1.1rem;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
-}
 
-
-/* --- MODE HP (Tetap Stack) --- */
-@media (max-width: 1023px) {
-    .pc-only { display: none; }
-    .content-panggung {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        padding: 20px;
-    }
-    .card { min-width: 85vw; scroll-snap-align: center; }
+    /* Sembunyikan elemen mobile di PC */
+    .mobile-only { display: none !important; }
 }
