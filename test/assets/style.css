@@ -1,42 +1,105 @@
+/* ============================================================
+   1. RESET & VARIABLES (WAJIB ADA)
+   ============================================================ */
+:root {
+    --bg-dark: #020617;
+    --bg-card: rgba(15, 23, 42, 0.85);
+    --color-primary: #a855f7; /* Ungu Umbrella */
+    --color-glow: rgba(168, 85, 247, 0.6);
+    --text-main: #ffffff;
+    --text-dim: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    overflow: hidden; /* Lock scroll body utama di PC */
+}
+
+/* ============================================================
+   2. GLOBAL CARD STYLE (AUTO-SIZE CONCEPT)
+   ============================================================ */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--color-primary);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Scroll Internal */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0 20px var(--color-glow);
+    transform: translateY(-5px);
+}
+
+/* Header Kartu Rata Tengah */
+.card h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+    text-shadow: 0 0 10px var(--color-glow);
+}
+
+/* Scrollbar Cantik untuk Kartu */
+.card::-webkit-scrollbar { width: 5px; }
+.card::-webkit-scrollbar-track { background: transparent; }
+.card::-webkit-scrollbar-thumb { 
+    background: var(--color-primary); 
+    border-radius: 10px; 
+}
+
+/* ============================================================
+   3. MODE PC MASTER (GRID LOCKDOWN)
+   ============================================================ */
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1: Logo (30%), Kolom 2: Konten (70%) */
-        grid-template-columns: 30% 70%;
-        /* Baris 1: Headline, Baris 2: Panggung, Baris 3: Footer */
+        /* Kolom 1 (Logo), Kolom 2 (Headline & Konten) */
+        grid-template-columns: 35% 65%;
+        /* Baris 1 (Headline), Baris 2 (Panggung), Baris 3 (Footer) */
         grid-template-rows: 20vh 65vh 15vh;
         height: 100vh;
-        background-color: #020617; /* Pastikan gelap */
-        overflow: hidden;
-        padding: 0 3%;
+        padding: 0 5%;
     }
 
-    /* Kunci Logo: Harus di baris 1 sampai 2 agar sejajar kartu */
+    /* AREA LOGO (KIRI) */
     .main-header {
         grid-column: 1;
-        grid-row: 1 / 3; 
+        grid-row: 1 / 3;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        padding-right: 20px;
+        z-index: 10;
     }
 
     #logo-container {
         width: 100%;
-        text-align: center;
+        display: flex;
+        justify-content: center;
     }
 
-    /* Paksa SVG muncul dengan ukuran pasti */
     #logo-container svg {
-        width: 100% !important;
-        max-width: 350px;
+        width: 320px !important;
         height: auto !important;
-        filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));
-        display: block;
-        margin: 0 auto;
+        display: block !important;
+        filter: drop-shadow(0 0 25px var(--color-glow));
     }
 
-    /* Kunci Judul Raksasa di Kanan Atas */
+    /* AREA HEADLINE (KANAN ATAS) */
     #headline-pc-area {
         grid-column: 2;
         grid-row: 1;
@@ -45,27 +108,35 @@
         padding-bottom: 20px;
     }
 
-    /* Kunci Panggung Kartu (Scroll Mouse) */
+    #headline-title {
+        font-size: 4rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        line-height: 1;
+        background: linear-gradient(to bottom, #ffffff, var(--color-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+    }
+
+    /* AREA PANGGUNG (KANAN TENGAH) */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
         display: flex !important;
-        gap: 25px;
-        overflow-x: auto;
+        gap: 30px;
+        overflow-x: auto; /* Scroll Samping Mouse */
         padding: 10px 0;
         align-items: stretch;
     }
 
     .card {
-        min-width: 400px;
+        min-width: 420px;
         max-width: 500px;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid #a855f7;
-        border-radius: 20px;
-        flex-shrink: 0; /* Biar gak gepeng */
+        flex-shrink: 0;
     }
 
-    /* Kunci Footer di Paling Bawah */
+    /* AREA FOOTER (BAWAH) */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
@@ -73,5 +144,29 @@
         align-items: center;
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
+        color: var(--text-dim);
+        text-align: center;
     }
+
+    /* Hiding elements for PC */
+    .mobile-only { display: none !important; }
+}
+
+/* ============================================================
+   4. AUTO-BODY SPECIFIC (LOGIKA BERDASARKAN ID)
+   ============================================================ */
+#slot-gallery p, #slot-gallery div {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+#slot-profile p, #slot-profile li {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+#card-headline p {
+    font-size: 1.3rem;
+    text-align: center;
 }
