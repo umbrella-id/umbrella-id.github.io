@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Umbrella | Toram Online</title>
+    <title>Umbrella Guild - Official System</title>
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
     <div class="master-frame">
         <header id="headline-pc-area">
-            <h1 id="headline-title">LOADING...</h1>
+            <h1 id="headline-title">UMBRELLA GUILD</h1>
         </header>
         
         <aside class="main-header">
-            <div id="logo-container"></div>
+            <div id="logo-container">
+                <img src="assets/logo.png" alt="Logo" style="width:100%">
+            </div>
             <div class="slogan-box">
                 <span class="slogan-main">Tempat Kita Berteduh dan Bertumbuh</span>
                 <span class="slogan-sub">Dari pertemuan jadi kebersamaan</span>
@@ -22,17 +24,35 @@
         </aside>
         
         <main class="content-panggung" id="main-stage">
-            <section class="card" id="card-headline"></section>
-            <section class="card" id="slot-profile"><h2>Loading Profile...</h2></section>
-            <section class="card" id="slot-gallery"><h2>Loading Gallery...</h2></section>
+            <section class="card">
+                <h2>HEADLINE</h2>
+                <p>Konten utama selamat datang di Umbrella Guild.</p>
+            </section>
+            <section class="card">
+                <h2>PROFILE</h2>
+                <p>Informasi member dan statistik engine.</p>
+            </section>
+            <section class="card">
+                <h2>GALLERY</h2>
+                <p>Dokumentasi kegiatan dan momen seru.</p>
+            </section>
         </main>
         
         <footer class="pc-footer">
-            <p id="headline-pc-footer">Loading details...</p>
+            <p id="headline-pc-footer">© 2026 Umbrella Guild System Architect | Built with Precision</p>
         </footer>
     </div>
 
-    <div class="top-tools" onclick="bukaKotakSurat()">
+    <div class="mode-simple">
+        <div class="simple-header">
+            <h1>UMBRELLA</h1>
+        </div>
+        <div class="simple-card">HEADLINE CONTENT</div>
+        <div class="simple-card">PROFILE CONTENT</div>
+        <div class="simple-card">GALLERY CONTENT</div>
+    </div>
+
+    <div class="top-tools" onclick="alert('Buka Kotak Surat')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
         </svg>
@@ -40,8 +60,10 @@
     </div>
 
     <div class="floating-chat">
-        <div class="chat-trigger" onclick="bukaChat()">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <div class="chat-trigger" onclick="alert('Buka Chat')">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
         </div>
     </div>
 
