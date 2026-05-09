@@ -11,7 +11,7 @@ if (panggung) {
 
 async function loadLogo() {
     try {
-        const res = await fetch('assets/logo-umbrela.svg');
+        const res = await fetch('assets/logo-umbrella.svg');
         if (!res.ok) throw new Error();
         const svg = await res.text();
         document.getElementById('logo-container').innerHTML = svg;
