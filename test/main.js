@@ -8,24 +8,31 @@ async function loadLogo() {
 }
 
 // --- 2. FUNGSI KHUSUS HEADLINE (Si Bunglon) ---
-async function muatHeadline() {
-    // ... kode fetch yang sudah ada ...
-    const judul = temp.querySelector('h2').innerHTML;
-    const detail = temp.querySelector('p').innerHTML;
+// Fungsi Scroll Samping pakai Mouse Wheel
+const panggung = document.getElementById('main-stage');
+panggung.addEventListener('wheel', (evt) => {
+    evt.preventDefault();
+    panggung.scrollLeft += evt.deltaY; // Ubah scroll atas-bawah jadi kiri-kanan
+}, { passive: false });
 
-    if (window.innerWidth > 1024) {
-        // Mode PC: Suntik ke Header & Footer
+async function muatHeadline() {
+    try {
+        const res = await fetch('headline.html');
+        const text = await res.text();
+        const temp = document.createElement('div');
+        temp.innerHTML = text;
+
+        const judul = temp.querySelector('h2').innerHTML;
+        const detail = temp.querySelector('p').innerHTML;
+
+        // 1. Suntik ke Atas (Header PC)
         document.getElementById('headline-title').innerHTML = judul;
+        // 2. Suntik ke Bawah (Footer PC)
         document.getElementById('headline-pc-footer').innerHTML = detail;
+        // 3. Suntik ke Kartu (Panggung) - TETAP MUNCUL DI PC
+        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
         
-        // --- JANGAN SEMBUNYIKAN KARTU PERTAMA ---
-        // Suntik juga ke kartu pertama (card-headline)
-        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
-        document.getElementById('card-headline').style.display = 'block'; // Pastikan muncul
-    } else {
-        // Mode HP: Gabung di Kartu Pertama
-        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
-    }
+    } catch (e) { console.error("Cek apakah file headline.html ada di GitHub!"); }
 }
 
 // --- 3. FUNGSI UMUM UNTUK KARTU LAIN ---
