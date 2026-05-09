@@ -15,80 +15,51 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kita bagi layar jadi 2 kolom & 3 baris */
+        /* Kolom kiri untuk logo, kolom kanan untuk konten */
         grid-template-areas: 
             "logo headline"
             "logo panggung"
             "footer footer";
-        grid-template-columns: 1fr 1.5fr; 
-        grid-template-rows: auto 1fr auto;
+        grid-template-columns: 40% 60%; 
+        grid-template-rows: 25% 60% 15%;
         height: 100vh;
+        overflow: hidden;
         padding: 0 5%;
-        overflow: hidden; /* Biar ga ada scroll luar, scroll cuma di kartu */
-    }
-
-    .main-header {
-        grid-area: logo; /* Logo di kolom kiri */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #logo-container svg {
-        width: 80%; /* Logo besar sesuai desain */
-        max-width: 450px;
-        filter: drop-shadow(0 0 20px var(--color-glow));
-    }
-
-    /* Judul Besar di Atas Kartu */
-    #headline-pc-area {
-        grid-area: headline;
-        display: flex;
-        align-items: flex-end;
-        padding-bottom: 20px;
     }
 
     #headline-title {
-        font-size: 3.5rem;
-        text-transform: uppercase;
+        font-size: 4rem; /* Bikin Raksasa */
         font-weight: 900;
-        margin: 0;
-        text-align: left;
-        line-height: 1;
-        letter-spacing: 2px;
-        /* Efek Glow Putih-Ungu */
-        background: linear-gradient(to bottom, #fff 50%, var(--color-primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 10px var(--color-glow));
+        text-transform: uppercase;
+        color: white;
+        text-shadow: 0 0 20px var(--color-glow);
+        align-self: flex-end; /* Nempel ke arah kartu */
     }
 
-    /* Kartu-kartu di Kanan */
     .content-panggung {
-        grid-area: panggung;
-        display: flex; /* Pakai flex biar bisa scroll halus ke samping di area kanan */
+        display: flex;
         gap: 30px;
-        padding-top: 20px;
-        overflow-x: auto; /* Scroll halus di sini */
+        overflow-x: auto; /* Biar bisa geser kartu di kanan */
+        padding: 20px 0;
+        align-items: flex-start;
     }
 
     .card {
-        min-width: 400px; /* Ukuran kartu bento */
-        height: 450px;
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid var(--color-primary);
-        border-radius: 15px;
-        padding: 30px;
-        backdrop-filter: blur(10px);
+        min-width: 450px; /* Ukuran kartu bento */
+        height: 100%;
+        background: rgba(15, 23, 42, 0.8);
+        border: 2px solid var(--color-primary);
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
     }
 
-    /* Footer di Paling Bawah */
     .pc-footer {
-        grid-area: footer;
-        padding: 30px 0;
-        text-align: center;
-        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
         color: #94a3b8;
+        text-align: center;
+        border-top: 1px solid rgba(168, 85, 247, 0.3);
     }
 }
 
