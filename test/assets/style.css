@@ -1,203 +1,139 @@
 /* ============================================================
-   1. DASAR & VARIABLE
+   ENGINE PONDASI - LOGIKA ZOOM PROPORSIONAL
    ============================================================ */
 :root {
-    --bg-dark: #020617;
-    --bg-card: rgba(15, 23, 42, 0.85);
+    /* 1rem dinamis: minimal 12px, ideal 1.1vw, maksimal 18px */
+    font-size: clamp(12px, 1.1vw, 18px); 
+    
     --color-primary: #a855f7;
-    --color-glow: rgba(168, 85, 247, 0.6);
-    --text-main: #ffffff;
-    --text-dim: #94a3b8;
+    --color-glow: rgba(168, 85, 247, 0.4);
+    --bg-dark: #020617;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background-color: var(--bg-dark) !important;
-    color: var(--text-main);
-    font-family: 'Segoe UI', sans-serif;
-    min-height: 100vh;
-}
-
-/* ============================================================
-   2. GAYA KARTU (SAMA UNTUK SEMUA)
-   ============================================================ */
-.card {
-    background: var(--bg-card);
-    border: 1px solid var(--color-primary);
-    border-radius: 20px;
-    padding: 30px;
-    backdrop-filter: blur(12px);
+    background-color: var(--bg-dark);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* MATIKAN SCROLL VERTIKAL */
     display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-}
-
-.card h2 {
-    text-align: center;
-    font-size: 1.8rem;
-    color: var(--color-primary);
-    text-shadow: 0 0 10px var(--color-glow);
-    margin-bottom: 15px;
-}
-
-/* ============================================================
-   3. MODE PC (SANDWICH GRID - 4 ZONA)
-   ============================================================ */
-@media (min-width: 1024px) {
-    body {
-        display: grid;
-        /* Kolom 1 (Kiri) 35%, Kolom 2 (Kanan) 65% */
-        grid-template-columns: 35% 65%;
-        grid-template-rows: 15vh 65vh 20vh;
-        grid-template-areas: 
-            "head head"
-            "side stage"
-            "foot foot";
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        background-color: #020617;
-        /* Background Grid Halus */
-        background-image: 
-            linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-        background-size: 45px 45px;
-    }
-
-    /* --- ZONA 1: HEADLINE ATAS (Wow Look) --- */
-    #headline-pc-area {
-        grid-area: head;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
-    #headline-title {
-        font-size: 3.8rem;
-        font-weight: 900;
-        letter-spacing: 15px;
-        color: #fff;
-        text-shadow: 0 0 20px var(--color-primary);
-        animation: neonPulse 3s infinite alternate;
-    }
-
-    /* --- ZONA 2: LOGO & SLOGAN (Kiri) --- */
-    .main-header {
-        grid-area: side;
-        display: flex !important;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
-    }
-    #logo-container svg { width: 100%; max-width: 320px; filter: drop-shadow(0 0 30px var(--color-glow)); }
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Roboto, sans-serif;
     
-    .slogan-box { margin-top: 25px; text-align: center; }
-    .slogan-main { 
-        color: var(--color-primary); 
-        font-weight: 800; 
-        font-size: 1.3rem; 
-        display: block; 
-        text-shadow: 0 0 15px var(--color-glow);
-        letter-spacing: 1px;
-    }
-    .slogan-sub { 
-        color: #e2e8f0; 
-        font-style: italic; 
-        font-size: 1rem; 
-        display: block; 
-        opacity: 0.9; 
-        line-height: 1.6;
-    }
-
-    /* --- ZONA 3: BINGKAI PENYAJIAN (Stage) --- */
-    .content-panggung {
-        grid-area: stage;
-        background: rgba(15, 23, 42, 0.4); /* Efek nampan transparan */
-        border: 1px solid rgba(168, 85, 247, 0.2);
-        border-radius: 40px 0 0 40px; /* Melengkung di sisi dalam saja */
-        margin: 20px 0 20px 20px;
-        display: flex !important;
-        gap: 35px;
-        overflow-x: auto;
-        align-items: center;
-        padding: 0 50px;
-        box-shadow: inset 20px 0 50px rgba(0,0,0,0.5);
-        scrollbar-width: none;
-    }
-    .content-panggung::-webkit-scrollbar { display: none; }
-
-    /* KARTU BENTO (Kunci Lebar) */
-    .card {
-        width: 480px !important;
-        min-width: 480px !important;
-        height: 85%;
-        flex-shrink: 0;
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(168, 85, 247, 0.3);
-        border-radius: 25px;
-        backdrop-filter: blur(10px);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .card:hover { transform: translateY(-15px); border-color: var(--color-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-    .card h2 { font-size: 2.5rem !important; text-align: center; margin-bottom: 20px; }
-
-    /* --- ZONA 4: FOOTER (Polesan Putih Elegan) --- */
-    .pc-footer {
-        grid-area: foot;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        padding: 0 10%;
-    }
-    #headline-pc-footer {
-        font-size: 1.3rem;
-        font-weight: 300;
-        color: #fff;
-        opacity: 0.9;
-        letter-spacing: 1.5px;
-        text-align: center;
-    }
-
-    /* KOTAK SURAT & CHAT */
-    .top-tools { position: fixed; top: 35px; right: 60px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 100; transition: 0.3s; }
-    .top-tools:hover { transform: scale(1.1); }
-    .top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
-
-    .floating-chat { position: fixed; bottom: 45px; right: 60px; z-index: 100; }
-    .chat-trigger { 
-        width: 75px; height: 75px; background: var(--color-primary); 
-        border-radius: 20px; display: flex; align-items: center; justify-content: center; 
-        cursor: pointer; box-shadow: 0 0 25px var(--color-glow); transition: 0.4s;
-    }
-    .chat-trigger:hover { transform: rotate(-10deg) scale(1.1); }
-}
-
-@keyframes neonPulse {
-    from { text-shadow: 0 0 15px var(--color-primary); filter: brightness(1); }
-    to { text-shadow: 0 0 35px var(--color-primary), 0 0 60px var(--color-glow); filter: brightness(1.3); }
-}
-
-@keyframes neonPulse {
-    from { filter: brightness(1); }
-    to { filter: brightness(1.5); text-shadow: 0 0 20px var(--color-primary), 0 0 40px var(--color-primary); }
+    /* Background Grid Layer Dasar */
+    background-image: 
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+    background-size: 3rem 3rem;
 }
 
 /* ============================================================
-   4. AUTO-BODY (LOGIKA OTOMATIS BERDASARKAN ID)
+   THE MASTER FRAME (NAMPAN 16:10)
    ============================================================ */
-#slot-gallery p, #slot-gallery div {
-    font-size: 0.95rem;
-    line-height: 1.8;
-    text-align: justify;
+.master-frame {
+    aspect-ratio: 16 / 10;
+    width: 95vw;
+    max-height: 90vh; /* SYARAT LOGIKA MASTER: MAX 90% TINGGI LAYAR */
+    
+    display: grid;
+    grid-template-columns: 32% 68%;
+    grid-template-rows: 15% 65% 20%;
+    grid-template-areas: 
+        "head head"
+        "side stage"
+        "foot foot";
+    position: relative;
+    padding: 1rem;
 }
 
-#slot-profile p, #slot-profile li {
-    font-size: 0.95rem;
-    line-height: 1.8;
+/* --- HEADLINE AREA --- */
+#headline-pc-area { 
+    grid-area: head; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+#headline-title { 
+    font-size: 4rem; font-weight: 900; letter-spacing: 1rem; color: #fff;
+    text-shadow: 0 0 1.5rem var(--color-primary);
 }
 
-#card-headline p {
-    font-size: 1.3rem;
-    text-align: center;
+/* --- LOGO & SLOGAN AREA --- */
+.main-header { 
+    grid-area: side; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 2rem;
 }
+#logo-container svg { width: 90%; max-width: 28rem; filter: drop-shadow(0 0 2.5rem var(--color-glow)); }
+.slogan-box { margin-top: 1.5rem; text-align: center; }
+.slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1.3rem; display: block; text-shadow: 0 0 1rem var(--color-glow); }
+.slogan-sub { color: #fff; font-style: italic; font-size: 1rem; opacity: 0.8; line-height: 1.6; }
+
+/* --- PANGGUNG BENTO (BINGKAI PENYAJIAN) --- */
+.content-panggung {
+    grid-area: stage;
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid rgba(168, 85, 247, 0.1);
+    border-radius: 4rem 0 0 4rem;
+    display: flex;
+    gap: 3rem;
+    overflow-x: auto;
+    align-items: center;
+    padding: 0 5rem;
+    box-shadow: inset 2rem 0 5rem rgba(0,0,0,0.4);
+    scrollbar-width: none;
+}
+.content-panggung::-webkit-scrollbar { display: none; }
+
+/* KARTU BENTO (KUNCI REM) */
+.card {
+    width: 32rem !important;
+    min-width: 32rem !important;
+    height: 85%;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 2.5rem;
+    padding: 3rem;
+    backdrop-filter: blur(12px);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.card:hover { transform: translateY(-1rem); border-color: var(--color-primary); box-shadow: 0 1.5rem 3rem rgba(0,0,0,0.5); }
+.card h2 { font-size: 2.5rem !important; text-align: center; margin-bottom: 1.5rem; color: var(--color-primary); }
+
+/* --- FOOTER AREA --- */
+.pc-footer { 
+    grid-area: foot; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 0 10%;
+}
+#headline-pc-footer { font-size: 1.3rem; color: #fff; opacity: 0.8; letter-spacing: 2px; text-align: center; }
+
+/* ============================================================
+   FLOATING ELEMENTS (TETAP DI POJOK LAYAR)
+   ============================================================ */
+.top-tools { 
+    position: fixed; top: 2.5rem; right: 4rem; 
+    display: flex; align-items: center; gap: 1rem; 
+    cursor: pointer; z-index: 100; transition: 0.3s;
+}
+.top-tools:hover { transform: scale(1.1); }
+.top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
+
+.floating-chat { position: fixed; bottom: 3rem; right: 4rem; z-index: 100; }
+.chat-trigger { 
+    width: 5rem; height: 5rem; 
+    background: var(--color-primary); 
+    border-radius: 50%; /* BULAT SESUAI REQUEST */
+    display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; box-shadow: 0 0 2.5rem var(--color-glow); 
+    transition: 0.4s;
+}
+.chat-trigger:hover { transform: scale(1.1) rotate(15deg); }
