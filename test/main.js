@@ -13,38 +13,24 @@ if (panggung) {
 async function loadLogo() {
     try {
         const res = await fetch('./logo-umbrella.svg'); 
-        if (!res.ok) throw new Error("File SVG tidak ditemukan");
-        
         const svgText = await res.text();
         const container = document.getElementById('logo-container');
         
         if (container) {
             container.innerHTML = svgText;
-            
-            const svgElement = container.querySelector('svg');
-            if (svgElement) {
-                // 1. BUANG DIMENSI STATIS (Penyebab Offside)
-                svgElement.removeAttribute('width');
-                svgElement.removeAttribute('height');
-                
-                // 2. PAKSA DIMENSI FLEXIBEL
-                svgElement.style.width = "100%";
-                svgElement.style.height = "100%";
-                svgElement.style.maxWidth = "100%";
-                svgElement.style.maxHeight = "100%";
-                svgElement.style.display = "block";
-
-                // 3. JAGA ASPECT RATIO ASLI
-                if (!svgElement.getAttribute('viewBox')) {
-                    // Jika SVG tidak punya viewbox, kita beri fallback agar tidak gepeng
-                    svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                }
+            const svg = container.querySelector('svg');
+            if (svg) {
+                // PAKSA SVG JADI CAIR
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.display = 'block';
+                // Biar gak gepeng
+                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
-    } catch (e) {
-        console.error("Logo Error:", e);
-        document.getElementById('logo-container').innerHTML = "<h1>UMBRELLA</h1>";
-    }
+    } catch (e) { console.error(e); }
 }
 
 // 3. Fungsi Suntik Kartu (Otomatis)
