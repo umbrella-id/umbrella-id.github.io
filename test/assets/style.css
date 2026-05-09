@@ -1,84 +1,93 @@
-/* --- 1. DASAR (DI LUAR MEDIA QUERY) --- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    background-color: #020617; /* KUNCI WARNA GELAP DI SINI */
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-    min-height: 100vh;
+/* --- 1. SET DASAR (DI LUAR MEDIA QUERY) --- */
+:root {
+    --bg-dark: #020617;
+    --color-primary: #a855f7;
+    --color-glow: rgba(168, 85, 247, 0.6);
 }
 
-/* --- 2. MODE PC (MASTER LAYOUT) --- */
+body {
+    background-color: var(--bg-dark) !important;
+    margin: 0;
+    padding: 0;
+    color: white;
+    overflow: hidden; /* Mencegah scroll body luar */
+}
+
+/* --- 2. LAYOUT PC MASTER --- */
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Membagi 2 kolom: Kiri(Logo), Kanan(Konten) */
+        /* Kolom 1 (Logo), Kolom 2 (Headline & Kartu) */
         grid-template-columns: 35% 65%;
-        /* Membagi 3 baris: Judul, Panggung, Footer */
-        grid-template-rows: 20% 65% 15%;
+        /* Baris 1 (Judul Raksasa), Baris 2 (Panggung Kartu), Baris 3 (Footer) */
+        grid-template-rows: 25vh 60vh 15vh;
         height: 100vh;
-        overflow: hidden;
         padding: 0 5%;
     }
 
-    /* Logo Kiri Atas-Tengah */
+    /* KUNCI LOGO DI SINI */
     .main-header {
         grid-column: 1;
         grid-row: 1 / 3; /* Melintang dari baris 1 sampai 2 */
-        display: flex;
+        display: flex !important;
         align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+    #logo-container {
+        width: 100%;
+        display: flex;
         justify-content: center;
     }
 
     #logo-container svg {
-        width: 85%;
-        filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));
+        width: 100% !important;
+        max-width: 380px;
+        height: auto;
+        filter: drop-shadow(0 0 25px var(--color-glow));
     }
 
-    /* Judul Kanan Atas */
+    /* KUNCI JUDUL RAKSASA DI SINI */
     #headline-pc-area {
         grid-column: 2;
         grid-row: 1;
-        display: flex;
+        display: flex !important;
         align-items: flex-end;
+        padding-bottom: 20px;
     }
 
     #headline-title {
-        font-size: 4rem;
+        font-size: 4.5rem;
         font-weight: 900;
         text-transform: uppercase;
-        background: linear-gradient(to bottom, #fff, #a855f7);
+        line-height: 1;
+        background: linear-gradient(to bottom, #fff 40%, var(--color-primary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 15px var(--color-glow));
     }
 
-    /* Panggung Kartu (Scroll Mouse Aktif) */
+    /* KUNCI PANGGUNG KARTU */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
-        display: flex;
-        gap: 20px;
+        display: flex !important;
+        gap: 30px;
         overflow-x: auto;
-        padding: 20px 0;
+        padding: 10px 0;
+        align-items: stretch;
     }
 
-    .card {
-        min-width: 400px;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1.5px solid #a855f7;
-        border-radius: 20px;
-        padding: 30px;
-        backdrop-filter: blur(10px);
-    }
-
-    /* Footer Deskripsi */
+    /* FOOTER PC */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
         color: #94a3b8;
+        font-size: 1.1rem;
     }
 }
