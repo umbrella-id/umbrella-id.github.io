@@ -58,40 +58,45 @@ body {
     }
 
     /* HEADLINE TITLE */
-    #headline-title {
-        grid-area: head;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding-left: calc(5 * var(--u));
-        font-size: calc(6 * var(--u));
-        font-weight: 900;
-        text-transform: uppercase;
-    }
-
+   #headline-title {
+       grid-area: head;
+       width: 100%; 
+       display: flex;
+       align-items: center;
+       justify-content: flex-start; /* Geser kiri biar gak nabrak Kotak Surat */
+       padding-left: calc(5 * var(--u));
+       font-size: calc(6 * var(--u));
+       font-weight: 900;
+   }
     /* SIDE PANEL (LOGO & SLOGAN) */
-    .side-panel {
-        grid-area: side;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        min-height: 0; /* Kunci agar tidak melar */
-    }
-
-    #logo-container {
-        flex: 0 0 65%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    #logo-container svg, #logo-container img {
-        max-width: 85%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-
+   .side-panel {
+       grid-area: side;
+       display: flex;
+       flex-direction: column;
+       height: 100%;
+       width: 100%;
+       min-height: 0; /* KUNCI MATI: Jangan biarkan isi melarin grid Master */
+       padding: calc(2 * var(--u));
+       border-right: 1px solid rgba(168, 85, 247, 0.1);
+   }
+   
+   #logo-container {
+       flex: 0 0 65%; /* Jatah Tinggi 65% */
+       width: 100%;
+       min-height: 0; 
+       display: flex;
+       align-items: flex-end; /* Deketin ke slogan */
+       justify-content: center;
+       overflow: hidden; /* Potong kalau ada yang offside */
+   }
+   
+   #logo-container svg {
+       /* Ini batas suci: Gak boleh lebih dari jatah areanya sendiri */
+       max-width: 90%; 
+       max-height: 100%; 
+       object-fit: contain;
+       filter: drop-shadow(0 0 calc(2 * var(--u)) var(--color-glow));
+   }
     .slogan-box {
         flex: 0 0 35%;
         display: flex;
