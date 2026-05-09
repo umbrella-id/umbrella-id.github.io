@@ -10,27 +10,36 @@ if (panggung) {
 }
 
 // 2. Fungsi Load Logo (Double Check Path)
+// MODIFIKASI FUNGSI LOAD LOGO
 async function loadLogo() {
     try {
-        // Karena logo ada di folder yang sama dengan main.js (di dalam /test/)
-        // Kita cukup panggil nama filenya saja tanpa 'assets/'
         const res = await fetch('./logo-umbrella.svg'); 
+        if (!res.ok) throw new Error("File SVG tidak ditemukan");
         
-        if (!res.ok) throw new Error("File SVG tidak ditemukan di folder test");
-        
-        const svg = await res.text();
+        const svgText = await res.text();
         const container = document.getElementById('logo-container');
+        
         if (container) {
-            container.innerHTML = svg;
-            console.log("Logo Berhasil Tampil!");
+            container.innerHTML = svgText;
+            
+            // --- LOGIKA PENJINAK SVG ---
+            const svgElement = container.querySelector('svg');
+            if (svgElement) {
+                // Hapus width/height bawaan file agar nurut ke CSS (max-width/max-height)
+                svgElement.removeAttribute('width');
+                svgElement.removeAttribute('height');
+                // Pastikan dia tetap punya viewbox agar tidak gepeng
+                svgElement.style.width = "100%";
+                svgElement.style.height = "100%";
+                svgElement.style.display = "block";
+            }
+            console.log("Logo Berhasil Dijinakkan!");
         }
     } catch (e) {
         console.error("Logo Error:", e);
-        // Fallback teks jika SVG tetap ngadat
         document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
     }
 }
-
 // 3. Fungsi Suntik Kartu (Otomatis)
 async function suntikKartu(file, idSlot) {
     try {
