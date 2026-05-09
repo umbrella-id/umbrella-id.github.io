@@ -12,13 +12,21 @@ if (panggung) {
 // 2. Fungsi Load Logo (Double Check Path)
 async function loadLogo() {
     try {
-        // Kita suruh JS cari logo di folder assets yang sejajar dengan index.html
-        const res = await fetch('./assets/logo-umbrella.svg'); 
-        if (!res.ok) throw new Error("Gak ketemu");
+        // Karena logo ada di folder yang sama dengan main.js (di dalam /test/)
+        // Kita cukup panggil nama filenya saja tanpa 'assets/'
+        const res = await fetch('./logo-umbrella.svg'); 
+        
+        if (!res.ok) throw new Error("File SVG tidak ditemukan di folder test");
+        
         const svg = await res.text();
-        document.getElementById('logo-container').innerHTML = svg;
+        const container = document.getElementById('logo-container');
+        if (container) {
+            container.innerHTML = svg;
+            console.log("Logo Berhasil Tampil!");
+        }
     } catch (e) {
-        // Fallback kalau tetep gagal biar gak kosong
+        console.error("Logo Error:", e);
+        // Fallback teks jika SVG tetap ngadat
         document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
     }
 }
