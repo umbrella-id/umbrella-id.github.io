@@ -1,5 +1,5 @@
 /* ============================================================
-   1. RESET & VARIABLES (WAJIB ADA)
+   1. RESET & VARIABLES (FONDASI UTAMA)
    ============================================================ */
 :root {
     --bg-dark: #020617;
@@ -21,11 +21,11 @@ body {
     color: var(--text-main);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
-    overflow: hidden; /* Lock scroll body utama di PC */
+    margin: 0;
 }
 
 /* ============================================================
-   2. GLOBAL CARD STYLE (AUTO-SIZE CONCEPT)
+   2. GLOBAL CARD STYLE (SISTEM BENTO)
    ============================================================ */
 .card {
     background: var(--bg-card);
@@ -35,16 +35,11 @@ body {
     backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Scroll Internal */
+    overflow-y: auto; /* Aktifkan Scroll Internal */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover {
-    box-shadow: 0 0 20px var(--color-glow);
-    transform: translateY(-5px);
-}
-
-/* Header Kartu Rata Tengah */
+/* Header Kartu: Selalu Rata Tengah & Glow */
 .card h2 {
     text-align: center;
     font-size: 1.8rem;
@@ -54,36 +49,35 @@ body {
     text-shadow: 0 0 10px var(--color-glow);
 }
 
-/* Scrollbar Cantik untuk Kartu */
+/* Custom Scrollbar biar estetik */
 .card::-webkit-scrollbar { width: 5px; }
-.card::-webkit-scrollbar-track { background: transparent; }
 .card::-webkit-scrollbar-thumb { 
     background: var(--color-primary); 
     border-radius: 10px; 
 }
 
 /* ============================================================
-   3. MODE PC MASTER (GRID LOCKDOWN)
+   3. MODE PC (GRID LAYOUT MASTER)
    ============================================================ */
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1 (Logo), Kolom 2 (Headline & Konten) */
+        /* Kolom 1: Logo (35%), Kolom 2: Konten (65%) */
         grid-template-columns: 35% 65%;
-        /* Baris 1 (Headline), Baris 2 (Panggung), Baris 3 (Footer) */
+        /* Baris 1: Headline, Baris 2: Panggung, Baris 3: Footer */
         grid-template-rows: 20vh 65vh 15vh;
         height: 100vh;
         padding: 0 5%;
+        overflow: hidden; /* Lock layar utama PC */
     }
 
-    /* AREA LOGO (KIRI) */
+    /* POSISI LOGO (Kiri) */
     .main-header {
         grid-column: 1;
         grid-row: 1 / 3;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        z-index: 10;
     }
 
     #logo-container {
@@ -95,11 +89,10 @@ body {
     #logo-container svg {
         width: 320px !important;
         height: auto !important;
-        display: block !important;
         filter: drop-shadow(0 0 25px var(--color-glow));
     }
 
-    /* AREA HEADLINE (KANAN ATAS) */
+    /* POSISI JUDUL RAKSASA (Kanan Atas) */
     #headline-pc-area {
         grid-column: 2;
         grid-row: 1;
@@ -112,20 +105,18 @@ body {
         font-size: 4rem;
         font-weight: 900;
         text-transform: uppercase;
-        line-height: 1;
         background: linear-gradient(to bottom, #ffffff, var(--color-primary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin: 0;
     }
 
-    /* AREA PANGGUNG (KANAN TENGAH) */
+    /* POSISI PANGGUNG KARTU (Kanan Tengah) */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
         display: flex !important;
         gap: 30px;
-        overflow-x: auto; /* Scroll Samping Mouse */
+        overflow-x: auto;
         padding: 10px 0;
         align-items: stretch;
     }
@@ -136,7 +127,7 @@ body {
         flex-shrink: 0;
     }
 
-    /* AREA FOOTER (BAWAH) */
+    /* POSISI FOOTER (Bawah) */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
@@ -145,15 +136,13 @@ body {
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
         color: var(--text-dim);
-        text-align: center;
     }
 
-    /* Hiding elements for PC */
     .mobile-only { display: none !important; }
 }
 
 /* ============================================================
-   4. AUTO-BODY SPECIFIC (LOGIKA BERDASARKAN ID)
+   4. AUTO-BODY (LOGIKA OTOMATIS BERDASARKAN ID)
    ============================================================ */
 #slot-gallery p, #slot-gallery div {
     font-size: 0.95rem;
