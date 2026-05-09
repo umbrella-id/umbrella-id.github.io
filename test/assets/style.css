@@ -1,91 +1,105 @@
-/* Reset & Dasar */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    background-color: #020617; 
-    color: white; 
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+/* --- RESET DASAR --- */
+:root {
+    --color-primary: #a855f7;
+    --color-glow: rgba(168, 85, 247, 0.6);
 }
 
-/* --- KUNCI LAYOUT PC --- */
+body {
+    background-color: #020617;
+    color: white;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+/* --- MODE PC (DESKTOP) --- */
 @media (min-width: 1024px) {
     body {
-        /* Membagi layar jadi 3 baris: Header(Atas), Panggung(Tengah), Footer(Bawah) */
         display: grid;
+        /* Kita bagi layar jadi 2 kolom & 3 baris */
+        grid-template-areas: 
+            "logo headline"
+            "logo panggung"
+            "footer footer";
+        grid-template-columns: 1fr 1.5fr; 
         grid-template-rows: auto 1fr auto;
+        height: 100vh;
         padding: 0 5%;
+        overflow: hidden; /* Biar ga ada scroll luar, scroll cuma di kartu */
     }
 
-    /* Judul Besar di Tengah Atas */
     .main-header {
-        grid-row: 1;
+        grid-area: logo; /* Logo di kolom kiri */
         display: flex;
-        flex-direction: column;
         align-items: center;
-        padding-top: 50px;
+        justify-content: center;
     }
 
-    #headline-pc-area h1 {
-        font-size: 4rem;
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 5px;
-        margin-bottom: 20px;
-        background: linear-gradient(to bottom, #fff, var(--color-primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 15px var(--color-glow));
-    }
-
-    /* Logo & Kartu di Tengah */
-    .content-panggung {
-        grid-row: 2;
-        display: grid;
-        /* Kolom 1(Logo), Kolom 2(Profile), Kolom 3(Gallery) */
-        grid-template-columns: 1.5fr 1fr 1fr; 
-        align-items: center;
-        gap: 40px;
-    }
-
-    /* Logo Besar di Kiri */
     #logo-container svg {
-        width: 100%;
-        max-width: 450px; /* Logo dibuat dominan */
+        width: 80%; /* Logo besar sesuai desain */
+        max-width: 450px;
         filter: drop-shadow(0 0 20px var(--color-glow));
     }
 
-    /* Kartu-kartu di PC (Bukan Stack) */
-    .card {
-        min-width: unset;
-        height: 400px; /* Kunci tinggi biar seragam */
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid var(--color-primary);
-        backdrop-filter: blur(10px);
-        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.1);
+    /* Judul Besar di Atas Kartu */
+    #headline-pc-area {
+        grid-area: headline;
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 20px;
     }
 
-    /* Footer Deskripsi di Bawah */
+    #headline-title {
+        font-size: 3.5rem;
+        text-transform: uppercase;
+        font-weight: 900;
+        margin: 0;
+        text-align: left;
+        line-height: 1;
+        letter-spacing: 2px;
+        /* Efek Glow Putih-Ungu */
+        background: linear-gradient(to bottom, #fff 50%, var(--color-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 10px var(--color-glow));
+    }
+
+    /* Kartu-kartu di Kanan */
+    .content-panggung {
+        grid-area: panggung;
+        display: flex; /* Pakai flex biar bisa scroll halus ke samping di area kanan */
+        gap: 30px;
+        padding-top: 20px;
+        overflow-x: auto; /* Scroll halus di sini */
+    }
+
+    .card {
+        min-width: 400px; /* Ukuran kartu bento */
+        height: 450px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--color-primary);
+        border-radius: 15px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Footer di Paling Bawah */
     .pc-footer {
-        grid-row: 3;
-        padding: 40px 0;
+        grid-area: footer;
+        padding: 30px 0;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: #94a3b8;
-        max-width: 800px;
-        margin: 0 auto;
     }
 }
 
-/* --- MODE HP (Tetap Geser Samping) --- */
+/* --- MODE HP (Tetap Stack) --- */
 @media (max-width: 1023px) {
+    .pc-only { display: none; }
     .content-panggung {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         padding: 20px;
-        gap: 20px;
     }
     .card { min-width: 85vw; scroll-snap-align: center; }
-    .pc-only { display: none; }
 }
