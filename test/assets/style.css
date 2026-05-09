@@ -1,5 +1,5 @@
 /* ============================================================
-   ENGINE PONDASI - LOGIKA ZOOM BLOK SOLID 16:10
+   GLOBAL SETTINGS
    ============================================================ */
 :root {
     --color-primary: #a855f7;
@@ -12,24 +12,27 @@
 body {
     background-color: var(--bg-dark);
     margin: 0;
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-image: 
         linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
     background-size: 3rem 3rem;
+    color: white;
 }
 
 /* ============================================================
    1. MODE MEWAH (LANDSCAPE >= 768px)
    ============================================================ */
 @media (min-width: 768px) and (orientation: landscape) {
-    /* UNIT ZOOM: Mengunci seluruh blok agar menciut bareng */
-    :root { --zoom: min(0.9vh, 0.56vw); }
+    :root {
+        /* Unit Zoom: Mengunci blok agar menciut bareng proporsional */
+        --zoom: min(0.9vh, 0.56vw); 
+    }
 
     body {
         height: 100vh;
         width: 100vw;
-        overflow: hidden; /* LOCK VERTIKAL */
+        overflow: hidden; /* MATIKAN SCROLL VERTIKAL */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -37,44 +40,73 @@ body {
 
     .master-frame {
         display: grid;
+        /* RANGKA SOLID 16:10 */
         height: calc(100 * var(--zoom));
         width: calc(160 * var(--zoom));
         max-width: 98vw;
         max-height: 92vh;
+        
         grid-template-columns: 32% 68%;
         grid-template-rows: 15% 65% 20%;
-        grid-template-areas: "head head" "side stage" "foot foot";
+        grid-template-areas: 
+            "head head"
+            "side stage"
+            "foot foot";
+            
         background: rgba(15, 23, 42, 0.2);
         border: calc(0.1 * var(--zoom)) solid rgba(168, 85, 247, 0.15);
         border-radius: calc(4 * var(--zoom));
-        padding: calc(1.5 * var(--zoom));
+        padding: calc(2 * var(--zoom));
         position: relative;
     }
 
-    /* ISI KONTEN IKUT SKALA ZOOM */
+    /* HEADLINE */
+    #headline-pc-area { grid-area: head; display: flex; align-items: center; justify-content: center; }
     #headline-title { 
         font-size: calc(7 * var(--zoom)); 
-        font-weight: 900; letter-spacing: calc(1.5 * var(--zoom)); color: #fff;
+        font-weight: 900; 
+        letter-spacing: calc(1.5 * var(--zoom)); 
         text-shadow: 0 0 calc(2 * var(--zoom)) var(--color-primary);
     }
 
+    /* LOGO & SLOGAN */
+    .main-header { grid-area: side; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: calc(1.5 * var(--zoom)); display: block; margin-top: 1rem; }
+    .slogan-sub { font-style: italic; font-size: calc(1 * var(--zoom)); opacity: 0.8; }
+
+    /* PANGGUNG BENTO */
     .content-panggung {
         grid-area: stage;
         background: rgba(15, 23, 42, 0.4);
         border-radius: calc(4 * var(--zoom)) 0 0 calc(4 * var(--zoom));
-        display: flex; gap: calc(3 * var(--zoom)); overflow-x: auto; align-items: center;
-        padding: 0 calc(5 * var(--zoom)); height: 100%; scrollbar-width: none;
+        display: flex;
+        gap: calc(3 * var(--zoom));
+        overflow-x: auto;
+        align-items: center;
+        padding: 0 calc(5 * var(--zoom));
+        height: 100%;
+        scrollbar-width: none; /* Sembunyikan scrollbar */
     }
+    .content-panggung::-webkit-scrollbar { display: none; }
 
+    /* KARTU */
     .card {
         width: calc(52 * var(--zoom)) !important;
         min-width: calc(52 * var(--zoom)) !important;
-        height: 85%; flex-shrink: 0; background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(168, 85, 247, 0.2); border-radius: calc(3 * var(--zoom));
-        padding: calc(3 * var(--zoom)); transition: 0.4s;
+        height: 85%;
+        flex-shrink: 0;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: calc(3 * var(--zoom));
+        padding: calc(3 * var(--zoom));
+        transition: 0.4s;
     }
+    .card:hover { transform: translateY(calc(-1.5 * var(--zoom))); border-color: var(--color-primary); }
+    .card h2 { font-size: calc(3 * var(--zoom)); color: var(--color-primary); margin-bottom: 1rem; }
 
-    .card:hover { transform: translateY(calc(-1 * var(--zoom))); border-color: var(--color-primary); }
+    /* FOOTER */
+    .pc-footer { grid-area: foot; display: flex; align-items: center; justify-content: center; }
+    #headline-pc-footer { font-size: calc(1.3 * var(--zoom)); opacity: 0.6; letter-spacing: 2px; }
 
     .mode-simple { display: none; }
 }
@@ -91,12 +123,35 @@ body {
         display: flex;
         flex-direction: column;
         padding: 2rem;
-        gap: 2rem;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    .simple-header h1 { color: var(--color-primary); letter-spacing: 5px; }
+    .simple-card {
+        background: rgba(15, 23, 42, 0.8);
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(168, 85, 247, 0.2);
     }
 }
 
-/* FLOATING TOOLS (Sesuai Syarat: Nempel Layar) */
-.top-tools { position: fixed; top: 4%; right: 4%; display: flex; align-items: center; gap: 0.8rem; cursor: pointer; z-index: 500; }
-.top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.8rem; }
+/* ============================================================
+   FLOATING TOOLS (TETAP DI LAYAR DASAR)
+   ============================================================ */
+.top-tools { 
+    position: fixed; top: 4%; right: 4%; 
+    display: flex; align-items: center; gap: 0.8rem; 
+    cursor: pointer; z-index: 500; 
+}
+.top-tools span { font-weight: 800; letter-spacing: 2px; font-size: 0.8rem; }
+
 .floating-chat { position: fixed; bottom: 4%; right: 4%; z-index: 500; }
-.chat-trigger { width: 4.5rem; height: 4.5rem; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 2rem var(--color-glow); }
+.chat-trigger { 
+    width: 4.5rem; height: 4.5rem; 
+    background: var(--color-primary); 
+    border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; box-shadow: 0 0 2rem var(--color-glow); 
+    transition: 0.4s;
+}
+.chat-trigger:hover { transform: scale(1.1) rotate(15deg); }
