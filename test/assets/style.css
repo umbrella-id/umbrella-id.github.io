@@ -22,18 +22,24 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kita bagi jadi 2 kolom: Kiri(40%) buat Logo, Kanan(60%) buat Konten */
-        grid-template-columns: 40% 60%;
-        /* Kita bagi jadi 3 baris: Atas(Headline), Tengah(Kartu), Bawah(Footer) */
-        grid-template-rows: 20vh 65vh 15vh;
+        /* Kita bagi layar jadi zona-zona khusus */
+        grid-template-areas: 
+            "logo headline"   /* Baris Atas: Logo & Judul Raksasa */
+            "logo panggung"   /* Baris Tengah: Logo & Kartu-kartu */
+            "footer footer";  /* Baris Bawah: Footer melintang */
+        grid-template-columns: 35% 65%; /* Kolom kiri lebih kecil untuk logo */
+        grid-template-rows: auto 1fr auto; /* Tinggi otomatis disesuaikan konten */
         height: 100vh;
-        padding: 0 5%;
+        overflow: hidden; /* Biar scroll cuma di area kartu */
     }
 
-    /* LOGO: Kunci di Kolom 1, melintang dari baris 1 sampai 2 */
-    .main-header {
-        grid-column: 1;
-        grid-row: 1 / 3;
+    /* Reset Header & Footer agar nurut sama Grid */
+    .main-header, .pc-footer { display: contents; }
+
+    /* --- ALAMATKAN ELEMEN KE ZONA GRID --- */
+
+    #logo-container {
+        grid-area: logo; /* Duduk di zona 'logo' (kiri atas-tengah) */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -42,67 +48,51 @@ body {
 
     #logo-container svg {
         width: 100%;
-        max-width: 400px; /* Logo dominan tapi gak maruk */
-        height: auto;
+        max-width: 350px;
         filter: drop-shadow(0 0 20px var(--color-glow));
     }
 
-    /* HEADLINE PC (Judul Raksasa): Kunci di Kolom 2, Baris 1 */
     #headline-pc-area {
-        grid-column: 2;
-        grid-row: 1;
+        grid-area: headline; /* Duduk di zona 'headline' (kanan atas) */
         display: flex;
         align-items: flex-end; /* Nempel ke kartu di bawahnya */
-        padding-bottom: 20px;
+        padding: 40px 0 10px 0;
     }
 
     #headline-title {
-        font-size: 4.5rem;
+        font-size: 3.5rem;
         font-weight: 900;
         text-transform: uppercase;
-        margin: 0;
-        line-height: 1;
-        background: linear-gradient(to bottom, #fff, var(--color-primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: white;
         text-shadow: 0 0 15px var(--color-glow);
     }
 
-    /* PANGGUNG KARTU: Kunci di Kolom 2, Baris 2 */
     .content-panggung {
-        grid-column: 2;
-        grid-row: 2;
-        display: flex;
-        gap: 30px;
-        overflow-x: auto; /* Biar bisa geser kartu di area kanan */
+        grid-area: panggung; /* Duduk di zona 'panggung' (kanan tengah) */
+        display: flex; /* Kartu berjejer ke samping */
+        gap: 25px;
+        overflow-x: auto; /* Bisa di-scroll samping di area ini */
         padding: 10px 0;
-        align-items: stretch;
+        align-items: flex-start;
     }
 
-    /* KARTU BENTO (Style Desain 03) */
     .card {
-        min-width: 400px;
-        background-color: var(--bg-panel);
-        border: 1px solid rgba(168, 85, 247, 0.3);
+        min-width: 400px; /* Ukuran kartu bento */
+        height: 100%; /* Sesuai tinggi baris grid */
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--color-primary);
         border-radius: 15px;
-        padding: 30px;
-        backdrop-filter: blur(10px); /* Efek kaca */
-        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.05);
+        backdrop-filter: blur(10px);
     }
 
-    /* FOOTER (Deskripsi Panjang): Melintang penuh di Baris 3 */
-    .pc-footer {
-        grid-column: 1 / 3;
-        grid-row: 3;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    #headline-pc-footer {
+        grid-area: footer; /* Duduk di zona 'footer' (full bawah) */
         text-align: center;
+        padding: 20px 10%;
         color: var(--text-dim);
-        font-size: 1.1rem;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
 
-    /* Sembunyikan elemen mobile di PC */
-    .mobile-only { display: none !important; }
+    /* Sembunyikan elemen mobile di PC, KECUALI Kartu Headline */
+    .mobile-only:not(.card) { display: none !important; }
 }
