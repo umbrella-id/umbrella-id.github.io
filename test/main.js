@@ -19,21 +19,34 @@ window.onscroll = function() {
 loadLogo();
 
 async function muatHeadline() {
-    const res = await fetch('headline.html');
-    const text = await res.text();
-    const temp = document.createElement('div');
-    temp.innerHTML = text;
+    try {
+        const res = await fetch('headline.html');
+        const text = await res.text();
+        
+        // Buat element bayangan untuk mengambil data
+        const temp = document.createElement('div');
+        temp.innerHTML = text;
 
-    // Ambil Judul dari h2 dan Detail dari p di headline.html
-    const judul = temp.querySelector('h2').innerText;
-    const detail = temp.querySelector('p').innerText;
+        const judul = temp.querySelector('h2').innerHTML;
+        const detail = temp.querySelector('p').innerHTML;
 
-    if (window.innerWidth > 1024) {
-        // Mode PC
-        document.getElementById('headline-title').innerText = judul;
-        document.getElementById('headline-pc-footer').innerText = detail;
-    } else {
-        // Mode HP
-        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+        console.log("Headline Ditemukan:", judul);
+
+        if (window.innerWidth > 1024) {
+            // Mode PC: Suntik ke area atas dan bawah
+            document.getElementById('headline-title').innerHTML = judul;
+            document.getElementById('headline-pc-footer').innerHTML = detail;
+        } else {
+            // Mode HP: Masukkan ke kartu pertama
+            document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+        }
+    } catch (err) {
+        console.error("Gagal muat headline. Pastikan file headline.html ada!", err);
     }
 }
+
+// Panggil fungsi saat halaman siap
+window.addEventListener('DOMContentLoaded', () => {
+    loadLogo();
+    muatHeadline();
+});
