@@ -15,22 +15,19 @@ async function loadLogo() {
         const res = await fetch('./logo-umbrella.svg'); 
         const svgText = await res.text();
         const container = document.getElementById('logo-container');
-        
         if (container) {
             container.innerHTML = svgText;
             const svg = container.querySelector('svg');
             if (svg) {
-                // PAKSA JADI CAIR: Hapus paksa angka width/height bawaan file asli
+                // BUANG SEMUA ATRIBUT YANG BIKIN RAKSASA
                 svg.removeAttribute('width');
                 svg.removeAttribute('height');
-                // Paksa ikut kotak CSS Master
-                svg.style.width = '100%';
-                svg.style.height = '100%';
-                svg.style.display = 'block';
+                svg.style.maxWidth = '100%';
+                svg.style.maxHeight = '100%';
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
-    } catch (e) { console.error("Logo Ngadat:", e); }
+    } catch (e) { console.error(e); }
 }
 
 // 3. Fungsi Suntik Kartu (Otomatis)
