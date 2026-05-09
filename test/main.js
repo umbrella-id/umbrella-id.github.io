@@ -47,26 +47,23 @@ async function suntikKartu(file, idSlot) {
 // 4. Fungsi Khusus Headline (Triple Spawn)
 async function muatHeadline() {
     try {
-        const res = await fetch('headline.html');
+        const res = await fetch('./headline.html');
         const text = await res.text();
         const temp = document.createElement('div');
         temp.innerHTML = text;
 
-        const judul = temp.querySelector('h2') ? temp.querySelector('h2').innerHTML : "No Title";
-        const detail = temp.querySelector('p') ? temp.querySelector('p').innerHTML : "No Detail";
+        const judul = temp.querySelector('h2').innerHTML;
+        const detail = temp.querySelector('p').innerHTML;
 
-        // Suntik ke Header PC & Footer
-        if (document.getElementById('headline-title')) {
-            document.getElementById('headline-title').innerHTML = judul;
-        }
-        if (document.getElementById('headline-pc-footer')) {
-            document.getElementById('headline-pc-footer').innerHTML = detail;
-        }
-        // Suntik ke Kartu Panggung
-        if (document.getElementById('card-headline')) {
-            document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
-        }
-    } catch (e) { console.error("Headline Error:", e); }
+        // 1. Suntik ke Atas (Headline Title)
+        document.getElementById('headline-title').innerHTML = judul;
+        
+        // 2. Suntik ke Bawah (Footer Detail)
+        document.getElementById('headline-pc-footer').innerHTML = detail;
+        
+        // 3. Suntik ke Kartu Panggung (Opsional)
+        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+    } catch (e) { console.error("Gagal muat data headline", e); }
 }
 
 // JALANKAN SEMUA SAAT WINDOW LOAD
