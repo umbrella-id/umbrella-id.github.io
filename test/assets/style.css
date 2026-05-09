@@ -71,54 +71,49 @@ body {
    /* --- 1. JINAKKAN HEADLINE (Biar Panjang Sesuai Area) --- */
    #headline-title {
        grid-area: head;
+       width: 100%; 
        display: flex;
        align-items: center;
-       justify-content: center;
-       font-size: calc(6 * var(--u)); /* Perkecil dikit biar gak nabrak */
-       width: 100%;
+       justify-content: flex-start; /* Geser kiri biar gak nabrak Kotak Surat */
+       padding-left: calc(5 * var(--u));
+       font-size: calc(6 * var(--u));
+       font-weight: 900;
    }
    
-   /* --- 2. JINAKKAN SIDE PANEL (Logo & Slogan) --- */
+    /* --- 2. JINAKKAN SIDE PANEL (Logo & Slogan) --- */
    .side-panel {
        grid-area: side;
        display: flex;
        flex-direction: column;
        height: 100%;
        width: 100%;
-       min-height: 0; /* KUNCI: Biar isi gak bisa nembus grid */
-       padding: calc(3 * var(--u));
+       min-height: 0; /* KUNCI: Biar isi gak nembus grid */
+       padding: calc(2 * var(--u));
    }
    
    #logo-container {
-       flex: 0 0 65%; /* Fix jatah 65% tinggi area side */
+       flex: 0 0 60%; /* Jatah Logo 60% tinggi samping */
        width: 100%;
-       min-height: 0; 
+       min-height: 0;
        display: flex;
-       align-items: flex-end; /* Mendekat ke slogan */
+       align-items: flex-end; /* Deketin ke slogan */
        justify-content: center;
-       overflow: hidden; /* Potong kalau bandel */
+       overflow: hidden; 
    }
    
    #logo-container svg {
-       max-width: 85%; /* Kasih margin samping */
-       max-height: 100%; /* JANGAN LEBIH DARI JATAH 65% TADI */
+       max-width: 85%; /* Kasih napas samping */
+       max-height: 100%; /* JANGAN LEWATIN BATAS 60% TADI */
        object-fit: contain;
    }
    
    .slogan-box {
-       flex: 0 0 35%; /* Sisa 35% buat slogan */
+       flex: 0 0 40%; /* Sisa 40% buat slogan */
        display: flex;
        flex-direction: column;
-       justify-content: flex-start; /* Mendekat ke logo */
+       justify-content: flex-start; /* Deketin ke logo */
        align-items: center;
        text-align: center;
-       padding-top: calc(1 * var(--u));
-   }
-   
-   .slogan-main {
-       font-size: calc(2 * var(--u));
-       line-height: 1.1;
-       white-space: nowrap; /* Biar gak pecah baris */
    }
    /* 3. JINAKKAN PANGGUNG (STAGE) */
     .stage, .content-panggung {
