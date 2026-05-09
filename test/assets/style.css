@@ -13,6 +13,40 @@ body {
     overflow: hidden; /* Mencegah scroll body luar */
 }
 
+/* --- 1. HEADER KARTU (Kunci Rata Tengah & Seragam) --- */
+.card h2 {
+    text-align: center;         /* Selalu Rata Tengah */
+    font-size: 1.8rem;          /* Ukuran font judul yang pas */
+    text-transform: uppercase;  /* Biar tegas pakai Huruf Besar */
+    margin-bottom: 20px;
+    color: var(--color-primary);
+    text-shadow: 0 0 10px var(--color-glow);
+}
+
+/* --- 2. AUTO-BODY (Isinya aja yang beda-beda) --- */
+
+/* Khusus Gallery (Kenangan Panjang) */
+#slot-gallery p, #slot-gallery div {
+    font-size: 0.95rem; /* Lebih kecil biar muat banyak cerita */
+    line-height: 1.8;   /* Jarak baris lega buat baca panjang */
+    text-align: justify; 
+}
+
+/* Khusus Profile (Daftar Spesifikasi) */
+#slot-profile p, #slot-profile li {
+    font-size: 1.1rem;  /* Agak gede dikit biar jelas poin-poinnya */
+    line-height: 1.5;
+    text-align: left;   /* List biasanya lebih enak rata kiri */
+}
+
+/* Khusus Headline (Banner Pengumuman) */
+#card-headline p {
+    font-size: 1.3rem;  /* Paling gede karena ini info utama */
+    text-align: center; /* Headline biasanya lebih cakep rata tengah */
+}
+
+
+
 /* --- 2. LAYOUT PC MASTER --- */
 @media (min-width: 1024px) {
     body {
