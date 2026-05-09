@@ -13,21 +13,37 @@ if (panggung) {
 async function loadLogo() {
     try {
         const res = await fetch('./logo-umbrella.svg'); 
+        if (!res.ok) throw new Error("File SVG tidak ditemukan di path yang benar");
+        
         const svgText = await res.text();
         const container = document.getElementById('logo-container');
+        
         if (container) {
             container.innerHTML = svgText;
-            const svg = container.querySelector('svg');
-            if (svg) {
-                // BUANG SEMUA ATRIBUT YANG BIKIN RAKSASA
-                svg.removeAttribute('width');
-                svg.removeAttribute('height');
-                svg.style.maxWidth = '100%';
-                svg.style.maxHeight = '100%';
-                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // --- LOGIKA PAWANG SVG MULAI DI SINI ---
+            const svgElement = container.querySelector('svg');
+            
+            if (svgElement) {
+                // 1. BUANG instruksi lebar/tinggi asli file SVG (Penyebab Offside)
+                svgElement.removeAttribute('width');
+                svgElement.removeAttribute('height');
+                
+                // 2. PAKSA pakai CSS Master 100% dari box container
+                svgElement.style.width = '100%';
+                svgElement.style.height = '100%';
+                
+                // 3. Jaga aspect ratio agar logo tidak gepeng
+                svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                
+                console.log("Logo Umbrella berhasil dijinakkan oleh Pawang JS!");
             }
         }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error("Logo Ngadat:", e);
+        // Fallback teks jika SVG tetap ngadat
+        document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
+    }
 }
 
 // 3. Fungsi Suntik Kartu (Otomatis)
