@@ -79,59 +79,65 @@ body {
         align-self: center;
     }
 
-   /* KOLOM KIRI (Logo & Slogan) */
+   /* --- AREA SIDE (KOLOM KIRI) --- */
    .main-header {
        grid-area: side;
        display: flex;
        flex-direction: column;
-       align-items: center;    /* Center Horizontal */
-       justify-content: center; /* Center Vertikal */
-       padding: calc(3 * var(--u));
-       overflow: hidden;       /* Kunci agar tidak ada yang bocor keluar area */
+       /* Hilangkan semua padding manual yang bisa bikin offside */
+       padding: calc(2 * var(--u)); 
        box-sizing: border-box;
+       height: 100%;
+       width: 100%;
+       overflow: hidden; /* Kunci mati agar tidak ada elemen yang tumpah */
    }
    
+   /* LANTAI ATAS: KHUSUS LOGO */
    #logo-container {
-       width: 100%;            /* Pakai 100% dari kolom kiri */
-       height: 55%;            /* Alokasikan 55% tinggi area untuk logo */
+       width: 100%;
+       height: 60%; /* Jatah 60% tinggi kolom untuk Logo */
        display: flex;
        align-items: center;
        justify-content: center;
+       position: relative;
    }
    
    #logo-container img {
-       max-width: 90%;         /* Logo tidak akan pernah lebih lebar dari box */
-       max-height: 100%;       /* Logo tidak akan pernah lebih tinggi dari box */
-       object-fit: contain;    /* KUNCI: Logo mengecil/membesar tanpa pecah rasio */
-       filter: drop-shadow(0 0 calc(2 * var(--u)) var(--color-glow));
+       /* Ini rahasianya: Jangan kasih width/height fix dalam px */
+       max-width: 90%;
+       max-height: 90%;
+       /* Paksa logo tetap di dalam kotak tanpa merusak rasio */
+       object-fit: contain; 
+       display: block;
    }
    
-   /* SLOGAN (Dikunci di bawah logo) */
+   /* LANTAI BAWAH: KHUSUS SLOGAN */
    .slogan-box {
        width: 100%;
-       height: 35%;            /* Alokasikan 35% tinggi area untuk teks */
+       height: 40%; /* Jatah 40% sisanya untuk Slogan */
        display: flex;
        flex-direction: column;
-       justify-content: flex-start;
+       justify-content: center; /* Teks di tengah secara vertikal */
        align-items: center;
        text-align: center;
-       padding-top: calc(2 * var(--u));
    }
    
    .slogan-main {
-       font-size: calc(2.2 * var(--u)); /* Ukuran teks ikut unit nampan */
+       font-size: calc(2.2 * var(--u));
        font-weight: 800;
        color: var(--color-primary);
-       line-height: 1.2;
+       margin-bottom: calc(0.5 * var(--u));
+       line-height: 1.1;
    }
    
    .slogan-sub {
-       font-size: calc(1.3 * var(--u));
+       font-size: calc(1.2 * var(--u));
        opacity: 0.7;
        font-style: italic;
-       margin-top: calc(0.5 * var(--u));
+       line-height: 1.3;
    }
 
+   /* --- AREA SIDE (KOLOM KANAN) --- */
    .content-panggung {
        grid-area: stage;
        display: flex;
