@@ -45,68 +45,68 @@ body {
    3. MODE PC (SANDWICH GRID - 4 ZONA)
    ============================================================ */
 @media (min-width: 1024px) {
-    body {
-        display: grid;
-        /* Kolom: 35% untuk Logo/Slogan, 65% untuk Kartu */
-        grid-template-columns: 35% 65%;
-        /* Baris: Atas 15%, Tengah 65%, Bawah 20% */
-        grid-template-rows: 15vh 65vh 20vh;
-        grid-template-areas: 
-            "head-pc head-pc"
-            "logo-pc stage-pc"
-            "foot-pc foot-pc";
-        height: 100vh;
-        overflow: hidden;
-        padding: 0 5%;
-        
-        /* MOTIF GRID HALUS */
-        background-color: #020617;
-        background-image: 
-            linear-gradient(rgba(168, 85, 247, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(168, 85, 247, 0.05) 1px, transparent 1px);
-        background-size: 40px 40px;
+    /* --- POLESAN BACKGROUND (Scanline Effect) --- */
+    body::before {
+        content: " ";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 3px 100%;
+        pointer-events: none;
+        z-index: 100;
     }
 
-    /* ZONA 1: HEADLINE ATAS */
-    #headline-pc-area { grid-area: head-pc; display: flex !important; align-items: center; justify-content: center; }
-
-    /* ZONA 2: LOGO & SLOGAN (Dikunci agar tidak meluap) */
-    .main-header { 
-        grid-area: logo-pc; 
-        display: flex !important; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center; 
-        padding: 20px;
-    }
-    #logo-container svg { width: 100% !important; max-width: 320px; height: auto; filter: drop-shadow(0 0 20px var(--color-glow)); }
-    
-    .slogan-box { margin-top: 15px; text-align: center; }
-    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1.1rem; display: block; text-shadow: 0 0 10px var(--color-glow); }
-    .slogan-sub { color: white; font-style: italic; font-size: 0.9rem; display: block; opacity: 0.8; }
-
-    /* ZONA 3: PANGGUNG KARTU (Sembunyikan Scrollbar) */
-    .content-panggung {
-        grid-area: stage-pc;
+    /* --- ZONA 1: HEADLINE ATAS (Wow Look) --- */
+    #headline-pc-area {
+        grid-area: head-pc;
         display: flex !important;
-        gap: 30px;
-        overflow-x: auto;
         align-items: center;
-        scrollbar-width: none; /* Firefox */
+        justify-content: center;
+        background: linear-gradient(180deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%);
+        border-bottom: 2px solid var(--color-primary);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
     }
-    .content-panggung::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
-    /* UKURAN KARTU SERAGAM */
-    .card {
-        width: 450px !important; 
-        height: 85%;
-        flex-shrink: 0;
-        border: 1px solid rgba(168, 85, 247, 0.4);
+    #headline-title {
+        font-size: 4rem; /* Ukuran raksasa */
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 15px; /* Jarak antar huruf biar elegan */
+        margin: 0;
+        
+        /* Efek Teks Gaming (Metallic Glow) */
+        color: #fff;
+        text-shadow: 
+            0 0 10px var(--color-primary),
+            0 0 20px var(--color-primary),
+            0 0 40px var(--color-primary);
+        
+        /* Animasi Bernapas (Pulse) */
+        animation: neonPulse 3s infinite ease-in-out;
     }
-    .card h2 { font-size: 2.2rem !important; margin-bottom: 20px; }
 
-    /* ZONA 4: FOOTER */
-    .pc-footer { grid-area: foot-pc; display: flex !important; align-items: center; justify-content: center; border-top: 1px solid rgba(168, 85, 247, 0.2); }
+    @keyframes neonPulse {
+        0%, 100% { 
+            transform: scale(1);
+            filter: brightness(1);
+            text-shadow: 0 0 10px var(--color-primary), 0 0 20px var(--color-primary);
+        }
+        50% { 
+            transform: scale(1.02);
+            filter: brightness(1.3);
+            text-shadow: 0 0 20px var(--color-primary), 0 0 50px var(--color-primary), 0 0 100px var(--color-primary);
+        }
+    }
+
+    /* --- POLESAN SLOGAN (Lebih Bold) --- */
+    .slogan-main {
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+        text-shadow: 0 0 15px var(--color-primary);
+    }
 }
 
 /* ============================================================
@@ -119,8 +119,8 @@ body {
 }
 
 #slot-profile p, #slot-profile li {
-    font-size: 1.1rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.8;
 }
 
 #card-headline p {
