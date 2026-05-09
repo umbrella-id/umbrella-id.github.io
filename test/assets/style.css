@@ -17,38 +17,31 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1 (Logo), Kolom 2 (Headline & Kartu) */
-        grid-template-columns: 35% 65%;
-        /* Baris 1 (Judul Raksasa), Baris 2 (Panggung Kartu), Baris 3 (Footer) */
-        grid-template-rows: 25vh 60vh 15vh;
+        /* Kolom 1: Logo (30%), Kolom 2: Konten (70%) */
+        grid-template-columns: 30% 70%;
+        /* Baris 1: Header, Baris 2: Panggung, Baris 3: Footer */
+        grid-template-rows: 25vh 55vh 20vh;
         height: 100vh;
         padding: 0 5%;
+        background-color: #020617;
     }
 
-    /* KUNCI LOGO DI SINI */
+    /* Kunci Logo di Sisi Kiri */
     .main-header {
         grid-column: 1;
-        grid-row: 1 / 3; /* Melintang dari baris 1 sampai 2 */
+        grid-row: 1 / 3; /* Melintang dari atas sampai tengah */
         display: flex !important;
         align-items: center;
-        justify-content: center;
-        z-index: 10;
-    }
-
-    #logo-container {
-        width: 100%;
-        display: flex;
         justify-content: center;
     }
 
     #logo-container svg {
-        width: 100% !important;
-        max-width: 380px;
-        height: auto;
-        filter: drop-shadow(0 0 25px var(--color-glow));
+        width: 90%;
+        max-width: 350px;
+        filter: drop-shadow(0 0 20px #a855f7);
     }
 
-    /* KUNCI JUDUL RAKSASA DI SINI */
+    /* Kunci Judul Raksasa di Kanan Atas */
     #headline-pc-area {
         grid-column: 2;
         grid-row: 1;
@@ -58,28 +51,37 @@ body {
     }
 
     #headline-title {
-        font-size: 4.5rem;
+        font-size: 4rem;
         font-weight: 900;
-        text-transform: uppercase;
         line-height: 1;
-        background: linear-gradient(to bottom, #fff 40%, var(--color-primary));
+        margin: 0;
+        background: linear-gradient(to bottom, #fff, #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 15px var(--color-glow));
     }
 
-    /* KUNCI PANGGUNG KARTU */
+    /* Kunci Panggung Kartu di Kanan Tengah */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
         display: flex !important;
         gap: 30px;
         overflow-x: auto;
-        padding: 10px 0;
-        align-items: stretch;
+        padding: 20px 0;
+        align-items: flex-start;
     }
 
-    /* FOOTER PC */
+    .card {
+        min-width: 400px;
+        min-height: 400px; /* Biar gak gepeng kayak di screenshot */
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid #a855f7;
+        border-radius: 20px;
+        padding: 30px;
+        flex-shrink: 0; /* Biar kartu gak menyusut */
+    }
+
+    /* Kunci Footer di Bawah */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
@@ -87,7 +89,5 @@ body {
         align-items: center;
         justify-content: center;
         border-top: 1px solid rgba(168, 85, 247, 0.2);
-        color: #94a3b8;
-        font-size: 1.1rem;
     }
 }
