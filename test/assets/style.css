@@ -49,15 +49,20 @@ body {
     }
 
     #headline-title {
-        font-size: 4.5rem; /* Bikin makin ngeri sizenya */
+        font-size: 4.5rem; /* Pastikan ukurannya raksasa */
         font-weight: 900;
         text-transform: uppercase;
-        margin: 0;
         line-height: 1;
-        text-align: left;
-        background: linear-gradient(to bottom, #fff, #a855f7);
+        margin: 0;
+        
+        /* Warna gradasi Putih ke Ungu */
+        background: linear-gradient(to bottom, #ffffff 50%, #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        
+        /* Efek Cahaya (Glow) Ungu Ngeri */
+        filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8))
+                drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
     }
 
     /* PANGGUNG KARTU: Di bawah Judul Raksasa */
@@ -71,12 +76,23 @@ body {
     }
 
     .card {
-        min-width: 400px;
-        height: 100%;
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid #a855f7;
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
+        /* ... kode yang sudah ada ... */
+        background: rgba(15, 23, 42, 0.7); /* Biar agak transparan dikit */
+        border: 2px solid #a855f7; /* Bingkai Ungu */
+        
+        /* Efek Neon Dalam & Luar */
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.3),
+                    inset 0 0 15px rgba(168, 85, 247, 0.2);
+        
+        backdrop-filter: blur(10px); /* Efek blur di belakang kartu */
+        transition: transform 0.3s ease;
+    }
+    
+    /* Efek pas Mouse lewat di atas kartu */
+    .card:hover {
+        transform: translateY(-5px); /* Kartu ngangkat dikit */
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.5),
+                    inset 0 0 20px rgba(168, 85, 247, 0.3);
     }
 
     /* FOOTER DESKRIPSI: Full Lebar di paling bawah */
