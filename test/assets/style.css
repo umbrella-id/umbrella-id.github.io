@@ -1,113 +1,91 @@
-/* DASAR LAYOUT */
+/* Reset & Dasar */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    background-color: #020617;
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow-x: hidden;
-}
-
-/* HEADER & LOGO (Kunci Ukuran di Sini) */
-.main-header {
+body { 
+    background-color: #020617; 
+    color: white; 
+    min-height: 100vh;
     display: flex;
-    align-items: center;
-    padding: 40px;
-    min-height: 40vh; /* Sesuaikan agar logo tidak terlalu raksasa */
+    flex-direction: column;
 }
 
-#logo-container svg {
-    width: 250px; /* KUNCI UKURAN LOGO BIAR GAK RAKSASA */
-    height: auto;
-    filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.6));
-    transition: all 0.4s ease;
-}
-
-/* PANGGUNG KONTEN */
-.content-panggung {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-}
-
-.card {
-    min-width: 85vw; /* Di HP hampir full layar */
-    background: rgba(15, 23, 42, 0.8);
-    border: 1.5px solid #a855f7;
-    border-radius: 15px;
-    padding: 20px;
-    scroll-snap-align: center;
-    box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.2);
-}
-
-/* MODE PC (SESUAI GAMBAR 03) */
+/* --- KUNCI LAYOUT PC --- */
 @media (min-width: 1024px) {
+    body {
+        /* Membagi layar jadi 3 baris: Header(Atas), Panggung(Tengah), Footer(Bawah) */
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        padding: 0 5%;
+    }
+
+    /* Judul Besar di Tengah Atas */
     .main-header {
-        justify-content: flex-start;
-        padding: 60px 10%;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
     }
 
-    #headline-pc-area {
-        margin-left: 50px;
-        flex: 1;
-    }
-
-    #headline-title {
-        font-size: 3.5rem;
+    #headline-pc-area h1 {
+        font-size: 4rem;
+        text-align: center;
         text-transform: uppercase;
-        font-weight: 800;
-        line-height: 1;
-        text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        letter-spacing: 5px;
+        margin-bottom: 20px;
+        background: linear-gradient(to bottom, #fff, var(--color-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 15px var(--color-glow));
     }
 
+    /* Logo & Kartu di Tengah */
     .content-panggung {
+        grid-row: 2;
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 Kolom Sejajar */
-        gap: 30px;
-        padding: 0 10% 50px 10%;
-        overflow: visible;
+        /* Kolom 1(Logo), Kolom 2(Profile), Kolom 3(Gallery) */
+        grid-template-columns: 1.5fr 1fr 1fr; 
+        align-items: center;
+        gap: 40px;
     }
 
+    /* Logo Besar di Kiri */
+    #logo-container svg {
+        width: 100%;
+        max-width: 450px; /* Logo dibuat dominan */
+        filter: drop-shadow(0 0 20px var(--color-glow));
+    }
+
+    /* Kartu-kartu di PC (Bukan Stack) */
     .card {
-        min-width: auto;
+        min-width: unset;
+        height: 400px; /* Kunci tinggi biar seragam */
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--color-primary);
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.1);
+    }
+
+    /* Footer Deskripsi di Bawah */
+    .pc-footer {
+        grid-row: 3;
+        padding: 40px 0;
+        text-align: center;
+        font-size: 1.2rem;
+        color: #94a3b8;
+        max-width: 800px;
+        margin: 0 auto;
     }
 }
 
-/* Sembunyikan elemen berdasarkan perangkat */
-.pc-only { display: none; }
-.mobile-only { display: block; }
-
-@media (min-width: 1024px) {
-    .pc-only { display: block; }
-    .mobile-only { display: none; }
-
-    /* Judul Headline di Header PC */
-    #pc-headline-title h1 {
-        font-size: 3.5rem;
-        text-transform: uppercase;
-        color: var(--color-primary);
-        text-shadow: 0 0 20px var(--color-glow);
-        margin-left: 50px;
-    }
-
-    /* Isi Headline di Footer PC */
-    #pc-headline-footer {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: rgba(15, 23, 42, 0.9);
-        padding: 15px 10%;
-        border-top: 1px solid var(--color-primary);
-        font-size: 0.9rem;
-        color: var(--text-dim);
-    }
-
-    /* Bento Grid tetap 3 kolom tapi slot headline hilang (karena display:none) */
+/* --- MODE HP (Tetap Geser Samping) --- */
+@media (max-width: 1023px) {
     .content-panggung {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Jadi 2 kolom besar (Profile & Gallery) */
-        padding: 40px 10%;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 20px;
+        gap: 20px;
     }
+    .card { min-width: 85vw; scroll-snap-align: center; }
+    .pc-only { display: none; }
 }
