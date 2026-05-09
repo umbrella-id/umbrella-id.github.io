@@ -47,65 +47,55 @@ body {
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1 (Logo), Kolom 2 (Panggung) */
         grid-template-columns: 35% 65%;
-        /* Baris 1 (Atas), Baris 2 (Tengah), Baris 3 (Bawah) */
         grid-template-rows: 15vh 65vh 20vh;
         grid-template-areas: 
             "head-pc head-pc"
             "logo-pc stage-pc"
             "foot-pc foot-pc";
         height: 100vh;
+        width: 100vw;
         overflow: hidden;
         padding: 0 5%;
+        /* MOTIF BACKGROUND HALUS */
+        background-color: #020617;
+        background-image: 
+            linear-gradient(rgba(168, 85, 247, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 85, 247, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
     }
 
-    /* ZONA 1: HEADLINE ATAS (Melintang) */
-    #headline-pc-area {
-        grid-area: head-pc;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
+    /* Slogan di Bawah Logo */
+    .slogan-box {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: 1.1rem; display: block; margin-bottom: 5px; }
+    .slogan-sub { color: white; font-style: italic; font-weight: 400; font-size: 0.9rem; display: block; line-height: 1.4; }
+
+    /* Ukuran Judul Kartu Lebih Besar */
+    .card h2 {
+        font-size: 2.2rem !important; /* Diperbesar sesuai request */
+        margin-bottom: 25px;
     }
 
-    /* ZONA 2: LOGO (Tengah Kiri) */
-    .main-header {
-        grid-area: logo-pc;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #logo-container svg {
-        width: 80% !important;
-        max-width: 350px;
-        filter: drop-shadow(0 0 20px var(--color-glow));
-    }
-
-    /* ZONA 3: PANGGUNG (Tengah Kanan) */
+    /* Hilangkan Scrollbar di Panggung (Tapi tetap bisa scroll) */
     .content-panggung {
         grid-area: stage-pc;
         display: flex !important;
         gap: 30px;
         overflow-x: auto;
         align-items: center;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* IE/Edge */
     }
+    .content-panggung::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
+    /* Samakan Ukuran Semua Kartu (Uniform Stack) */
     .card {
-        min-width: 450px;
-        max-width: 550px;
+        width: 480px !important; /* Ukuran statis agar seragam */
         height: 85%;
         flex-shrink: 0;
-    }
-
-    /* ZONA 4: FOOTER (Melintang Bawah) */
-    .pc-footer {
-        grid-area: foot-pc;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
 }
 
