@@ -45,88 +45,137 @@ body {
    3. MODE PC (SANDWICH GRID - 4 ZONA)
    ============================================================ */
 @media (min-width: 1024px) {
-    /* --- POLESAN SLOGAN (Kiri) --- */
-    .slogan-main {
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: var(--color-primary);
-        text-shadow: 0 0 15px var(--color-glow);
-        margin-bottom: 8px;
+    body {
+        display: grid;
+        /* Kolom 1 (Kiri) 35%, Kolom 2 (Kanan) 65% */
+        grid-template-columns: 35% 65%;
+        grid-template-rows: 15vh 65vh 20vh;
+        grid-template-areas: 
+            "head head"
+            "side stage"
+            "foot foot";
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background-color: #020617;
+        /* Background Grid Halus */
+        background-image: 
+            linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+        background-size: 45px 45px;
     }
-    .slogan-sub {
-        color: #e2e8f0;
-        font-style: italic;
-        font-weight: 300;
-        font-size: 0.95rem;
-        opacity: 0.9;
+
+    /* --- ZONA 1: HEADLINE ATAS (Wow Look) --- */
+    #headline-pc-area {
+        grid-area: head;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    #headline-title {
+        font-size: 3.8rem;
+        font-weight: 900;
+        letter-spacing: 15px;
+        color: #fff;
+        text-shadow: 0 0 20px var(--color-primary);
+        animation: neonPulse 3s infinite alternate;
+    }
+
+    /* --- ZONA 2: LOGO & SLOGAN (Kiri) --- */
+    .main-header {
+        grid-area: side;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+    #logo-container svg { width: 100%; max-width: 320px; filter: drop-shadow(0 0 30px var(--color-glow)); }
+    
+    .slogan-box { margin-top: 25px; text-align: center; }
+    .slogan-main { 
+        color: var(--color-primary); 
+        font-weight: 800; 
+        font-size: 1.3rem; 
+        display: block; 
+        text-shadow: 0 0 15px var(--color-glow);
+        letter-spacing: 1px;
+    }
+    .slogan-sub { 
+        color: #e2e8f0; 
+        font-style: italic; 
+        font-size: 1rem; 
+        display: block; 
+        opacity: 0.9; 
         line-height: 1.6;
     }
 
-    /* --- POLESAN FOOTER (Bawah) --- */
-    #headline-pc-footer {
-        font-size: 1.4rem;
-        font-weight: 300;
-        color: #ffffff;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    /* --- BINGKAI PENYAJIAN KONTEN (Panggung) --- */
+    /* --- ZONA 3: BINGKAI PENYAJIAN (Stage) --- */
     .content-panggung {
         grid-area: stage;
-        background: rgba(15, 23, 42, 0.3); /* Background tipis area bento */
-        border: 1px solid rgba(168, 85, 247, 0.15);
-        border-radius: 40px;
-        margin: 20px; /* Jarak agar terlihat seperti bingkai di dalam layar */
+        background: rgba(15, 23, 42, 0.4); /* Efek nampan transparan */
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 40px 0 0 40px; /* Melengkung di sisi dalam saja */
+        margin: 20px 0 20px 20px;
         display: flex !important;
-        gap: 30px;
+        gap: 35px;
         overflow-x: auto;
         align-items: center;
-        padding: 40px;
-        box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        padding: 0 50px;
+        box-shadow: inset 20px 0 50px rgba(0,0,0,0.5);
         scrollbar-width: none;
     }
+    .content-panggung::-webkit-scrollbar { display: none; }
 
-    /* --- KOTAK SURAT (Pojok Kanan Atas) --- */
-    .top-tools {
-        position: fixed;
-        top: 30px;
-        right: 50px;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: 0.3s;
+    /* KARTU BENTO (Kunci Lebar) */
+    .card {
+        width: 480px !important;
+        min-width: 480px !important;
+        height: 85%;
+        flex-shrink: 0;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .top-tools:hover { transform: scale(1.05); filter: brightness(1.2); }
-    .top-tools span {
-        color: white;
-        font-weight: 700;
-        letter-spacing: 2px;
-        font-size: 0.9rem;
-    }
+    .card:hover { transform: translateY(-15px); border-color: var(--color-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    .card h2 { font-size: 2.5rem !important; text-align: center; margin-bottom: 20px; }
 
-    /* --- CHAT ICON (Gamer Style) --- */
-    .floating-chat {
-        position: fixed;
-        bottom: 40px;
-        right: 50px;
-        z-index: 1000;
-    }
-    .chat-trigger {
-        width: 70px;
-        height: 70px;
-        background: var(--color-primary);
-        border-radius: 20px; /* Kotak melengkung ala gaming button */
-        display: flex;
+    /* --- ZONA 4: FOOTER (Polesan Putih Elegan) --- */
+    .pc-footer {
+        grid-area: foot;
+        display: flex !important;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 0 20px var(--color-glow);
-        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        padding: 0 10%;
+    }
+    #headline-pc-footer {
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: #fff;
+        opacity: 0.9;
+        letter-spacing: 1.5px;
+        text-align: center;
+    }
+
+    /* KOTAK SURAT & CHAT */
+    .top-tools { position: fixed; top: 35px; right: 60px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 100; transition: 0.3s; }
+    .top-tools:hover { transform: scale(1.1); }
+    .top-tools span { color: white; font-weight: 800; letter-spacing: 2px; font-size: 0.9rem; }
+
+    .floating-chat { position: fixed; bottom: 45px; right: 60px; z-index: 100; }
+    .chat-trigger { 
+        width: 75px; height: 75px; background: var(--color-primary); 
+        border-radius: 20px; display: flex; align-items: center; justify-content: center; 
+        cursor: pointer; box-shadow: 0 0 25px var(--color-glow); transition: 0.4s;
     }
     .chat-trigger:hover { transform: rotate(-10deg) scale(1.1); }
+}
+
+@keyframes neonPulse {
+    from { text-shadow: 0 0 15px var(--color-primary); filter: brightness(1); }
+    to { text-shadow: 0 0 35px var(--color-primary), 0 0 60px var(--color-glow); filter: brightness(1.3); }
 }
 
 @keyframes neonPulse {
