@@ -1,78 +1,39 @@
-/* --- 1. SET DASAR (DI LUAR MEDIA QUERY) --- */
-:root {
-    --bg-dark: #020617;
-    --color-primary: #a855f7;
-    --color-glow: rgba(168, 85, 247, 0.6);
-}
-
-body {
-    background-color: var(--bg-dark) !important;
-    margin: 0;
-    padding: 0;
-    color: white;
-    overflow: hidden; /* Mencegah scroll body luar */
-}
-
-/* --- 1. HEADER KARTU (Kunci Rata Tengah & Seragam) --- */
-.card h2 {
-    text-align: center;         /* Selalu Rata Tengah */
-    font-size: 1.8rem;          /* Ukuran font judul yang pas */
-    text-transform: uppercase;  /* Biar tegas pakai Huruf Besar */
-    margin-bottom: 20px;
-    color: var(--color-primary);
-    text-shadow: 0 0 10px var(--color-glow);
-}
-
-/* --- 2. AUTO-BODY (Isinya aja yang beda-beda) --- */
-
-/* Khusus Gallery (Kenangan Panjang) */
-#slot-gallery p, #slot-gallery div {
-    font-size: 0.95rem; /* Lebih kecil biar muat banyak cerita */
-    line-height: 1.8;   /* Jarak baris lega buat baca panjang */
-    text-align: justify; 
-}
-
-/* Khusus Profile (Daftar Spesifikasi) */
-#slot-profile p, #slot-profile li {
-    font-size: 1.1rem;  /* Agak gede dikit biar jelas poin-poinnya */
-    line-height: 1.5;
-    text-align: left;   /* List biasanya lebih enak rata kiri */
-}
-
-/* Khusus Headline (Banner Pengumuman) */
-#card-headline p {
-    font-size: 1.3rem;  /* Paling gede karena ini info utama */
-    text-align: center; /* Headline biasanya lebih cakep rata tengah */
-}
-
-
-
-/* --- 2. LAYOUT PC MASTER --- */
 @media (min-width: 1024px) {
     body {
         display: grid;
         /* Kolom 1: Logo (30%), Kolom 2: Konten (70%) */
         grid-template-columns: 30% 70%;
-        /* Baris 1: Header, Baris 2: Panggung, Baris 3: Footer */
-        grid-template-rows: 25vh 55vh 20vh;
+        /* Baris 1: Headline, Baris 2: Panggung, Baris 3: Footer */
+        grid-template-rows: 20vh 65vh 15vh;
         height: 100vh;
-        padding: 0 5%;
-        background-color: #020617;
+        background-color: #020617; /* Pastikan gelap */
+        overflow: hidden;
+        padding: 0 3%;
     }
 
-    /* Kunci Logo di Sisi Kiri */
+    /* Kunci Logo: Harus di baris 1 sampai 2 agar sejajar kartu */
     .main-header {
         grid-column: 1;
-        grid-row: 1 / 3; /* Melintang dari atas sampai tengah */
+        grid-row: 1 / 3; 
         display: flex !important;
         align-items: center;
         justify-content: center;
+        padding-right: 20px;
     }
 
+    #logo-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Paksa SVG muncul dengan ukuran pasti */
     #logo-container svg {
-        width: 90%;
+        width: 100% !important;
         max-width: 350px;
-        filter: drop-shadow(0 0 20px #a855f7);
+        height: auto !important;
+        filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));
+        display: block;
+        margin: 0 auto;
     }
 
     /* Kunci Judul Raksasa di Kanan Atas */
@@ -84,38 +45,27 @@ body {
         padding-bottom: 20px;
     }
 
-    #headline-title {
-        font-size: 4rem;
-        font-weight: 900;
-        line-height: 1;
-        margin: 0;
-        background: linear-gradient(to bottom, #fff, #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* Kunci Panggung Kartu di Kanan Tengah */
+    /* Kunci Panggung Kartu (Scroll Mouse) */
     .content-panggung {
         grid-column: 2;
         grid-row: 2;
         display: flex !important;
-        gap: 30px;
+        gap: 25px;
         overflow-x: auto;
-        padding: 20px 0;
-        align-items: flex-start;
+        padding: 10px 0;
+        align-items: stretch;
     }
 
     .card {
         min-width: 400px;
-        min-height: 400px; /* Biar gak gepeng kayak di screenshot */
+        max-width: 500px;
         background: rgba(15, 23, 42, 0.8);
         border: 1px solid #a855f7;
         border-radius: 20px;
-        padding: 30px;
-        flex-shrink: 0; /* Biar kartu gak menyusut */
+        flex-shrink: 0; /* Biar gak gepeng */
     }
 
-    /* Kunci Footer di Bawah */
+    /* Kunci Footer di Paling Bawah */
     .pc-footer {
         grid-column: 1 / 3;
         grid-row: 3;
