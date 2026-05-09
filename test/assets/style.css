@@ -68,68 +68,62 @@ body {
         position: relative;
     }
 
-    /* 1. JINAKKAN HEADLINE */
-    #headline-title {
-        grid-area: head;
-        font-size: calc(7 * var(--u));
-        letter-spacing: calc(1.5 * var(--u));
-        text-align: center;
-        align-self: center;
-        text-shadow: 0 0 calc(2 * var(--u)) var(--color-primary);
-    }
+/* --- 1. JINAKKAN HEADLINE (Biar Panjang Sesuai Area) --- */
+#headline-title {
+    grid-area: head;
+    width: 100%; /* Paksa penuhi area */
+    font-size: calc(7 * var(--u));
+    letter-spacing: calc(1.5 * var(--u));
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+}
 
-    /* 2. JINAKKAN KOLOM KIRI (SIDE PANEL) */
-    .side-panel, .main-header {
-        grid-area: side;
-        display: grid;
-        /* Logo dapet jatah 65%, Slogan dapet 35% tinggi area */
-        grid-template-rows: 65% 35%; 
-        height: 100%;
-        width: 100%;
-        padding: calc(2 * var(--u));
-        box-sizing: border-box;
-        overflow: hidden;
-    }
+/* --- 2. JINAKKAN SIDE PANEL (Logo & Slogan) --- */
+.side-panel {
+    grid-area: side;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: calc(1 * var(--u)); /* Perkecil padding biar gak sesak */
+    overflow: hidden;
+}
 
-    .logo-box, #logo-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
+#logo-container {
+    flex: 0 0 60%; /* Jatah Tinggi 60% */
+    width: 100%;
+    display: flex;
+    align-items: flex-end; /* DEKATKAN KE BAWAH (Ke arah Slogan) */
+    justify-content: center;
+    padding-bottom: calc(1 * var(--u)); /* Jarak halus ke slogan */
+}
 
-    .logo-box img, #logo-container img {
-        /* INI PAWANG LOGO: Max height 100% dari jatah gridnya */
-        max-width: 95%;
-        max-height: 100%;
-        object-fit: contain; 
-        filter: drop-shadow(0 0 calc(2 * var(--u)) var(--color-primary));
-    }
+#logo-container svg, #logo-container img {
+    max-width: 90%;
+    max-height: 100%; 
+    object-fit: contain;
+    /* Hilangkan bayangan berat yang bisa bikin ilusi offside */
+    filter: drop-shadow(0 0 calc(1.5 * var(--u)) var(--color-glow));
+}
 
-    .slogan-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        width: 100%;
-    }
+.slogan-box {
+    flex: 0 0 40%; /* Jatah Tinggi 40% */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* DEKATKAN KE ATAS (Ke arah Logo) */
+    align-items: center;
+    text-align: center;
+    padding-top: 0; /* Hapus padding atas */
+}
 
-    .slogan-main {
-        font-size: calc(2 * var(--u));
-        color: var(--color-primary);
-        font-weight: 800;
-        line-height: 1.2;
-    }
-
-    .slogan-sub {
-        font-size: calc(1.2 * var(--u));
-        opacity: 0.7;
-        font-style: italic;
-    }
-
+.slogan-main {
+    font-size: calc(2.2 * var(--u));
+    margin-bottom: calc(0.3 * var(--u));
+    white-space: nowrap; /* Jangan biarkan teks slogan bungkus ke bawah */
+}
     /* 3. JINAKKAN PANGGUNG (STAGE) */
     .stage, .content-panggung {
         grid-area: stage;
