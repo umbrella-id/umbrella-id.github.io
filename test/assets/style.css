@@ -132,15 +132,14 @@ body {
        margin-top: calc(0.5 * var(--u));
    }
 
-    .content-panggung {
-        grid-area: stage;
-        display: flex;
-        gap: calc(3 * var(--u));
-        overflow-x: auto;
-        align-items: center;
-        padding: 0 calc(4 * var(--u));
-        scrollbar-width: none;
-    }
+   .content-panggung {
+       grid-area: stage;
+       display: flex;
+       gap: calc(4 * var(--u));
+       overflow-x: auto;       /* Biarkan scroll horizontal jika kartu banyak */
+       align-items: center;
+       padding-left: calc(5 * var(--u)); /* Jarak aman dari logo */
+   }
 
     .card {
         width: calc(45 * var(--u)) !important;
