@@ -12,14 +12,14 @@ if (panggung) {
 // 2. Fungsi Load Logo (Double Check Path)
 async function loadLogo() {
     try {
-        const res = await fetch('assets/logo-umbrella.svg');
-        if (!res.ok) throw new Error("File SVG tidak ditemukan");
+        // Kita suruh JS cari logo di folder assets yang sejajar dengan index.html
+        const res = await fetch('./assets/logo-umbrella.svg'); 
+        if (!res.ok) throw new Error("Gak ketemu");
         const svg = await res.text();
         document.getElementById('logo-container').innerHTML = svg;
     } catch (e) {
-        console.error("Logo Error:", e);
-        // Fallback: Tampilkan teks jika SVG gagal
-        document.getElementById('logo-container').innerHTML = "<h1 style='color:white; font-family:serif; font-size:3rem;'>UMBRELLA</h1>";
+        // Fallback kalau tetep gagal biar gak kosong
+        document.getElementById('logo-container').innerHTML = "<h1 style='color:white'>UMBRELLA</h1>";
     }
 }
 
@@ -65,6 +65,7 @@ async function muatHeadline() {
 window.onload = () => {
     loadLogo();
     muatHeadline();
-    suntikKartu('profile.html', 'slot-profile');
-    suntikKartu('gallery.html', 'slot-gallery');
+    // Tambahkan ./ agar dia cari di folder yang sama (folder /test/)
+    suntikKartu('./profile.html', 'slot-profile');
+    suntikKartu('./gallery.html', 'slot-gallery');
 };
