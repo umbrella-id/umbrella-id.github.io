@@ -21,118 +21,108 @@ body {
 }
 
 /* ============================================================
-   1. MODE MEWAH (LANDSCAPE >= 768px)
+   LOGIKA MASTER: DOUBLE GUARD 16:10 ENGINE
    ============================================================ */
 @media (min-width: 768px) and (orientation: landscape) {
     :root {
-        /* Unit Zoom: Mengunci blok agar menciut bareng proporsional */
-        --zoom: min(0.9vh, 0.56vw); 
+        /* PONDASI: Tinggi nampan 90% dari tinggi layar */
+        --nampan-h: 90vh;
+        /* UNIT ZOOM: Semua isi patuh pada 1% tinggi nampan */
+        --u: calc(var(--nampan-h) / 100); 
     }
 
     body {
         height: 100vh;
         width: 100vw;
-        overflow: hidden; /* MATIKAN SCROLL VERTIKAL */
+        overflow: hidden; /* Mutlak: No Scroll Vertikal */
         display: flex;
         align-items: center;
         justify-content: center;
+        background-color: #020617;
+        margin: 0;
     }
 
     .master-frame {
-        display: grid;
-        /* RANGKA SOLID 16:10 */
-        height: calc(100 * var(--zoom));
-        width: calc(160 * var(--zoom));
-        max-width: 98vw;
-        max-height: 92vh;
+        /* UKURAN UTAMA */
+        height: var(--nampan-h);
+        width: calc(var(--nampan-h) * 1.6);
         
-        grid-template-columns: 32% 68%;
-        grid-template-rows: 15% 65% 20%;
+        /* PENGAMAN OFFSIDE (Logika Master) */
+        max-width: 95vw;
+        
+        /* JAGA RASIO: Jika lebar kena rem max-width, tinggi harus ikut menciut */
+        aspect-ratio: 16 / 10;
+        
+        display: grid;
+        grid-template-columns: 30% 70%;
+        grid-template-rows: 15% 70% 15%;
         grid-template-areas: 
             "head head"
             "side stage"
             "foot foot";
-            
-        background: rgba(15, 23, 42, 0.2);
-        border: calc(0.1 * var(--zoom)) solid rgba(168, 85, 247, 0.15);
-        border-radius: calc(4 * var(--zoom));
-        padding: calc(2 * var(--zoom));
+
+        background: rgba(15, 23, 42, 0.3);
+        /* Border dihitung masuk ke dalam agar tidak offside */
+        border: calc(0.2 * var(--u)) solid rgba(168, 85, 247, 0.15);
+        border-radius: calc(4 * var(--u));
+        padding: calc(2 * var(--u));
+        box-sizing: border-box; 
         position: relative;
     }
 
-    /* HEADLINE */
-    #headline-pc-area { grid-area: head; display: flex; align-items: center; justify-content: center; }
-    #headline-title { 
-        font-size: calc(7 * var(--zoom)); 
-        font-weight: 900; 
-        letter-spacing: calc(1.5 * var(--zoom)); 
-        text-shadow: 0 0 calc(2 * var(--zoom)) var(--color-primary);
+    /* INTERNAL ELEMENTS - Semuanya pakai --u */
+    #headline-title {
+        font-size: calc(7 * var(--u));
+        letter-spacing: calc(1.5 * var(--u));
+        text-align: center;
+        grid-area: head;
+        align-self: center;
     }
 
-    /* LOGO & SLOGAN */
-    .main-header { grid-area: side; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    .slogan-main { color: var(--color-primary); font-weight: 800; font-size: calc(1.5 * var(--zoom)); display: block; margin-top: 1rem; }
-    .slogan-sub { font-style: italic; font-size: calc(1 * var(--zoom)); opacity: 0.8; }
-
-    /* PANGGUNG BENTO */
-    .content-panggung {
-        grid-area: stage;
-        background: rgba(15, 23, 42, 0.4);
-        border-radius: calc(4 * var(--zoom)) 0 0 calc(4 * var(--zoom));
-        display: flex;
-        gap: calc(3 * var(--zoom));
-        overflow-x: auto;
-        align-items: center;
-        padding: 0 calc(5 * var(--zoom));
-        height: 100%;
-        scrollbar-width: none; /* Sembunyikan scrollbar */
-    }
-    .content-panggung::-webkit-scrollbar { display: none; }
-
-    /* KARTU */
-    .card {
-        width: calc(52 * var(--zoom)) !important;
-        min-width: calc(52 * var(--zoom)) !important;
-        height: 85%;
-        flex-shrink: 0;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(168, 85, 247, 0.2);
-        border-radius: calc(3 * var(--zoom));
-        padding: calc(3 * var(--zoom));
-        transition: 0.4s;
-    }
-    .card:hover { transform: translateY(calc(-1.5 * var(--zoom))); border-color: var(--color-primary); }
-    .card h2 { font-size: calc(3 * var(--zoom)); color: var(--color-primary); margin-bottom: 1rem; }
-
-    /* FOOTER */
-    .pc-footer { grid-area: foot; display: flex; align-items: center; justify-content: center; }
-    #headline-pc-footer { font-size: calc(1.3 * var(--zoom)); opacity: 0.6; letter-spacing: 2px; }
-
-    .mode-simple { display: none; }
-}
-
-/* ============================================================
-   2. MODE SIMPLE (PORTRAIT / LAYAR < 768px)
-   ============================================================ */
-@media (max-width: 767px), (orientation: portrait) {
-    .master-frame { display: none; }
-    
-    body { overflow-y: auto; }
-
-    .mode-simple {
+    .main-header {
+        grid-area: side;
         display: flex;
         flex-direction: column;
-        padding: 2rem;
-        gap: 1.5rem;
-        text-align: center;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid rgba(168, 85, 247, 0.1);
     }
-    .simple-header h1 { color: var(--color-primary); letter-spacing: 5px; }
-    .simple-card {
-        background: rgba(15, 23, 42, 0.8);
-        padding: 2rem;
-        border-radius: 1.5rem;
-        border: 1px solid rgba(168, 85, 247, 0.2);
+
+    .content-panggung {
+        grid-area: stage;
+        display: flex;
+        gap: calc(3 * var(--u));
+        overflow-x: auto;
+        align-items: center;
+        padding: 0 calc(4 * var(--u));
+        scrollbar-width: none;
     }
+
+    .card {
+        width: calc(45 * var(--u)) !important;
+        min-width: calc(45 * var(--u)) !important;
+        height: 85%;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: calc(3 * var(--u));
+        padding: calc(3 * var(--u));
+        flex-shrink: 0;
+        border: 1px solid rgba(168, 85, 247, 0.1);
+    }
+
+    .pc-footer {
+        grid-area: foot;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: calc(1.5 * var(--u));
+        opacity: 0.5;
+    }
+}
+
+/* --- MODE SIMPLE (MOBILE) --- */
+@media (max-width: 767px), (orientation: portrait) {
+    .master-frame { display: none; }
+    .mode-simple { display: block; padding: 20px; color: white; }
 }
 
 /* ============================================================
