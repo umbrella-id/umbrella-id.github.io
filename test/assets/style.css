@@ -1,31 +1,26 @@
 /* ============================================================
-   1. RESET & VARIABLES (FONDASI UTAMA)
+   1. DASAR & VARIABLE
    ============================================================ */
 :root {
     --bg-dark: #020617;
     --bg-card: rgba(15, 23, 42, 0.85);
-    --color-primary: #a855f7; /* Ungu Umbrella */
+    --color-primary: #a855f7;
     --color-glow: rgba(168, 85, 247, 0.6);
     --text-main: #ffffff;
     --text-dim: #94a3b8;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     background-color: var(--bg-dark) !important;
     color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
-    margin: 0;
 }
 
 /* ============================================================
-   2. GLOBAL CARD STYLE (SISTEM BENTO)
+   2. GAYA KARTU (SAMA UNTUK SEMUA)
    ============================================================ */
 .card {
     background: var(--bg-card);
@@ -35,34 +30,24 @@ body {
     backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Aktifkan Scroll Internal */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow-y: auto;
 }
 
-/* Header Kartu: Selalu Rata Tengah & Glow */
 .card h2 {
     text-align: center;
     font-size: 1.8rem;
-    text-transform: uppercase;
-    margin-bottom: 20px;
     color: var(--color-primary);
     text-shadow: 0 0 10px var(--color-glow);
-}
-
-/* Custom Scrollbar biar estetik */
-.card::-webkit-scrollbar { width: 5px; }
-.card::-webkit-scrollbar-thumb { 
-    background: var(--color-primary); 
-    border-radius: 10px; 
+    margin-bottom: 15px;
 }
 
 /* ============================================================
-   3. MODE PC (GRID LAYOUT MASTER)
+   3. MODE PC (SANDWICH GRID - 4 ZONA)
    ============================================================ */
 @media (min-width: 1024px) {
     body {
         display: grid;
-        /* Kolom 1 (Logo) 35%, Kolom 2 (Panggung) 65% */
+        /* Kolom 1 (Logo), Kolom 2 (Panggung) */
         grid-template-columns: 35% 65%;
         /* Baris 1 (Atas), Baris 2 (Tengah), Baris 3 (Bawah) */
         grid-template-rows: 15vh 65vh 20vh;
@@ -71,49 +56,56 @@ body {
             "logo-pc stage-pc"
             "foot-pc foot-pc";
         height: 100vh;
-        width: 100vw;
         overflow: hidden;
-        background-color: #020617;
+        padding: 0 5%;
     }
 
-    #headline-pc-area { 
-        grid-area: head-pc; 
-        display: flex !important; 
-        align-items: center; 
-        justify-content: center;
-        z-index: 10;
-    }
-
-    .main-header { 
-        grid-area: logo-pc; 
-        display: flex !important; 
-        align-items: center; 
+    /* ZONA 1: HEADLINE ATAS (Melintang) */
+    #headline-pc-area {
+        grid-area: head-pc;
+        display: flex !important;
+        align-items: center;
         justify-content: center;
     }
 
-    .content-panggung { 
-        grid-area: stage-pc; 
-        display: flex !important; 
-        gap: 30px; 
-        overflow-x: auto; 
-        align-items: center; 
-        padding: 0 20px;
-    }
-
-    .pc-footer { 
-        grid-area: foot-pc; 
-        display: flex !important; 
-        align-items: center; 
+    /* ZONA 2: LOGO (Tengah Kiri) */
+    .main-header {
+        grid-area: logo-pc;
+        display: flex !important;
+        align-items: center;
         justify-content: center;
-        text-align: center;
-        border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
 
-    /* Ukuran Logo Biar Gak Tabrakan */
     #logo-container svg {
         width: 80% !important;
         max-width: 350px;
-        height: auto;
+        filter: drop-shadow(0 0 20px var(--color-glow));
+    }
+
+    /* ZONA 3: PANGGUNG (Tengah Kanan) */
+    .content-panggung {
+        grid-area: stage-pc;
+        display: flex !important;
+        gap: 30px;
+        overflow-x: auto;
+        align-items: center;
+    }
+
+    .card {
+        min-width: 450px;
+        max-width: 550px;
+        height: 85%;
+        flex-shrink: 0;
+    }
+
+    /* ZONA 4: FOOTER (Melintang Bawah) */
+    .pc-footer {
+        grid-area: foot-pc;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
 }
 
