@@ -12,7 +12,7 @@ if (panggung) {
 // 2. Load Logo
 async function loadLogo() {
     try {
-        const res = await fetch('./logo-umbrella2.svg'); // Gunakan file baru Master
+        const res = await fetch('./logo-umbrella.svg');
         const data = await res.text();
         const container = document.getElementById('logo-container');
         if (container) {
