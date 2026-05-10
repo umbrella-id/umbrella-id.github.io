@@ -31,57 +31,50 @@ body {
         border-radius: calc(4 * var(--u)); position: relative; overflow: hidden;
     }
 
-    /* HEADER & FOOTER (RATA TENGAH) */
+    /* HEADER & FOOTER RATA TENGAH */
     #headline-pc-area { grid-area: head; display: flex; align-items: center; justify-content: center; }
     .pc-footer { grid-area: foot; display: flex; align-items: center; justify-content: center; opacity: 0.5; font-size: calc(1.5 * var(--u)); }
-    #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
+    #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; }
 
-    /* SIDE PANEL: LOGO & SLOGAN (CENTERED GROUP) */
+    /* SIDE PANEL: POSISI STABIL */
     .main-header { 
-        grid-area: side; 
-        display: flex; 
-        flex-direction: column; 
-        height: 100%; 
-        padding: calc(2 * var(--u));
-        /* KUNCI: Biar seluruh grup logo+slogan ada di tengah-tengah area samping */
-        justify-content: center; 
+        grid-area: side; display: flex; flex-direction: column; 
+        height: 100%; padding: calc(2 * var(--u));
+        justify-content: center; /* KEMBALI KE POSISI TENGAH YANG BENAR */
         align-items: center;
+        overflow: hidden;
     }
 
     #logo-container {
-        width: 100%;
-        display: flex; 
+        width: 100%; display: flex; 
         align-items: flex-end; /* Rapatkan ke slogan */
         justify-content: center;
-        margin-bottom: calc(1 * var(--u)); /* Jarak halus */
+        margin-bottom: 5px; /* JARAK RAPAT */
     }
 
     #logo-container svg {
-        width: 100%; height: auto;
-        /* LOGO DIPERBESAR: Batas kaku diperlonggar */
-        max-width: 95%; 
-        max-height: calc(45 * var(--u)); 
+        /* KUNCI DUA ARAH: Biar gak invasi layar lagi */
+        width: auto; height: auto;
+        max-width: 95%; /* BESAR TAPI GAK TABRAK DINDING */
+        max-height: calc(50 * var(--u)); /* TINGGI MAKSIMAL 50% DARI NAMPAN */
         object-fit: contain;
     }
 
     .slogan-box {
-        width: 100%;
-        display: flex; flex-direction: column;
-        justify-content: flex-start; 
-        align-items: center; 
-        text-align: center;
+        width: 100%; display: flex; flex-direction: column;
+        justify-content: flex-start; align-items: center; text-align: center;
     }
 
     .slogan-main { font-size: calc(1.8 * var(--u)); font-weight: 800; color: var(--color-primary); }
     .slogan-sub { font-size: calc(1.1 * var(--u)); opacity: 0.6; font-style: italic; }
 
-    /* STAGE & CARDS */
+    /* STAGE (KARTU-KARTU) */
     .content-panggung { grid-area: stage; display: flex; gap: calc(4 * var(--u)); padding: calc(4 * var(--u)); overflow-x: auto; align-items: center; scrollbar-width: none; }
-    .card { width: calc(45 * var(--u)) !important; min-width: calc(45 * var(--u)) !important; height: 85%; background: rgba(30, 41, 59, 0.5); border-radius: calc(3 * var(--u)); padding: calc(3 * var(--u)); flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.1); }
+    .card { width: calc(45 * var(--u)) !important; min-width: calc(45 * var(--u)) !important; height: 85%; background: rgba(30, 41, 59, 0.5); border-radius: calc(3 * var(--u)); padding: calc(3 * var(--u)); flex-shrink: 0; }
     .card ul { list-style: none; padding: 0; margin: 0; }
 
-    /* TOOLS */
-    .top-tools { position: fixed; top: 5vh; right: 5vw; z-index: 999; background: rgba(15, 23, 42, 0.9); padding: 12px 24px; border-radius: 50px; border: 2px solid var(--color-primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    /* FLOATING TOOLS */
+    .top-tools { position: fixed; top: 5vh; right: 5vw; z-index: 999; background: rgba(15, 23, 42, 0.9); padding: 10px 20px; border-radius: 50px; border: 2px solid var(--color-primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .floating-chat { position: fixed; bottom: 5vh; right: 5vw; z-index: 999; }
     .chat-trigger { width: 65px; height: 65px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 }
