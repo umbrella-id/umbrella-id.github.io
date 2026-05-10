@@ -61,15 +61,5 @@ async function loadData() {
     }
 }
 
-/**
- * Fungsi untuk membuka Pop-up Detail
- * Dipanggil saat salah satu kartu diklik
- */
-function openPopup(title, content) {
-    // Logika pop-up akan diintegrasikan di sini
-    // Untuk sementara bisa menggunakan alert atau modal sederhana
-    console.log("Membuka detail: " + title);
-}
-
-// Inisialisasi fungsi saat seluruh struktur DOM selesai dimuat
+/ Inisialisasi fungsi saat seluruh struktur DOM selesai dimuat
 document.addEventListener('DOMContentLoaded', loadData);
