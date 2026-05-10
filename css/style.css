@@ -147,3 +147,85 @@ body {
     color: var(--color-primary);
     opacity: 0.8;
 }
+
+
+/* Overlay Gelap */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none; /* Sembunyi secara default */
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Frame HUD Gaming */
+.modal-hud-frame {
+    background: var(--bg-card);
+    width: 70vw;
+    max-width: 600px;
+    padding: 30px;
+    border: 1px solid var(--color-primary);
+    position: relative;
+    box-shadow: 0 0 30px var(--glow-color);
+    clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%); /* Potongan sudut gaming */
+}
+
+/* Dekorasi Sudut Neon */
+.hud-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--color-primary);
+}
+.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.gaming-font {
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-glow);
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    max-height: 50vh;
+    overflow-y: auto;
+    color: var(--text-main);
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.modal-footer-hud {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    opacity: 0.6;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Scrollbar dalam Modal */
+.modal-body::-webkit-scrollbar { width: 5px; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--color-primary); }
