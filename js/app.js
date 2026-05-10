@@ -18,6 +18,14 @@ async function loadData() {
             if (document.getElementById('sub-headline')) document.getElementById('sub-headline').innerHTML = headline.Body;
         }
 
+        // Masukkan ini di dalam loadData(), tepat setelah bagian Headline
+        const runTextData = validData.find(item => item.ID === 'running_text');
+        const runTextElement = document.getElementById('running-text');
+        if (runTextData && runTextElement) {
+            // Gabungkan Header dan Body jika perlu, atau salah satu saja
+            runTextElement.innerHTML = `${runTextData.Header}: ${runTextData.Body}`;
+        }
+
         const slider = document.getElementById('main-slider');
         if (slider) {
             slider.innerHTML = ''; 
@@ -78,6 +86,8 @@ window.onclick = function(event) {
         closePopup();
     }
 };
+
+
 
 // --- 3. EKSEKUSI ---
 document.addEventListener('DOMContentLoaded', loadData);
