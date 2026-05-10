@@ -14,7 +14,7 @@ body {
     color: white; font-family: 'Segoe UI', sans-serif;
     overflow: hidden; height: 100vh; width: 100vw;
     display: flex; align-items: center; justify-content: center;
-}
+}}
 
 /* ============================================================
    PC ENGINE (LANDSCAPE)
@@ -31,43 +31,53 @@ body {
         border-radius: calc(4 * var(--u)); position: relative; overflow: hidden;
     }
 
-    /* HEADER & FOOTER */
+    /* HEADER & FOOTER (RATA TENGAH) */
     #headline-pc-area { grid-area: head; display: flex; align-items: center; justify-content: center; }
     .pc-footer { grid-area: foot; display: flex; align-items: center; justify-content: center; opacity: 0.5; font-size: calc(1.5 * var(--u)); }
     #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
 
-    /* SIDE PANEL: LOGO & SLOGAN RAPAT */
-    .main-header { grid-area: side; display: flex; flex-direction: column; height: 100%; padding: calc(1 * var(--u)); }
+    /* SIDE PANEL: LOGO & SLOGAN (CENTERED GROUP) */
+    .main-header { 
+        grid-area: side; 
+        display: flex; 
+        flex-direction: column; 
+        height: 100%; 
+        padding: calc(2 * var(--u));
+        /* KUNCI: Biar seluruh grup logo+slogan ada di tengah-tengah area samping */
+        justify-content: center; 
+        align-items: center;
+    }
 
     #logo-container {
-        flex: 0 0 55%; width: 100%;
+        width: 100%;
         display: flex; 
-        align-items: flex-end; /* Tarik logo ke bawah (arah slogan) */
+        align-items: flex-end; /* Rapatkan ke slogan */
         justify-content: center;
-        overflow: hidden;
+        margin-bottom: calc(1 * var(--u)); /* Jarak halus */
     }
 
     #logo-container svg {
-        width: auto; height: auto;
-        max-width: 85%; max-height: 95%;
+        width: 100%; height: auto;
+        /* LOGO DIPERBESAR: Batas kaku diperlonggar */
+        max-width: 95%; 
+        max-height: calc(45 * var(--u)); 
         object-fit: contain;
     }
 
     .slogan-box {
-        flex: 0 0 45%; display: flex; flex-direction: column;
-        justify-content: flex-start; /* Tarik slogan ke atas (arah logo) */
-        align-items: center; text-align: center;
-        padding-top: calc(1 * var(--u)); /* Jarak minimal saja */
+        width: 100%;
+        display: flex; flex-direction: column;
+        justify-content: flex-start; 
+        align-items: center; 
+        text-align: center;
     }
 
-    .slogan-main { font-size: calc(1.8 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 2px; }
+    .slogan-main { font-size: calc(1.8 * var(--u)); font-weight: 800; color: var(--color-primary); }
     .slogan-sub { font-size: calc(1.1 * var(--u)); opacity: 0.6; font-style: italic; }
 
     /* STAGE & CARDS */
     .content-panggung { grid-area: stage; display: flex; gap: calc(4 * var(--u)); padding: calc(4 * var(--u)); overflow-x: auto; align-items: center; scrollbar-width: none; }
     .card { width: calc(45 * var(--u)) !important; min-width: calc(45 * var(--u)) !important; height: 85%; background: rgba(30, 41, 59, 0.5); border-radius: calc(3 * var(--u)); padding: calc(3 * var(--u)); flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.1); }
-
-    /* BERSIHKAN DOT PROFILE */
     .card ul { list-style: none; padding: 0; margin: 0; }
 
     /* TOOLS */
