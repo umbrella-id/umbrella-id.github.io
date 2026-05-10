@@ -13,16 +13,12 @@ body {
     background-color: var(--bg-dark);
     color: white;
     font-family: 'Segoe UI', sans-serif;
-    overflow-x: hidden;
-    background-image: 
-        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-    background-size: 3rem 3rem;
-}
-
-/* SEMBUNYIKAN MODE SIMPLE SAAT DI PC */
-.mode-simple, .mode-simple-mobile { 
-    display: none !important; 
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ============================================================
@@ -34,55 +30,30 @@ body {
         --u: calc(var(--nampan-h) / 100); 
     }
 
-    body {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
     .master-frame {
         height: var(--nampan-h);
         width: calc(var(--nampan-h) * 1.6);
         max-width: 95vw;
-        aspect-ratio: 16 / 10;
         display: grid;
         grid-template-columns: 32% 68%;
         grid-template-rows: 15% 72% 13%;
-        grid-template-areas: 
-            "head head"
-            "side stage"
-            "foot foot";
+        grid-template-areas: "head head" "side stage" "foot foot";
         background: rgba(15, 23, 42, 0.8);
         border: calc(0.2 * var(--u)) solid rgba(168, 85, 247, 0.2);
         border-radius: calc(4 * var(--u));
-        overflow: hidden;
         position: relative;
     }
 
-    /* 1. HEADLINE AREA */
-    #headline-pc-area { grid-area: head; width: 100%; height: 100%; display: flex; align-items: center; }
-    
-    #headline-title {
-        width: 100%;
-        padding-left: calc(5 * var(--u));
-        font-size: calc(6 * var(--u));
-        font-weight: 900;
-        letter-spacing: calc(0.5 * var(--u));
-        color: white;
-        text-shadow: 0 0 calc(2 * var(--u)) var(--color-glow);
-    }
+    /* HEADLINE */
+    #headline-pc-area { grid-area: head; display: flex; align-items: center; padding-left: calc(5 * var(--u)); }
+    #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
 
-    /* 2. SIDE PANEL (LOGO & SLOGAN) */
-    .side-panel {
+    /* SIDE PANEL */
+    .main-header {
         grid-area: side;
         display: flex;
         flex-direction: column;
         height: 100%;
-        width: 100%;
-        min-height: 0;
         padding: calc(2 * var(--u));
     }
 
@@ -90,31 +61,32 @@ body {
         flex: 0 0 60%;
         width: 100%;
         display: flex;
-        align-items: flex-end; /* Rapatkan Logo ke Slogan */
+        align-items: center; /* Kembali ke center agar tidak tercekik */
         justify-content: center;
-        overflow: hidden;
+        /* Hapus overflow hidden agar sayap logo tidak kepotong */
     }
 
     #logo-container svg {
-        width: 100%; height: 100%;
-        max-width: 90%; max-height: 100%;
-        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        max-width: 95%; /* Beri ruang napas */
+        max-height: 95%;
+        object-fit: contain; /* Jaga rasio asli */
     }
 
     .slogan-box {
         flex: 0 0 40%;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Rapatkan Slogan ke Logo */
+        justify-content: center;
         align-items: center;
         text-align: center;
-        padding-top: calc(1 * var(--u));
     }
 
-    .slogan-main { font-size: calc(2 * var(--u)); font-weight: 800; color: var(--color-primary); line-height: 1.2; }
-    .slogan-sub { font-size: calc(1.2 * var(--u)); opacity: 0.7; font-style: italic; display: block; }
+    .slogan-main { font-size: calc(2 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 5px; }
+    .slogan-sub { font-size: calc(1.2 * var(--u)); opacity: 0.6; font-style: italic; }
 
-    /* 3. STAGE / PANGGUNG */
+    /* STAGE */
     .content-panggung {
         grid-area: stage;
         display: flex;
@@ -124,7 +96,6 @@ body {
         align-items: center;
         scrollbar-width: none;
     }
-    .content-panggung::-webkit-scrollbar { display: none; }
 
     .card {
         width: calc(45 * var(--u)) !important;
@@ -137,33 +108,27 @@ body {
         border: 1px solid rgba(168, 85, 247, 0.1);
     }
 
-    /* 4. FOOTER */
-    .pc-footer {
-        grid-area: foot;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: calc(1.5 * var(--u));
-        opacity: 0.5;
+    /* FLOATING */
+    .top-tools {
+        position: fixed !important;
+        top: 5vh; right: 5vw;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.9);
+        padding: 12px 24px; border-radius: 50px;
+        border: 2px solid var(--color-primary);
+        display: flex; align-items: center; gap: 12px;
+        cursor: pointer;
     }
 
-    /* FLOATING TOOLS POSITION PC */
-    .top-tools { 
-        position: fixed !important; top: 5vh; right: 5vw; 
-        z-index: 9999; display: flex; align-items: center; gap: 1rem;
-        background: rgba(15, 23, 42, 0.8); padding: 10px 20px; border-radius: 50px;
-        border: 1px solid var(--color-primary); cursor: pointer;
-    }
-    .floating-chat { 
-        position: fixed !important; bottom: 5vh; right: 5vw; 
-        z-index: 9999; 
-    }
+    .floating-chat { position: fixed !important; bottom: 5vh; right: 5vw; z-index: 9999; }
     .chat-trigger {
         width: 70px; height: 70px; background: var(--color-primary);
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 20px var(--color-glow); cursor: pointer;
+        cursor: pointer;
     }
 }
+
+.mode-simple { display: none !important; }
 
 /* ============================================================
    MOBILE MODE
