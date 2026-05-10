@@ -20,7 +20,7 @@ async function loadLogo() {
 
 //--- ZONA KARTU ---
 
-// 1. Horizontal Scroll 
+// Horizontal Scroll 
 const panggung = document.getElementById('main-stage');
 if (panggung) {
     panggung.addEventListener('wheel', (evt) => {
@@ -31,71 +31,51 @@ if (panggung) {
     }, { passive: false });
 }
 
-// 2. Fetcher Kartu
-async function loadKartuToStage(file, slotId) {
-    try {
-        const res = await fetch(file);
-        if (!res.ok) throw new Error('Network error');
-        const html = await res.text();
-        const slot = document.getElementById(slotId);
-        if (slot) {
-            slot.innerHTML = html;
-            // Penting: Hapus padding bawaan HTML aslinya agar flex kartu yang handle
-            const cardInner = slot.querySelector('div');
-            if (cardInner) cardInner.style.padding = '0';
-        }
-    } catch (e) { console.error("Gagal load:", file, e); }
-}
-
-// 3. System Modal 
-async function openModal(file) {
-    try {
-        const res = await fetch(file);
-        if (!res.ok) throw new Error('File not found');
-        const modalHtml = await res.text();
-        
-        let container = document.getElementById('system-modal-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'system-modal-container';
-            document.body.appendChild(container);
-        }
-        
-        container.innerHTML = modalHtml;
-        container.style.display = 'block';
-        
-        // Nonaktifkan scroll di body utama
-        document.body.style.overflow = 'hidden';
-    } catch (e) { console.error("Modal Error:", e); }
-}
-
-function closeModal() {
-    const container = document.getElementById('system-modal-container');
-    if (container) container.style.display = 'none';
-    // Aktifkan kembali scroll body
-    document.body.style.overflow = 'auto';
-}
-
-// 4. Initial Spawn (System Boot)
-window.onload = () => {
-    // Sesuai rumus final Master
-    loadKartuToStage('./headline_card.html', 'slot-headline');
-    loadKartuToStage('./guild_profile.html', 'slot-profile');
-    loadKartuToStage('./gallery_card.html', 'slot-gallery');
-};
-
-// --- HEADER HEADLINE - PC VIEW ---
+// Sinkronisasi Headline Card ke Header PC (Iklan Banner)
 async function muatHeadline() {
     try {
         const res = await fetch('./headline.html');
         const text = await res.text();
         const temp = document.createElement('div');
         temp.innerHTML = text;
+        
         const judul = temp.querySelector('h2').innerHTML;
-        const detail = temp.querySelector('p').innerHTML;
+        const infoPenting = temp.querySelector('p').innerHTML;
 
+        // Taruh di Header sebagai Banner Iklan
         document.getElementById('headline-title').innerHTML = judul;
-        document.getElementById('headline-pc-footer').innerHTML = detail;
-        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
+        // Taruh di Footer sebagai info berjalan/tambahan
+        document.getElementById('headline-pc-footer').innerHTML = infoPenting;
+        // Taruh di Kartu Pertama (Stage)
+        document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${infoPenting}</p>`;
+        
+    } catch (e) { console.error("Headline Sync Gagal", e); }
+}
+
+// Fungsi Klik Kartu (Sederhana: Toggle Zoom/Highlight)
+function setupCardInteractions() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.onclick = () => {
+            // Master bisa menambahkan fungsi popup beneran di sini 
+            // atau biarkan efek CSS :active yang bekerja
+            console.log("Card " + card.id + " terpilih");
+        };
+    });
+}
+
+// Fungsi Load Card 
+async function LoadCard(file, idSlot) {
+    try {
+        const res = await fetch(file);
+        const html = await res.text();
+        const target = document.getElementById(idSlot);
+        if (target) target.innerHTML = html;
     } catch (e) { console.error(e); }
 }
+window.onload = () => {
+    muatHeadline(); // Load kartu lainnya tetap pakai cara Master
+    LoadCard('./profile.html', 'slot-profile');
+    LoadCard('./gallery.html', 'slot-gallery');
+};
+
