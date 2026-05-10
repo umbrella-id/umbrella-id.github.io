@@ -1,3 +1,15 @@
+// 1. Scroll Wheel
+const panggung = document.getElementById('main-stage');
+if (panggung) {
+    panggung.addEventListener('wheel', (evt) => {
+        if (evt.deltaY !== 0) {
+            evt.preventDefault();
+            panggung.scrollLeft += evt.deltaY;
+        }
+    }, { passive: false });
+}
+
+// 2. Load Logo (Pawang 2 Arah)
 async function loadLogo() {
     try {
         const res = await fetch('./logo-umbrella.svg');
@@ -7,14 +19,27 @@ async function loadLogo() {
             container.innerHTML = data;
             const svg = container.querySelector('svg');
             if(svg) {
-                svg.removeAttribute('width'); svg.removeAttribute('height');
-                svg.style.width = '100%'; svg.style.height = '100%';
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = '100%';
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
     } catch (e) { console.error("Logo Error:", e); }
 }
 
+// 3. Suntik Kartu
+async function suntikKartu(file, idSlot) {
+    try {
+        const res = await fetch(file);
+        const html = await res.text();
+        const target = document.getElementById(idSlot);
+        if (target) target.innerHTML = html;
+    } catch (e) { console.error(e); }
+}
+
+// 4. Headline Triple Spawn
 async function muatHeadline() {
     try {
         const res = await fetch('./headline.html');
@@ -27,19 +52,6 @@ async function muatHeadline() {
         document.getElementById('headline-title').innerHTML = judul;
         document.getElementById('headline-pc-footer').innerHTML = detail;
         document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
-    } catch (e) { console.error(e); }
-}
-
-async function suntikKartu(file, idSlot) {
-    try {
-        const res = await fetch(file);
-        const html = await res.text();
-        const target = document.getElementById(idSlot);
-        if (target) {
-            // Kita pastikan membungkus isi file dengan class .card 
-            // agar stylenya seragam di panggung
-            target.innerHTML = `<div class="card">${html}</div>`;
-        }
     } catch (e) { console.error(e); }
 }
 
