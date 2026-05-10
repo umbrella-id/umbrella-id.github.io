@@ -37,10 +37,10 @@ body {
     #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
 
     /* SIDE PANEL: LOGO & SLOGAN RAPAT */
-    .main-header { grid-area: side; display: flex; flex-direction: column; height: 100%; padding: calc(1 * var(--u)); }
+    .main-header { grid-area: side; display: flex; flex-direction: column; height: 100%; padding: calc(1 * var(--u)); align-items: center }
 
     #logo-container {
-        flex: 0 0 55%; width: 100%;
+        flex: 0 0 75%; width: 100%;
         display: flex; 
         align-items: flex-end; /* Tarik logo ke bawah (arah slogan) */
         justify-content: center;
@@ -54,7 +54,7 @@ body {
     }
 
     .slogan-box {
-        flex: 0 0 45%; display: flex; flex-direction: column;
+        flex: 0 0 25%; display: flex; flex-direction: column;
         justify-content: flex-start; /* Tarik slogan ke atas (arah logo) */
         align-items: center; text-align: center;
         padding-top: calc(1 * var(--u)); /* Jarak minimal saja */
