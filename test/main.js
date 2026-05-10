@@ -9,27 +9,27 @@ if (panggung) {
     }, { passive: false });
 }
 
-// 2. Load Logo
+// 2. Load Logo (Pawang 2 Arah)
 async function loadLogo() {
     try {
-        const res = await fetch('./logo-umbrella.svg');
+        const res = await fetch('./logo-umbrella2.svg');
         const data = await res.text();
         const container = document.getElementById('logo-container');
         if (container) {
             container.innerHTML = data;
             const svg = container.querySelector('svg');
             if(svg) {
-                // Bersihkan dimensi bawaan file SVG
                 svg.removeAttribute('width');
                 svg.removeAttribute('height');
-                // Biarkan CSS max-width/max-height yang bekerja
+                svg.style.width = '100%';
+                svg.style.height = '100%';
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
         }
     } catch (e) { console.error("Logo Error:", e); }
 }
 
-// 3. Suntik Kartu & Headline
+// 3. Suntik Kartu
 async function suntikKartu(file, idSlot) {
     try {
         const res = await fetch(file);
@@ -39,6 +39,7 @@ async function suntikKartu(file, idSlot) {
     } catch (e) { console.error(e); }
 }
 
+// 4. Headline Triple Spawn
 async function muatHeadline() {
     try {
         const res = await fetch('./headline.html');
@@ -47,6 +48,7 @@ async function muatHeadline() {
         temp.innerHTML = text;
         const judul = temp.querySelector('h2').innerHTML;
         const detail = temp.querySelector('p').innerHTML;
+
         document.getElementById('headline-title').innerHTML = judul;
         document.getElementById('headline-pc-footer').innerHTML = detail;
         document.getElementById('card-headline').innerHTML = `<h2>${judul}</h2><p>${detail}</p>`;
