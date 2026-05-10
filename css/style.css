@@ -31,7 +31,32 @@ body {
 }
 
 #header-area { grid-area: header; display: flex; align-items: center; justify-content: center; }
-#brand-area { grid-area: brand; border-right: 1px solid var(--border-color); }
+
+#brand-area {
+    grid-area: brand;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.main-logo {
+    width: 100%; /* Mengikuti lebar brand-area (40vmin) */
+    max-width: 30vmin; /* Memberi sedikit ruang napas */
+    height: auto;
+    filter: drop-shadow(0 0 10px var(--accent-glow)); /* Efek glow pada logo */
+}
+
+.tagline {
+    font-size: 1.5vmin;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 15px;
+}
+
+
 #slider-container { 
     grid-area: slider; 
     overflow-x: auto; 
