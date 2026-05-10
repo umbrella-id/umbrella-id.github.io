@@ -61,5 +61,5 @@ async function loadData() {
     }
 }
 
-/ Inisialisasi fungsi saat seluruh struktur DOM selesai dimuat
+// Inisialisasi fungsi saat seluruh struktur DOM selesai dimuat 
 document.addEventListener('DOMContentLoaded', loadData);
