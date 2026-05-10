@@ -20,63 +20,61 @@ body {
    PC ENGINE (LANDSCAPE)
    ============================================================ */
 @media (min-width: 768px) and (orientation: landscape) {
-    :root { --nampan-h: 90vh; --u: calc(var(--nampan-h) / 100); }
-
     .master-frame {
-        height: var(--nampan-h); width: calc(var(--nampan-h) * 1.6);
-        max-width: 95vw; display: grid;
-        grid-template-columns: 32% 68%; grid-template-rows: 15% 72% 13%;
-        grid-template-areas: "head head" "side stage" "foot foot";
-        background: rgba(15, 23, 42, 0.8); border: calc(0.2 * var(--u)) solid rgba(168, 85, 247, 0.2);
-        border-radius: calc(4 * var(--u)); position: relative; overflow: hidden;
-    }
-
-    /* HEADER & FOOTER */
-    #headline-pc-area { grid-area: head; display: flex; align-items: center; justify-content: center; }
-    .pc-footer { grid-area: foot; display: flex; align-items: center; justify-content: center; opacity: 0.5; font-size: calc(1.5 * var(--u)); }
-    #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
-
-    /* SIDE PANEL: LOGO & SLOGAN RAPAT */
-    .main-header { grid-area: side; display: flex; flex-direction: column; height: 100%; padding: calc(1 * var(--u)); align-items: center }
-
-    #logo-container {
-        flex: 0 0 75%; width: 100%;
-        display: flex; 
-        align-items: flex-end; /* Tarik logo ke bawah (arah slogan) */
-        justify-content: center;
+        /* RUMUS MASTER FRAME */
+        height: 100vmin;
+        width: 90vh;
+        max-width: 180vmin;
+        
+        display: grid;
+        /* Kolom: Logo (40vmin) | Panggung (Sisa Ruang) */
+        grid-template-columns: 40vmin 1fr;
+        /* Baris: Header (20vmin) | Panggung (60vmin) | Footer (Sisa Ruang) */
+        grid-template-rows: 20vmin 60vmin 1fr;
+        
+        grid-template-areas: 
+            "head head"
+            "side stage"
+            "foot foot";
+            
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        position: relative;
         overflow: hidden;
     }
 
-    #logo-container svg {
-        width: auto; height: auto;
-        max-width: 85%; max-height: 95%;
-        object-fit: contain;
+    #headline-pc-area { 
+        grid-area: head; height: 20vmin; width: 100%;
+        display: flex; align-items: center; justify-content: center;
     }
 
-    .slogan-box {
-        flex: 0 0 25%; display: flex; flex-direction: column;
-        justify-content: flex-start; /* Tarik slogan ke atas (arah logo) */
-        align-items: center; text-align: center;
-        padding-top: calc(1 * var(--u)); /* Jarak minimal saja */
+    .main-header { 
+        grid-area: side; height: 60vmin; width: 40vmin;
+        display: flex; flex-direction: column; 
+        justify-content: center; align-items: center;
     }
 
-    .slogan-main { font-size: calc(2.2 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 2px; }
-    .slogan-sub { font-size: calc(2.2 * var(--u)); opacity: 0.6; font-style: italic; }
+    #logo-container { flex: 0 0 75%; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+    #logo-container svg { width: auto; height: 100%; max-width: 90%; object-fit: contain; }
 
-    /* STAGE & CARDS */
-    .content-panggung { grid-area: stage; display: flex; gap: calc(4 * var(--u)); padding: calc(4 * var(--u)); overflow-x: auto; align-items: center; scrollbar-width: none; }
-    .card { width: calc(45 * var(--u)) !important; min-width: calc(45 * var(--u)) !important; height: 85%; background: rgba(30, 41, 59, 0.5); border-radius: calc(3 * var(--u)); padding: calc(3 * var(--u)); flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.1); }
+    .content-panggung { 
+        grid-area: stage; height: 60vmin; width: 100%; /* 100% dari 1fr */
+        display: flex; gap: 4vmin; padding: 5vmin 2vmin; /* 5vmin top-padding menjaga card di tengah */
+        overflow-x: auto; align-items: center; scrollbar-width: none;
+    }
 
-    /* BERSIHKAN DOT PROFILE */
-    .card ul { list-style: none; padding: 0; margin: 0; }
+    .card { 
+        height: 50vmin !important; width: 40vmin !important; min-width: 40vmin !important;
+        background: rgba(30, 41, 59, 0.5); border-radius: 2vmin; 
+        padding: 3vmin; flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.1);
+    }
 
-    /* TOOLS */
-    .top-tools { position: fixed; top: 5vh; right: 5vw; z-index: 999; background: rgba(15, 23, 42, 0.9); padding: 12px 24px; border-radius: 50px; border: 2px solid var(--color-primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .floating-chat { position: fixed; bottom: 5vh; right: 5vw; z-index: 999; }
-    .chat-trigger { width: 65px; height: 65px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .pc-footer { 
+        grid-area: foot; height: 100%; /* Mengisi jatah 1fr */
+        width: 100%; display: flex; align-items: center; justify-content: center;
+        opacity: 0.5; font-size: 2vmin;
+    }
 }
-
-.mode-simple { display: none !important; }
 
 /* ============================================================
    MOBILE MODE
