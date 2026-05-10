@@ -12,7 +12,7 @@ if (panggung) {
 // 2. Load Logo (Pawang 2 Arah)
 async function loadLogo() {
     try {
-        const res = await fetch('./logo-umbrella2.svg');
+        const res = await fetch('./logo-umbrella.svg');
         const data = await res.text();
         const container = document.getElementById('logo-container');
         if (container) {
