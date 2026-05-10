@@ -1,290 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Umbrella Guild - Official System</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  
-  <script>
-    // Hanya ambil nilainya saja, jangan sentuh class CSS
-    async function syncTheme() {
-      const ID_MAIN = "AKfycbwygVRRewbs7dUdxfjNQvgWAMdp-ZJnnmTqfO7pxP4iNck5aAo9vUFgW6ou_AqTGTKRjw"; 
-      try {
-        const res = await fetch(`https://script.google.com/macros/s/${ID_MAIN}/exec?action=getStyle`);
-        const text = await res.text();
-        // Ambil isi variabel :root saja
-        const rootMatch = text.match(/:root\s*{[^}]*}/);
-        if (rootMatch) {
-          const style = document.createElement('style');
-          style.innerHTML = rootMatch[0];
-          document.head.appendChild(style);
-        }
-      } catch (e) { console.log("Default active"); }
-    }
-    syncTheme();
-  </script>
-
-  <style>
-    /* --- VARIABEL CADANGAN --- */
-    :root {
-      --primary: #777777;
-      --accent-glow: rgba(255, 255, 255, 0.1);
-      --bg-dark: #0f1419;
-      --panel-dark: #161b22;
-      --text-white: #444444;
-      --text-gray: #444444;
-    }
-
-    /* --- KUNCI STRUKTUR UTAMA (Jangan diubah) --- */
-    body { margin: 0; padding: 0; background-color: #000; color: var(--text-white); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-    .bg-panel { position: fixed; width: 100vw; height: 100vh; top:0; left:0; background-color: var(--bg-dark); z-index: -2; }
-    
-    /* Grid Background */
-    .bg-panel::after {
-      content: ""; position: absolute; top:0; left:0; width:100%; height:100%;
-      background-image: linear-gradient(45deg, #222 25%, transparent 25%), linear-gradient(-45deg, #222 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #222 75%), linear-gradient(-45deg, transparent 75%, #222 75%);
-      background-size: 14px 14px; opacity: 0.5;
-    }
-
-    .top-bar { height: 50px; background: rgba(0,0,0,0.9); border-bottom: 2px solid var(--primary); display: flex; align-items: center; overflow: hidden; position: fixed; top:0; width: 100%; z-index: 1000; }
-    .marquee-wrapper { display: flex; white-space: nowrap; animation: scroll-left 35s linear infinite; }
-    @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    .marquee-content { display: flex; flex-shrink: 0; color: var(--primary); font-weight: bold; padding-right: 50px; }
-
-    .inbox-bar { position: fixed; top: 70px; left: 0; background: var(--primary); color: #000; padding: 12px 25px 12px 15px; border-radius: 0 30px 30px 0; font-weight: bold; cursor: pointer; z-index: 999; border:none; box-shadow: 0 0 15px var(--accent-glow); transition: 0.3s; }
-
-    /* Layout Main */
-    .main-wrapper { margin-top: 100px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 40px; padding-bottom: 120px; }
-    @media (min-width: 900px) { .main-wrapper { flex-direction: row; align-items: flex-start; justify-content: center; } }
-
-    /* Brand Area */
-    .brand-area { width: 100%; max-width: 350px; text-align: center; position:relative; }
-    @media (min-width: 900px) { .brand-area { position: sticky; top: 100px; height: fit-content; } }
-    .brand-area img { width: 220px; filter: drop-shadow(0 0 15px var(--primary)); }
-    
-    /* SOSMED - KUNCI AGAR TIDAK GESER */
-    .sosmed-wrapper { display: flex !important; justify-content: center !important; gap: 15px !important; margin-top: 25px !important; }
-    .sos-btn { 
-      width: 45px !important; height: 45px !important; border-radius: 50% !important; 
-      display: flex !important; align-items: center !important; justify-content: center !important; 
-      background: transparent !important; color: var(--primary) !important; 
-      border: 2px solid var(--primary) !important; text-decoration: none !important; 
-    }
-
-    /* CARDS */
-    .data-area { width: 100%; max-width: 1100px; column-width: 360px; column-gap: 30px; }
-    .card { break-inside: avoid-column; display: inline-block; width: 100%; background: rgba(20, 20, 20, 0.85); border: 1px solid #333; border-left: 5px solid var(--primary); padding: 25px; margin-bottom: 25px; border-radius: 8px; box-sizing: border-box; }
-    .card h2 { color: var(--primary); margin: 0 0 15px 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-    .card .body-content { color: var(--text-white); font-size: 0.95rem; line-height: 1.6; font-weight: 600; }
-
-    /* INTERACTION */
-    .interaction-group { position: fixed; bottom: 30px; right: 25px; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 1001; }
-    #shareBtn { width: 50px; height: 50px; background: var(--primary); border-radius: 50%; border: none; cursor: pointer; color: #000; font-size: 20px; box-shadow: 0 0 15px var(--accent-glow); }
-    .chat-bubble { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 15px var(--accent-glow); }
-    #chatBox { display: none; position: absolute; bottom: 85px; right: 0; width: 320px; max-height: 480px; height: 70vh; background: var(--panel-dark); border: 2px solid var(--primary); border-radius: 15px; overflow: hidden; }
-
-    /* MODALS */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .mail-modal { width: 95%; max-width: 450px; height: 80vh; background: var(--panel-dark); border: 2px solid var(--primary); border-radius: 15px; overflow: hidden; position: relative; }
-    .close-x { position: absolute; top: 12px; right: 15px; color: var(--primary); font-size: 24px; cursor: pointer; z-index: 10; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umbrella Guild - Home</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="master-frame">
+        <header id="header-area">
+            <h1 id="main-headline" class="glow-effect"></h1>
+        </header>
+        
+        <aside id="brand-area">
+            <div id="guild-logo">
+                </div>
+            <div id="sosmed-container"></div>
+        </aside>
 
-<div class="bg-panel"></div>
-<div class="top-bar"><div class="marquee-wrapper" id="marqueeRoot"></div></div>
-<button class="inbox-bar" onclick="openInbox()"><i class="fas fa-envelope"></i> KOTAK SURAT</button>
+        <main id="slider-container">
+            <div id="main-slider"></div>
+        </main>
 
-<div class="main-wrapper" id="Brosur_Area">
-  <div class="brand-area">
-    <img src="https://lh3.googleusercontent.com/d/1Q1ValwdmOX527ZL6HVRsJDziciGf7M76" alt="Logo">
-    <div style="margin-top:20px;">
-      <span style="color:var(--primary); font-weight:bold; font-size:1.1em; display:block;">Tempat Kita Berteduh dan Bertumbuh</span>
-      <span style="color:#8b949e; font-style:italic; font-size:0.85em;">Dari pertemuan jadi kebersamaan,<br>dari serikat jadi keluarga.</span>
+        <footer id="footer-area">
+            <p id="sub-headline"></p>
+        </footer>
     </div>
-    <div class="sosmed-wrapper" id="sosmedTarget"></div>
-  </div>
-  <div class="data-area" id="target">
-    <div class="card"><h2><i class="fas fa-sync fa-spin"></i> CONNECTING...</h2></div>
-  </div>
-</div>
 
-<div class="interaction-group">
-  <button id="shareBtn" onclick="captureBrosur()"><i class="fas fa-share-alt"></i></button>
-  <div class="chat-bubble" onclick="toggleChat()"><i class="fas fa-comments" style="color:var(--text-white); font-size:26px;"></i></div>
-  <div id="chatBox">
-    <span class="close-x" onclick="toggleChat()">&times;</span>
-    <iframe id="chatFrame" style="width:100%; height:100%; border:none;"></iframe>
-  </div>
-</div>
-
-<div class="modal-overlay" id="inboxOverlay">
-  <div class="mail-modal">
-    <span class="close-x" onclick="closeInbox()">&times;</span>
-    <iframe id="mailFrame" style="width:100%; height:100%; border:none; background:transparent;"></iframe>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-  const ID_MAIN = "AKfycbzTP1-9KuQ2iz4ffTfhujqkSIQqQxXWMXY-BHljCVU_Zzm0Ept8j4AJUCBHqB-ZSZk";
-  const ID_CHAT = "AKfycbwygVRRewbs7dUdxfjNQvgWAMdp-ZJnnmTqfO7pxP4iNck5aAo9vUFgW6ou_AqTGTKRjw";
-  const apiURL = `https://script.google.com/macros/s/${ID_MAIN}/exec`;
-
-  /* --- FUNGSI PENENTU ICON --- */
-  function getProperIcon(header) {
-    const txt = String(header || "").toLowerCase();
-    if (txt.includes("serikat") || txt.includes("guild")) return "fa-shield-alt"; 
-    if (txt.includes("syarat") || txt.includes("join")) return "fa-user-plus";
-    if (txt.includes("fasilitas")) return "fa-tools";
-    return "fa-star";
-  }
-
-  /* --- FUNGSI INTERAKSI --- */
-  function toggleChat() { 
-    const cb = document.getElementById("chatBox");
-    cb.style.display = (cb.style.display === "block") ? "none" : "block";
-    if (cb.style.display === "block") {
-      const frame = document.getElementById('chatFrame');
-      if(!frame.src || frame.src === "about:blank") {
-        frame.src = `https://script.google.com/macros/s/${ID_CHAT}/exec`;
-      }
-    }
-  }
-
-  function openInbox() { 
-    document.getElementById('mailFrame').src = `https://script.google.com/macros/s/${ID_CHAT}/exec?view=surat`;
-    document.getElementById('inboxOverlay').style.display = 'flex';
-  }
-  function closeInbox() { 
-    document.getElementById('inboxOverlay').style.display = 'none';
-    document.getElementById('mailFrame').src = "about:blank";
-  }
-
-  /* --- DATA FETCH --- */
-  async function fetchUmbrella() {
-    try {
-      const res = await fetch(`${apiURL}?action=getKonten&cb=${Date.now()}`);
-      const data = await res.json();
-      
-      const marqueeData = data.filter(i => i.Tipe === 'TEXT');
-      if (marqueeData.length > 0) {
-        const text = marqueeData.map(i => i.Header).join(' ••• ') + ' ••• ';
-        document.getElementById('marqueeRoot').innerHTML = `<div class="marquee-content">${text}</div><div class="marquee-content">${text}</div>`;
-      }
-
-      const htmlData = data.filter(i => i.Tipe === 'HTML');
-      document.getElementById('target').innerHTML = htmlData.map(item => `
-        <div class="card">
-          <h2><i class="fas ${getProperIcon(item.Header)}"></i> ${item.Header}</h2>
-          <div class="body-content">${item.Body.replace(/\n/g, '<br>')}</div>
-        </div>
-      `).join('');
-
-      const linkData = data.filter(i => i.Tipe === 'LINK');
-      document.getElementById('sosmedTarget').innerHTML = linkData.map(s => {
-        let n = s.Header.toLowerCase();
-        let ic = n.includes("facebook") ? "fab fa-facebook-f" : n.includes("whatsapp") ? "fab fa-whatsapp" : "fab fa-discord";
-        return `<a href="${s.Body}" target="_blank" class="sos-btn"><i class="${ic}"></i></a>`;
-      }).join('');
-    } catch (e) { console.error(e); }
-  }
-
-  /* --- CAPTURE SYSTEM (VERSI STABIL & RAPI) --- */
-  async function captureBrosur() {
-    const area = document.getElementById('Brosur_Area');
-    const btn = document.getElementById('shareBtn');
-    
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  
-    // Konfigurasi Batasan
-    const MAX_KARTU = 4; // Batasi agar tidak kepanjangan ke bawah
-    const TINGGI_MAKSIMAL = "600px"; // Kunci agar kolom 1 terisi penuh dulu baru pindah
-  
-    try {
-      const canvas = await html2canvas(area, {
-        useCORS: true,
-        scale: 2,
-        backgroundColor: "#000000",
-        onclone: (clonedDoc) => {
-          // 1. Sembunyikan UI
-          clonedDoc.querySelectorAll('.top-bar, .inbox-bar, .interaction-group, .modal-overlay').forEach(el => el.style.display = 'none');
-          
-          const wrapper = clonedDoc.getElementById('Brosur_Area');
-          const target = clonedDoc.getElementById('target');
-          
-          // CARI ELEMEN LOGO ABANG (misal class-nya brand-area atau id-nya)
-          const logoArea = clonedDoc.querySelector('.brand-area'); // Ganti selector sesuai kode abang
-          if (logoArea) {
-            logoArea.style.position = "static"; // Mematikan fungsi sticky khusus saat capture
-            logoArea.style.transform = "none";  // Menghilangkan pergeseran akibat scroll
-            logoArea.style.top = "0";
-          }
-          
-          // 2. Setup Wrapper (Gunakan settingan abang yang sudah stabil)
-          wrapper.style.display = "flex";
-          wrapper.style.flexDirection = "row";
-          wrapper.style.alignItems = "flex-start";
-          wrapper.style.justifyContent = "center"; // Tambahkan ini agar bloknya di tengah frame
-          wrapper.style.width = "1200px"; 
-          wrapper.style.padding = "60px";
-          wrapper.style.gap = "60px";
-  
-          // Background (Tetap sesuai versi abang)
-          wrapper.style.backgroundColor = "#0f0f0f";
-          wrapper.style.backgroundImage = `
-            linear-gradient(45deg, #1d1d1d 25%, transparent 25%), 
-            linear-gradient(-45deg, #1d1d1d 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, #1d1d1d 75%), 
-            linear-gradient(-45deg, transparent 75%, #1d1d1d 75%)
-          `;
-          wrapper.style.backgroundSize = "15px 15px";
-  
-          // 3. Seleksi & Batasi Kartu (Agar tidak keluar zona)
-          const cards = clonedDoc.querySelectorAll('.card');
-          cards.forEach((c, index) => {
-            if (index >= MAX_KARTU) {
-              c.remove(); // Hapus kartu ke-5 dst agar tidak "off-side"
-            } else {
-              c.style.background = "#1a1a1a";
-              c.style.borderLeft = "5px solid var(--primary)";
-              c.style.display = "block";
-              c.style.breakInside = "avoid-column"; // Penting agar kartu tidak terpotong antar kolom
-              
-              const h2 = c.querySelector('h2');
-              if(h2) h2.style.setProperty('color', 'var(--primary)', 'important');
-              const body = c.querySelector('.body-content');
-              if(body) body.style.setProperty('color', 'var(--text-white)', 'important');
-            }
-          });
-  
-          // 4. Setup Kolom (Kunci agar tidak bolong tengah)
-          if (target) {
-            target.style.display = "block";
-            target.style.width = "900px";
-            target.style.columnCount = "3";
-            target.style.columnGap = "40px";
-            
-            // --- KUNCI PENGISIAN KOLOM ---
-            target.style.columnFill = "auto"; // Isi kolom 1 sampai penuh dulu
-            target.style.maxHeight = TINGGI_MAKSIMAL; // Batas tinggi sebelum pindah ke kolom 2
-          }
-        }
-      });
-  
-      const link = document.createElement('a');
-      link.download = `Umbrella_Guild_Official.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    } catch (err) {
-      console.error("Gagal capture:", err);
-    } finally {
-      btn.innerHTML = '<i class="fas fa-share-alt"></i>';
-    }
-  }  
-
-  window.onload = () => { setTimeout(fetchUmbrella, 500); };
-</script>
+    <script src="app.js"></script>
 </body>
 </html>
