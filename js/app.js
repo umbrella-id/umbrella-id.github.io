@@ -2,54 +2,60 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2E
 
 async function loadData() {
     try {
+        console.log("1. Memulai koneksi ke Server...");
         const response = await fetch(GAS_URL);
-        const data = await response.json();
         
-        // 1. FILTER DATA (Hanya ambil yang ada ID-nya)
-        const validData = data.filter(item => item.ID && item.ID !== "");
+        if (!response.ok) throw new Error("Gagal terhubung ke URL GAS");
+        
+        const data = await response.json();
+        console.log("2. Data mentah diterima dari GAS:", data);
 
-        // 2. RENDER HEADLINE (Header & Footer)
-        const headline = validData.find(item => item.ID === 'headline');
+        // --- RENDER HEADLINE ---
+        console.log("3. Mencari ID: headline...");
+        const headline = data.find(item => item.ID === 'headline');
+        
         if (headline) {
-            document.getElementById('main-headline').innerHTML = headline.Header;
-            document.getElementById('sub-headline').innerHTML = headline.Body;
+            document.getElementById('main-headline').textContent = headline.Header;
+            document.getElementById('sub-headline').textContent = headline.Body;
+            console.log("   ✅ Headline berhasil dimuat.");
+        } else {
+            console.warn("   ⚠️ ID 'headline' tidak ditemukan.");
         }
 
-        // 3. RENDER SLIDER (Card & Galery)
+        // --- RENDER SLIDER (CARD & GALERY) ---
         const slider = document.getElementById('main-slider');
-        slider.innerHTML = ''; // Bersihkan loading
+        if (!slider) {
+            console.error("❌ Elemen 'main-slider' tidak ditemukan di HTML!");
+            return;
+        }
+        slider.innerHTML = ''; 
 
-        // Filter khusus untuk ID 'card' dan 'galery'
-        const cards = validData.filter(item => item.ID === 'card' || item.ID === 'galery');
+        console.log("4. Memulai filter ID: card & galery...");
+        const cards = data.filter(item => item.ID === 'card' || item.ID === 'galery');
+        console.log(`   Ditemukan ${cards.length} kartu.`);
 
-        cards.forEach(item => {
+        cards.forEach((item, index) => {
             const cardDiv = document.createElement('div');
             cardDiv.className = 'card-custom';
             
-            // Cek apakah ini Galery (nanti kita urus logikanya) atau Card biasa
-            if (item.ID === 'galery') {
-                cardDiv.innerHTML = `
-                    <h3 class="glow-effect">${item.Header}</h3>
-                    <div class="gallery-content">${item.Body}</div>
-                `;
-            } else {
-                // Card Profil (Buff, Fasilitas, dll)
-                // Menggunakan replace(/\n/g, '<br>') agar baris baru di Sheet terbaca di HTML
-                const bodyHTML = item.Body.replace(/\n/g, '<br>');
-                cardDiv.innerHTML = `
-                    <h3 class="glow-effect">${item.Header}</h3>
-                    <div class="card-body-text">${bodyHTML}</div>
-                `;
-            }
+            // Konversi enter (\n) menjadi baris baru (<br>)
+            const bodyContent = (item.Body || "").replace(/\n/g, '<br>');
+
+            cardDiv.innerHTML = `
+                <h3 class="glow-effect">${item.Header}</h3>
+                <div class="card-body-text">${bodyContent}</div>
+            `;
             
             slider.appendChild(cardDiv);
+            console.log(`   ✅ Kartu ke-${index + 1} (${item.Header}) berhasil dirender.`);
         });
 
-        console.log("Render Berhasil!");
+        console.log("5. Semua proses selesai.");
 
     } catch (error) {
-        console.error("Gagal Render:", error);
+        console.error("❌ TERJADI ERROR:", error.message);
     }
 }
 
+// Jalankan fungsi saat halaman siap
 window.onload = loadData;
