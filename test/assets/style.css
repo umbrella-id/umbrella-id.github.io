@@ -42,51 +42,69 @@ body {
         border: calc(0.2 * var(--u)) solid rgba(168, 85, 247, 0.2);
         border-radius: calc(4 * var(--u));
         position: relative;
+        overflow: hidden;
     }
 
-    /* HEADLINE */
-    #headline-pc-area { grid-area: head; display: flex; align-items: center; padding-left: calc(5 * var(--u)); }
+    /* 1. HEADER (RATA TENGAH) */
+    #headline-pc-area { 
+        grid-area: head; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; /* MASTER REQUEST: RATA TENGAH */
+        border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+    }
     #headline-title { font-size: calc(6 * var(--u)); font-weight: 900; letter-spacing: 2px; }
 
-    /* SIDE PANEL */
+    /* 2. SIDE PANEL (KOLOM LOGO) */
     .main-header {
         grid-area: side;
         display: flex;
         flex-direction: column;
         height: 100%;
         padding: calc(2 * var(--u));
+        min-height: 0;
+        overflow: hidden; /* Mencegah tembus kebawah */
     }
 
     #logo-container {
-        flex: 0 0 60%;
+        flex: 0 0 60%; /* Jatah 60% tinggi samping */
         width: 100%;
         display: flex;
-        align-items: center; /* Kembali ke center agar tidak tercekik */
+        align-items: center;
         justify-content: center;
-        /* Hapus overflow hidden agar sayap logo tidak kepotong */
+        overflow: hidden;
+        position: relative;
     }
 
     #logo-container svg {
-        width: 100%;
-        height: 100%;
-        max-width: 95%; /* Beri ruang napas */
-        max-height: 95%;
-        object-fit: contain; /* Jaga rasio asli */
+        /* KUNCI MATI: Jangan biarkan dia lebih besar dari wadahnya */
+        width: auto;
+        height: auto;
+        max-width: 85%;
+        max-height: 95%; /* Sisakan sedikit ruang agar tidak nempel garis */
+        object-fit: contain;
     }
 
     .slogan-box {
-        flex: 0 0 40%;
+        flex: 0 0 40%; /* Sisa 40% untuk teks */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
+        padding-top: calc(1 * var(--u));
     }
 
-    .slogan-main { font-size: calc(2 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 5px; }
-    .slogan-sub { font-size: calc(1.2 * var(--u)); opacity: 0.6; font-style: italic; }
+    .slogan-main { 
+        font-size: calc(1.8 * var(--u)); 
+        font-weight: 800; 
+        color: var(--color-primary);
+        margin-bottom: calc(0.5 * var(--u));
+    }
+    .slogan-sub-wrapper { width: 100%; }
+    .slogan-sub { font-size: calc(1.1 * var(--u)); opacity: 0.6; font-style: italic; display: block; }
 
-    /* STAGE */
+    /* 3. STAGE */
     .content-panggung {
         grid-area: stage;
         display: flex;
@@ -100,7 +118,7 @@ body {
     .card {
         width: calc(45 * var(--u)) !important;
         min-width: calc(45 * var(--u)) !important;
-        height: 90%;
+        height: 85%;
         background: rgba(30, 41, 59, 0.5);
         border-radius: calc(3 * var(--u));
         padding: calc(3 * var(--u));
@@ -108,28 +126,38 @@ body {
         border: 1px solid rgba(168, 85, 247, 0.1);
     }
 
-    /* FLOATING */
+    /* 4. FOOTER (RATA TENGAH) */
+    .pc-footer { 
+        grid-area: foot; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; /* MASTER REQUEST: RATA TENGAH */
+        opacity: 0.5; 
+        font-size: calc(1.5 * var(--u)); 
+        border-top: 1px solid rgba(168, 85, 247, 0.1);
+    }
+
+    /* FLOATING TOOLS */
     .top-tools {
         position: fixed !important;
         top: 5vh; right: 5vw;
         z-index: 9999;
         background: rgba(15, 23, 42, 0.9);
-        padding: 12px 24px; border-radius: 50px;
+        padding: 10px 20px; border-radius: 50px;
         border: 2px solid var(--color-primary);
-        display: flex; align-items: center; gap: 12px;
+        display: flex; align-items: center; gap: 10px;
         cursor: pointer;
     }
 
     .floating-chat { position: fixed !important; bottom: 5vh; right: 5vw; z-index: 9999; }
     .chat-trigger {
-        width: 70px; height: 70px; background: var(--color-primary);
+        width: 60px; height: 60px; background: var(--color-primary);
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
         cursor: pointer;
     }
 }
 
 .mode-simple { display: none !important; }
-
 /* ============================================================
    MOBILE MODE
    ============================================================ */
