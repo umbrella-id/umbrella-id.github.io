@@ -9,7 +9,7 @@ if (panggung) {
     }, { passive: false });
 }
 
-// 2. Load Logo (Pawang 2 Arah)
+// 2. Load Logo
 async function loadLogo() {
     try {
         const res = await fetch('./logo-umbrella.svg');
@@ -29,7 +29,7 @@ async function loadLogo() {
     } catch (e) { console.error("Logo Error:", e); }
 }
 
-// 3. Suntik Kartu
+// 3. Suntik Kartu (Profile & Gallery)
 async function suntikKartu(file, idSlot) {
     try {
         const res = await fetch(file);
@@ -39,7 +39,7 @@ async function suntikKartu(file, idSlot) {
     } catch (e) { console.error(e); }
 }
 
-// 4. Headline Triple Spawn
+// 4. Headline Spawn
 async function muatHeadline() {
     try {
         const res = await fetch('./headline.html');
