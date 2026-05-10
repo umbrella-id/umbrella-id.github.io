@@ -60,8 +60,8 @@ body {
         padding-top: calc(1 * var(--u)); /* Jarak minimal saja */
     }
 
-    .slogan-main { font-size: calc(1.8 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 2px; }
-    .slogan-sub { font-size: calc(1.1 * var(--u)); opacity: 0.6; font-style: italic; }
+    .slogan-main { font-size: calc(2 * var(--u)); font-weight: 800; color: var(--color-primary); margin-bottom: 2px; }
+    .slogan-sub { font-size: calc(1.7 * var(--u)); opacity: 0.6; font-style: italic; }
 
     /* STAGE & CARDS */
     .content-panggung { grid-area: stage; display: flex; gap: calc(4 * var(--u)); padding: calc(4 * var(--u)); overflow-x: auto; align-items: center; scrollbar-width: none; }
