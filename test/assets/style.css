@@ -5,6 +5,7 @@
     --color-primary: #a855f7;
     --color-glow: rgba(168, 85, 247, 0.4);
     --bg-dark: #020617;
+    --gap-main: 4vmin; /* Gap konsisten untuk stage */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,64 +18,131 @@ body {
 }
 
 /* ============================================================
-   PC ENGINE (LANDSCAPE)
+   PC ENGINE (LANDSCAPE) - RUMUS FINAL MASTER
    ============================================================ */
 @media (min-width: 768px) and (orientation: landscape) {
+
     .master-frame {
         /* RUMUS MASTER FRAME */
-        height: 100vmin;
-        width: 90vh;
-        max-width: 180vmin;
-        
+        height: 100vmin; 
+        width: 90vw; 
+        max-width: 180vmin; 
+
         display: grid;
         /* Kolom: Logo (40vmin) | Panggung (Sisa Ruang) */
-        grid-template-columns: 40vmin 1fr;
-        /* Baris: Header (20vmin) | Panggung (60vmin) | Footer (Sisa Ruang) */
-        grid-template-rows: 20vmin 60vmin 1fr;
+        grid-template-columns: 40vmin 1fr; 
+        /* Baris: Header (20vmin) | Stage (60vmin) | Footer (Sisa Ruang) */
+        grid-template-rows: 20vmin 60vmin 1fr; 
         
         grid-template-areas: 
-            "head head"
-            "side stage"
+            "head head" 
+            "side stage" 
             "foot foot";
-            
-        background: rgba(15, 23, 42, 0.8);
+
+        background: rgba(15, 23, 42, 0.8); 
         border: 1px solid rgba(168, 85, 247, 0.2);
-        position: relative;
+        border-radius: 4vmin; 
+        position: relative; 
         overflow: hidden;
     }
 
+    /* HEADER & FOOTER (Width 100%) */
     #headline-pc-area { 
-        grid-area: head; height: 20vmin; width: 100%;
-        display: flex; align-items: center; justify-content: center;
+        grid-area: head; 
+        display: flex; align-items: center; justify-content: center; 
+        width: 100%; 
     }
-
-    .main-header { 
-        grid-area: side; height: 60vmin; width: 40vmin;
-        display: flex; flex-direction: column; 
-        justify-content: center; align-items: center;
-    }
-
-    #logo-container { flex: 0 0 75%; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
-    #logo-container svg { width: auto; height: 100%; max-width: 90%; object-fit: contain; }
-
-    .content-panggung { 
-        grid-area: stage; height: 60vmin; width: 100%; /* 100% dari 1fr */
-        display: flex; gap: 4vmin; padding: 5vmin 2vmin; /* 5vmin top-padding menjaga card di tengah */
-        overflow-x: auto; align-items: center; scrollbar-width: none;
-    }
-
-    .card { 
-        height: 50vmin !important; width: 40vmin !important; min-width: 40vmin !important;
-        background: rgba(30, 41, 59, 0.5); border-radius: 2vmin; 
-        padding: 3vmin; flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.1);
+    
+    #headline-title { 
+        font-size: 8vmin; 
+        font-weight: 900; 
+        letter-spacing: 2px; 
     }
 
     .pc-footer { 
-        grid-area: foot; height: 100%; /* Mengisi jatah 1fr */
-        width: 100%; display: flex; align-items: center; justify-content: center;
-        opacity: 0.5; font-size: 2vmin;
+        grid-area: foot; 
+        display: flex; align-items: center; justify-content: center; 
+        opacity: 0.5; 
+        font-size: 2vmin; 
+        width: 100%;
+    }
+
+    /* SIDE PANEL: LOGO (60vmin) & SLOGAN */
+    .main-header { 
+        grid-area: side; 
+        display: flex; flex-direction: column; 
+        height: 60vmin; 
+        padding: 2vmin; 
+        align-items: center; 
+    }
+
+    #logo-container {
+        flex: 0 0 75%; width: 100%;
+        display: flex; 
+        align-items: flex-end; 
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    #logo-container svg {
+        width: auto; height: 100%;
+        max-width: 90%;
+        object-fit: contain;
+    }
+
+    .slogan-box {
+        flex: 0 0 25%; display: flex; flex-direction: column;
+        justify-content: flex-start; 
+        align-items: center; text-align: center;
+        padding-top: 1vmin;
+    }
+
+    .slogan-main { font-size: 2.2vmin; font-weight: 800; color: var(--color-primary); margin-bottom: 2px; }
+    .slogan-sub { font-size: 2.2vmin; opacity: 0.6; font-style: italic; }
+
+    /* STAGE & CARDS (60vmin & 1fr) */
+    .content-panggung { 
+        grid-area: stage; 
+        display: flex; 
+        gap: var(--gap-main); 
+        padding: 5vmin var(--gap-main); /* 5vmin top-padding menjaga card di tengah vertikal */
+        overflow-x: auto; 
+        align-items: center; 
+        scrollbar-width: none; 
+    }
+
+    /* CARD (50vmin x 40vmin) */
+    .card { 
+        height: 50vmin !important; 
+        width: 40vmin !important; 
+        min-width: 40vmin !important; 
+        background: rgba(30, 41, 59, 0.5); 
+        border-radius: 2vmin; 
+        padding: 3vmin; 
+        flex-shrink: 0; 
+        border: 1px solid rgba(168, 85, 247, 0.1); 
+    }
+
+    .card ul { list-style: none; padding: 0; margin: 0; }
+
+    /* TOOLS */
+    .top-tools { 
+        position: fixed; top: 5vh; right: 5vw; z-index: 999; 
+        background: rgba(15, 23, 42, 0.9); padding: 1.5vmin 3vmin; 
+        border-radius: 5vmin; border: 2px solid var(--color-primary); 
+        display: flex; align-items: center; gap: 1vmin; cursor: pointer; 
+        font-size: 1.8vmin;
+    }
+    
+    .floating-chat { position: fixed; bottom: 5vh; right: 5vw; z-index: 999; }
+    .chat-trigger { 
+        width: 8vmin; height: 8vmin; 
+        background: var(--color-primary); border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; cursor: pointer; 
     }
 }
+
+.mode-simple { display: none !important; }
 
 /* ============================================================
    MOBILE MODE
