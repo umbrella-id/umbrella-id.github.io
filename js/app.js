@@ -5,40 +5,31 @@
 
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; // Link Deployment /exec
 
+// --- 1. FUNGSI UTAMA (FETCHER) ---
 async function loadData() {
     try {
-        // Mengambil data JSON dari server
         const response = await fetch(GAS_URL);
         const data = await response.json();
-
-        // Membersihkan data dari baris kosong (Data Guard)
         const validData = data.filter(item => item.ID && item.ID !== "");
 
-        // --- 1. Fungsi Render Headline & Footer ---
         const headline = validData.find(item => item.ID === 'headline');
         if (headline) {
-            const h1 = document.getElementById('main-headline');
-            const sub = document.getElementById('sub-headline');
-            if (h1) h1.innerHTML = headline.Header;
-            if (sub) sub.innerHTML = headline.Body;
+            if (document.getElementById('main-headline')) document.getElementById('main-headline').innerHTML = headline.Header;
+            if (document.getElementById('sub-headline')) document.getElementById('sub-headline').innerHTML = headline.Body;
         }
 
-        // --- 2. Fungsi Render Slider Cards (Profil & Galery) ---
         const slider = document.getElementById('main-slider');
         if (slider) {
-            slider.innerHTML = ''; // Membersihkan kontainer sebelum render
-
-            // Filter data yang masuk ke kategori kartu
+            slider.innerHTML = ''; 
             const cards = validData.filter(item => item.ID === 'card' || item.ID === 'galery');
 
             cards.forEach(item => {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card-custom';
                 
-                // Konversi newline dari Sheet menjadi tag HTML Break
-                const formattedBody = (item.Body || "").replace(/\n/g, '<br>');
+                const bodyText = item.Body || "";
+                const formattedBody = bodyText.split('\n').join('<br>');
 
-                // Template isi kartu
                 cardDiv.innerHTML = `
                     <div class="card-content">
                         <h3 class="glow-effect">${item.Header}</h3>
@@ -46,20 +37,47 @@ async function loadData() {
                     </div>
                 `;
 
-                // Listener untuk fitur Pop-up Detail (akan diproses di tahap final)
-                cardDiv.onclick = () => {
+                // Ini yang tadi error, sekarang dia akan memanggil fungsi di bawah
+                cardDiv.onclick = function() {
                     openPopup(item.Header, formattedBody);
                 };
 
                 slider.appendChild(cardDiv);
             });
         }
-
     } catch (error) {
-        // Penanganan error sederhana jika koneksi gagal
-        console.error("Data fetch failed.");
+        console.error("Data fetch failed:", error);
     }
 }
 
-// Inisialisasi fungsi saat seluruh struktur DOM selesai dimuat 
+// --- 2. FUNGSI POPUP (WAJIB DI LUAR loadData AGAR GLOBAL) ---
+
+function openPopup(title, content) {
+    const modal = document.getElementById('popup-modal');
+    const mTitle = document.getElementById('modal-title');
+    const mContent = document.getElementById('modal-content');
+
+    if (modal && mTitle && mContent) {
+        mTitle.innerHTML = title;
+        mContent.innerHTML = content;
+        modal.style.display = 'flex'; 
+    } else {
+        console.error("Elemen Modal tidak ditemukan di HTML!");
+    }
+}
+
+function closePopup() {
+    const modal = document.getElementById('popup-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Menutup modal saat klik area luar (overlay)
+window.onclick = function(event) {
+    const modal = document.getElementById('popup-modal');
+    if (event.target == modal) {
+        closePopup();
+    }
+};
+
+// --- 3. EKSEKUSI ---
 document.addEventListener('DOMContentLoaded', loadData);
