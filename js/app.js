@@ -1,6 +1,6 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec";
 let globalData = [], currentIndex = 0;
-let startY = 0, currentY = 0, deltaY = 0;
+let startY = 0, deltaY = 0;
 
 async function init() {
     try {
@@ -8,93 +8,77 @@ async function init() {
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { console.error("GAS Error"); }
+    } catch (e) { console.error("Data Error"); }
 }
 
 function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
+    if (!slider) return;
+
     slider.innerHTML = globalData.map((item, i) => `
-        <div class="stack-card ${isPortrait ? '' : 'slide-card'}" id="card-${i}">
+        <div class="stack-card ${isPortrait ? '' : 'slide-card card-frame-base'}" id="sc-${i}">
             <div class="card-frame-base">
                 <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
                 <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
             </div>
-        </div>
-    `).join('');
+        </div>`).join('');
     if (isPortrait) updateStack(0);
 }
 
-function updateStack(dragOffset = 0) {
+function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.stack-card');
-    const isDragging = dragOffset !== 0;
+    if (cards.length === 0) return;
+    const h = window.innerHeight;
 
     cards.forEach((card, i) => {
-        card.classList.remove('is-active', 'is-stacked', 'is-next', 'is-dragging');
-        
+        // Matikan transisi saat dragging agar nempel jari
+        card.style.transition = drag === 0 ? "" : "none";
+
         if (i === currentIndex) {
             card.classList.add('is-active');
-            if (isDragging) {
-                card.classList.add('is-dragging');
-                // Kartu aktif ikut bergeser sedikit (efek elastis)
-                card.style.transform = `translateY(${dragOffset * 0.3}px)`;
-            } else { card.style.transform = ""; }
+            card.style.transform = `scale(${1 - Math.abs(drag)/4000})`;
         } 
         else if (i === currentIndex + 1) {
-            card.classList.add('is-next');
-            if (isDragging && dragOffset < 0) {
-                card.classList.add('is-dragging');
-                // Kartu antrean di bawah ikut naik menutup kartu atas
-                card.style.transform = `translateY(${window.innerHeight + dragOffset}px)`;
-            } else { card.style.transform = ""; }
-        }
-        else if (i < currentIndex) {
-            card.classList.add('is-stacked');
-            card.style.transform = "";
-        }
+            card.className = 'stack-card is-next';
+            card.style.transform = `translateY(${h + (drag < 0 ? drag : 0)}px)`;
+        } 
+        else if (i === currentIndex - 1) {
+            card.className = 'stack-card is-stacked';
+            card.style.transform = `translateY(${-h + (drag > 0 ? drag : 0)}px)`;
+        } 
         else {
-            card.classList.add('is-next');
-            card.style.transform = "";
+            card.className = 'stack-card';
+            card.style.transform = i < currentIndex ? `translateY(-100%)` : `translateY(100%)`;
         }
     });
 }
 
-// INTERACTIVE GESTURE ENGINE
-window.addEventListener('touchstart', e => {
-    startY = e.touches[0].pageY;
-}, {passive: false});
+// GESTURE HANDLER
+window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
 
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
-    currentY = e.touches[0].pageY;
-    deltaY = currentY - startY;
-
-    // Paksa kartu mengikuti jari
+    deltaY = e.touches[0].pageY - startY;
+    if (e.cancelable) e.preventDefault();
     updateStack(deltaY);
-    
-    if (e.cancelable) e.preventDefault(); // Matikan refresh halaman
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
+    const threshold = 120;
 
-    // KALKULASI SETELAH DILEPAS
-    if (deltaY < -120 && currentIndex < globalData.length - 1) {
-        currentIndex++; // Pindah kartu berikutnya
-    } else if (deltaY > 120 && currentIndex > 0) {
-        currentIndex--; // Kembali ke kartu sebelumnya
-    }
+    if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
+    else if (deltaY > threshold && currentIndex > 0) currentIndex--;
 
-    // Reset posisi dengan animasi halus CSS
     deltaY = 0;
     updateStack(0);
 }, {passive: true});
 
-// MOUSE WHEEL (Simulation)
+// WHEEL SUPPORT
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768) return;
     if (Math.abs(e.deltaY) < 30) return;
-
     if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
     updateStack(0);
