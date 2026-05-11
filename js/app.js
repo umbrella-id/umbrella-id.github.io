@@ -5,8 +5,7 @@ let startY = 0, deltaY = 0;
 async function init() {
     try {
         const res = await fetch(GAS_URL);
-        const data = await res.json();
-        globalData = data.filter(item => item.ID && item.ID.trim() !== "");
+        globalData = (await res.json()).filter(item => item.ID && item.ID.trim() !== "");
         render();
     } catch (e) { document.getElementById('status-text').innerText = "OFFLINE"; }
 }
@@ -14,8 +13,6 @@ async function init() {
 function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
-    if (!slider) return;
-
     slider.innerHTML = globalData.map((item, i) => `
         <div class="stack-card ${isPortrait ? '' : 'slide-card card-frame-base'}" id="sc-${i}">
             <div class="card-frame-base">
@@ -36,30 +33,36 @@ function updateStack(drag = 0) {
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s" : "none";
 
         if (i === currentIndex) {
+            // KARTU TENGAH (Mengecil saat ada tarikan)
             card.classList.add('is-active');
             let scale = 1 - Math.abs(drag) / 4000;
             card.style.transform = `translateY(0px) scale(${scale})`;
-            card.style.opacity = 1 - Math.abs(drag) / 2000;
+            card.style.opacity = 1 - Math.abs(drag) / 3000;
+            card.style.zIndex = "10";
         } 
         else if (i === currentIndex + 1) {
+            // KARTU BAWAH (Nongol ke atas saat swipe up)
             card.className = 'stack-card is-next';
-            // Preview Naik dari Bawah (Hanya jika swipe up)
             let pos = h + (drag < 0 ? drag : 0);
             card.style.transform = `translateY(${pos}px)`;
+            card.style.zIndex = "100"; // Selalu di atas kartu tengah
         } 
         else if (i === currentIndex - 1) {
+            // KARTU ATAS (Nongol menindih saat swipe down)
             card.className = 'stack-card is-stacked';
-            // Preview Turun dari Atas (Hanya jika swipe down)
             let pos = -h + (drag > 0 ? drag : 0);
             card.style.transform = `translateY(${pos}px)`;
+            card.style.zIndex = "100"; // Selalu di atas kartu tengah
         } 
         else {
             card.className = 'stack-card';
             card.style.transform = i < currentIndex ? `translateY(-100%)` : `translateY(100%)`;
+            card.style.zIndex = "1";
         }
     });
 }
 
+// LOGIKA SENTUH
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
 
 window.addEventListener('touchmove', e => {
@@ -71,7 +74,7 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 130;
+    const threshold = 140; // Batas minimal tarikan
     if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
     else if (deltaY > threshold && currentIndex > 0) currentIndex--;
     deltaY = 0;
