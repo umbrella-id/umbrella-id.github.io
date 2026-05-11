@@ -1,7 +1,15 @@
 /* ==========================================
-   2. LANDSCAPE LAYOUT (Desktop / Tablet)
+   3. LANDSCAPE LAYOUT (Desktop / Tablet)
    ========================================== */
 @media screen and (min-width: 768px) and (orientation: landscape) {
+  
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
   
   .master-frame {
       display: grid;
@@ -101,48 +109,17 @@
   
   /* Style Kartu */
   .card-custom {
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      color: var(--text-main);
-      backdrop-filter: blur(8px);
-      min-width: 50vmin;
-      height: 50vmin;
-      border-radius: 20px;
-      margin-right: 20px;
-      padding: 20px;
-      flex-shrink: 0;
-      white-space: normal;
-      
-      position: relative; /* Wajib untuk posisi hint */
-      cursor: pointer;    /* Mengubah kursor jadi tangan */
-      overflow: hidden;   /* Memotong teks meluber */
-      transition: all 0.3s ease-in-out; /* Animasi smooth saat hover */
+    width: 40vmin;
+    height: 50vmin;
   }
   
-  /* Efek Hover: Naik dan Bercahaya */
-  .card-custom:hover {
-      transform: translateY(-10px);
-      border-color: var(--color-primary);
-      box-shadow: 0 10px 20px var(--glow-color);
-  }
-  
-  /* Efek Memudar ( . . . ) di bagian bawah kartu */
-  .card-custom::after {
-      content: ". . . Baca Selengkapnya";
+  /* Dekorasi Sudut Neon */
+  .hud-corner {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px; /* Area memudar */
-      background: linear-gradient(transparent, var(--bg-dark)); /* Memudar ke warna background master */
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 10px;
-      font-size: 1.4vmin;
-      font-weight: bold;
-      color: var(--color-primary);
-      opacity: 0.8;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--color-primary);
   }
-  
-  
+  .top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+}
