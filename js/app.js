@@ -8,14 +8,12 @@ async function init() {
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { console.error("Data Error"); }
+    } catch (e) { console.error("Portal Error"); }
 }
 
 function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
-    if (!slider) return;
-
     slider.innerHTML = globalData.map((item, i) => `
         <div class="stack-card ${isPortrait ? '' : 'slide-card card-frame-base'}" id="sc-${i}">
             <div class="card-frame-base">
@@ -29,30 +27,25 @@ function render() {
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.stack-card');
     if (cards.length === 0) return;
-    const screenH = window.innerHeight;
+    const h = window.innerHeight;
 
     cards.forEach((card, i) => {
-        // Hilangkan transisi agar kartu nempel presisi di jari
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s" : "none";
 
         if (i === currentIndex) {
             card.classList.add('is-active');
-            // KARTU LAMA: Terdorong sedikit (20% power) dan mengecil
-            let moveY = drag * 0.2;
-            let scale = 1 - Math.abs(drag) / 5000;
-            card.style.transform = `translateY(${moveY}px) scale(${scale})`;
+            let scale = 1 - Math.abs(drag) / 4000;
+            card.style.transform = `translateY(0px) scale(${scale})`;
             card.style.opacity = 1 - Math.abs(drag) / 2000;
         } 
         else if (i === currentIndex + 1) {
             card.className = 'stack-card is-next';
-            // KARTU BARU DARI BAWAH: Nempel 100% di jari, menutupi kartu lama
-            let pos = screenH + (drag < 0 ? drag : 0);
+            let pos = h + (drag < 0 ? drag : 0);
             card.style.transform = `translateY(${pos}px)`;
         } 
         else if (i === currentIndex - 1) {
             card.className = 'stack-card is-stacked';
-            // KARTU BARU DARI ATAS: Nempel 100% di jari saat ditarik turun
-            let pos = -screenH + (drag > 0 ? drag : 0);
+            let pos = -h + (drag > 0 ? drag : 0);
             card.style.transform = `translateY(${pos}px)`;
         } 
         else {
@@ -62,43 +55,31 @@ function updateStack(drag = 0) {
     });
 }
 
-// LOGIKA GESTURE
-window.addEventListener('touchstart', e => { 
-    startY = e.touches[0].pageY; 
-}, {passive: false});
+window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
 
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
-    
-    // Mencegah pull-to-refresh browser agar tidak mengganggu tarikan ke bawah
     if (e.cancelable) e.preventDefault();
-    
     updateStack(deltaY);
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 120; // Batas minimal tarikan untuk pindah
+    const threshold = 140;
 
-    if (deltaY < -threshold && currentIndex < globalData.length - 1) {
-        currentIndex++;
-    } else if (deltaY > threshold && currentIndex > 0) {
-        currentIndex--;
-    }
+    if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
+    else if (deltaY > threshold && currentIndex > 0) currentIndex--;
 
     deltaY = 0;
-    updateStack(0); // Reset ke posisi idle dengan animasi
+    updateStack(0);
 }, {passive: true});
 
-// SUPPORT MOUSE WHEEL
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768) return;
     if (Math.abs(e.deltaY) < 30) return;
-    
     if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
-    
     updateStack(0);
 }, {passive: true});
 
