@@ -1,6 +1,7 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec";
 let globalData = [];
 let currentIndex = 0;
+let isAnimating = false;
 
 async function init() {
     try {
@@ -8,33 +9,26 @@ async function init() {
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { document.getElementById('status-text').innerText = "OFFLINE"; }
+    } catch (e) { console.error("Data Error"); }
 }
 
 function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
     if (!slider) return;
-
     slider.innerHTML = ""; 
 
     globalData.forEach((item, i) => {
         const card = document.createElement('div');
         card.className = isPortrait ? 'stack-card' : 'slide-card';
-        if (!isPortrait) card.classList.add('card-frame-base'); // PC langsung pake frame
-
-        card.innerHTML = isPortrait ? `
+        if (!isPortrait) card.classList.add('card-frame-base');
+        card.innerHTML = `
             <div class="card-frame-base">
                 <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
                 <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
-            </div>
-        ` : `
-            <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
-            <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
-        `;
+            </div>`;
         slider.appendChild(card);
     });
-
     if (isPortrait) updateStack();
 }
 
@@ -46,16 +40,33 @@ function updateStack() {
         else if (i === currentIndex) card.classList.add('is-active');
         else card.classList.add('is-next');
     });
+    
+    // Lock sebentar agar animasi selesai dulu
+    isAnimating = true;
+    setTimeout(() => { isAnimating = false; }, 800); 
 }
 
+// Navigasi Universal
+function handleNav(diff) {
+    if (isAnimating) return; // Cegah spamming saat sedang gerak
+    const threshold = 40;
+    if (diff < -threshold && currentIndex < globalData.length - 1) currentIndex++;
+    else if (diff > threshold && currentIndex > 0) currentIndex--;
+    updateStack();
+}
+
+// Touch
 let startY = 0;
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: true});
 window.addEventListener('touchend', e => {
     if (window.innerWidth >= 768) return;
-    const diff = e.changedTouches[0].pageY - startY;
-    if (diff < -60 && currentIndex < globalData.length - 1) currentIndex++;
-    else if (diff > 60 && currentIndex > 0) currentIndex--;
-    updateStack();
+    handleNav(e.changedTouches[0].pageY - startY);
+}, {passive: true});
+
+// Wheel
+window.addEventListener('wheel', e => {
+    if (window.innerWidth >= 768) return;
+    handleNav(-e.deltaY);
 }, {passive: true});
 
 window.addEventListener('resize', render);
