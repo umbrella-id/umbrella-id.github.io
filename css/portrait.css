@@ -1,159 +1,26 @@
-/* ==========================================
-   4. PORTRAIT LAYOUT (Mobile)
-   Sistem Stacking Cards - Umbrella Guild
-   ========================================== */
 @media screen and (max-width: 767px) or (orientation: portrait) {
+    html, body { overflow: hidden !important; position: fixed; width: 100%; height: 100%; }
     
-    /* 1. LOCK VIEWPORT: Mengunci layar agar tidak bisa scroll bebas */
-    html, body {
-        overflow: hidden;
-        position: fixed;
-        width: 100vw;
-        height: 100vh;
-    }
+    .master-frame { display: block; position: relative; width: 100vw; height: 100vh; }
 
-    /* 2. MASTER FRAME PORTRAIT: Mengambil seluruh layar */
-    .master-frame {
-        display: block;
-        width: 100vw;
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background: var(--bg-dark);
-        z-index: 1;
-    }
-
-    /* 3. IDENTITY BADGE: Logo pojok kiri atas (Badge Style) */
-    #brand-area {
-        position: fixed;
-        top: 7.5%;
-        left: 5%;
-        z-index: 10000; /* Paling depan */
-        opacity: 0; /* Muncul via app.js */
-        transition: opacity 0.5s ease;
-        border: none; /* Menghapus border-right dari landscape */
-        padding: 0;
-    }
-
-    #brand-area.active { opacity: 1; }
-
-    .main-logo {
-        width: 75px;
-        height: auto;
-        transform: translate(5px, -30px); /* Trik Badge memotong bingkai */
-        filter: drop-shadow(0 0 15px var(--color-primary));
-    }
-
-    /* 4. SLIDER CONTAINER: Wadah utama kartu */
     #slider-container {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        position: relative;
-        overflow: hidden;
-        display: block; /* Mengganti flex landscape */
+        position: absolute; inset: 0;
+        display: block; overflow: hidden;
     }
 
-    #main-slider {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
+    #main-slider { position: relative; width: 100%; height: 100%; }
 
-    /* 5. CARD CUSTOM: Sistem Stacking */
+    /* PAKSA STACKING */
     .card-custom {
-        position: absolute; /* Menumpuk di satu titik */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* Menghapus sisa-sisa landscape */
-        margin: 0;
-        background: transparent;
-        border: none;
-        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease;
+        position: absolute !important;
+        top: 0; left: 0; width: 100% !important; height: 100% !important;
+        margin: 0 !important; display: flex; justify-content: center; align-items: center;
+        transform: translateY(100%); /* Siap diatur oleh JS */
     }
 
-    /* BINGKAI VISUAL (Card Content) */
     .card-content {
-        width: 90%;
-        height: 85%;
-        background: var(--bg-card);
-        border: 1px solid var(--border-card);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 0 30px var(--glow-color);
-        display: flex;
-        flex-direction: column;
-        backdrop-filter: blur(8px);
+        width: 90%; height: 85%;
+        background: var(--bg-card); border: 1px solid var(--border-card);
+        border-radius: 20px; padding: 25px;
     }
-
-    /* Layout Konten */
-    .card-content h3 {
-        max-height: 30%; /* Batas ruang judul (30%) */
-        font-size: 1.5rem;
-        color: var(--color-primary);
-        margin-bottom: 15px;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-
-    .card-body-text {
-        flex: 1; /* Area Deskripsi (Flexible Room) */
-        font-size: 1rem;
-        line-height: 1.6;
-        overflow: hidden;
-        /* Efek memudar di bawah teks */
-        mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-    }
-
-    /* Keadaan Kartu Terpilih (is-stacked diatur via JS) */
-    .card-custom.is-stacked {
-        transform: scale(0.92) translateY(-40px);
-        filter: brightness(0.2);
-        opacity: 0.6;
-        z-index: 5;
-    }
-
-    /* Floating UI Elements */
-    .floating-chat-btn {
-        position: absolute;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
-        background: var(--color-primary);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 0 15px var(--glow-color);
-        z-index: 100;
-    }
-
-    .hint-up {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        color: var(--color-primary);
-        opacity: 0.5;
-        animation: bnc 2s infinite;
-    }
-
-    @keyframes bnc { 0%,100%{transform:translateY(0) translateX(-50%)} 50%{transform:translateY(-5px) translateX(-50%)} }
-
-    /* Menyembunyikan elemen PC agar tidak bocor */
-    #header-area, #footer-area, #tagline-container, #sosmed-container, .card-custom::after {
-        display: none !important;
-    }
-}
+} /* <--- PENUTUP MEDIA QUERY WAJIB ADA */
