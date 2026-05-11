@@ -2,65 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Umbrella Guild - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-s <title>Umbrella Guild Portal</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/landscape.css">
-    <link rel="stylesheet" href="css/portrait.css">
 </head>
 <body>
-    <div class="master-frame">
-        <header id="header-area">
-            <h1 id="main-headline" class="glow-effect"></h1>
-        </header>
-                
-        <aside id="brand-area">
-            <div id="guild-logo-container">
-                <img src="logo-umbrella.svg" alt="Umbrella Guild Logo" class="main-logo">
-            </div>
-            <div id="tagline-container">
-                <p class="tagline">Tempat Kita Berteduh dan Bertumbuh</p>
-            </div>
-            <div id="sosmed-container"></div>
-        </aside>
-
-        <main id="slider-container">
-            <div id="main-slider"></div>
-        </main>
-
-        <footer id="footer-area">
-            <p id="sub-headline"></p>
-        </footer>
-    </div>
-
-    <div id="popup-modal" class="modal-overlay">
-        <div class="modal-hud-frame">
-            <div class="hud-corner top-left"></div>
-            <div class="hud-corner bottom-right"></div>
-            
-            <div class="modal-header">
-                <h2 id="modal-title" class="gaming-font">TITLE</h2>
-                <button class="close-btn" onclick="closePopup()">[ X ]</button>
-            </div>
-            
-            <div class="modal-body">
-                <div id="modal-content">Isi detail akan muncul di sini...</div>
-            </div>
-            
-            <div class="modal-footer-hud">
-                <span class="system-text">STATUS: SECURE ACCESS</span>
-                <span class="version-text">UG-v1.0</span>
-            </div>
-        </div>
-    </div>  
-
-    <div class="running-text-wrapper">
-        <div id="running-text" class="running-text-content">
-            INITIALIZING SYSTEM... CONNECTING TO UMBRELLA GUILD DATABASE... STATUS: ONLINE
-        </div>
-    </div>
-
+    <!-- Container Utama PC -->
+    <div id="desktop-view"></div>
+    <!-- Container Utama Mobile -->
+    <div id="mobile-view"></div>
     <script src="js/app.js"></script>
-    <script src="js/render.js"></script>
 </body>
 </html>
