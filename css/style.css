@@ -1,21 +1,17 @@
 /* ==========================================
    1. CORE & VARIABLES (Universal)
+   Hanya berisi Warna, Font, dan Dekorasi Dasar
    ========================================== */
 
 :root {
-  /* Brand Colors */
-  --color-primary: #c084fc;      /* Warna utama ungu */
-  --color-secondary: #6366f1;    /* Warna aksen biru */
+  --color-primary: #c084fc;
+  --color-secondary: #6366f1;
   --glow-color: rgba(192, 132, 252, 0.6);
-
-  /* Text Colors */
-  --text-main: #ffffff;          /* Putih untuk teks utama */
-  --text-muted: #cbd5e1;         /* Abu-abu terang untuk detail/footer */
-  --text-glow: #f0abfc;          /* Warna teks saat berefek glow */
-
-  /* Backgrounds */
-  --bg-dark: #020617;            /* Latar belakang master frame */
-  --bg-card: rgba(30, 41, 59, 0.7); /* Latar belakang kartu (semi-transparan) */
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --text-glow: #f0abfc;
+  --bg-dark: #020617;
+  --bg-card: rgba(30, 41, 59, 0.7);
   --border-card: rgba(192, 132, 252, 0.3);
 }
 
@@ -23,68 +19,43 @@
 
 body {
     background-color: var(--bg-dark);
-    color: var(--text-main); /* Semua teks otomatis putih */
+    color: var(--text-main);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
 }
 
-/* Style Kartu */
+/* Dekorasi Kartu (Tanpa Mengatur Posisi/Layout) */
 .card-custom {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
     color: var(--text-main);
     backdrop-filter: blur(8px);
     border-radius: 20px;
-    margin-right: 20px;
     padding: 20px;
-    flex-shrink: 0;
-    white-space: normal;
-    position: relative; /* Wajib untuk posisi hint */
-    cursor: pointer;    /* Mengubah kursor jadi tangan */
-    overflow: hidden;   /* Memotong teks meluber */
-    transition: all 0.3s ease-in-out; /* Animasi smooth saat hover */
+    position: relative; 
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Efek Hover: Naik dan Bercahaya */
 .card-custom:hover {
     transform: translateY(-10px);
     border-color: var(--color-primary);
     box-shadow: 0 10px 20px var(--glow-color);
 }
 
-/* Efek Memudar ( . . . ) di bagian bawah kartu */
-.card-custom::after {
-    content: ". . . Baca Selengkapnya";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px; /* Area memudar */
-    background: linear-gradient(transparent, var(--bg-dark)); /* Memudar ke warna background master */
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 10px;
-    font-size: 1.4vmin;
-    font-weight: bold;
-    color: var(--color-primary);
-    opacity: 0.8;
-}
-
-
-/* Overlay Gelap */
+/* Modal & UI Elements Tetap Universal */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(10px);
-    display: none; /* Sembunyi secara default */
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 999;
 }
 
-/* Frame HUD Gaming */
 .modal-hud-frame {
     background: var(--bg-card);
     width: 70vw;
@@ -93,10 +64,8 @@ body {
     border: 1px solid var(--color-primary);
     position: relative;
     box-shadow: 0 0 30px var(--glow-color);
-    clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%); /* Potongan sudut gaming */
+    clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%);
 }
-
-
 
 .modal-header {
     display: flex;
@@ -115,12 +84,9 @@ body {
 }
 
 .close-btn {
-    background: none;
-    border: none;
-    color: var(--color-primary);
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1.2rem;
+    background: none; border: none;
+    color: var(--color-primary); font-weight: bold;
+    cursor: pointer; font-size: 1.2rem;
 }
 
 .modal-body {
@@ -141,12 +107,7 @@ body {
     font-family: 'Courier New', Courier, monospace;
 }
 
-/* Scrollbar dalam Modal */
-.modal-body::-webkit-scrollbar { width: 5px; }
-.modal-body::-webkit-scrollbar-thumb { background: var(--color-primary); }
-
-
-/* Running Text Style (70vw & Fading Edge) */
+/* Running Text */
 .running-text-wrapper {
     position: fixed;
     bottom: 10px;
@@ -154,7 +115,6 @@ body {
     transform: translateX(-50%);
     width: 70vw;
     overflow: hidden;
-    /* Efek memudar di kiri dan kanan */
     mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     pointer-events: none;
@@ -175,4 +135,3 @@ body {
     from { transform: translateX(100vw); }
     to { transform: translateX(-100%); }
 }
-
