@@ -9,20 +9,26 @@
 body, html { 
     width: 100%; height: 100%; background: var(--bg-dark); 
     color: white; font-family: sans-serif; overflow: hidden; 
-    touch-action: none; 
+    touch-action: none; /* Mencegah pull-to-refresh browser */
 }
 
 .master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
 
 /* PC MODE (LANDSCAPE) */
 @media screen and (min-width: 768px) {
-    .master-frame { display: grid; grid-template-areas: "brand slider" "footer footer"; grid-template-columns: 280px 1fr; grid-template-rows: 1fr 50px; padding: 20px; gap: 20px; }
+    .master-frame { 
+        display: grid; 
+        grid-template-areas: "brand slider" "footer footer"; 
+        grid-template-columns: 280px 1fr; 
+        grid-template-rows: 1fr 50px; 
+        padding: 20px; gap: 20px; 
+    }
     #brand-area { grid-area: brand; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border-card); }
     #main-slider { grid-area: slider; display: flex; gap: 20px; overflow-x: auto; padding: 20px; align-items: center; }
-    .slide-card { width: 350px; height: 480px; flex-shrink: 0; transition: 0.3s; }
+    .slide-card { width: 350px; height: 480px; flex-shrink: 0; }
 }
 
-/* MOBILE MODE (PHYSICS DECK) */
+/* MOBILE MODE (KINETIC PHYSICS) */
 @media screen and (max-width: 767px) {
     #brand-area { height: 70px; display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; }
     #main-logo { height: 35px; }
@@ -32,14 +38,15 @@ body, html {
     .stack-card {
         position: absolute; inset: 0;
         display: flex; justify-content: center; align-items: center;
+        /* Transisi halus saat commit/revert gerakan */
         transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s;
         opacity: 0; pointer-events: none;
     }
 
-    /* Kartu Aktif di belakang */
+    /* Kartu Aktif berada di layer bawah saat ditimpa */
     .stack-card.is-active { opacity: 1; z-index: 10; pointer-events: auto; }
 
-    /* Kartu Atas & Bawah di depan (Z-Index Tinggi) */
+    /* Kartu Atas & Bawah (Preview) selalu di depan jari */
     .stack-card.is-stacked, .stack-card.is-next { opacity: 1; z-index: 50; }
 
     .card-frame-base {
