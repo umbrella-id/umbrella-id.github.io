@@ -111,6 +111,7 @@
   .card-custom {
     width: 40vmin;
     height: 50vmin;
+    overflow: hidden;   /* Memotong teks meluber */
   }
   
   /* Dekorasi Sudut Neon */
