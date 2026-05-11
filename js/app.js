@@ -6,26 +6,27 @@ let diffY = 0;
 let isMoving = false;
 let wheelLocked = false;
 
+// 1. DATA FETCHER
 async function loadData() {
     try {
         const response = await fetch(GAS_URL);
         const data = await response.json();
         const validData = data.filter(item => item.ID && item.ID !== "");
 
-        // Headline & Footer (Universal)
+        // Universal Headlines
         const headline = validData.find(item => item.ID === 'headline');
         if (headline) {
-            if (document.getElementById('main-headline')) document.getElementById('main-headline').innerHTML = headline.Header;
-            if (document.getElementById('sub-headline')) document.getElementById('sub-headline').innerHTML = headline.Body;
+            document.getElementById('main-headline').innerHTML = headline.Header;
+            document.getElementById('sub-headline').innerHTML = headline.Body;
         }
 
+        // Render Cards (Headline + Cards + Gallery)
         const slider = document.getElementById('main-slider');
         if (slider) {
             slider.innerHTML = '';
-            // Ambil headline sebagai kartu pertama, lalu kartu lainnya
-            const allCards = validData.filter(item => item.ID === 'headline' || item.ID === 'card' || item.ID === 'galery');
+            const allItems = validData.filter(item => ['headline', 'card', 'galery'].includes(item.ID));
 
-            allCards.forEach((item, index) => {
+            allItems.forEach((item, index) => {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card-custom';
                 const formattedBody = (item.Body || "").replace(/\n/g, '<br>');
@@ -34,21 +35,21 @@ async function loadData() {
                     <div class="card-content">
                         <h3 class="glow-effect">${item.Header}</h3>
                         <div class="card-body-text">${formattedBody}</div>
-                        
-                        <div class="floating-chat-portrait" onclick="openPopup('${item.Header}', '${formattedBody}')">
+                        <div class="floating-chat-btn" onclick="openPopup('${item.Header}', '${formattedBody}')">
                             <svg style="width:25px;fill:white" viewBox="0 0 24 24"><path d="M20,2H4C2.9,2,2,2.9,2,4v18l4-4h14c1.1,0,2,-0.9,2,-2V4C22,2.9,21.1,2,20,2z"/></svg>
                         </div>
-                        ${index === 0 ? '<div class="hint-portrait">SWIPE UP ▲</div>' : ''}
+                        ${index === 0 ? '<div class="hint-up">SWIPE UP ▲</div>' : ''}
                     </div>
                 `;
                 slider.appendChild(cardDiv);
             });
         }
-        renderPortraitStack();
-    } catch (error) { console.error("Fetch failed:", error); }
+        renderStack();
+    } catch (err) { console.error("System Error:", err); }
 }
 
-function renderPortraitStack() {
+// 2. STACK ENGINE
+function renderStack() {
     const cards = document.querySelectorAll('.card-custom');
     const brand = document.getElementById('brand-area');
     const isPortrait = window.innerHeight > window.innerWidth;
@@ -59,54 +60,66 @@ function renderPortraitStack() {
         card.style.transition = isMoving ? "none" : "transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease";
         
         if (i < currentIdx) {
+            // Stacked (Rollback support)
             let pullDown = (i === currentIdx - 1 && diffY > 0) ? (diffY * 0.4) - 40 : -40;
             card.className = "card-custom is-stacked";
             card.style.transform = `scale(0.92) translateY(${pullDown}px)`;
         } else if (i === currentIdx) {
+            // Active
             let move = (diffY < 0) ? diffY : 0;
             card.className = "card-custom";
             card.style.transform = `translateY(${move}px)`;
+            card.style.filter = "brightness(1)";
         } else {
-            card.className = "card-custom is-next";
+            // Next
+            card.className = "card-custom";
             card.style.transform = `translateY(100%)`;
         }
     });
 
+    // Badge Identity Trigger
     if (currentIdx > 0 || (currentIdx === 0 && diffY < -100)) brand.classList.add('active');
     else brand.classList.remove('active');
 }
 
-// Event Listeners
+// 3. INPUT HANDLERS
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; isMoving = true; });
-window.addEventListener('touchmove', e => { diffY = e.touches[0].pageY - startY; renderPortraitStack(); });
+window.addEventListener('touchmove', e => { 
+    if (window.innerWidth > window.innerHeight) return;
+    diffY = e.touches[0].pageY - startY; 
+    renderStack(); 
+});
 window.addEventListener('touchend', () => {
     isMoving = false;
     const threshold = window.innerHeight * 0.2;
-    const cards = document.querySelectorAll('.card-custom');
-    if (diffY < -threshold && currentIdx < cards.length - 1) currentIdx++;
+    const cardsCount = document.querySelectorAll('.card-custom').length;
+
+    if (diffY < -threshold && currentIdx < cardsCount - 1) currentIdx++;
     else if (diffY > threshold && currentIdx > 0) currentIdx--;
-    diffY = 0; renderPortraitStack();
+    
+    diffY = 0;
+    renderStack();
 });
 
 window.addEventListener('wheel', e => {
     if (wheelLocked || window.innerWidth > window.innerHeight) return;
     if (Math.abs(e.deltaY) > 30) {
         wheelLocked = true;
-        const cards = document.querySelectorAll('.card-custom');
-        if (e.deltaY > 0 && currentIdx < cards.length - 1) currentIdx++;
+        const cardsCount = document.querySelectorAll('.card-custom').length;
+        if (e.deltaY > 0 && currentIdx < cardsCount - 1) currentIdx++;
         else if (e.deltaY < 0 && currentIdx > 0) currentIdx--;
-        renderPortraitStack();
+        renderStack();
         setTimeout(() => { wheelLocked = false; }, 800);
     }
 });
 
+// 4. POPUP CONTROL
 function openPopup(title, content) {
     const modal = document.getElementById('popup-modal');
     document.getElementById('modal-title').innerHTML = title;
     document.getElementById('modal-content').innerHTML = content;
     modal.style.display = 'flex';
 }
-
 function closePopup() { document.getElementById('popup-modal').style.display = 'none'; }
 
 document.addEventListener('DOMContentLoaded', loadData);
