@@ -29,23 +29,31 @@ function render() {
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.stack-card');
     if (cards.length === 0) return;
-    const h = window.innerHeight;
+    const screenH = window.innerHeight;
 
     cards.forEach((card, i) => {
-        // Matikan transisi saat dragging agar nempel jari
-        card.style.transition = drag === 0 ? "" : "none";
+        // Hilangkan transisi agar kartu nempel presisi di jari
+        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s" : "none";
 
         if (i === currentIndex) {
             card.classList.add('is-active');
-            card.style.transform = `scale(${1 - Math.abs(drag)/4000})`;
+            // KARTU LAMA: Terdorong sedikit (20% power) dan mengecil
+            let moveY = drag * 0.2;
+            let scale = 1 - Math.abs(drag) / 5000;
+            card.style.transform = `translateY(${moveY}px) scale(${scale})`;
+            card.style.opacity = 1 - Math.abs(drag) / 2000;
         } 
         else if (i === currentIndex + 1) {
             card.className = 'stack-card is-next';
-            card.style.transform = `translateY(${h + (drag < 0 ? drag : 0)}px)`;
+            // KARTU BARU DARI BAWAH: Nempel 100% di jari, menutupi kartu lama
+            let pos = screenH + (drag < 0 ? drag : 0);
+            card.style.transform = `translateY(${pos}px)`;
         } 
         else if (i === currentIndex - 1) {
             card.className = 'stack-card is-stacked';
-            card.style.transform = `translateY(${-h + (drag > 0 ? drag : 0)}px)`;
+            // KARTU BARU DARI ATAS: Nempel 100% di jari saat ditarik turun
+            let pos = -screenH + (drag > 0 ? drag : 0);
+            card.style.transform = `translateY(${pos}px)`;
         } 
         else {
             card.className = 'stack-card';
@@ -54,33 +62,43 @@ function updateStack(drag = 0) {
     });
 }
 
-// GESTURE HANDLER
-window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
+// LOGIKA GESTURE
+window.addEventListener('touchstart', e => { 
+    startY = e.touches[0].pageY; 
+}, {passive: false});
 
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
+    
+    // Mencegah pull-to-refresh browser agar tidak mengganggu tarikan ke bawah
     if (e.cancelable) e.preventDefault();
+    
     updateStack(deltaY);
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 120;
+    const threshold = 120; // Batas minimal tarikan untuk pindah
 
-    if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
-    else if (deltaY > threshold && currentIndex > 0) currentIndex--;
+    if (deltaY < -threshold && currentIndex < globalData.length - 1) {
+        currentIndex++;
+    } else if (deltaY > threshold && currentIndex > 0) {
+        currentIndex--;
+    }
 
     deltaY = 0;
-    updateStack(0);
+    updateStack(0); // Reset ke posisi idle dengan animasi
 }, {passive: true});
 
-// WHEEL SUPPORT
+// SUPPORT MOUSE WHEEL
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768) return;
     if (Math.abs(e.deltaY) < 30) return;
+    
     if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
+    
     updateStack(0);
 }, {passive: true});
 
