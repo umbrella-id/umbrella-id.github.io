@@ -1,120 +1,22 @@
-/* ==========================================
-   3. LANDSCAPE LAYOUT (Desktop / Tablet)
-   Seluruh aturan Tata Letak (Layout) dipindah ke sini
-   ========================================== */
 @media screen and (min-width: 768px) and (orientation: landscape) {
-  
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-  
-  .master-frame {
-      display: grid;
-      grid-template-areas:
-          "header header"
-          "brand slider"
-          "footer footer";
-      grid-template-columns: 40vmin 1fr;
-      grid-template-rows: 20vmin 60vmin 1fr;
-      width: 90vw;
-      height: 100vmin;
-      gap: 10px;
-      position: relative;
-      border: 1px solid rgba(192, 132, 252, 0.1);
-      background: 
-          radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, var(--bg-dark) 100%),
-          url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-  }
-  
-  /* Dekorasi Siku Gaming */
-  .master-frame::before, .master-frame::after {
-      content: "";
-      position: absolute;
-      width: 40px; height: 40px;
-      border: 2px solid var(--color-primary);
-      pointer-events: none;
-      filter: drop-shadow(0 0 5px var(--color-primary));
-  }
-  .master-frame::before { top: -5px; left: -5px; border-right: 0; border-bottom: 0; }
-  .master-frame::after { bottom: -5px; right: -5px; border-left: 0; border-top: 0; }
-  
-  #header-area { grid-area: header; display: flex; align-items: center; justify-content: center; }
-  #main-headline { color: var(--text-main); text-shadow: 0 0 15px var(--glow-color); }
-  #sub-headline { color: var(--text-muted); }
-  
-  #brand-area {
-      grid-area: brand;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      border-right: 1px solid var(--border-card);
-  }
-  
-  .main-logo {
-      width: 100%;
-      max-width: 30vmin;
-      height: auto;
-      filter: drop-shadow(0 0 10px var(--glow-color));
-  }
-  
-  .tagline {
-      font-size: 1.5vmin;
-      color: var(--text-muted);
-      text-align: center;
-      margin-top: 15px;
-  }
-  
-  /* --- KHUSUS LANDSCAPE: Slider ke Samping --- */
-  #slider-container {
-      grid-area: slider;
-      overflow-x: auto; 
-      overflow-y: hidden; 
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      white-space: nowrap; 
-  }
-  
-  #main-slider {
-      display: flex; 
-      flex-direction: row;
-  }
-
-  /* Kartu di Landscape: Berbaris & Berjarak */
-  .card-custom {
-    width: 40vmin;
-    height: 50vmin;
-    margin-right: 20px; /* Pindahan dari style.css agar tidak bocor */
-    flex-shrink: 0;     /* Pindahan dari style.css agar tidak bocor */
-    white-space: normal;
-  }
-  
-  /* Efek Memudar (Hanya di Landscape) */
-  .card-custom::after {
-      content: ". . . Baca Selengkapnya";
-      position: absolute;
-      bottom: 0; left: 0; width: 100%; height: 60px;
-      background: linear-gradient(transparent, var(--bg-dark));
-      display: flex; align-items: flex-end; justify-content: center;
-      padding-bottom: 10px; font-size: 1.4vmin;
-      font-weight: bold; color: var(--color-primary); opacity: 0.8;
-  }
-
-  #slider-container::-webkit-scrollbar { height: 8px; }
-  #slider-container::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 10px; }
-  
-  #footer-area { grid-area: footer; padding: 10px; text-align: center; }
-  
-  .hud-corner {
-      position: absolute; width: 20px; height: 20px;
-      border: 3px solid var(--color-primary);
-  }
-  .top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-  .bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-}
+    body {
+        display: flex; justify-content: center; align-items: center;
+        min-height: 100vh; overflow: hidden;
+    }
+    .master-frame {
+        display: grid;
+        grid-template-areas: "header header" "brand slider" "footer footer";
+        grid-template-columns: 35vmin 1fr;
+        grid-template-rows: 15vmin 1fr 10vmin;
+        width: 95vw; height: 90vh; gap: 15px;
+    }
+    #slider-container {
+        grid-area: slider; display: flex; align-items: center;
+        overflow-x: auto; white-space: nowrap;
+    }
+    #main-slider { display: flex; flex-direction: row; }
+    .card-custom {
+        width: 40vmin; height: 55vmin; 
+        margin-right: 20px; flex-shrink: 0;
+    }
+} /* <--- PENUTUP MEDIA QUERY WAJIB ADA */
