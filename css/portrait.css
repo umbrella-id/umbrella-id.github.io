@@ -1,51 +1,64 @@
-/* ==========================================
-   4. PORTRAIT LAYOUT (Lock & Snap UI)
-   ========================================== */
 @media screen and (max-width: 767px) or (orientation: portrait) {
     
-    body, html {
+    /* 1. KUNCI LAYAR & SEMBUNYIKAN SCROLLBAR */
+    html, body {
+        height: 100%;
         margin: 0;
         padding: 0;
-        height: 100%;
-        /* MENGUNCI SCROLL: Browser akan memaksa berhenti di setiap kartu */
-        scroll-snap-type: y mandatory; 
-        overflow-y: scroll;
-        scroll-behavior: smooth;
+        overflow: hidden; /* Sembunyikan scrollbar utama */
     }
 
     .master-frame {
-        display: block !important;
+        height: 100vh;
         width: 100vw;
-        height: auto !important; /* Biarkan memanjang untuk menampung kartu */
+        overflow-y: scroll; /* Scroll aktif di dalam frame */
+        scroll-snap-type: y mandatory; /* "Magnet" untuk mengunci tiap kartu */
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;  /* Sembunyikan scrollbar IE/Edge */
+        scrollbar-width: none;  /* Sembunyikan scrollbar Firefox */
     }
 
-    /* 1. BRAND AREA (Fixed di atas layar agar tidak ikut ter-scroll) */
+    /* Sembunyikan scrollbar Chrome/Safari */
+    .master-frame::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 2. LOGO STICKY (Floating di atas tumpukan) */
     #brand-area {
-        position: fixed; /* FIXED agar tidak ikut ter-scroll */
+        position: fixed; /* Berdiri sendiri di atas tumpukan */
         top: 0; left: 0; width: 100%;
-        z-index: 1000;
-        background: rgba(2, 6, 23, 0.9);
+        height: 80px;
+        z-index: 9999; /* Paling depan */
+        background: rgba(2, 6, 23, 0.8);
         backdrop-filter: blur(10px);
         display: flex;
         align-items: center;
-        padding: 10px 15px;
-        height: 70px;
+        padding: 0 20px;
         border-bottom: 1px solid var(--border-card);
     }
 
-    .main-logo { width: 50px !important; }
-    .running-text-wrapper { position: relative !important; width: 60vw !important; margin-left: 10px; }
+    .main-logo { width: 50px !important; height: auto; }
+    .tagline { display: none; }
 
-    /* 2. CONTAINER SETUP */
+    /* 3. SETIAP SECTION ADALAH SATU LAPISAN LAYAR (SNAP) */
+    #header-area, .card-custom {
+        height: 100vh; /* Wajib setinggi layar */
+        width: 100vw;
+        scroll-snap-align: start; /* Magnet berhenti di sini */
+        scroll-snap-stop: always;
+        flex-shrink: 0;
+    }
+
+    /* Hero Section (Halaman Pertama) */
     #header-area {
-        height: 100vh; /* Headline mengambil 1 layar penuh sebagai intro */
-        scroll-snap-align: start; /* Mengunci posisi di awal layar */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding-top: 80px;
     }
 
+    /* 4. MODIFIKASI KARTU JADI FULL SCREEN STACK */
     #slider-container {
         display: block !important;
         padding: 0 !important;
@@ -56,33 +69,21 @@
         flex-direction: column;
     }
 
-    /* 3. LOGIKA STACKING & SNAPPING */
     .card-custom {
-        /* MEMBUAT KARTU SEUKURAN LAYAR */
-        width: 100vw;
-        height: 100vh; 
-        
-        /* MENGUNCI POSISI: Begitu di-scroll sedikit, dia akan 'nempel' pas di tengah */
-        scroll-snap-align: start; 
-        scroll-snap-stop: always;
-        
-        /* Tampilan Visual */
-        border-radius: 0; /* Full screen card biasanya tanpa radius di pinggir */
-        margin: 0;
-        padding: 100px 20px 20px 20px; /* Padding atas agar tidak tertutup Logo */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
+        margin: 0 !important; /* Hapus margin agar tidak ada celah */
+        border-radius: 0; /* Full screen */
         border-left: none;
         border-right: none;
-        
-        /* Efek Menumpuk (Depth) */
-        position: relative;
-        background: var(--bg-dark); /* Menutup kartu di bawahnya */
+        padding: 100px 20px 40px 20px; /* Ruang agar tidak tertutup logo */
+        background: var(--bg-dark); /* Menutup kartu sebelumnya secara total */
+        border-top: 1px solid var(--color-primary);
+        min-width: 100vw !important;
     }
 
-    /* Efek Baca Selengkapnya di Mobile Snap kita hilangkan atau kecilkan */
-    .card-custom::after {
-        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    /* Judul Kartu di Mobile */
+    .card-custom h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
     }
 }
