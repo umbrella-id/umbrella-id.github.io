@@ -1,125 +1,56 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec";
+let globalData = [];
+let currentIndex = 0;
 
-let currentIdx = 0;
-let startY = 0;
-let diffY = 0;
-let isMoving = false;
-let wheelLocked = false;
-
-// 1. DATA FETCHER
 async function loadData() {
     try {
-        const response = await fetch(GAS_URL);
-        const data = await response.json();
-        const validData = data.filter(item => item.ID && item.ID !== "");
-
-        // Universal Headlines
-        const headline = validData.find(item => item.ID === 'headline');
-        if (headline) {
-            document.getElementById('main-headline').innerHTML = headline.Header;
-            document.getElementById('sub-headline').innerHTML = headline.Body;
-        }
-
-        // Render Cards (Headline + Cards + Gallery)
-        const slider = document.getElementById('main-slider');
-        if (slider) {
-            slider.innerHTML = '';
-            const allItems = validData.filter(item => ['headline', 'card', 'galery'].includes(item.ID));
-
-            allItems.forEach((item, index) => {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'card-custom';
-                const formattedBody = (item.Body || "").replace(/\n/g, '<br>');
-
-                cardDiv.innerHTML = `
-                    <div class="card-content">
-                        <h3 class="glow-effect">${item.Header}</h3>
-                        <div class="card-body-text">${formattedBody}</div>
-                        <div class="floating-chat-btn" onclick="openPopup('${item.Header}', '${formattedBody}')">
-                            <svg style="width:25px;fill:white" viewBox="0 0 24 24"><path d="M20,2H4C2.9,2,2,2.9,2,4v18l4-4h14c1.1,0,2,-0.9,2,-2V4C22,2.9,21.1,2,20,2z"/></svg>
-                        </div>
-                        ${index === 0 ? '<div class="hint-up">SWIPE UP ▲</div>' : ''}
-                    </div>
-                `;
-                slider.appendChild(cardDiv);
-            });
-        }
-        renderStack();
-    } catch (err) { console.error("System Error:", err); }
+        const res = await fetch(GAS_URL);
+        globalData = (await res.json()).filter(item => item.ID && item.ID.trim() !== "");
+        renderUI();
+    } catch (e) { console.error("Error:", e); }
 }
 
-// 2. STACK ENGINE
-function renderStack() {
-    const cards = document.querySelectorAll('.card-custom');
-    const brand = document.getElementById('brand-area');
+function renderUI() {
     const isPortrait = window.innerHeight > window.innerWidth;
+    const slider = document.getElementById('main-slider');
+    slider.innerHTML = ''; // Cuma bersihkan area slider
 
-    if (!isPortrait) return;
-
-    cards.forEach((card, i) => {
-        card.style.transition = isMoving ? "none" : "transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease";
+    globalData.forEach((item, i) => {
+        const card = document.createElement('div');
+        // Tentukan class berdasarkan mode
+        card.className = isPortrait ? 'stack-card' : 'slide-card';
+        card.classList.add('card-frame-base');
         
-        if (i < currentIdx) {
-            // Stacked (Rollback support)
-            let pullDown = (i === currentIdx - 1 && diffY > 0) ? (diffY * 0.4) - 40 : -40;
-            card.className = "card-custom is-stacked";
-            card.style.transform = `scale(0.92) translateY(${pullDown}px)`;
-        } else if (i === currentIdx) {
-            // Active
-            let move = (diffY < 0) ? diffY : 0;
-            card.className = "card-custom";
-            card.style.transform = `translateY(${move}px)`;
-            card.style.filter = "brightness(1)";
-        } else {
-            // Next
-            card.className = "card-custom";
-            card.style.transform = `translateY(100%)`;
-        }
+        card.innerHTML = `
+            <h3 class="card-title">${item.Header}</h3>
+            <div style="flex:1; overflow-y:auto;">${item.Body.replace(/\n/g, '<br>')}</div>
+        `;
+        slider.appendChild(card);
     });
 
-    // Badge Identity Trigger
-    if (currentIdx > 0 || (currentIdx === 0 && diffY < -100)) brand.classList.add('active');
-    else brand.classList.remove('active');
+    if (isPortrait) updateStack();
 }
 
-// 3. INPUT HANDLERS
-window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; isMoving = true; });
-window.addEventListener('touchmove', e => { 
+function updateStack() {
+    const cards = document.querySelectorAll('.stack-card');
+    cards.forEach((card, i) => {
+        card.classList.remove('is-active', 'is-stacked', 'is-next');
+        if (i < currentIndex) card.classList.add('is-stacked');
+        else if (i === currentIndex) card.classList.add('is-active');
+        else card.classList.add('is-next');
+    });
+}
+
+// Swipe Detector Mobile
+let startY = 0;
+window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
+window.addEventListener('touchend', e => {
     if (window.innerWidth > window.innerHeight) return;
-    diffY = e.touches[0].pageY - startY; 
-    renderStack(); 
-});
-window.addEventListener('touchend', () => {
-    isMoving = false;
-    const threshold = window.innerHeight * 0.2;
-    const cardsCount = document.querySelectorAll('.card-custom').length;
-
-    if (diffY < -threshold && currentIdx < cardsCount - 1) currentIdx++;
-    else if (diffY > threshold && currentIdx > 0) currentIdx--;
-    
-    diffY = 0;
-    renderStack();
+    let diff = e.changedTouches[0].pageY - startY;
+    if (diff < -50 && currentIndex < globalData.length - 1) currentIndex++;
+    if (diff > 50 && currentIndex > 0) currentIndex--;
+    updateStack();
 });
 
-window.addEventListener('wheel', e => {
-    if (wheelLocked || window.innerWidth > window.innerHeight) return;
-    if (Math.abs(e.deltaY) > 30) {
-        wheelLocked = true;
-        const cardsCount = document.querySelectorAll('.card-custom').length;
-        if (e.deltaY > 0 && currentIdx < cardsCount - 1) currentIdx++;
-        else if (e.deltaY < 0 && currentIdx > 0) currentIdx--;
-        renderStack();
-        setTimeout(() => { wheelLocked = false; }, 800);
-    }
-});
-
-// 4. POPUP CONTROL
-function openPopup(title, content) {
-    const modal = document.getElementById('popup-modal');
-    document.getElementById('modal-title').innerHTML = title;
-    document.getElementById('modal-content').innerHTML = content;
-    modal.style.display = 'flex';
-}
-function closePopup() { document.getElementById('popup-modal').style.display = 'none'; }
-
+window.addEventListener('resize', renderUI);
 document.addEventListener('DOMContentLoaded', loadData);
