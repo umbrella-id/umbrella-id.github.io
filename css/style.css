@@ -1,59 +1,42 @@
-/* ==========================================
-   1. UNIVERSAL (Identitas & Font)
-   ========================================== */
 :root {
-  --color-primary: #c084fc;
-  --glow-color: rgba(192, 132, 252, 0.4);
-  --bg-dark: #020617;
-  --bg-card: rgba(30, 41, 59, 0.8);
-  --border-card: rgba(192, 132, 252, 0.3);
-  --text-main: #ffffff;
+    --color-primary: #c084fc;
+    --bg-dark: #020617;
+    --bg-card: rgba(30, 41, 59, 0.85);
+    --border-card: rgba(192, 132, 252, 0.3);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+body, html { width: 100%; height: 100%; background: var(--bg-dark); color: white; font-family: sans-serif; overflow: hidden; }
 
-/* Modal HUD (Universal) */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-.modal-hud-frame { background: var(--bg-card); border: 1px solid var(--color-primary); padding: 30px; width: 85vw; max-width: 600px; box-shadow: 0 0 30px var(--glow-color); clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%); }
+/* SHARED CARD STYLE */
+.card-frame-base {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+.card-title { color: var(--color-primary); margin-bottom: 15px; text-transform: uppercase; }
 
-/* ==========================================
-   2. WAJAH PC (LANDSCAPE)
-   ========================================== */
+/* PC MODE (SLIDE) */
 @media screen and (min-width: 768px) and (orientation: landscape) {
-    .master-frame { display: grid; grid-template-areas: "header header" "brand slider" "footer footer"; grid-template-columns: 300px 1fr; grid-template-rows: 100px 1fr 80px; width: 100vw; height: 100vh; gap: 10px; padding: 20px; }
-    #slider-container { grid-area: slider; display: flex; align-items: center; overflow-x: auto; white-space: nowrap; padding: 20px; }
-    #main-slider { display: flex; gap: 20px; }
-    .card-custom { width: 350px; height: 450px; flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 15px; padding: 20px; white-space: normal; position: relative; }
+    .master-frame { display: grid; grid-template-columns: 300px 1fr; grid-template-rows: 1fr 60px; height: 100vh; padding: 20px; gap: 20px; }
+    #main-slider { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; align-items: center; }
+    .slide-card { width: 350px; height: 450px; flex-shrink: 0; }
 }
 
-/* ==========================================
-   3. WAJAH HP (PORTRAIT STACKING)
-   ========================================== */
+/* MOBILE MODE (STACK) */
 @media screen and (max-width: 767px) or (orientation: portrait) {
-    .master-frame { position: fixed; inset: 0; display: block; }
-    #slider-container { position: absolute; inset: 0; overflow: hidden; }
-    #main-slider { position: relative; width: 100%; height: 100%; }
+    .master-frame { display: flex; flex-direction: column; height: 100vh; }
+    #brand-area { height: 80px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border-card); }
+    #main-logo { height: 40px; }
+    #slider-container { flex: 1; position: relative; overflow: hidden; }
+    .stack-card { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; transition: all 0.6s ease; }
+    .stack-card .card-frame-base { width: 90%; height: 85%; }
     
-    .card-custom { 
-        position: absolute !important; inset: 0; 
-        display: flex; justify-content: center; align-items: center; 
-        background: transparent !important; border: none !important;
-        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease;
-    }
-    .card-content { 
-        width: 88%; height: 82%; background: var(--bg-card); 
-        border: 2px solid var(--border-card); border-radius: 20px; 
-        padding: 25px; display: flex; flex-direction: column; 
-        box-shadow: 0 0 25px var(--glow-color);
-    }
-    .card-body-text { flex: 1; overflow-y: auto; margin-top: 10px; font-size: 0.95rem; line-height: 1.5; mask-image: linear-gradient(to bottom, black 80%, transparent 100%); }
-    
-    /* State Stacking */
-    .card-custom.is-stacked { transform: scale(0.92) translateY(-40px); filter: brightness(0.2); z-index: 5; opacity: 0.5; }
-    .card-custom.is-active { z-index: 10; transform: translateY(0); }
-    .card-custom.is-next { transform: translateY(100%); z-index: 20; }
-    
-    /* UI Elements Mobile */
-    #brand-area, #header-area, #footer-area { display: none; }
+    /* Stack States */
+    .is-stacked { transform: scale(0.9) translateY(-40px); opacity: 0.5; filter: brightness(0.3); z-index: 5; }
+    .is-active { transform: translateY(0); z-index: 10; opacity: 1; }
+    .is-next { transform: translateY(100%); z-index: 20; }
 }
