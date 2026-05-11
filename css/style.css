@@ -12,20 +12,32 @@ body, html {
     touch-action: none; 
 }
 
-.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
+.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
 
-/* LOGO OVERLAY - MEMOTONG POJOK KARTU */
-#logo-overlay {
-    position: absolute;
-    top: 55px; /* Sesuaikan agar pas memotong border atas kartu */
-    left: 20px;
-    z-index: 999; /* Pastikan di atas kartu */
-    pointer-events: none;
-}
-#floating-logo {
-    width: 75px; /* KUNCI UKURAN: Agar tidak raksasa */
+/* LOGO INSIDE CARD */
+.card-logo {
+    width: 45px;
     height: auto;
-    filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.6));
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 5px var(--color-primary));
+}
+
+/* CARD BASE */
+.card-frame-base {
+    background: var(--bg-card); 
+    border: 2px solid var(--border-card);
+    border-radius: 24px; 
+    padding: 25px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+/* PC MODE (LANDSCAPE) */
+@media screen and (min-width: 768px) {
+    .master-frame { padding: 30px; }
+    #main-slider { display: flex; gap: 30px; overflow-x: auto; align-items: center; height: 100%; padding-bottom: 20px; }
+    .slide-card { width: 340px; height: 500px; flex-shrink: 0; transition: transform 0.3s ease; }
+    .slide-card:hover { transform: translateY(-10px); border-color: var(--color-primary); }
 }
 
 /* MOBILE MODE (PHYSICS STACK) */
@@ -40,31 +52,12 @@ body, html {
         opacity: 0; pointer-events: none;
     }
 
-    /* Kartu Aktif di belakang kartu yang ditarik */
     .stack-card.is-active { opacity: 1; z-index: 10; pointer-events: auto; }
-    
-    /* Kartu Tetangga di depan (Z-index 100) */
     .stack-card.is-stacked, .stack-card.is-next { opacity: 1; z-index: 100; }
 
-    .card-frame-base {
-        width: 90%; height: 80%;
-        background: var(--bg-card); 
-        border: 2px solid var(--border-card);
-        border-radius: 30px; 
-        padding: 50px 25px 25px 25px; /* Padding atas besar untuk ruang logo */
-        display: flex; flex-direction: column;
-        box-shadow: 0 0 50px rgba(0,0,0,0.9);
-    }
+    .stack-card .card-frame-base { width: 90%; height: 85%; }
 }
 
-/* PC MODE */
-@media screen and (min-width: 768px) {
-    #logo-overlay { left: 40px; top: 40px; }
-    .master-frame { display: grid; grid-template-columns: 200px 1fr; grid-template-rows: 1fr 50px; padding: 20px; gap: 20px; }
-    #main-slider { display: flex; gap: 25px; overflow-x: auto; align-items: center; padding: 20px; }
-    .slide-card { width: 350px; height: 500px; flex-shrink: 0; }
-}
-
-.card-title { color: var(--color-primary); margin-bottom: 10px; font-size: 1.4rem; text-transform: uppercase; font-weight: 800; }
-.scroll-area { flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; }
-#footer-area { height: 50px; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; font-size: 12px; letter-spacing: 2px; }
+.card-title { color: var(--color-primary); margin-bottom: 10px; font-size: 1.3rem; text-transform: uppercase; font-weight: 800; }
+.scroll-area { flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; }
+#footer-area { height: 50px; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; background: #000; font-size: 11px; letter-spacing: 2px; }
