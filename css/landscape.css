@@ -1,0 +1,50 @@
+/* ==========================================
+   3. LANDSCAPE LAYOUT (Desktop / Tablet)
+   ========================================== */
+@media screen and (min-width: 768px) and (orientation: landscape) {
+    
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Desktop tidak scroll body */
+    }
+
+    .master-frame {
+        display: grid;
+        grid-template-areas:
+            "header header"
+            "brand slider"
+            "footer footer";
+        grid-template-columns: 40vmin 1fr;
+        grid-template-rows: 20vmin 60vmin 1fr;
+        width: 90vw;
+        height: 100vmin;
+        gap: 10px;
+        position: relative;
+        border: 1px solid rgba(192, 132, 252, 0.1);
+        background: 
+            radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, var(--bg-dark) 100%),
+            url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    }
+
+    /* Dekorasi Siku Gaming */
+    .master-frame::before, .master-frame::after {
+        content: ""; position: absolute; width: 40px; height: 40px;
+        border: 2px solid var(--color-primary); filter: drop-shadow(0 0 5px var(--color-primary));
+    }
+    .master-frame::before { top: -5px; left: -5px; border-right: 0; border-bottom: 0; }
+    .master-frame::after { bottom: -5px; right: -5px; border-left: 0; border-top: 0; }
+
+    /* Area Layout */
+    #header-area { grid-area: header; display: flex; align-items: center; justify-content: center; }
+    #brand-area { grid-area: brand; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-right: 1px solid var(--border-card); }
+    #slider-container { grid-area: slider; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 20px; }
+    #footer-area { grid-area: footer; padding: 10px; text-align: center; }
+
+    #main-headline { text-shadow: 0 0 15px var(--glow-color); }
+    .main-logo { width: 100%; max-width: 30vmin; height: auto; filter: drop-shadow(0 0 10px var(--color-primary)); }
+    
+    #main-slider { display: flex; flex-direction: row; }
+    .card-custom { min-width: 50vmin; height: 50vmin; flex-shrink: 0; margin-right: 20px; }
+}
