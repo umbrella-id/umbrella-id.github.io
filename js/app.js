@@ -8,7 +8,7 @@ async function init() {
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { console.error("Portal Error"); }
+    } catch (e) { document.getElementById('status-text').innerText = "ERROR"; }
 }
 
 function render() {
@@ -56,7 +56,6 @@ function updateStack(drag = 0) {
 }
 
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
-
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
@@ -67,10 +66,8 @@ window.addEventListener('touchmove', e => {
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
     const threshold = 140;
-
     if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
     else if (deltaY > threshold && currentIndex > 0) currentIndex--;
-
     deltaY = 0;
     updateStack(0);
 }, {passive: true});
