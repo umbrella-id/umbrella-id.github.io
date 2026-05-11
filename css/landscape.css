@@ -2,56 +2,147 @@
    2. LANDSCAPE LAYOUT (Desktop / Tablet)
    ========================================== */
 @media screen and (min-width: 768px) and (orientation: landscape) {
-    
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden; /* Desktop diam, tidak scroll body */
-    }
-
-    .master-frame {
-        display: grid;
-        grid-template-areas:
-            "header header"
-            "brand slider"
-            "footer footer";
-        grid-template-columns: 40vmin 1fr;
-        grid-template-rows: 20vmin 60vmin 1fr;
-        width: 90vw;
-        height: 100vmin;
-        gap: 10px;
-        position: relative;
-        border: 1px solid rgba(192, 132, 252, 0.1);
-        background: 
-            radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, var(--bg-dark) 100%),
-            url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-    }
-
-    /* Siku Pojok */
-    .master-frame::before, .master-frame::after {
-        content: ""; position: absolute; width: 40px; height: 40px;
-        border: 2px solid var(--color-primary); filter: drop-shadow(0 0 5px var(--color-primary));
-    }
-    .master-frame::before { top: -5px; left: -5px; border-right: 0; border-bottom: 0; }
-    .master-frame::after { bottom: -5px; right: -5px; border-left: 0; border-top: 0; }
-
-    /* Area Pengolahan */
-    #header-area { grid-area: header; display: flex; align-items: center; justify-content: center; }
-    #brand-area { grid-area: brand; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-right: 1px solid var(--border-card); }
-    #slider-container { grid-area: slider; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 20px; }
-    #footer-area { grid-area: footer; padding: 10px; text-align: center; }
-
-    #main-headline { text-shadow: 0 0 15px var(--glow-color); font-size: 4vmin; }
-    .main-logo { width: 100%; max-width: 30vmin; height: auto; filter: drop-shadow(0 0 10px var(--color-primary)); }
-    
-    #main-slider { display: flex; flex-direction: row; }
-    .card-custom { min-width: 50vmin; height: 50vmin; flex-shrink: 0; margin-right: 20px; }
-
-    /* Running Text Posisi Bawah (Desktop) */
-    .running-text-wrapper {
-        position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-        width: 70vw; overflow: hidden;
-    }
-}
+  
+  .master-frame {
+      display: grid;
+      grid-template-areas:
+          "header header"
+          "brand slider"
+          "footer footer";
+      grid-template-columns: 40vmin 1fr;
+      grid-template-rows: 20vmin 60vmin 1fr;
+      width: 90vw;
+      height: 100vmin;
+      gap: 10px;
+  }
+  
+  /* Update pada Master Frame */
+  .master-frame {
+      position: relative;
+      border: 1px solid rgba(192, 132, 252, 0.1);
+      background: 
+          radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, var(--bg-dark) 100%),
+          url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); /* Tekstur halus gaming */
+  }
+  
+  /* Dekorasi Siku Gaming */
+  .master-frame::before, .master-frame::after {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--color-primary);
+      pointer-events: none;
+      filter: drop-shadow(0 0 5px var(--color-primary));
+  }
+  
+  .master-frame::before { top: -5px; left: -5px; border-right: 0; border-bottom: 0; }
+  .master-frame::after { bottom: -5px; right: -5px; border-left: 0; border-top: 0; }
+  
+  #header-area { grid-area: header; display: flex; align-items: center; justify-content: center; }
+  
+  #main-headline {
+      color: var(--text-main);
+      text-shadow: 0 0 15px var(--glow-color);
+  }
+  
+  #sub-headline {
+      color: var(--text-muted); /* Teks di footer sedikit lebih redup agar elegan */
+  }
+  
+  #brand-area {
+      grid-area: brand;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border-right: 1px solid var(--border-color);
+  }
+  
+  .main-logo {
+      width: 100%; /* Mengikuti lebar brand-area (40vmin) */
+      max-width: 30vmin; /* Memberi sedikit ruang napas */
+      height: auto;
+      filter: drop-shadow(0 0 10px var(--accent-glow)); /* Efek glow pada logo */
+  }
+  
+  .tagline {
+      font-size: 1.5vmin;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 15px;
+  }
+  
+  #slider-container {
+      grid-area: slider;
+      overflow-x: auto; /* Aktifkan scroll horizontal */
+      overflow-y: hidden; /* Matikan scroll vertikal */
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      white-space: nowrap; /* Mencegah kartu turun ke bawah */
+  }
+  
+  #main-slider {
+      display: flex; /* Memastikan isi di dalamnya berbaris kesamping */
+      flex-direction: row;
+  }
+  
+  /* Sembunyikan scrollbar agar lebih cantik (Opsional) */
+  #slider-container::-webkit-scrollbar {
+      height: 8px;
+  }
+  #slider-container::-webkit-scrollbar-thumb {
+      background: var(--color-primary);
+      border-radius: 10px;
+  }
+  #footer-area { grid-area: footer; padding: 10px; text-align: center; }
+  
+  /* Style Kartu */
+  .card-custom {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      backdrop-filter: blur(8px);
+      min-width: 50vmin;
+      height: 50vmin;
+      border-radius: 20px;
+      margin-right: 20px;
+      padding: 20px;
+      flex-shrink: 0;
+      white-space: normal;
+      
+      position: relative; /* Wajib untuk posisi hint */
+      cursor: pointer;    /* Mengubah kursor jadi tangan */
+      overflow: hidden;   /* Memotong teks meluber */
+      transition: all 0.3s ease-in-out; /* Animasi smooth saat hover */
+  }
+  
+  /* Efek Hover: Naik dan Bercahaya */
+  .card-custom:hover {
+      transform: translateY(-10px);
+      border-color: var(--color-primary);
+      box-shadow: 0 10px 20px var(--glow-color);
+  }
+  
+  /* Efek Memudar ( . . . ) di bagian bawah kartu */
+  .card-custom::after {
+      content: ". . . Baca Selengkapnya";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px; /* Area memudar */
+      background: linear-gradient(transparent, var(--bg-dark)); /* Memudar ke warna background master */
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+      font-size: 1.4vmin;
+      font-weight: bold;
+      color: var(--color-primary);
+      opacity: 0.8;
+  }
+  
+  
