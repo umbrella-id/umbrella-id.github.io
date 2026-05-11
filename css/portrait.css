@@ -1,71 +1,135 @@
+/* ==========================================
+   UMBRELLA GUILD - PORTRAIT STACK ENGINE
+   ========================================== */
 @media screen and (max-width: 767px) or (orientation: portrait) {
-
-    /* 1. MATIKAN SCROLL UTAMA (Menghilangkan Scrollbar Samping) */
-    html, body {
-        height: 100% !important;
-        overflow: hidden !important; 
-        position: fixed; /* Mengunci layar utama agar tidak bergerak */
-        width: 100%;
-    }
-
-    /* 2. AREA SCROLL PINDAH KE SINI */
-    .master-frame {
-        height: 100vh !important;
-        width: 100vw;
-        overflow-y: scroll !important; /* Scroll internal */
-        scroll-snap-type: y mandatory; /* MAGNET: Pengunci kartu */
-        -webkit-overflow-scrolling: touch;
-        display: block !important;
-    }
     
-    /* Sembunyikan indikator scrollbar agar kesan gaming kuat */
-    .master-frame::-webkit-scrollbar { display: none; }
+    html, body {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-dark);
+    }
 
-    /* 3. LOGO (FIXED DI ATAS) */
+    .master-frame {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Logo Badge Pojok (Muncul saat swipe) */
     #brand-area {
         position: fixed;
-        top: 0; left: 0; width: 100%;
-        z-index: 1000;
-        background: rgba(2, 6, 23, 0.9);
-        backdrop-filter: blur(10px);
-        height: 70px;
-        display: flex;
-        align-items: center;
-        padding: 0 15px;
-        border-bottom: 1px solid var(--border-card);
-    }
-
-    /* 4. LOGIKA KARTU: SATU LAYAR SATU KARTU */
-    #slider-container, #main-slider {
+        top: 7.5%; left: 5%;
+        z-index: 10000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
         display: block !important;
-        padding: 0 !important;
+    }
+    #brand-area.active { opacity: 1; }
+    .main-logo {
+        width: 70px;
+        transform: translate(5px, -25px);
+        filter: drop-shadow(0 0 10px var(--color-primary));
+    }
+    #tagline-container, #sosmed-container, #header-area, #footer-area { display: none; }
+
+    /* Stacking Container */
+    #slider-container {
+        width: 100%; height: 100%;
+        padding: 0; margin: 0;
+        display: block;
     }
 
-    .card-custom {
-        /* MAGNET SNAP: Harus center agar pas di layar */
-        scroll-snap-align: center;
-        scroll-snap-stop: always;
-        
-        /* UKURAN MATI: Tinggi 75% layar agar dominan */
-        height: 75vh !important;
-        width: 90vw !important;
-        flex-shrink: 0 !important;
-        
-        /* JARAK EKSTRIM: Agar kartu di bawahnya tidak terlihat sebelum discroll */
-        margin: 12vh auto 25vh auto !important; 
-        
-        /* VISUAL GAMING */
-        background: var(--bg-card) !important;
-        border: 2px solid var(--color-primary) !important;
-        box-shadow: 0 -20px 50px rgba(0,0,0,1) !important;
-        border-radius: 20px;
+    #main-slider {
         position: relative;
-        z-index: 1;
+        width: 100%; height: 100%;
     }
 
-    /* 5. Z-INDEX MANUAL: Memastikan Kartu Baru Selalu Menimpa */
-    .card-custom:nth-child(1) { z-index: 10; }
-    .card-custom:nth-child(2) { z-index: 20; }
-    .card-custom:nth-child(3) { z-index: 30; }
-    .card-custom:nth-child(4) { z-index: 40; }
+    /* Kartu Portrait */
+    .card-custom {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.6s ease;
+    }
+
+    .card-content {
+        width: 90%;
+        height: 85%;
+        background: var(--bg-card);
+        border: 2px solid var(--border-card);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 0 30px var(--glow-color);
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    /* Pembagian Ruang */
+    .card-content h3 {
+        max-height: 30%;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--color-primary);
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .card-body-text {
+        flex: 1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        overflow: hidden;
+        mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    }
+
+    /* Stacking Logic Visual */
+    .card-custom.is-stacked {
+        transform: scale(0.9) translateY(-40px) !important;
+        filter: brightness(0.2);
+        opacity: 0.5;
+        z-index: 5;
+    }
+
+    /* Floating Chat Button */
+    .floating-chat-portrait {
+        position: absolute;
+        bottom: 25px;
+        right: 25px;
+        width: 55px;
+        height: 55px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 15px var(--glow-color);
+        z-index: 100;
+    }
+
+    .hint-portrait {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        opacity: 0.5;
+        animation: bnc 2s infinite;
+    }
+    @keyframes bnc { 0%,100%{transform:translateY(0) translateX(-50%)} 50%{transform:translateY(-5px) translateX(-50%)} }
 }
