@@ -3,31 +3,32 @@ let globalData = [];
 let currentIndex = 0;
 
 async function init() {
-    const status = document.getElementById('status-text');
     try {
         const res = await fetch(GAS_URL);
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
-        status.innerText = "ONLINE";
         render();
-    } catch (e) {
-        status.innerText = "OFFLINE/ERROR";
-    }
+    } catch (e) { document.getElementById('status-text').innerText = "OFFLINE"; }
 }
 
 function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
-    if (!slider || globalData.length === 0) return;
+    if (!slider) return;
 
     slider.innerHTML = ""; 
 
     globalData.forEach((item, i) => {
         const card = document.createElement('div');
         card.className = isPortrait ? 'stack-card' : 'slide-card';
-        card.classList.add('card-frame-base');
+        if (!isPortrait) card.classList.add('card-frame-base'); // PC langsung pake frame
 
-        card.innerHTML = `
+        card.innerHTML = isPortrait ? `
+            <div class="card-frame-base">
+                <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
+                <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
+            </div>
+        ` : `
             <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
             <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
         `;
@@ -47,7 +48,6 @@ function updateStack() {
     });
 }
 
-// Swipe Logic
 let startY = 0;
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: true});
 window.addEventListener('touchend', e => {
