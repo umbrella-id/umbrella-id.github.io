@@ -1,7 +1,7 @@
 :root {
     --color-primary: #c084fc;
     --bg-dark: #020617;
-    --bg-card: rgba(30, 41, 59, 0.98);
+    --bg-card: rgba(15, 23, 42, 0.98);
     --border-card: rgba(192, 132, 252, 0.4);
 }
 
@@ -9,53 +9,65 @@
 body, html { 
     width: 100%; height: 100%; background: var(--bg-dark); 
     color: white; font-family: sans-serif; overflow: hidden; 
-    touch-action: none; /* Mencegah pull-to-refresh browser */
+    touch-action: none; 
 }
 
-.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
 
-/* PC MODE (LANDSCAPE) */
-@media screen and (min-width: 768px) {
-    .master-frame { 
-        display: grid; 
-        grid-template-areas: "brand slider" "footer footer"; 
-        grid-template-columns: 280px 1fr; 
-        grid-template-rows: 1fr 50px; 
-        padding: 20px; gap: 20px; 
-    }
-    #brand-area { grid-area: brand; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border-card); }
-    #main-slider { grid-area: slider; display: flex; gap: 20px; overflow-x: auto; padding: 20px; align-items: center; }
-    .slide-card { width: 350px; height: 480px; flex-shrink: 0; }
+/* FLOATING LOGO (MEMOTONG POJOK KARTU) */
+#main-logo-wrapper {
+    position: absolute;
+    top: 5%; /* Sesuaikan posisi agar pas di pojok kartu */
+    left: 8%;
+    z-index: 200; /* Paling atas dari segalanya */
+    pointer-events: none;
+}
+#floating-logo {
+    height: 60px; /* Ukuran logo lebih berwibawa */
+    filter: drop-shadow(0 0 10px var(--color-primary));
 }
 
-/* MOBILE MODE (KINETIC PHYSICS) */
+/* MOBILE MODE (PHYSICS & OVERLAP LOGIC) */
 @media screen and (max-width: 767px) {
-    #brand-area { height: 70px; display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; }
-    #main-logo { height: 35px; }
     #slider-container { flex: 1; position: relative; width: 100%; overflow: hidden; }
     #main-slider { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     .stack-card {
         position: absolute; inset: 0;
         display: flex; justify-content: center; align-items: center;
-        /* Transisi halus saat commit/revert gerakan */
         transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s;
         opacity: 0; pointer-events: none;
     }
 
-    /* Kartu Aktif berada di layer bawah saat ditimpa */
+    /* Kartu aktif (di belakang saat ditimpa) */
     .stack-card.is-active { opacity: 1; z-index: 10; pointer-events: auto; }
 
-    /* Kartu Atas & Bawah (Preview) selalu di depan jari */
-    .stack-card.is-stacked, .stack-card.is-next { opacity: 1; z-index: 50; }
+    /* Kartu tetangga (selalu di atas saat ditarik) */
+    .stack-card.is-stacked, .stack-card.is-next { 
+        opacity: 1; 
+        z-index: 100; 
+    }
 
     .card-frame-base {
-        width: 90%; height: 85%;
-        background: var(--bg-card); border: 2px solid var(--border-card);
-        border-radius: 24px; padding: 25px; display: flex; flex-direction: column;
-        box-shadow: 0 0 50px rgba(0,0,0,0.9);
+        width: 88%; height: 82%;
+        background: var(--bg-card); 
+        border: 2.5px solid var(--border-card); /* Border lebih tegas */
+        border-radius: 30px; 
+        padding: 40px 25px 25px 25px; /* Padding atas lebih besar untuk ruang logo */
+        display: flex; flex-direction: column;
+        box-shadow: 0 0 60px rgba(0,0,0,0.9);
+        position: relative;
     }
 }
 
-.card-title { color: var(--color-primary); margin-bottom: 12px; font-size: 1.4rem; text-transform: uppercase; font-weight: bold; }
-.scroll-area { flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; font-size: 1rem; }
+/* PC MODE */
+@media screen and (min-width: 768px) {
+    #main-logo-wrapper { display: none; } /* Gunakan aside bar saja di PC */
+    .master-frame { display: grid; grid-template-columns: 250px 1fr; grid-template-rows: 1fr 50px; padding: 20px; gap: 20px; }
+    #main-slider { display: flex; gap: 25px; overflow-x: auto; align-items: center; padding: 20px; }
+    .slide-card { width: 350px; height: 500px; flex-shrink: 0; }
+}
+
+.card-title { color: var(--color-primary); margin-bottom: 15px; font-size: 1.5rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
+.scroll-area { flex: 1; overflow-y: auto; line-height: 1.7; color: #e2e8f0; font-size: 1rem; }
+#footer-area { height: 50px; display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--border-card); background: rgba(0,0,0,0.5); }
