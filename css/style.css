@@ -12,29 +12,49 @@ body, html {
     touch-action: none; 
 }
 
-.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
 
-/* CARD ELEMENT */
-.card-logo { width: 45px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 5px var(--color-primary)); }
-.card-title { color: var(--color-primary); margin-bottom: 10px; font-size: 1.3rem; text-transform: uppercase; font-weight: 800; }
-.scroll-area { flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; }
+/* HINT SWIPE */
+#swipe-hint {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 999;
+    background: rgba(0,0,0,0.7); pointer-events: none;
+    transition: opacity 1s ease-out; font-weight: bold; letter-spacing: 3px;
+}
+.fade-out { opacity: 0; }
+.hint-icon { font-size: 2rem; color: var(--color-primary); animation: bounce 1s infinite; }
 
+/* CARD BASE & GLOW */
+.card-logo { width: 45px; margin-bottom: 15px; filter: drop-shadow(0 0 5px var(--color-primary)); }
 .card-frame-base {
     background: var(--bg-card); border: 2px solid var(--border-card);
     border-radius: 24px; padding: 25px; display: flex; flex-direction: column;
-    box-shadow: 0 10px 50px rgba(0,0,0,0.9);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-/* PC MODE */
-@media screen and (min-width: 768px) {
-    .master-frame { padding: 30px; }
-    #main-slider { display: flex; gap: 30px; overflow-x: auto; align-items: center; height: 100%; padding-bottom: 20px; }
-    .slide-card { width: 340px; height: 500px; flex-shrink: 0; }
+/* EFEK GLOW BERNAPAS PADA KARTU AKTIF */
+.is-active .card-frame-base {
+    animation: glow-pulse 2s infinite alternate;
+    border-color: var(--color-primary);
 }
 
-/* MOBILE MODE (THE DYNAMIC STACK) */
+@keyframes glow-pulse {
+    from { box-shadow: 0 0 10px rgba(192, 132, 252, 0.2); }
+    to { box-shadow: 0 0 30px rgba(192, 132, 252, 0.6); }
+}
+
+/* CLEAN SCROLL AREA (No Scrollbar) */
+.scroll-area { 
+    flex: 1; overflow-y: auto; line-height: 1.6; 
+    color: #cbd5e1; font-size: 0.95rem;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+.scroll-area::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
+
+/* MOBILE MODE (DEPTH STACK) */
 @media screen and (max-width: 767px) {
-    #slider-container { flex: 1; position: relative; width: 100%; overflow: hidden; }
+    #slider-container { flex: 1; position: relative; overflow: hidden; perspective: 1000px; }
     #main-slider { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     .stack-card {
@@ -44,12 +64,18 @@ body, html {
         opacity: 0; pointer-events: none;
     }
 
-    .stack-card.is-active { opacity: 1; z-index: 10; pointer-events: auto; }
-    
-    /* Kartu tetangga (Preview) - Opacity Aktif */
-    .stack-card.is-stacked, .stack-card.is-next { opacity: 1; z-index: 100; }
+    .stack-card.is-active { opacity: 1; z-index: 50; pointer-events: auto; transform: scale(1); }
+    .stack-card.is-next { opacity: 0.6; z-index: 20; transform: translateY(20px) scale(0.85); filter: brightness(0.4); }
+    .stack-card.is-stacked { opacity: 0; z-index: 10; transform: translateY(-100%) scale(0.85); }
 
     .stack-card .card-frame-base { width: 90%; height: 85%; }
 }
 
-#footer-area { height: 50px; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; background: #000; font-size: 11px; letter-spacing: 2px; }
+/* PC MODE */
+@media screen and (min-width: 768px) {
+    .master-frame { padding: 30px; }
+    #main-slider { display: flex; gap: 30px; overflow-x: auto; align-items: center; height: 100%; }
+    .slide-card { width: 340px; height: 500px; flex-shrink: 0; }
+}
+
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
