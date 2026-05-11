@@ -2,79 +2,61 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2E
 let globalData = [];
 let currentIndex = 0;
 
-async function initSystem() {
-    const statusText = document.getElementById('status-text');
+async function init() {
+    const status = document.getElementById('status-text');
     try {
-        statusText.innerText = "LOADING DATA...";
-        const response = await fetch(GAS_URL);
-        const data = await response.json();
+        const res = await fetch(GAS_URL);
+        const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
-        
-        statusText.innerText = "SYSTEM READY";
-        renderInterface();
-    } catch (err) {
-        statusText.innerText = "CONNECTION ERROR";
-        console.error(err);
+        status.innerText = "ONLINE";
+        render();
+    } catch (e) {
+        status.innerText = "OFFLINE/ERROR";
     }
 }
 
-function renderInterface() {
+function render() {
     const isPortrait = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
-    if (!slider) return;
+    if (!slider || globalData.length === 0) return;
 
-    slider.innerHTML = ""; // Bersihkan konten lama
+    slider.innerHTML = ""; 
 
     globalData.forEach((item, i) => {
         const card = document.createElement('div');
-        // Gunakan nama class sesuai usulmu: stack-card atau slide-card
         card.className = isPortrait ? 'stack-card' : 'slide-card';
         card.classList.add('card-frame-base');
 
         card.innerHTML = `
-            <h2 class="card-title">${item.Header || 'Untitled'}</h2>
-            <div class="scroll-area">
-                ${(item.Body || "").replace(/\n/g, '<br>')}
-            </div>
+            <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
+            <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
         `;
         slider.appendChild(card);
     });
 
-    if (isPortrait) updateStackPositions();
+    if (isPortrait) updateStack();
 }
 
-function updateStackPositions() {
+function updateStack() {
     const cards = document.querySelectorAll('.stack-card');
     cards.forEach((card, i) => {
         card.classList.remove('is-active', 'is-stacked', 'is-next');
-        if (i < currentIndex) {
-            card.classList.add('is-stacked');
-        } else if (i === currentIndex) {
-            card.classList.add('is-active');
-        } else {
-            card.classList.add('is-next');
-        }
+        if (i < currentIndex) card.classList.add('is-stacked');
+        else if (i === currentIndex) card.classList.add('is-active');
+        else card.classList.add('is-next');
     });
 }
 
-// Mobile Interaction Logic
+// Swipe Logic
 let startY = 0;
 window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: true});
 window.addEventListener('touchend', e => {
     if (window.innerWidth >= 768) return;
-    const diffY = e.changedTouches[0].pageY - startY;
-
-    if (diffY < -60 && currentIndex < globalData.length - 1) {
-        currentIndex++; // Swipe Up -> Next
-    } else if (diffY > 60 && currentIndex > 0) {
-        currentIndex--; // Swipe Down -> Prev
-    }
-    updateStackPositions();
+    const diff = e.changedTouches[0].pageY - startY;
+    if (diff < -60 && currentIndex < globalData.length - 1) currentIndex++;
+    else if (diff > 60 && currentIndex > 0) currentIndex--;
+    updateStack();
 }, {passive: true});
 
-// Re-render saat layar diputar/diubah ukurannya
-window.addEventListener('resize', () => {
-    renderInterface();
-});
-
-document.addEventListener('DOMContentLoaded', initSystem);
+window.addEventListener('resize', render);
+document.addEventListener('DOMContentLoaded', init);
