@@ -1,103 +1,59 @@
 /* ==========================================
-   1. UNIVERSAL IDENTITY (Warna & Font)
-   Tetap aktif di PC maupun Mobile
+   1. UNIVERSAL (Identitas & Font)
    ========================================== */
 :root {
   --color-primary: #c084fc;
-  --glow-color: rgba(192, 132, 252, 0.6);
+  --glow-color: rgba(192, 132, 252, 0.4);
   --bg-dark: #020617;
-  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card: rgba(30, 41, 59, 0.8);
   --border-card: rgba(192, 132, 252, 0.3);
   --text-main: #ffffff;
-  --text-muted: #cbd5e1;
 }
 
-* { box-sizing: border-box; }
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    margin: 0; padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-/* Base Card Style (Visual Saja) */
-.card-custom {
-    background: var(--bg-card);
-    border: 1px solid var(--border-card);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    padding: 20px;
-}
+/* Modal HUD (Universal) */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+.modal-hud-frame { background: var(--bg-card); border: 1px solid var(--color-primary); padding: 30px; width: 85vw; max-width: 600px; box-shadow: 0 0 30px var(--glow-color); clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%); }
 
 /* ==========================================
-   2. WAJAH PC (LANDSCAPE ONLY)
+   2. WAJAH PC (LANDSCAPE)
    ========================================== */
 @media screen and (min-width: 768px) and (orientation: landscape) {
-    body {
-        display: flex; justify-content: center; align-items: center;
-        min-height: 100vh; overflow: hidden;
-    }
-    .master-frame {
-        display: grid;
-        grid-template-areas: "header header" "brand slider" "footer footer";
-        grid-template-columns: 35vmin 1fr;
-        grid-template-rows: 15vmin 1fr 10vmin;
-        width: 95vw; height: 90vh; gap: 15px;
-        position: relative;
-    }
-    #slider-container {
-        grid-area: slider; display: flex; align-items: center;
-        overflow-x: auto; overflow-y: hidden; white-space: nowrap;
-    }
-    #main-slider { display: flex; flex-direction: row; }
-    .card-custom {
-        width: 40vmin; height: 55vmin; 
-        margin-right: 20px; flex-shrink: 0;
-    }
-    /* Sembunyikan elemen mobile */
-    .floating-chat-btn, .hint-up { display: none; }
+    .master-frame { display: grid; grid-template-areas: "header header" "brand slider" "footer footer"; grid-template-columns: 300px 1fr; grid-template-rows: 100px 1fr 80px; width: 100vw; height: 100vh; gap: 10px; padding: 20px; }
+    #slider-container { grid-area: slider; display: flex; align-items: center; overflow-x: auto; white-space: nowrap; padding: 20px; }
+    #main-slider { display: flex; gap: 20px; }
+    .card-custom { width: 350px; height: 450px; flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 15px; padding: 20px; white-space: normal; position: relative; }
 }
 
 /* ==========================================
-   3. WAJAH MOBILE (PORTRAIT ONLY)
+   3. WAJAH HP (PORTRAIT STACKING)
    ========================================== */
 @media screen and (max-width: 767px) or (orientation: portrait) {
-    html, body { 
-        overflow: hidden !important; 
-        position: fixed; 
-        width: 100%; height: 100%; 
-    }
-    .master-frame { 
-        display: block; 
-        position: relative; 
-        width: 100vw; height: 100vh; 
-    }
-    #slider-container {
-        position: absolute; inset: 0;
-        display: block; overflow: hidden;
-    }
+    .master-frame { position: fixed; inset: 0; display: block; }
+    #slider-container { position: absolute; inset: 0; overflow: hidden; }
     #main-slider { position: relative; width: 100%; height: 100%; }
-
-    /* Paksa Stacking */
-    .card-custom {
-        position: absolute !important;
-        top: 0; left: 0; 
-        width: 100% !important; height: 100% !important;
-        margin: 0 !important;
-        display: flex; justify-content: center; align-items: center;
+    
+    .card-custom { 
+        position: absolute !important; inset: 0; 
+        display: flex; justify-content: center; align-items: center; 
         background: transparent !important; border: none !important;
+        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease;
     }
-    .card-content {
-        width: 90%; height: 85%;
-        background: var(--bg-card); border: 1px solid var(--border-card);
-        border-radius: 20px; padding: 25px;
-        display: flex; flex-direction: column;
+    .card-content { 
+        width: 88%; height: 82%; background: var(--bg-card); 
+        border: 2px solid var(--border-card); border-radius: 20px; 
+        padding: 25px; display: flex; flex-direction: column; 
+        box-shadow: 0 0 25px var(--glow-color);
     }
-    /* Area Teks agar bisa scroll di dalam jika data GAS kepanjangan */
-    .card-body-text {
-        flex: 1; overflow-y: auto; 
-        padding-bottom: 20px;
-    }
-    /* Sembunyikan elemen PC */
-    #header-area, #footer-area, #brand-area, .tagline { display: none; }
+    .card-body-text { flex: 1; overflow-y: auto; margin-top: 10px; font-size: 0.95rem; line-height: 1.5; mask-image: linear-gradient(to bottom, black 80%, transparent 100%); }
+    
+    /* State Stacking */
+    .card-custom.is-stacked { transform: scale(0.92) translateY(-40px); filter: brightness(0.2); z-index: 5; opacity: 0.5; }
+    .card-custom.is-active { z-index: 10; transform: translateY(0); }
+    .card-custom.is-next { transform: translateY(100%); z-index: 20; }
+    
+    /* UI Elements Mobile */
+    #brand-area, #header-area, #footer-area { display: none; }
 }
