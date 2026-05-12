@@ -15,68 +15,66 @@
     <!-- 3. CSS MOBILE: Layout Tumpuk & Floating -->
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
-<body>
+<div class="master-frame">
+    
+    <!-- HEADER -->
+    <div class="top-bar">
+        <div class="pc-header-text">HEADER</div>
+        <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
+    </div>
 
-    <div class="master-frame">
+    <div class="content-wrapper">
         
-        <!-- HEADER: Kotak Surat -->
-        <div class="top-bar">
-            <div class="pc-header-text">HEADER</div>
-            <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
+        <!-- SIDEBAR PC (Biarkan begini, nanti kita urus di PC Mode) -->
+        <div class="sidebar-brand" id="sidebar-area">
+            <div class="slogan-text">Selogan</div>
         </div>
 
-        <!-- AREA TENGAH: Sidebar & Slider -->
-        <div class="content-wrapper">
+        <!-- ========================================== -->
+        <!-- AREA MOBILE (FOKUS KITA SEKARANG)          -->
+        <!-- ========================================== -->
+        <div class="mobile-only-stack" id="slider-container">
             
-            <!-- SIDEBAR: Tempat Logo di PC -->
-            <div class="sidebar-brand" id="sidebar-area">
-                <!-- Di Mobile, area ini akan kosong karena logo pindah ke dalam slider -->
-                <div class="slogan-text">Selogan</div>
+            <!-- Logo Umbrella: Biar muncul di HP di tengah layar -->
+            <div class="logo-wrapper">
+                <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
             </div>
 
-            <!-- SLIDER: Tempat Kartu & Logo Mobile -->
-            <div id="slider-container">
-                
-                <!-- KONTEN LOGO: Satu-satunya elemen logo yang dipakai bersama -->
-                <div class="logo-wrapper">
-                    <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
+            <!-- Slider tempat kartu bertumpuk -->
+            <div id="main-slider">
+                <!-- KARTU 1 -->
+                <div class="card-element is-active">
+                    <div class="card-content">
+                        <h2>BUFF SERIKAT</h2>
+                        <ul>
+                            <li>PARON SERIKAT LV.10 - ✅</li>
+                            <li>MEJA JAHIT SERIKAT LV.10 - ✅</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div id="main-slider">
-                    <!-- KARTU 1 -->
-                    <div class="card-element is-active">
-                        <div class="card-content">
-                            <h2>BUFF SERIKAT</h2>
-                            <ul>
-                                <li>PARON SERIKAT LV.10 - ✅</li>
-                                <li>MEJA JAHIT SERIKAT LV.10 - ✅</li>
-                            </ul>
-                        </div>
+                <!-- KARTU 2 -->
+                <div class="card-element">
+                    <div class="card-content">
+                        <h2>WHATSAPP</h2>
+                        <p>https:// ....</p>
                     </div>
-
-                    <!-- KARTU 2 -->
-                    <div class="card-element">
-                        <div class="card-content">
-                            <h2>WHATSAPP</h2>
-                            <p>https:// ....</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Tambahkan kartu lainnya di sini -->
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER: Icon Chat -->
-        <div class="bottom-bar">
-            <div class="pc-footer-text">FOTHER</div>
-            <div class="chat-container" id="chat-trigger">
-                <div class="chat-icon">💬</div>
-            </div>
-        </div>
+        <!-- AREA PC (Kosongin aja dulu, biar nggak ganggu) -->
+        <div class="pc-only-slider"></div>
 
     </div>
 
-    <script src="js/app.js"></script>
-</body>
+    <!-- FOOTER -->
+    <div class="bottom-bar">
+        <div class="pc-footer-text">FOTHER</div>
+        <div class="chat-container" id="chat-trigger">
+            <div class="chat-icon">💬</div>
+        </div>
+    </div>
+
+</div>
 </html>
