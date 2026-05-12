@@ -1,50 +1,104 @@
 @media screen and (max-width: 767px) {
-    /* 1. Paksa kontainer menjadi panggung statis */
-    #slider-container {
-        position: relative;
+    /* 1. Reset Master - Mengunci layar agar tidak goyang saat swipe */
+    .master-frame {
+        display: block !important;
+        position: fixed;
+        inset: 0;
         width: 100vw;
         height: 100vh;
-        overflow: hidden; /* Mencegah scroll ke bawah */
+        overflow: hidden;
+        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    }
+
+    /* 2. Sembunyikan elemen PC */
+    .sidebar-brand, .pc-header-text, .pc-footer-text {
+        display: none !important;
+    }
+
+    /* 3. Container Panggung (Area Tumpukan) */
+    #slider-container {
+        position: absolute;
+        inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        perspective: 1500px; /* Efek 3D lebih dalam */
     }
 
     #main-slider {
         position: relative;
         width: 100%;
         height: 100%;
-        /* Jangan gunakan display: block atau flex yang berderet */
+        display: block !important; 
     }
 
-    /* 2. KARTU WAJIB ABSOLUTE */
+    /* 4. Detail Kartu (The Stacking Engine) */
     .card-element {
-        position: absolute !important; /* WAJIB: agar semua kartu di koordinat yang sama */
+        position: absolute !important;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) scale(0.9); /* Taruh di tengah dan perkecil sedikit */
-        
-        width: 90vw;
+        width: 88vw;
         height: 75vh;
-        margin: 0 !important;
+        /* Titik tumpu tepat di tengah */
+        transform: translate(-50%, -50%) scale(0.85) rotateX(5deg);
+        
+        background: var(--bg-card);
+        border: 2px solid var(--border-line);
+        border-radius: 30px;
+        padding: 25px;
         
         opacity: 0;
         visibility: hidden;
-        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+        
+        /* Animasi Transisi Halus */
+        transition: 
+            transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+            opacity 0.5s ease,
+            box-shadow 0.5s;
+        
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        will-change: transform, opacity;
     }
 
-    /* 3. Tampilkan hanya kartu yang aktif */
+    /* 5. Kartu Aktif (Is-Active) */
     .card-element.is-active {
         opacity: 1;
         visibility: visible;
-        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
         z-index: 100;
+        transform: translate(-50%, -50%) scale(1) rotateX(0deg);
+        box-shadow: 0 0 30px rgba(192, 132, 252, 0.2);
     }
 
-    /* 4. Kartu yang sedang di-swipe (di atas) */
+    /* 6. Kartu Saat Di-Swipe (On-Top) */
     .card-element.on-top {
         opacity: 1;
         visibility: visible;
         z-index: 200;
+        pointer-events: auto;
+    }
+
+    /* 7. Logo & Branding di Dalam Kartu */
+    #main-logo {
+        width: 70px !important;
+        height: auto;
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        z-index: 10;
+        filter: drop-shadow(0 0 10px var(--color-primary));
+        transition: transform 0.3s ease;
+    }
+
+    #main-logo:hover {
+        transform: scale(1.1);
+    }
+
+    /* Beri jarak konten agar tidak tertabrak logo */
+    .card-content-wrapper {
+        margin-top: 80px;
+        height: calc(100% - 80px);
+        overflow-y: auto;
     }
 }
