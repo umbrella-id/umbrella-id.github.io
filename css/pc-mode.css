@@ -1,91 +1,94 @@
 @media screen and (min-width: 768px) {
-    /* 1. LAYOUT UTAMA */
+    body {
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #020617;
+    }
+
+    /* Mengaktifkan Grid Area sesuai referensi lama kamu */
     .master-frame {
-        display: flex !important;
-        flex-direction: row !important;
+        display: grid !important;
+        grid-template-areas:
+            "header header"
+            "brand slider"
+            "footer footer";
+        grid-template-columns: 350px 1fr; /* Brand area lebar tetap */
+        grid-template-rows: 80px 1fr 60px; /* Header & Footer tinggi tetap */
         width: 100vw;
         height: 100vh;
+        gap: 0;
         position: relative;
-        overflow: hidden;
     }
 
-    /* 2. SIDEBAR (AREA LOGO & SELOGAN) */
-    .sidebar-brand {
-        width: 30% !important;
-        height: 100% !important;
+    /* 1. HEADER AREA */
+    .top-bar, #header-area {
+        grid-area: header;
+        position: relative !important; /* Cabut dari absolute mobile */
         display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        border-right: 1px solid rgba(192, 132, 252, 0.2);
-        z-index: 50; /* Pastikan di bawah kartu tapi di atas background */
-        background: rgba(10, 15, 30, 0.8);
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 40px;
+        border-bottom: 1px solid rgba(192, 132, 252, 0.1);
+        z-index: 100;
     }
 
-    /* Paksa Logo masuk ke Sidebar, bukan di tengah layar seperti di image_9e4726.png */
+    /* 2. BRAND AREA (Area Sidebar Logo) */
+    .sidebar-brand {
+        grid-area: brand;
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-right: 1px solid rgba(192, 132, 252, 0.1);
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.3);
+    }
+
+    /* Pindahkan Logo raksasa di image_9e3fc2.png ke sini */
     .logo-wrapper {
         position: relative !important;
         transform: none !important;
-        left: auto !important;
-        top: auto !important;
-        width: 85% !important;
-        max-width: 280px !important;
-        display: block !important;
-        margin-bottom: 20px;
-    }
-
-    .logo-wrapper img {
+        inset: auto !important;
         width: 100% !important;
-        height: auto !important;
-        filter: drop-shadow(0 0 15px var(--color-primary));
+        max-width: 250px !important;
     }
 
-    /* 3. RUNNING TEXT (FOTHER / FOOTER) */
-    /* Kita kunci di dasar layar agar tidak melayang ke tengah */
-    .bottom-bar, #footer-area {
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 30% !important; /* Mulai dari batas sidebar */
-        width: 70% !important; /* Sisa lebar layar */
-        height: 60px !important;
-        display: flex !important;
-        align-items: center !important;
-        background: rgba(0, 0, 0, 0.5) !important;
-        backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(192, 132, 252, 0.2);
-        z-index: 100;
-        padding: 0 20px;
-        overflow: hidden;
-    }
-
-    /* 4. CONTENT AREA (KARTU) */
+    /* 3. SLIDER AREA (Area Kartu Konten) */
     .content-wrapper {
-        flex: 1 !important;
+        grid-area: slider;
         position: relative !important;
-        height: 100% !important;
-        background: radial-gradient(circle at center, rgba(30, 41, 59, 0.3) 0%, transparent 100%);
+        overflow: hidden;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
     }
 
+    /* Kartu harus tetap absolute terhadap area slider ini */
     .card-element {
         position: absolute !important;
-        top: 45% !important; /* Agak naik dikit biar gak tabrakan sama running text bawah */
+        top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        width: 480px !important;
-        z-index: 80;
+        width: 450px !important;
+        height: auto;
+        z-index: 50;
     }
 
-    /* 5. HEADER (KOTAK SURAT) */
-    .top-bar, #header-area {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        width: 70% !important;
-        height: 60px !important;
+    /* 4. FOOTER AREA (Running Text) */
+    .bottom-bar, #footer-area {
+        grid-area: footer;
+        position: relative !important;
         display: flex !important;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        padding-right: 40px;
-        z-index: 100;
+        align-items: center;
+        padding: 0 20px;
+        background: rgba(0, 0, 0, 0.4);
+        border-top: 1px solid rgba(192, 132, 252, 0.1);
     }
+
+    /* Hilangkan teks numpuk yang ada di image_9e3fc2.png */
+    .header-text-mobile { display: none !important; }
 }
