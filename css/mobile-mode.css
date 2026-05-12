@@ -1,14 +1,41 @@
 /* --- KHUSUS MODE MOBILE (PORTRAIT) --- */
 @media screen and (max-width: 767px) {
-    
-    /* 1. Kunci Layar: Cegah scroll body agar tidak goyang */
-    html, body, .master-frame {
-        position: fixed !important;
-        inset: 0 !important;
-        overflow: hidden !important;
-        width: 100vw;
-        height: 100vh;
+    /* Container Logo di dalam kartu */
+    .card-header-logo {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start; /* Taruh di pojok kiri atas konten */
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(192, 132, 252, 0.2); /* Garis halus di bawah logo */
     }
+
+    .inner-card-logo {
+        width: 50px; /* Ukuran pas sebagai identitas kartu */
+        height: auto;
+        filter: drop-shadow(0 0 5px var(--color-primary));
+    }
+
+    /* Sesuaikan padding kartu agar tidak sumpek */
+    .card-element {
+        padding: 20px !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-content-wrapper {
+        flex: 1;
+        overflow-y: auto;
+        /* Tidak perlu padding-top besar lagi karena logo sudah jadi konten biasa */
+    }
+
+    /* Sembunyikan logo-wrapper yang lama (yang floating) */
+    .logo-wrapper {
+        display: none !important;
+    }
+}
+
+
 
     /* 2. Sembunyikan Elemen PC */
     .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text {
@@ -31,19 +58,6 @@
         height: 100%;
     }
 
-    /* 4. LOGO: Posisi di pojok kiri atas kartu */
-    .logo-wrapper {
-        position: absolute;
-        top: calc(50% - 37vh + 20px); /* Menyesuaikan posisi atas kartu */
-        left: 40px;
-        z-index: 1000; /* Di atas segalanya */
-    }
-
-    #main-logo {
-        width: 60px !important; /* Ukuran logo di HP */
-        height: auto;
-        filter: drop-shadow(0 0 10px var(--color-primary));
-    }
 
     /* 5. KARTU: Kunci Stacking & Ukuran Seragam */
     .card-element {
