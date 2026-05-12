@@ -1,71 +1,129 @@
+/* ==========================================
+   PC MODE - GAMING HUD ARCHITECTURE
+   ========================================== */
 @media screen and (min-width: 768px) {
-    /* 1. Paksa Logo ke Sidebar Kiri */
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+        background: #020617; /* Base dark */
+    }
+
+    .master-frame {
+        display: flex; /* Pakai Flex untuk membagi Sidebar & Content */
+        width: 95vw;
+        height: 90vh;
+        position: relative;
+        border: 1px solid rgba(192, 132, 252, 0.2);
+        background: 
+            radial-gradient(circle at center, rgba(30, 41, 59, 0.4) 0%, #020617 100%),
+            url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+    }
+
+    /* Dekorasi Siku Gaming dari Kode Lamamu */
+    .master-frame::before, .master-frame::after {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--color-primary);
+        pointer-events: none;
+        filter: drop-shadow(0 0 8px var(--color-primary));
+        z-index: 2000;
+    }
+    .master-frame::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+    .master-frame::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+    /* SIDEBAR AREA (BRAND) */
     .sidebar-brand {
+        width: 30%;
+        height: 100%;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 350px !important; /* Ukuran sidebar tetap */
-        border-right: 1px solid var(--border-line);
-        background: rgba(15, 23, 42, 0.4);
         padding: 40px;
+        border-right: 1px solid rgba(192, 132, 252, 0.1);
+        z-index: 10;
     }
 
-    /* Reset posisi Logo yang di image_9f2861.png masih di tengah */
     .logo-wrapper {
         position: relative !important;
-        inset: auto !important;
-        transform: none !important;
         width: 100% !important;
-        max-width: 300px;
-        margin-bottom: 30px;
+        max-width: 320px;
+        transform: none !important;
+        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.3));
     }
 
-    .logo-wrapper img {
-        width: 100%;
-        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.4));
+    .slogan-text {
+        margin-top: 20px;
+        font-size: 1.2vmin;
+        color: var(--color-primary);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        opacity: 0.7;
     }
 
-    /* 2. Posisikan Kartu di Area Kosong (Tengah-Kanan) */
+    /* CONTENT AREA (SLIDER) */
     .content-wrapper {
-        display: flex;
-        flex: 1;
-    }
-
-    #slider-container {
         flex: 1;
         position: relative;
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: center;
     }
 
-    /* Perbaikan Kartu agar tidak terpotong di pojok */
+    #slider-container {
+        width: 100%;
+        height: 100%;
+        perspective: 1000px; /* Efek kedalaman 3D */
+    }
+
+    /* KARTU PC - Modern Stack */
     .card-element {
         position: absolute !important;
-        /* Fokuskan ke tengah sisa layar */
-        top: 50% !important;
         left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        
-        width: 550px !important;
-        height: 400px !important;
-        background: var(--bg-card);
-        border: 2px solid var(--border-line);
-        border-radius: 30px;
-        padding: 40px !important;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-        
-        /* Transisi halus saat ganti kartu */
+        top: 50% !important;
+        width: 450px !important;
+        height: 550px !important;
+        /* Default State: Tersembunyi di belakang */
+        transform: translate(-50%, -50%) scale(0.8) translateZ(-100px) !important;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        
+        background: var(--bg-card);
+        border: 1px solid var(--border-line);
+        border-radius: 20px;
+        padding: 35px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
 
-    /* Munculkan kartu yang aktif */
+    /* State Aktif (Kartu yang muncul) */
     .card-element.is-active {
         opacity: 1;
         visibility: visible;
-        transform: translate(-50%, -50%) scale(1) !important;
+        transform: translate(-50%, -50%) scale(1) translateZ(0) !important;
+        z-index: 100;
+        border: 1px solid var(--color-primary);
+        box-shadow: 0 0 30px rgba(192, 132, 252, 0.2);
+    }
+
+    /* Navigasi UI */
+    .top-bar { top: 30px; right: 40px; }
+    .bottom-bar { bottom: 30px; right: 40px; }
+
+    /* Footer Text di PC */
+    .pc-footer-info {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255,255,255,0.2);
+        font-size: 0.7rem;
+        letter-spacing: 2px;
     }
 }
