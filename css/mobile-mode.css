@@ -1,48 +1,21 @@
 /* --- KHUSUS MODE MOBILE (PORTRAIT) --- */
 @media screen and (max-width: 767px) {
-    /* Container Logo di dalam kartu */
-    .card-header-logo {
-        width: 100%;
-        display: flex;
-        justify-content: flex-start; /* Taruh di pojok kiri atas konten */
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid rgba(192, 132, 252, 0.2); /* Garis halus di bawah logo */
+    
+    /* 1. Kunci Layar & Body */
+    html, body, .master-frame {
+        position: fixed !important;
+        inset: 0 !important;
+        overflow: hidden !important;
+        width: 100vw;
+        height: 100vh;
     }
-
-    .inner-card-logo {
-        width: 50px; /* Ukuran pas sebagai identitas kartu */
-        height: auto;
-        filter: drop-shadow(0 0 5px var(--color-primary));
-    }
-
-    /* Sesuaikan padding kartu agar tidak sumpek */
-    .card-element {
-        padding: 20px !important;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .card-content-wrapper {
-        flex: 1;
-        overflow-y: auto;
-        /* Tidak perlu padding-top besar lagi karena logo sudah jadi konten biasa */
-    }
-
-    /* Sembunyikan logo-wrapper yang lama (yang floating) */
-    .logo-wrapper {
-        display: none !important;
-    }
-}
-
-
 
     /* 2. Sembunyikan Elemen PC */
-    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text {
+    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
         display: none !important;
     }
 
-    /* 3. Panggung Slider: Area tumpukan kartu */
+    /* 3. Panggung Slider */
     #slider-container {
         position: absolute;
         inset: 0;
@@ -58,31 +31,31 @@
         height: 100%;
     }
 
-
-    /* 5. KARTU: Kunci Stacking & Ukuran Seragam */
+    /* 4. KARTU: Kunci Stacking & Ukuran Seragam */
     .card-element {
-        position: absolute !important; /* WAJIB: Agar menumpuk di satu titik */
+        position: absolute !important;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.95);
         
-        /* Ukuran Seragam (Tidak mengikuti panjang teks) */
         width: 90vw !important;
         height: 75vh !important;
         
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 24px;
-        padding: 25px;
+        padding: 20px !important; /* Padding seragam */
         margin: 0 !important;
         
-        /* Efek Tumpukan */
+        display: flex;
+        flex-direction: column;
+        
         opacity: 0;
         visibility: hidden;
-        transition: transform 0.5s ease, opacity 0.4s ease;
+        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+        z-index: 1;
     }
 
-    /* Kartu yang sedang aktif tampil di depan */
     .card-element.is-active {
         opacity: 1 !important;
         visibility: visible !important;
@@ -90,14 +63,31 @@
         transform: translate(-50%, -50%) scale(1);
     }
 
-    /* 6. KONTEN KARTU: Scroll Internal */
-    .card-content {
-        height: 100%;
-        overflow-y: auto; /* Teks panjang di-scroll di sini */
-        padding-top: 60px; /* Ruang agar tidak tertutup logo */
+    /* 5. HEADER LOGO DI DALAM KARTU (Sebagai Cap) */
+    .card-header-logo {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+        flex-shrink: 0; /* Agar logo tidak gepeng saat konten panjang */
     }
 
-    /* 7. Navigasi Floating (Tetap di atas kartu) */
+    .inner-card-logo {
+        width: 50px;
+        height: auto;
+        filter: drop-shadow(0 0 5px var(--color-primary));
+    }
+
+    /* 6. AREA KONTEN: Scroll di dalam kartu */
+    .card-content-wrapper {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    /* 7. Navigasi Floating */
     .mail-container { position: fixed; top: 20px; right: 25px; z-index: 1100; }
     .chat-container { position: fixed; bottom: 30px; right: 25px; z-index: 1100; }
 }
