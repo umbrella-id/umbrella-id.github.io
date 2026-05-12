@@ -1,62 +1,87 @@
 @media screen and (max-width: 767px) {
-    /* 1. Kunci kontainer utama */
+    /* 1. Kunci Frame Utama - Hilangkan Scroll Body */
+    .master-frame {
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Sembunyikan Logo & Teks PC yang Mengganggu */
+    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan {
+        display: none !important;
+    }
+
+    /* 3. Slider Container sebagai Panggung */
     #slider-container {
         position: absolute;
         inset: 0;
-        overflow: hidden; /* Matiin scroll luar */
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 10;
     }
 
-    /* 2. SERAGAMKAN KARTU */
+    #main-slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* 4. KARTU: Wajib Seragam & Menumpuk */
     .card-element {
-        position: absolute !important;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.9);
+        position: absolute !important; /* Paksa menumpuk di satu titik */
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(1) !important;
         
-        /* UKURAN TETAP (PENTING!) */
-        width: 88vw;   /* Lebar tetap */
-        height: 70vh;  /* Tinggi tetap */
+        /* Memenuhi layar tapi tetap ada jarak manis */
+        width: 92vw !important;
+        height: 85vh !important;
         
-        background: var(--bg-card);
-        border: 2px solid var(--border-line);
-        border-radius: 24px;
-        padding: 20px;
-        
-        /* Pengaturan Konten di Dalam */
+        background: #0f172a !important; /* Warna solid agar tidak tembus pandang */
+        border: 2px solid var(--color-primary) !important;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 0 !important;
+
         display: flex;
         flex-direction: column;
-        overflow: hidden; /* Supaya border kartu gak rusak kalau konten luber */
         
+        /* Efek Tumpukan */
         opacity: 0;
         visibility: hidden;
-        transition: all 0.5s ease;
+        z-index: 1;
+        transition: opacity 0.4s ease;
     }
 
-    /* 3. SCROLL INTERNAL (Solusi teks kepanjangan) */
-    .card-content-wrapper {
-        flex: 1;
-        overflow-y: auto; /* Hanya bagian teks yang bisa di-scroll ke bawah */
-        padding-right: 5px;
-        margin-top: 60px; /* Ruang untuk logo di pojok kiri atas */
-    }
-
-    /* Kustomisasi scrollbar agar cantik */
-    .card-content-wrapper::-webkit-scrollbar {
-        width: 4px;
-    }
-    .card-content-wrapper::-webkit-scrollbar-thumb {
-        background: var(--color-primary);
-        border-radius: 10px;
-    }
-
-    /* 4. STATE AKTIF */
+    /* Kartu Aktif */
     .card-element.is-active {
-        opacity: 1;
-        visibility: visible;
-        z-index: 100;
-        transform: translate(-50%, -50%) scale(1);
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 100 !important;
     }
+
+    /* 5. LOGO DI DALAM KARTU (Pakai Pseudo-Element agar PASTI ada di setiap kartu) */
+    .card-element::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+        background: url('../logo-umbrella.svg') no-repeat center/contain;
+        z-index: 110;
+    }
+
+    /* 6. Konten di Dalam Kartu (Teks) */
+    .card-content-wrapper {
+        margin-top: 60px; /* Kasih ruang buat logo di atas */
+        overflow-y: auto; /* Teks panjang bisa di-scroll di sini */
+        height: 100%;
+    }
+
+    /* 7. Navigasi Floating tetap di atas kartu */
+    .mail-container { position: fixed; top: 15px; right: 20px; z-index: 1000; }
+    .chat-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
 }
