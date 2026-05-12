@@ -15,41 +15,67 @@
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
 <body>
+
     <div class="master-frame">
-        <header class="top-bar">
+        
+        <!-- HEADER: Kotak Surat -->
+        <div class="top-bar">
             <div class="pc-header-text">HEADER</div>
             <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
-        </header>
+        </div>
 
-        <main class="content-body">
-            <!-- Tempat asal logo (Sidebar PC) -->
-            <aside class="sidebar-brand" id="logo-home">
-                <img src="logo-umbrella.svg" id="main-logo" alt="Logo">
-                <div class="slogan" id="slogan-text">Selogan</div>
-            </aside>
+        <!-- AREA TENGAH: Sidebar & Slider -->
+        <div class="content-wrapper">
             
-            <section id="slider-container">
-                <div id="main-slider">
-                    <!-- Kartu akan di-inject JS ke sini -->
-                </div>
-            </section>
-        </main>
-
-        <footer class="bottom-bar">
-            <div class="pc-footer-text">FOTHER</div>
-            <div class="chat-container">
-                <div class="chat-icon" id="chat-trigger">💬</div>
+            <!-- SIDEBAR: Tempat Logo di PC -->
+            <div class="sidebar-brand" id="sidebar-area">
+                <!-- Di Mobile, area ini akan kosong karena logo pindah ke dalam slider -->
+                <div class="slogan-text">Selogan</div>
             </div>
-        </footer>
 
-        <!-- Popup System (Layer 2000) -->
-        <div class="popup-overlay" id="global-popup">
-            <div class="popup-content">
-                <div id="popup-body"></div>
-                <button onclick="closePopup()">TUTUP</button>
+            <!-- SLIDER: Tempat Kartu & Logo Mobile -->
+            <div id="slider-container">
+                
+                <!-- KONTEN LOGO: Satu-satunya elemen logo yang dipakai bersama -->
+                <div class="logo-wrapper">
+                    <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
+                </div>
+
+                <div id="main-slider">
+                    <!-- KARTU 1 -->
+                    <div class="card-element is-active">
+                        <div class="card-content">
+                            <h2>BUFF SERIKAT</h2>
+                            <ul>
+                                <li>PARON SERIKAT LV.10 - ✅</li>
+                                <li>MEJA JAHIT SERIKAT LV.10 - ✅</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- KARTU 2 -->
+                    <div class="card-element">
+                        <div class="card-content">
+                            <h2>WHATSAPP</h2>
+                            <p>https:// ....</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tambahkan kartu lainnya di sini -->
+                </div>
             </div>
         </div>
+
+        <!-- FOOTER: Icon Chat -->
+        <div class="bottom-bar">
+            <div class="pc-footer-text">FOTHER</div>
+            <div class="chat-container" id="chat-trigger">
+                <div class="chat-icon">💬</div>
+            </div>
+        </div>
+
     </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>
