@@ -1,52 +1,40 @@
 @media screen and (min-width: 768px) {
-    /* 1. RESET TOTAL MASTER FRAME */
-    /* Kita kunci Master Frame jadi Grid, tapi isinya kita kosongkan dulu */
-    html, body, .master-frame {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-        display: grid !important;
-        grid-template-areas:
-            "header header"
-            "brand slider"
-            "footer footer";
-        grid-template-columns: 350px 1fr !important;
-        grid-template-rows: 18dvh 60dvh 1fr !important;
-        background: #020617 !important; /* Background gelap total */
+    /* 1. HIDUPKAN WADAH UTAMA (Grid sudah ada dari kode sebelumnya) */
+    .content-wrapper {
+        display: flex !important; /* Aktifkan lagi area slider */
+        grid-area: slider;
+        overflow: hidden; /* Supaya kartu yang geser gak kelihatan di luar kotak */
+        position: relative;
+        justify-content: center;
+        align-items: center;
     }
 
-    /* 2. MATIKAN SEMUA ELEMEN YANG ADA (TARGET: HALAMAN KOSONG) */
-    /* Kita tembak semua selector yang mungkin ada di HTML kamu */
-    .top-bar, 
-    .sidebar-brand, 
-    .content-wrapper, 
-    .bottom-bar,
-    .logo-wrapper,
-    .mail-container,
-    .sosmed-corner,
-    .chat-container,
-    .running-text-wrapper,
-    .card-element,
-    .pc-header-text,
-    .pc-footer-text,
-    .slogan-text,
-    header,
-    footer,
-    aside,
-    main {
+    /* 2. OVERRIDE TOTAL .card-element (MENCUCI SIFAT STACK) */
+    .card-element {
+        /* Matikan sifat melayang (Stack) mobile */
+        display: block !important; 
+        position: relative !important; /* Bukan absolute lagi */
+        inset: auto !important;
+        transform: none !important;
+        
+        /* Paksa muncul (Reset Opacity Mobile) */
+        opacity: 1 !important;
+        visibility: visible !important;
+        
+        /* Setting Ukuran Baru untuk PC (Slide Mode) */
+        width: 400px !important; /* Ukuran kartu di mode slide PC */
+        height: 500px !important;
+        margin: 0 20px !important; /* Kasih jarak antar kartu buat sliding */
+        flex-shrink: 0; /* Biar kartu gak gepeng saat dijajalin banyak */
+        
+        /* Reset Radius/Border kalau mau beda dari mobile */
+        border-radius: 15px !important;
+        z-index: 10 !important;
+    }
+
+    /* 3. MATIKAN ELEMEN DALAM KARTU YANG GAK PERLU DI PC */
+    /* Misal logo kecil di dalam kartu yang cuma buat mobile */
+    .inner-card-logo, .card-header-logo {
         display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    /* 3. RESET KONSTRUKSI */
-    /* Memastikan tidak ada padding/margin sisa dari CSS mobile */
-    * {
-        box-sizing: border-box;
     }
 }
