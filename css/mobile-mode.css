@@ -1,84 +1,95 @@
-/* --- KHUSUS MODE MOBILE (PORTRAIT) --- */
+@media screen and (max-width: 767px) {
+    /* 1. Reset Total Layout Master */
+    .master-frame {
+        display: block !important;
+        position: fixed; /* Gunakan fixed agar tidak bisa di-scroll secara manual */
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: var(--bg-dark);
+    }
 
-/* 1. Master Frame: Sederhanakan agar tidak pakai Grid PC */
-.master-frame {
-    display: block; /* Matikan Grid PC */
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-}
+    /* 2. Sembunyikan Elemen PC Tanpa Ampun */
+    .sidebar-brand, 
+    .pc-header-text, 
+    .pc-footer-text {
+        display: none !important;
+    }
 
-/* 2. Sembunyikan Elemen PC (Sidebar & Text Header/Footer) */
-.sidebar-brand, 
-.pc-header-text, 
-.pc-footer-text {
-    display: none !important;
-}
+    /* 3. Slider Container (Panggung Utama) */
+    #slider-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        perspective: 1200px;
+        z-index: 50;
+    }
 
-/* 3. Slider Container: Buat jadi panggung tumpukan */
-#slider-container {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Memberikan efek 3D saat kartu ditarik */
-    perspective: 1200px; 
-}
+    /* 4. Main Slider (Wajib Reset Flexbox PC) */
+    #main-slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: block !important; /* Paksa matikan flex-direction: row dari PC */
+        margin: 0;
+        padding: 0;
+    }
 
-#main-slider {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    /* 5. Card Element (Kunci Stacking) */
+    .card-element {
+        position: absolute !important; /* Paksa tumpang tindih */
+        top: 50%;
+        left: 50%;
+        /* Gunakan translate -50% agar titik tengah kartu tepat di tengah layar */
+        transform: translate(-50%, -50%) scale(0.85); 
+        width: 88vw;
+        height: 72vh;
+        margin: 0 !important;
+        
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none; /* Jangan biarkan kartu transparan menghalangi klik */
+        
+        transition: 
+            transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
+            opacity 0.4s ease,
+            visibility 0.4s;
+        will-change: transform, opacity;
+    }
 
-/* 4. Card Element: Mode Tumpuk (Absolute) */
-.card-element {
-    position: absolute; /* Kunci utama stacking */
-    width: 88vw;   /* Lebar kartu di HP */
-    height: 72vh;  /* Tinggi kartu di HP */
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.8) translateY(50px);
-    transition: 
-        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
-        opacity 0.4s ease,
-        visibility 0.4s;
-    will-change: transform, opacity;
-}
+    /* 6. State Aktif (Z-Index Hierarchy) */
+    .card-element.is-active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        z-index: 100;
+        transform: translate(-50%, -50%) scale(1);
+    }
 
-/* 5. State Kartu (Diatur via JS) */
+    /* State saat transisi/swipe (Paling Depan) */
+    .card-element.on-top {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        z-index: 200;
+    }
 
-/* Kartu yang aktif/terlihat di depan */
-.card-element.is-active {
-    opacity: 1;
-    visibility: visible;
-    z-index: 100;
-    transform: scale(1) translateY(0);
-}
+    /* 7. Navigasi Floating */
+    .top-bar, .bottom-bar {
+        position: fixed !important;
+        background: transparent !important;
+        border: none !important;
+        width: auto !important;
+        height: auto !important;
+        z-index: 1000;
+    }
 
-/* Kartu yang sedang diproses/paling atas saat swipe */
-.card-element.on-top {
-    z-index: 200;
-    opacity: 1;
-    visibility: visible;
-}
-
-/* 6. Navigasi Floating (Sesuai Sketsa Kotak Surat & Chat) */
-.top-bar {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    z-index: 1000;
-}
-
-.bottom-bar {
-    position: absolute;
-    bottom: 30px;
-    right: 25px;
-    z-index: 1000;
+    .top-bar { top: 25px; right: 25px; }
+    .bottom-bar { bottom: 30px; right: 25px; }
 }
