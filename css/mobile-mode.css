@@ -5,65 +5,43 @@
         overflow: hidden !important;
         width: 100vw;
         height: 100dvh;
-        background: #0f172a;
+        background: #0b1120;
     }
 
-    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
-        display: none !important;
-    }
-
-    /* RUNNING TEXT - Efek Memudar (Fade) */
-    .running-text-wrapper {
-        position: fixed;
-        top: 32px;
-        left: 20px;
-        right: 185px; 
-        overflow: hidden;
-        white-space: nowrap;
-        z-index: 1090;
-        /* Masking untuk efek pudar di awal dan akhir */
-        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-    }
-
-    .running-text-content {
-        display: inline-block;
-        font-size: 0.75rem;
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 500;
-        animation: marquee 20s linear infinite;
-        padding-left: 20px;
-    }
-
-    @keyframes marquee {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
-
-    /* KARTU PREVIEW */
+    /* KARTU: Mengunci Titik Tengah Ikon (Margin 47px) */
     .card-element {
         position: absolute !important;
-        top: 10dvh;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 92vw !important;
-        height: 76dvh !important;
+        /* Atas, Bawah, Kiri, Kanan dipatok 47px agar simetris dengan center ikon */
+        top: 47px;
+        bottom: 47px;
+        left: 47px;
+        right: 47px;
+        
+        width: auto !important; 
+        height: auto !important;
+        transform: none !important;
+        
         background: var(--bg-card);
         border: 2px solid var(--border-line);
-        border-radius: 25px;
+        border-radius: 24px;
         padding: 20px !important;
         display: flex;
         flex-direction: column;
         opacity: 0;
         visibility: hidden;
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s;
         box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        z-index: 400;
     }
 
-    .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
-    
+    .card-element.is-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) !important;
+        z-index: 500;
+    }
+
+    /* JUDUL: Turun Baris Dulu, Baru Kecilkan Font */
     .card-header-logo {
         display: flex;
         align-items: center;
@@ -72,128 +50,83 @@
         border-bottom: 1px solid rgba(255,255,255,0.1);
         padding-bottom: 12px;
         flex-shrink: 0;
+        min-height: 60px;
     }
 
-    .inner-card-logo { width: 45px; height: auto; }
-
-    .header-text-group {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    /* LOGIKA: Turun baris dulu (max 2), baru kecilkan font */
     .card-title {
-        font-size: clamp(0.75rem, 4.2vw, 1.1rem) !important; 
+        font-size: clamp(0.75rem, 4vw, 1.05rem) !important;
         line-height: 1.2;
         margin: 0 !important;
         color: var(--color-primary);
         font-weight: 800;
         text-transform: uppercase;
-        /* Biarkan membungkus ke baris 2 secara alami */
-        display: block; 
-        word-wrap: break-word;
-        overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
+        -webkit-line-clamp: 2; /* Maksimal 2 baris */
         -webkit-box-orient: vertical;
-    }
-
-    .card-content-wrapper {
-        flex: 1;
         overflow: hidden;
-        margin-bottom: 10px;
     }
 
-    .card-text {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: #cbd5e1;
-    }
-
-    .read-more-btn {
-        color: white;
-        font-weight: bold;
-        text-align: center;
-        padding: 12px;
-        background: rgba(192, 132, 252, 0.15);
-        border: 1px solid var(--color-primary);
-        border-radius: 12px;
-    }
-    .read-more-btn:active { transform: scale(0.95); }
-
-    /* SOSMED CORNER (Bawah Kiri) */
-    .sosmed-corner {
-        position: fixed;
-        bottom: 35px;
-        left: 25px;
-        display: flex;
-        gap: 15px;
-        z-index: 1100;
-    }
-    .sosmed-link {
-        color: rgba(255,255,255,0.6);
-        font-size: 1.2rem;
-        transition: 0.2s;
-    }
-    .sosmed-link:active { color: var(--color-primary); transform: scale(0.8); }
-
-    /* TOMBOL UTAMA */
+    /* FLOATING ELEMENTS (Posisi 22px dari tepi, Tinggi 50px) */
     .mail-container {
         position: fixed;
-        top: 25px;
-        right: 25px;
-        z-index: 1100;
-        background: rgba(15, 23, 42, 0.9);
+        top: 22px;
+        right: 22px;
+        height: 50px;
+        background: rgba(15, 23, 42, 0.95);
         border: 1px solid var(--color-primary);
-        padding: 10px 18px;
-        border-radius: 30px;
+        padding: 0 20px;
+        border-radius: 25px;
         display: flex;
         align-items: center;
         gap: 10px;
         color: white;
-        font-size: 0.8rem;
-        font-weight: bold;
+        font-size: 0.75rem;
+        z-index: 1100;
     }
-    .mail-container:active { transform: scale(0.9); }
 
     .chat-container {
         position: fixed;
-        bottom: 30px;
-        right: 25px;
-        z-index: 1100;
-        width: 55px;
-        height: 55px;
+        bottom: 22px;
+        right: 22px;
+        width: 50px;
+        height: 50px;
         background: var(--color-primary);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
+        z-index: 1100;
     }
-    .chat-container:active { transform: scale(0.8); }
 
-    /* MODAL */
-    .detail-modal {
+    .sosmed-corner {
         position: fixed;
-        inset: 0;
-        background: rgba(10, 10, 20, 0.98);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-    .modal-content {
-        background: #1e1b4b;
-        width: 100%;
-        max-height: 80dvh;
-        border-radius: 20px;
-        border: 1px solid var(--color-primary);
-        padding: 20px;
+        bottom: 22px;
+        left: 22px;
+        height: 50px;
         display: flex;
-        flex-direction: column;
-        position: relative;
+        align-items: center;
+        gap: 18px;
+        z-index: 1100;
+        padding-left: 5px;
     }
-    .modal-scroll { overflow-y: auto; flex: 1; margin-top: 15px; }
+
+    .sosmed-link {
+        color: rgba(255,255,255,0.4);
+        font-size: 1.3rem;
+        transition: 0.3s;
+    }
+
+    /* RUNNING TEXT */
+    .running-text-wrapper {
+        position: fixed;
+        top: 22px;
+        left: 22px;
+        right: 187px; /* 22px + Lebar Kotak Surat */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        z-index: 1090;
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
 }
