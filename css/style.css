@@ -41,32 +41,53 @@ body, html {
 }
 
 /* --- MOBILE MODE (PORTRAIT STACK) --- */
+/* --- MOBILE MODE (PORTRAIT STACK) --- */
 @media screen and (max-width: 767px) {
-    #swipe-hint {
-        display: flex; /* Aktifkan hanya di Mobile */
-        position: absolute; inset: 0; flex-direction: column;
-        justify-content: center; align-items: center; z-index: 999;
-        background: rgba(0,0,0,0.85); transition: opacity 0.8s; font-weight: bold;
+    #slider-container { 
+        flex: 1; position: relative; overflow: hidden; 
+        perspective: 1200px; /* Memberikan efek 3D */
     }
-    .fade-out { opacity: 0; pointer-events: none; }
-
-    #slider-container { flex: 1; position: relative; overflow: hidden; perspective: 1000px; }
     #main-slider { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     .card-element {
         position: absolute; inset: 0;
         display: flex; justify-content: center; align-items: center;
-        transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s, filter 0.4s;
-        opacity: 0; pointer-events: none;
+        /* Animasi transisi yang lebih halus */
+        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.5s, filter 0.5s;
+        opacity: 0;
+        pointer-events: none;
     }
 
+    /* KARTU AKTIF: Berada di depan dan terang */
     .card-element.is-active { 
-        opacity: 1; z-index: 50; pointer-events: auto; transform: scale(1); filter: brightness(1); 
-        animation: glow-pulse 2s infinite alternate;
+        opacity: 1; 
+        z-index: 50; 
+        pointer-events: auto; 
+        transform: scale(1) translateY(0);
+        filter: brightness(1);
     }
     
-    .card-element.is-next { opacity: 1; z-index: 100; transform: translateY(100%) scale(0.85); filter: brightness(0.4); }
-    .card-element.is-stacked { opacity: 1; z-index: 100; transform: translateY(-100%) scale(0.85); filter: brightness(0.4); }
+    /* KARTU ANTREAN: Mengecil di belakang dan sangat transparan agar tidak mengganggu */
+    .card-element.is-next { 
+        opacity: 0.4; /* Tipis saja */
+        z-index: 10; 
+        transform: translateY(30px) scale(0.85); /* Mengecil di bawah */
+        filter: brightness(0.3) blur(2px);
+    }
+
+    /* KARTU YANG SUDAH LEWAT: Sembunyi di atas */
+    .card-element.is-stacked { 
+        opacity: 0; 
+        z-index: 10; 
+        transform: translateY(-100%) scale(0.8); 
+    }
+
+    /* Saat sedang ditarik (Dragging), kartu preview harus naik z-indexnya */
+    .card-element.on-top {
+        z-index: 100 !important;
+        opacity: 1 !important;
+        filter: brightness(1) blur(0) !important;
+    }
 
     .card-element .card-frame-base { width: 90%; height: 85%; }
 }
