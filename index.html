@@ -4,23 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Umbrella Guild Portal</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- 1. CSS INTI: Gaya kartu & Z-Index -->
+    <link rel="stylesheet" href="css/base.css">
+    
+    <!-- 2. CSS PC: Layout Grid & Sidebar -->
+    <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
+    
+    <!-- 3. CSS MOBILE: Layout Tumpuk & Floating -->
+    <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
 <body>
-    <div class="master-frame">
-        <div id="logo-overlay">
-            <img src="logo-umbrella.svg" alt="Logo" id="floating-logo">
-        </div>
 
-        <main id="slider-container">
-            <div id="main-slider">
+    <div class="master-frame">
+        <!-- TOP BAR: Header di PC, Kotak Surat Melayang di Mobile -->
+        <header class="top-bar">
+            <div class="pc-header-text">HEADER</div>
+            <div class="mail-container" id="mail-trigger">
+                KOTAK SURAT
+            </div>
+        </header>
+
+        <!-- ISI KONTEN: Sidebar & Area Kartu -->
+        <main class="content-body">
+            <aside class="sidebar-brand">
+                <img src="logo-umbrella.svg" alt="Logo Umbrella" class="main-logo">
+                <div class="slogan">Selogan</div>
+            </aside>
+            
+            <section id="slider-container">
+                <div id="main-slider">
+                    <!-- Kartu akan di-render otomatis oleh app.js -->
                 </div>
+            </section>
         </main>
 
-        <footer id="footer-area">
-            <div class="status-bar">GUILD STATUS: <span id="status-text">ONLINE</span></div>
+        <!-- BOTTOM BAR: Footer di PC, Chat Melayang di Mobile -->
+        <footer class="bottom-bar">
+            <div class="pc-footer-text">FOTHER</div>
+            <div class="chat-container">
+                <div class="chat-icon" id="chat-trigger">💬</div>
+            </div>
         </footer>
+
+        <!-- POPUP SYSTEM: Layer tertinggi (Kasta 2000) -->
+        <div class="popup-overlay" id="global-popup">
+            <div class="popup-content">
+                <h2 id="popup-title">Detail Konten</h2>
+                <div class="popup-body" id="popup-body">
+                    <!-- Isi popup (chat/surat/detail) muncul di sini -->
+                </div>
+                <button class="close-popup" onclick="closePopup()">TUTUP</button>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Script utama untuk logika scroll & swipe -->
     <script src="js/app.js"></script>
 </body>
 </html>
