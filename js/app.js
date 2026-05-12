@@ -114,24 +114,19 @@ function updateStack(drag = 0) {
     if (window.innerWidth >= 768) return;
 
     cards.forEach((card, i) => {
-        // Efek transisi tetap dipertahankan
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
-        
         if (i === currentIndex) {
-            // UBAH: translate(-50%, ...) MENJADI translateY(...)
-            card.style.transform = `translateY(${drag}px) scale(1)`;
+            card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
             card.style.opacity = 1;
             card.style.zIndex = 500;
             card.style.visibility = "visible";
         } else if (i < currentIndex) {
-            // UBAH: Terbang ke atas tanpa geser kiri
-            card.style.transform = `translateY(-${h}px)`;
+            card.style.transform = `translate(-50%, -${h}px)`;
             card.style.opacity = 0;
             card.style.zIndex = 1;
         } else {
-            // UBAH: Menunggu di bawah (EFEK STACKING) tanpa geser kiri
             let pos = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translateY(${pos}px)`;
+            card.style.transform = `translate(-50%, ${pos}px)`;
             card.style.opacity = 1;
             card.style.zIndex = 400;
             card.style.visibility = "visible";
@@ -164,3 +159,4 @@ window.addEventListener('wheel', e => {
 }, {passive: true});
 
 document.addEventListener('DOMContentLoaded', init);
+
