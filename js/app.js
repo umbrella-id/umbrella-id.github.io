@@ -26,6 +26,11 @@ function render() {
 
     slider.innerHTML = globalData.map((item, i) => `
         <div class="card-element" id="card-${i}">
+            <!-- LOGO SEBAGAI IDENTITAS/CAP DI DALAM KARTU -->
+            <div class="card-header-logo">
+                <img src="logo-umbrella.svg" class="inner-card-logo" alt="Logo">
+            </div>
+
             <div class="card-content-wrapper">
                 <h2 class="card-title">${item.Header || 'INFO'}</h2>
                 <div class="card-text">
@@ -34,17 +39,16 @@ function render() {
             </div>
         </div>`).join('');
 
-    // Set kartu pertama sebagai aktif
     if (isMobile) {
         updateStack(0);
     } else {
-        // Reset untuk tampilan PC
         const allCards = document.querySelectorAll('.card-element');
         allCards.forEach(c => {
             c.style.opacity = "1";
             c.style.visibility = "visible";
         });
     }
+}
     
     // Pastikan posisi logo benar setelah render
     updateLogoPosition();
