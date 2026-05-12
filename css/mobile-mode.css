@@ -82,19 +82,21 @@
         overflow: hidden;
     }
 
-    /* JUDUL: Maksimal 2 Baris, Mengecil Otomatis, Tidak Dipotong */
+    /* LOGIKA: Turun baris dulu (max 2), baru kecilkan font */
     .card-title {
-        font-size: clamp(0.7rem, 4vw, 1.1rem) !important; 
-        line-height: 1.1;
+        font-size: clamp(0.75rem, 4.2vw, 1.1rem) !important; 
+        line-height: 1.2;
         margin: 0 !important;
         color: var(--color-primary);
         font-weight: 800;
         text-transform: uppercase;
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* Izinkan maksimal 2 baris */
-        -webkit-box-orient: vertical;
-        overflow: visible; /* Jangan sembunyikan jika mengecil */
+        /* Biarkan membungkus ke baris 2 secara alami */
+        display: block; 
         word-wrap: break-word;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
+        -webkit-box-orient: vertical;
     }
 
     .card-content-wrapper {
