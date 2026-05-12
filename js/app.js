@@ -82,3 +82,21 @@ window.addEventListener('wheel', e => {
 
 window.addEventListener('resize', render);
 document.addEventListener('DOMContentLoaded', init);
+
+function updateLogoPosition() {
+    const logo = document.getElementById('main-logo');
+    const isMobile = window.innerWidth <= 767;
+    const activeCard = document.querySelector('.card-element.is-active');
+    const logoHome = document.getElementById('logo-home');
+
+    if (isMobile && activeCard) {
+        activeCard.prepend(logo); // Masuk ke kartu
+    } else if (logoHome) {
+        logoHome.prepend(logo); // Balik ke Sidebar PC
+    }
+}
+
+// Jalankan fungsi ini di akhir fungsi SWIPE kamu dan di event resize
+window.addEventListener('resize', updateLogoPosition);
+// Panggil pertama kali saat load
+document.addEventListener('DOMContentLoaded', updateLogoPosition);
