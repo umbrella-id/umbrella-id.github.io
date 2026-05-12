@@ -58,9 +58,9 @@ function renderApp() {
     sosmedDock.innerHTML = sosmedData.map(s => {
         let iconClass = "fa-brands fa-discord";
         const h = s.Header.toLowerCase();
-        if(h.includes('wa')) iconClass = "fa-brands fa-whatsapp";
-        if(h.includes('fb')) iconClass = "fa-brands fa-facebook";
-        if(h.includes('ig')) iconClass = "fa-brands fa-instagram";
+        if(h.includes('whatsapp')) iconClass = "fa-brands fa-whatsapp";
+        if(h.includes('facebook')) iconClass = "fa-brands fa-facebook";
+        if(h.includes('discord')) iconClass = "fa-brands fa-discord";
         
         return `<a href="${s.Body}" class="sosmed-link" target="_blank"><i class="${iconClass}"></i></a>`;
     }).join('');
