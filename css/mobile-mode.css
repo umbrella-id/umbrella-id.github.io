@@ -45,27 +45,21 @@
     /* KARTU PREVIEW */
     .card-element {
         position: absolute !important;
-        /* Atas, Bawah, Kiri, Kanan dipatok 47px agar simetris dengan center ikon */
-        top: 47px;
-        bottom: 47px;
-        left: 47px;
-        right: 47px;
-        
-        width: auto !important; 
-        height: auto !important;
-        transform: none !important;
-        
+        top: 10dvh;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 92vw !important;
+        height: 76dvh !important;
         background: var(--bg-card);
         border: 2px solid var(--border-line);
-        border-radius: 24px;
+        border-radius: 25px;
         padding: 20px !important;
         display: flex;
         flex-direction: column;
         opacity: 0;
         visibility: hidden;
-        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
         box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-        z-index: 400;
     }
 
     .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
