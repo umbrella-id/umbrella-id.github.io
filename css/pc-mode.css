@@ -1,5 +1,5 @@
 @media screen and (min-width: 768px) {
-    /* 1. JANGKAR UTAMA */
+    /* 1. Aktifkan Jangkarnya */
     .master-frame {
         display: grid !important;
         grid-template-areas:
@@ -11,59 +11,53 @@
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        position: relative;
     }
 
-    /* 2. PAKSA ELEMEN MASUK KE GRID AREA */
-    /* Kita cari class-class yang sudah ada di HTML kamu */
-    
+    /* 2. Jinakkan Posisi Mobile (Reset Paksa) */
+    /* Kita matikan top/left/right/bottom agar elemen mau masuk ke Grid Area */
+    .top-bar, .sidebar-brand, .content-wrapper, .bottom-bar, .logo-wrapper {
+        position: relative !important;
+        inset: auto !important;
+        transform: none !important;
+        margin: 0 !important;
+    }
+
+    /* 3. Masukkan ke Kotak Masing-Masing */
     .top-bar { 
         grid-area: header !important; 
-        position: relative !important;
         display: flex !important;
         justify-content: flex-end;
         align-items: center;
-        padding: 0 40px;
-        z-index: 100;
-        inset: auto !important; /* Reset absolute mobile */
+        padding-right: 40px;
     }
 
     .sidebar-brand { 
         grid-area: brand !important; 
-        position: relative !important;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-        inset: auto !important;
     }
 
+    /* Area Kartu di image_9d6e26.png */
     .content-wrapper { 
         grid-area: slider !important; 
-        position: relative !important;
         display: flex !important;
         justify-content: center;
         align-items: center;
-        inset: auto !important;
     }
 
     .bottom-bar { 
         grid-area: footer !important; 
-        position: relative !important;
         display: flex !important;
         align-items: center;
-        padding: 0 20px;
-        z-index: 100;
-        inset: auto !important;
+        padding-left: 20px;
     }
 
-    /* 3. JINAKKAN LOGO RAKSASA (Fix image_9dd37b.png) */
+    /* 4. Fix Logo 'Obesitas' (Solusi Utama buat image_9d6e26.png) */
     .logo-wrapper {
-        position: relative !important;
         width: 100% !important;
-        max-width: 250px !important;
-        transform: none !important;
-        inset: auto !important;
+        max-width: 260px !important; /* Batasi lebar agar tidak raksasa */
+        margin: 0 auto !important;
     }
 
     .logo-wrapper img {
@@ -71,23 +65,16 @@
         height: auto !important;
     }
 
-    /* 4. KARTU SLIDER (Centering di tengah panggung 60vh) */
+    /* 5. Kartu Tetap di Tengah Panggung Slider */
     .card-element {
         position: absolute !important;
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
         width: 450px !important;
-        z-index: 50;
+        z-index: 10;
     }
 
-    /* 5. FLOATING ELEMENTS (Tetap Biarkan Melayang) */
-    /* Tombol chat atau wa yang pakai position fixed jangan dimasukkan grid */
-    .floating-wa, .floating-chat {
-        position: fixed !important;
-        z-index: 9999;
-    }
-
-    /* Bersihkan teks sisa yang numpuk di pojok */
-    .header-text-mobile, .footer-text-mobile { display: none !important; }
+    /* Hilangkan sampah teks yang numpuk di pojok kanan atas */
+    .header-text-mobile { display: none !important; }
 }
