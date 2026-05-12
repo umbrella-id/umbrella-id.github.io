@@ -82,15 +82,19 @@
         overflow: hidden;
     }
 
-    /* Judul mengecil otomatis jika panjang */
+    /* JUDUL: Maksimal 2 Baris, Mengecil Otomatis, Tidak Dipotong */
     .card-title {
-        font-size: clamp(0.85rem, 4.5vw, 1.15rem) !important;
+        font-size: clamp(0.7rem, 4vw, 1.1rem) !important; 
+        line-height: 1.1;
         margin: 0 !important;
         color: var(--color-primary);
         font-weight: 800;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        text-transform: uppercase;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Izinkan maksimal 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: visible; /* Jangan sembunyikan jika mengecil */
+        word-wrap: break-word;
     }
 
     .card-content-wrapper {
