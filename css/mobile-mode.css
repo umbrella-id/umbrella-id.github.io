@@ -1,95 +1,50 @@
 @media screen and (max-width: 767px) {
-    /* 1. Reset Total Layout Master */
-    .master-frame {
-        display: block !important;
-        position: fixed; /* Gunakan fixed agar tidak bisa di-scroll secara manual */
-        inset: 0;
+    /* 1. Paksa kontainer menjadi panggung statis */
+    #slider-container {
+        position: relative;
         width: 100vw;
         height: 100vh;
-        overflow: hidden;
-        background: var(--bg-dark);
-    }
-
-    /* 2. Sembunyikan Elemen PC Tanpa Ampun */
-    .sidebar-brand, 
-    .pc-header-text, 
-    .pc-footer-text {
-        display: none !important;
-    }
-
-    /* 3. Slider Container (Panggung Utama) */
-    #slider-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        overflow: hidden; /* Mencegah scroll ke bawah */
         display: flex;
         align-items: center;
         justify-content: center;
-        perspective: 1200px;
-        z-index: 50;
     }
 
-    /* 4. Main Slider (Wajib Reset Flexbox PC) */
     #main-slider {
         position: relative;
         width: 100%;
         height: 100%;
-        display: block !important; /* Paksa matikan flex-direction: row dari PC */
-        margin: 0;
-        padding: 0;
+        /* Jangan gunakan display: block atau flex yang berderet */
     }
 
-    /* 5. Card Element (Kunci Stacking) */
+    /* 2. KARTU WAJIB ABSOLUTE */
     .card-element {
-        position: absolute !important; /* Paksa tumpang tindih */
+        position: absolute !important; /* WAJIB: agar semua kartu di koordinat yang sama */
         top: 50%;
         left: 50%;
-        /* Gunakan translate -50% agar titik tengah kartu tepat di tengah layar */
-        transform: translate(-50%, -50%) scale(0.85); 
-        width: 88vw;
-        height: 72vh;
+        transform: translate(-50%, -50%) scale(0.9); /* Taruh di tengah dan perkecil sedikit */
+        
+        width: 90vw;
+        height: 75vh;
         margin: 0 !important;
         
         opacity: 0;
         visibility: hidden;
-        pointer-events: none; /* Jangan biarkan kartu transparan menghalangi klik */
-        
-        transition: 
-            transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
-            opacity 0.4s ease,
-            visibility 0.4s;
-        will-change: transform, opacity;
+        transition: transform 0.5s ease, opacity 0.5s ease;
     }
 
-    /* 6. State Aktif (Z-Index Hierarchy) */
+    /* 3. Tampilkan hanya kartu yang aktif */
     .card-element.is-active {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
-        z-index: 100;
         transform: translate(-50%, -50%) scale(1);
+        z-index: 100;
     }
 
-    /* State saat transisi/swipe (Paling Depan) */
+    /* 4. Kartu yang sedang di-swipe (di atas) */
     .card-element.on-top {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
         z-index: 200;
     }
-
-    /* 7. Navigasi Floating */
-    .top-bar, .bottom-bar {
-        position: fixed !important;
-        background: transparent !important;
-        border: none !important;
-        width: auto !important;
-        height: auto !important;
-        z-index: 1000;
-    }
-
-    .top-bar { top: 25px; right: 25px; }
-    .bottom-bar { bottom: 30px; right: 25px; }
 }
