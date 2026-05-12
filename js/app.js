@@ -1,38 +1,72 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec";
-let globalData = [], currentIndex = 0;
-let startY = 0, deltaY = 0;
+let cardData = [], runningTexts = [], sosmedData = [];
+let currentIndex = 0;
 let isModalOpen = false;
+let startY = 0, deltaY = 0;
 
 async function init() {
     try {
         const res = await fetch(GAS_URL);
-        const data = await res.json();
-        globalData = data.filter(item => item.ID && item.ID.trim() !== "");
-        render();
+        const rawData = await res.json();
+        
+        // Filter Data
+        cardData = rawData.filter(item => ["headline", "profil", "galery"].includes(item.ID.toLowerCase()));
+        runningTexts = rawData.filter(item => item.ID.toLowerCase() === "running_text").map(item => item.Body);
+        sosmedData = rawData.filter(item => item.ID.toLowerCase() === "sosmed");
+
+        renderApp();
         createModal();
-        updateMailIcon();
     } catch (e) { console.error(e); }
 }
 
-function render() {
+function renderApp() {
+    // 1. Render Slider
     const slider = document.getElementById('main-slider');
-    if (!globalData.length) return;
-
-    slider.innerHTML = globalData.map((item, i) => `
+    slider.innerHTML = cardData.map((item, i) => `
         <div class="card-element" id="card-${i}">
             <div class="card-header-logo">
                 <img src="logo-umbrella.svg" class="inner-card-logo">
                 <div class="header-text-group">
-                    <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
-                    <span style="font-size:0.6rem; opacity:0.5; letter-spacing:1px">PRESS FOR DETAIL</span>
+                    <h2 class="card-title">${item.Header}</h2>
+                    <span style="font-size:0.5rem; opacity:0.5; letter-spacing:1px">SECURE_LINK: ONLINE</span>
                 </div>
             </div>
             <div class="card-content-wrapper">
-                <div class="card-text">${(item.Body || "").replace(/\n/g, '<br>')}</div>
+                <div class="card-text">${item.Body.replace(/\n/g, '<br>')}</div>
             </div>
             <div class="read-more-btn" onclick="showDetail(${i})">BACA SELENGKAPNYA</div>
         </div>`).join('');
 
+    // 2. Render Running Text (Faded Marquee)
+    if (runningTexts.length > 0) {
+        let existing = document.querySelector('.running-text-wrapper');
+        if(existing) existing.remove();
+        
+        const marqueeCont = document.createElement('div');
+        marqueeCont.className = 'running-text-wrapper';
+        const textFull = runningTexts.join(' &nbsp; • &nbsp; ');
+        marqueeCont.innerHTML = `<div class="running-text-content">${textFull} &nbsp; • &nbsp; ${textFull}</div>`;
+        document.body.appendChild(marqueeCont);
+    }
+
+    // 3. Render Sosmed (Bottom Left)
+    let existingSosmed = document.querySelector('.sosmed-corner');
+    if(existingSosmed) existingSosmed.remove();
+
+    const sosmedDock = document.createElement('div');
+    sosmedDock.className = 'sosmed-corner';
+    sosmedDock.innerHTML = sosmedData.map(s => {
+        let iconClass = "fa-brands fa-discord";
+        const h = s.Header.toLowerCase();
+        if(h.includes('wa')) iconClass = "fa-brands fa-whatsapp";
+        if(h.includes('fb')) iconClass = "fa-brands fa-facebook";
+        if(h.includes('ig')) iconClass = "fa-brands fa-instagram";
+        
+        return `<a href="${s.Body}" class="sosmed-link" target="_blank"><i class="${iconClass}"></i></a>`;
+    }).join('');
+    document.body.appendChild(sosmedDock);
+
+    updateMailIcon();
     updateStack(0);
 }
 
@@ -40,7 +74,7 @@ function updateMailIcon() {
     const mailBtn = document.querySelector('.mail-container');
     const chatBtn = document.querySelector('.chat-container');
     if (mailBtn) mailBtn.innerHTML = '<i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT';
-    if (chatBtn) chatBtn.innerHTML = '<div class="chat-icon"><i class="fa-solid fa-comment-dots"></i></div>';
+    if (chatBtn) chatBtn.innerHTML = '<i class="fa-solid fa-comment-dots"></i>';
 }
 
 function createModal() {
@@ -48,24 +82,23 @@ function createModal() {
     const modal = document.createElement('div');
     modal.className = 'detail-modal';
     modal.id = 'detailModal';
-    modal.addEventListener('touchstart', e => e.stopPropagation(), {passive: true});
-    
     modal.innerHTML = `
         <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px">
-                <h2 id="modalTitle" style="color:var(--color-primary); margin:0; font-size:1.2rem"></h2>
-                <i class="fa-solid fa-circle-xmark" onclick="closeDetail()" style="color:#ef4444; font-size:1.5rem; cursor:pointer"></i>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 id="modalTitle" style="color:var(--color-primary); margin:0; font-size:1.1rem"></h2>
+                <i class="fa-solid fa-xmark" onclick="closeDetail()" style="font-size:1.5rem"></i>
             </div>
             <div class="modal-scroll" id="modalBody"></div>
         </div>
     `;
     document.body.appendChild(modal);
+    modal.addEventListener('touchstart', e => e.stopPropagation());
 }
 
 function showDetail(index) {
-    const item = globalData[index];
+    const item = cardData[index];
     document.getElementById('modalTitle').innerText = item.Header;
-    document.getElementById('modalBody').innerHTML = (item.Body || "").replace(/\n/g, '<br>');
+    document.getElementById('modalBody').innerHTML = item.Body.replace(/\n/g, '<br>');
     document.getElementById('detailModal').style.display = 'flex';
     isModalOpen = true;
 }
@@ -78,26 +111,17 @@ function closeDetail() {
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.card-element');
     const h = window.innerHeight;
-    const isMobileView = window.innerWidth < 768;
+    if (window.innerWidth >= 768) return;
 
     cards.forEach((card, i) => {
-        if (!isMobileView) {
-            card.style.transform = "none";
-            card.style.position = "relative";
-            card.style.opacity = "1";
-            card.style.visibility = "visible";
-            return;
-        }
-
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
-
         if (i === currentIndex) {
-            card.classList.add('is-active');
             card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
             card.style.opacity = 1;
             card.style.zIndex = 500;
+            card.style.visibility = "visible";
         } else if (i < currentIndex) {
-            card.style.transform = `translate(-50%, -${h}px)`; 
+            card.style.transform = `translate(-50%, -${h}px)`;
             card.style.opacity = 0;
             card.style.zIndex = 1;
         } else {
@@ -105,10 +129,12 @@ function updateStack(drag = 0) {
             card.style.transform = `translate(-50%, ${pos}px)`;
             card.style.opacity = 1;
             card.style.zIndex = 400;
+            card.style.visibility = "visible";
         }
     });
 }
 
+// Events
 window.addEventListener('touchstart', e => { if(!isModalOpen) startY = e.touches[0].pageY; });
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768 || isModalOpen) return;
@@ -119,7 +145,7 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768 || isModalOpen) return;
-    if (deltaY < -100 && currentIndex < globalData.length - 1) currentIndex++;
+    if (deltaY < -100 && currentIndex < cardData.length - 1) currentIndex++;
     else if (deltaY > 100 && currentIndex > 0) currentIndex--;
     deltaY = 0;
     updateStack(0);
@@ -127,11 +153,9 @@ window.addEventListener('touchend', () => {
 
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768 || isModalOpen) return;
-    if (Math.abs(e.deltaY) < 30) return;
-    if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
-    else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
+    if (e.deltaY > 50 && currentIndex < cardData.length - 1) currentIndex++;
+    else if (e.deltaY < -50 && currentIndex > 0) currentIndex--;
     updateStack(0);
 }, {passive: true});
 
-window.addEventListener('resize', render);
 document.addEventListener('DOMContentLoaded', init);
