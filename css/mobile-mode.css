@@ -24,11 +24,10 @@
         position: absolute !important;
         top: 47px;
         bottom: 57px;
-        left: 22px;
-        right: 22px;
-        width: auto !important; 
+        left: 50%;
+        width: 92vw !important; 
         height: auto !important;
-        transform: none !important;
+        transform: translateX(-50%);
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 25px;
