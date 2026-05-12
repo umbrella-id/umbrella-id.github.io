@@ -1,25 +1,28 @@
+/* --- KHUSUS MODE MOBILE (PORTRAIT) --- */
 @media screen and (max-width: 767px) {
-    /* 1. Kunci Frame Utama - Hilangkan Scroll Body */
-    .master-frame {
-        display: block !important;
+    
+    /* 1. Kunci Layar: Cegah scroll body agar tidak goyang */
+    html, body, .master-frame {
         position: fixed !important;
         inset: 0 !important;
         overflow: hidden !important;
+        width: 100vw;
+        height: 100vh;
     }
 
-    /* 2. Sembunyikan Logo & Teks PC yang Mengganggu */
-    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan {
+    /* 2. Sembunyikan Elemen PC */
+    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text {
         display: none !important;
     }
 
-    /* 3. Slider Container sebagai Panggung */
+    /* 3. Panggung Slider: Area tumpukan kartu */
     #slider-container {
         position: absolute;
         inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10;
+        z-index: 50;
     }
 
     #main-slider {
@@ -28,60 +31,59 @@
         height: 100%;
     }
 
-    /* 4. KARTU: Wajib Seragam & Menumpuk */
+    /* 4. LOGO: Posisi di pojok kiri atas kartu */
+    .logo-wrapper {
+        position: absolute;
+        top: calc(50% - 37vh + 20px); /* Menyesuaikan posisi atas kartu */
+        left: 40px;
+        z-index: 1000; /* Di atas segalanya */
+    }
+
+    #main-logo {
+        width: 60px !important; /* Ukuran logo di HP */
+        height: auto;
+        filter: drop-shadow(0 0 10px var(--color-primary));
+    }
+
+    /* 5. KARTU: Kunci Stacking & Ukuran Seragam */
     .card-element {
-        position: absolute !important; /* Paksa menumpuk di satu titik */
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) scale(1) !important;
+        position: absolute !important; /* WAJIB: Agar menumpuk di satu titik */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
         
-        /* Memenuhi layar tapi tetap ada jarak manis */
-        width: 92vw !important;
-        height: 85vh !important;
+        /* Ukuran Seragam (Tidak mengikuti panjang teks) */
+        width: 90vw !important;
+        height: 75vh !important;
         
-        background: #0f172a !important; /* Warna solid agar tidak tembus pandang */
-        border: 2px solid var(--color-primary) !important;
-        border-radius: 20px;
+        background: var(--bg-card);
+        border: 2px solid var(--border-line);
+        border-radius: 24px;
         padding: 25px;
         margin: 0 !important;
-
-        display: flex;
-        flex-direction: column;
         
         /* Efek Tumpukan */
         opacity: 0;
         visibility: hidden;
-        z-index: 1;
-        transition: opacity 0.4s ease;
+        transition: transform 0.5s ease, opacity 0.4s ease;
     }
 
-    /* Kartu Aktif */
+    /* Kartu yang sedang aktif tampil di depan */
     .card-element.is-active {
         opacity: 1 !important;
         visibility: visible !important;
-        z-index: 100 !important;
+        z-index: 500;
+        transform: translate(-50%, -50%) scale(1);
     }
 
-    /* 5. LOGO DI DALAM KARTU (Pakai Pseudo-Element agar PASTI ada di setiap kartu) */
-    .card-element::before {
-        content: "";
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        width: 50px;
-        height: 50px;
-        background: url('../logo-umbrella.svg') no-repeat center/contain;
-        z-index: 110;
-    }
-
-    /* 6. Konten di Dalam Kartu (Teks) */
-    .card-content-wrapper {
-        margin-top: 60px; /* Kasih ruang buat logo di atas */
-        overflow-y: auto; /* Teks panjang bisa di-scroll di sini */
+    /* 6. KONTEN KARTU: Scroll Internal */
+    .card-content {
         height: 100%;
+        overflow-y: auto; /* Teks panjang di-scroll di sini */
+        padding-top: 60px; /* Ruang agar tidak tertutup logo */
     }
 
-    /* 7. Navigasi Floating tetap di atas kartu */
-    .mail-container { position: fixed; top: 15px; right: 20px; z-index: 1000; }
-    .chat-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+    /* 7. Navigasi Floating (Tetap di atas kartu) */
+    .mail-container { position: fixed; top: 20px; right: 25px; z-index: 1100; }
+    .chat-container { position: fixed; bottom: 30px; right: 25px; z-index: 1100; }
 }
