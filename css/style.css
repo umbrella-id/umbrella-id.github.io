@@ -2,97 +2,88 @@
     --color-primary: #c084fc;
     --bg-dark: #020617;
     --bg-card: rgba(15, 23, 42, 0.98);
-    --border-card: rgba(192, 132, 252, 0.5);
+    --border-card: rgba(192, 132, 252, 0.4);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body, html { 
-    width: 100%; height: 100%; background: var(--bg-dark); 
-    color: white; font-family: sans-serif; overflow: hidden; 
+    width: 100%; height: 100%; 
+    background: var(--bg-dark); 
+    color: white; 
+    font-family: sans-serif; 
+    overflow: hidden; 
+    touch-action: none; /* Mencegah pull-to-refresh di HP */
 }
 
-.master-frame { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
+.master-frame { width: 100vw; height: 100vh; display: grid; }
 
-/* SHARED CARD STYLE */
-.card-logo { width: 45px; margin-bottom: 15px; filter: drop-shadow(0 0 5px var(--color-primary)); }
-.card-title { color: var(--color-primary); margin-bottom: 10px; font-size: 1.3rem; text-transform: uppercase; font-weight: 800; }
-.card-frame-base {
-    background: var(--bg-card); border: 2px solid var(--border-card);
-    border-radius: 24px; padding: 25px; display: flex; flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative;
-}
-
-.scroll-area { 
-    flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem;
-    scrollbar-width: none; -ms-overflow-style: none; touch-action: pan-y; 
-}
-.scroll-area::-webkit-scrollbar { display: none; }
-
-/* DEFAULT: SEMBUNYIKAN HINT (Untuk PC) */
-#swipe-hint { display: none; }
-
-/* --- PC MODE (LANDSCAPE) --- */
+/* --- PC MODE (GRID SYSTEM) --- */
 @media screen and (min-width: 768px) {
-    #slider-container { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 40px; }
-    #main-slider { display: flex; flex-direction: row; gap: 30px; height: 100%; align-items: center; width: max-content; }
-    
+    .master-frame {
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: 18px 600px 1fr;
+        grid-template-areas:
+            "header header"
+            "brand slider"
+            "footer footer";
+    }
+    #brand-area { 
+        grid-area: brand; display: flex; flex-direction: column; 
+        align-items: center; justify-content: center; border-right: 1px solid var(--border-card); 
+    }
+    #slider-container { grid-area: slider; overflow-x: auto; padding: 40px; display: flex; align-items: center; }
+    #pc-logo { width: 120px; filter: drop-shadow(0 0 10px var(--color-primary)); margin-bottom: 20px; }
+    .system-tag { font-size: 10px; letter-spacing: 4px; color: var(--color-primary); opacity: 0.7; }
+    #main-slider { display: flex; gap: 30px; width: max-content; }
     .card-element { width: 350px; height: 500px; flex-shrink: 0; }
-    .card-element:hover { border-color: var(--color-primary); transform: translateY(-10px); transition: 0.3s; }
+    .card-logo { display: none; } /* Logo di kartu hilang saat PC */
+    #swipe-hint { display: none; }
 }
 
-/* --- MOBILE MODE (PORTRAIT STACK) --- */
-/* --- MOBILE MODE (PORTRAIT STACK) --- */
+/* --- MOBILE MODE (VERTICAL STACK) --- */
 @media screen and (max-width: 767px) {
-    #slider-container { 
-        flex: 1; position: relative; overflow: hidden; 
-        perspective: 1200px; /* Memberikan efek 3D */
-    }
+    #brand-area { display: none; }
+    #slider-container { flex: 1; position: relative; overflow: hidden; perspective: 1200px; }
     #main-slider { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     .card-element {
         position: absolute; inset: 0;
         display: flex; justify-content: center; align-items: center;
-        /* Animasi transisi yang lebih halus */
-        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.5s, filter 0.5s;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
         opacity: 0;
         pointer-events: none;
+        visibility: hidden;
     }
 
-    /* KARTU AKTIF: Berada di depan dan terang */
     .card-element.is-active { 
-        opacity: 1; 
-        z-index: 50; 
-        pointer-events: auto; 
-        transform: scale(1) translateY(0);
-        filter: brightness(1);
+        opacity: 1 !important; visibility: visible !important;
+        z-index: 50; pointer-events: auto; transform: translateY(0) scale(1);
     }
     
-    /* KARTU ANTREAN (Bawah): Benar-benar transparan saat diam */
-    .card-element.is-next { 
-        opacity: 0; /* Ubah dari 0.4 ke 0 */
-        z-index: 10; 
-        transform: translateY(40px) scale(0.8); 
-        filter: brightness(0);
-        pointer-events: none;
-    }
-    
-    /* KARTU STACKED (Atas): Tetap transparan */
-    .card-element.is-stacked { 
-        opacity: 0; 
-        z-index: 10; 
-        transform: translateY(-100%) scale(0.8); 
-        pointer-events: none;
-    }
-    
-    /* Saat ditarik, class 'on-top' akan memaksa opacity jadi terlihat */
-    .card-element.on-top {
-        z-index: 100 !important;
-        opacity: 1 !important;
-        filter: brightness(1) !important;
-    }
+    .card-element.on-top { z-index: 100 !important; opacity: 1 !important; visibility: visible !important; }
 
-    .card-element .card-frame-base { width: 90%; height: 85%; }
+    .card-logo { display: block; width: 45px; margin-bottom: 15px; filter: drop-shadow(0 0 5px var(--color-primary)); }
+
+    /* HINT STYLE */
+    #swipe-hint {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; z-index: 999;
+        pointer-events: none; transition: opacity 1s;
+    }
+    .hint-text { font-size: 12px; font-weight: 800; letter-spacing: 2px; color: var(--color-primary); margin: 10px 0; text-shadow: 0 0 8px black; }
+    .hint-arrow { color: var(--color-primary); animation: hFloat 1.5s infinite; }
+    @keyframes hFloat { 0%, 100% { transform: translateY(0); opacity: 0.2; } 50% { transform: translateY(-10px); opacity: 1; } }
+    #swipe-hint.fade-out { opacity: 0; }
 }
 
-@keyframes glow-pulse { from { box-shadow: 0 0 5px rgba(192, 132, 252, 0.2); } to { box-shadow: 0 0 25px rgba(192, 132, 252, 0.5); } }
-#footer-area { height: 50px; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; background: #000; font-size: 11px; letter-spacing: 2px; }
+/* BASE CARD STYLE */
+.card-frame-base {
+    background: var(--bg-card); border: 2px solid var(--border-card);
+    border-radius: 24px; padding: 25px; display: flex; flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 90%; height: 85%;
+}
+.card-title { color: var(--color-primary); margin-bottom: 10px; font-size: 1.3rem; text-transform: uppercase; }
+.scroll-area { flex: 1; overflow-y: auto; line-height: 1.6; color: #cbd5e1; scrollbar-width: none; }
+.scroll-area::-webkit-scrollbar { display: none; }
+
+#footer-area { grid-area: footer; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; height: 50px; font-size: 12px; letter-spacing: 2px; }
