@@ -1,5 +1,5 @@
 @media screen and (max-width: 767px) {
-    /* 1. Reset Master - Mengunci layar agar tidak goyang saat swipe */
+    /* 1. Kunci Layar: Biar gak bisa di-scroll ke bawah sama sekali */
     .master-frame {
         display: block !important;
         position: fixed;
@@ -7,98 +7,86 @@
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
     }
 
-    /* 2. Sembunyikan elemen PC */
+    /* 2. Bersihkan sisa-sisa layout PC */
     .sidebar-brand, .pc-header-text, .pc-footer-text {
         display: none !important;
     }
 
-    /* 3. Container Panggung (Area Tumpukan) */
+    /* 3. Area Tumpukan (Panggung) */
     #slider-container {
         position: absolute;
-        inset: 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        perspective: 1500px; /* Efek 3D lebih dalam */
+        z-index: 50;
     }
 
     #main-slider {
         position: relative;
         width: 100%;
         height: 100%;
-        display: block !important; 
     }
 
-    /* 4. Detail Kartu (The Stacking Engine) */
+    /* 4. Logika Kartu Bertumpuk (Absolute) */
     .card-element {
-        position: absolute !important;
+        /* Wajib Absolute agar tidak berbaris ke bawah seperti di gambar */
+        position: absolute !important; 
         top: 50%;
         left: 50%;
-        width: 88vw;
+        /* Taruh titik tengah kartu pas di tengah layar */
+        transform: translate(-50%, -50%) scale(0.9);
+        
+        width: 90vw;
         height: 75vh;
-        /* Titik tumpu tepat di tengah */
-        transform: translate(-50%, -50%) scale(0.85) rotateX(5deg);
+        margin: 0 !important;
         
         background: var(--bg-card);
         border: 2px solid var(--border-line);
-        border-radius: 30px;
-        padding: 25px;
+        border-radius: 24px;
+        padding: 20px;
         
         opacity: 0;
         visibility: hidden;
-        pointer-events: none;
-        
-        /* Animasi Transisi Halus */
-        transition: 
-            transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-            opacity 0.5s ease,
-            box-shadow 0.5s;
-        
-        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        will-change: transform, opacity;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* 5. Kartu Aktif (Is-Active) */
+    /* Kartu yang sedang aktif (paling depan) */
     .card-element.is-active {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
         z-index: 100;
-        transform: translate(-50%, -50%) scale(1) rotateX(0deg);
-        box-shadow: 0 0 30px rgba(192, 132, 252, 0.2);
+        transform: translate(-50%, -50%) scale(1);
     }
 
-    /* 6. Kartu Saat Di-Swipe (On-Top) */
-    .card-element.on-top {
-        opacity: 1;
-        visibility: visible;
-        z-index: 200;
-        pointer-events: auto;
-    }
-
-    /* 7. Logo & Branding di Dalam Kartu */
+    /* 5. Logo di Pojok Kiri Atas Kartu */
     #main-logo {
-        width: 70px !important;
-        height: auto;
+        width: 60px !important;
+        height: auto !important;
         position: absolute;
-        top: 25px;
-        left: 25px;
-        z-index: 10;
-        filter: drop-shadow(0 0 10px var(--color-primary));
-        transition: transform 0.3s ease;
+        top: 20px;
+        left: 20px;
+        z-index: 110; /* Di atas kartu */
+        display: block !important;
     }
 
-    #main-logo:hover {
-        transform: scale(1.1);
+    /* 6. Ikon Floating (Chat & Surat) */
+    .mail-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
     }
 
-    /* Beri jarak konten agar tidak tertabrak logo */
-    .card-content-wrapper {
-        margin-top: 80px;
-        height: calc(100% - 80px);
-        overflow-y: auto;
+    .chat-container {
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 1000;
     }
 }
