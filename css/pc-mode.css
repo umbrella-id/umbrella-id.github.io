@@ -1,40 +1,15 @@
 @media screen and (min-width: 768px) {
-    /* 1. Reset Body & Master Frame */
-    body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #020617;
-    }
-
+    /* 1. LAYOUT UTAMA */
     .master-frame {
-        display: flex !important; /* Paksa jadi row */
+        display: flex !important;
         flex-direction: row !important;
         width: 100vw;
         height: 100vh;
         position: relative;
+        overflow: hidden;
     }
 
-    /* 2. JINAKKAN ELEMEN MOBILE (Header & Footer) */
-    /* Di image_9e52a1.png, ini yang bikin berantakan di pojok kiri */
-    .top-bar, .bottom-bar {
-        position: absolute !important;
-        width: auto !important;
-        height: auto !important;
-        background: none !important;
-        inset: auto !important; /* Reset semua posisi top/left/right/bottom */
-    }
-
-    .top-bar { top: 20px !important; right: 20px !important; flex-direction: row !important; }
-    .bottom-bar { bottom: 20px !important; right: 20px !important; }
-    
-    /* Sembunyikan teks header mobile yang numpuk di kiri atas */
-    .header-text-mobile, .footer-text-mobile { display: none !important; }
-
-    /* 3. SIDEBAR (Area SELOGAN) */
+    /* 2. SIDEBAR (AREA LOGO & SELOGAN) */
     .sidebar-brand {
         width: 30% !important;
         height: 100% !important;
@@ -43,64 +18,74 @@
         justify-content: center !important;
         align-items: center !important;
         border-right: 1px solid rgba(192, 132, 252, 0.2);
-        background: rgba(15, 23, 42, 0.5);
-        padding: 20px;
+        z-index: 50; /* Pastikan di bawah kartu tapi di atas background */
+        background: rgba(10, 15, 30, 0.8);
     }
 
-    /* FIX LOGO TUMPANG TINDIH */
+    /* Paksa Logo masuk ke Sidebar, bukan di tengah layar seperti di image_9e4726.png */
     .logo-wrapper {
         position: relative !important;
         transform: none !important;
         left: auto !important;
         top: auto !important;
-        width: 80% !important;
-        max-width: 300px !important;
-        margin: 0 auto !important;
+        width: 85% !important;
+        max-width: 280px !important;
         display: block !important;
+        margin-bottom: 20px;
     }
 
     .logo-wrapper img {
         width: 100% !important;
         height: auto !important;
-        position: relative !important; /* Paksa keluar dari absolute mobile */
+        filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
-    /* 4. CONTENT AREA (Area Slider) */
+    /* 3. RUNNING TEXT (FOTHER / FOOTER) */
+    /* Kita kunci di dasar layar agar tidak melayang ke tengah */
+    .bottom-bar, #footer-area {
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 30% !important; /* Mulai dari batas sidebar */
+        width: 70% !important; /* Sisa lebar layar */
+        height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(192, 132, 252, 0.2);
+        z-index: 100;
+        padding: 0 20px;
+        overflow: hidden;
+    }
+
+    /* 4. CONTENT AREA (KARTU) */
     .content-wrapper {
         flex: 1 !important;
         position: relative !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-
-    #slider-container {
-        width: 100% !important;
         height: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        perspective: 1000px;
+        background: radial-gradient(circle at center, rgba(30, 41, 59, 0.3) 0%, transparent 100%);
     }
 
-    /* 5. FIX KARTU (Agar muncul di tengah area kanan) */
     .card-element {
         position: absolute !important;
-        top: 50% !important;
+        top: 45% !important; /* Agak naik dikit biar gak tabrakan sama running text bawah */
         left: 50% !important;
-        transform: translate(-50%, -50%) scale(0.9) !important;
-        width: 450px !important;
-        height: 500px !important;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.5s ease;
-        z-index: 10;
+        transform: translate(-50%, -50%) !important;
+        width: 480px !important;
+        z-index: 80;
     }
 
-    .card-element.is-active {
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: translate(-50%, -50%) scale(1) !important;
+    /* 5. HEADER (KOTAK SURAT) */
+    .top-bar, #header-area {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 70% !important;
+        height: 60px !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        padding-right: 40px;
         z-index: 100;
     }
 }
