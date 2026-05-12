@@ -1,27 +1,60 @@
-/* --- TES JALUR PC --- */
 @media screen and (min-width: 768px) {
-
-    /* 1. Paksa Tampil Wadah Utama */
-    .top-bar, .sidebar-brand, .content-wrapper, .bottom-bar {
+    /* --- JINAKKAN IKON YANG TERKURUNG --- */
+    .sosmed-corner {
+        all: unset !important; /* Buang paksa koordinat mobile */
+        position: fixed !important;
+        bottom: 30px !important;
+        left: 30px !important;
         display: flex !important;
-        border: 2px dashed yellow !important; /* Biar kelihatan batas kotaknya */
+        gap: 20px !important;
+        z-index: 9999;
+    }
+
+    .chat-container {
+        all: unset !important;
+        position: fixed !important;
+        bottom: 30px !important;
+        right: 30px !important;
+        width: 60px !important;
+        height: 60px !important;
+        background: var(--color-primary) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    /* --- ISI AREA LOGO (BRAND) --- */
+    .sidebar-brand {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 20px !important;
+    }
+
+    .logo-wrapper {
+        display: block !important;
         position: relative !important;
+        inset: auto !important;
+        width: 280px !important; /* Ukuran proporsional PC */
+        transform: none !important;
     }
 
-    /* 2. Isi dengan Elemen "Asing" untuk Tes Posisi */
-    .top-bar::after { content: "INI HEADER PC"; color: lime; font-weight: bold; }
-    .sidebar-brand::after { content: "INI AREA LOGO PC"; color: lime; font-weight: bold; }
-    .content-wrapper::after { 
-        content: "SLIDER KOSONG - JANGAN ADA LOGO RAKSASA DI SINI!"; 
-        color: white; 
-        background: red; 
-        padding: 20px;
+    .logo-wrapper img {
+        width: 100% !important;
+        height: auto !important;
+        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.3));
     }
-    .bottom-bar::after { content: "INI FOOTER PC"; color: lime; font-weight: bold; }
 
-    /* 3. Matikan elemen lama yang bandel di image_9b1181.png */
-    /* Kita "butakan" sementara agar tidak mengganggu tes grid */
-    .logo-wrapper, .card-element, .mail-container, .running-text-wrapper {
-        display: none !important;
+    /* Tambahkan Slogan di bawah Logo kalau ada */
+    .slogan-text {
+        display: block !important;
+        margin-top: 20px;
+        color: white;
+        font-size: 0.9rem;
+        text-align: center;
+        opacity: 0.7;
     }
 }
