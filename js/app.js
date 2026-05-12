@@ -114,23 +114,19 @@ function updateStack(drag = 0) {
     if (window.innerWidth >= 768) return;
 
     cards.forEach((card, i) => {
-        // Gunakan cubic-bezier untuk feel premium
-        card.style.transition = drag === 0 ? "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s" : "none";
-        
+        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
         if (i === currentIndex) {
-            card.style.transform = `translateY(${drag}px)`;
+            card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
             card.style.opacity = 1;
             card.style.zIndex = 500;
             card.style.visibility = "visible";
         } else if (i < currentIndex) {
-            // Lepas ke atas
-            card.style.transform = `translateY(-${h}px)`;
+            card.style.transform = `translate(-50%, -${h}px)`;
             card.style.opacity = 0;
             card.style.zIndex = 1;
         } else {
-            // Antri di bawah
             let pos = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translateY(${pos}px)`;
+            card.style.transform = `translate(-50%, ${pos}px)`;
             card.style.opacity = 1;
             card.style.zIndex = 400;
             card.style.visibility = "visible";
