@@ -5,18 +5,41 @@
         overflow: hidden !important;
         width: 100vw;
         height: 100dvh;
+        background: #0f172a;
     }
 
     .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
         display: none !important;
     }
 
-    #slider-container {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        z-index: 50;
+    /* RUNNING TEXT - Efek Memudar (Fade) */
+    .running-text-wrapper {
+        position: fixed;
+        top: 32px;
+        left: 20px;
+        right: 185px; 
+        overflow: hidden;
+        white-space: nowrap;
+        z-index: 1090;
+        /* Masking untuk efek pudar di awal dan akhir */
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .running-text-content {
+        display: inline-block;
+        font-size: 0.75rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+        animation: marquee 20s linear infinite;
+        padding-left: 20px;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
 
     /* KARTU PREVIEW */
@@ -26,7 +49,7 @@
         left: 50%;
         transform: translateX(-50%);
         width: 92vw !important;
-        height: 78dvh !important;
+        height: 76dvh !important;
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 25px;
@@ -41,34 +64,33 @@
 
     .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
     
-    /* HEADER KARTU: Judul di samping Logo */
     .card-header-logo {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         margin-bottom: 15px;
-        border-bottom: 2px solid rgba(192, 132, 252, 0.2);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
         padding-bottom: 12px;
         flex-shrink: 0;
     }
 
-    .inner-card-logo { 
-        width: 45px; 
-        height: auto; 
-        filter: drop-shadow(0 0 5px var(--color-primary));
-    }
+    .inner-card-logo { width: 45px; height: auto; }
 
     .header-text-group {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
     }
 
+    /* Judul mengecil otomatis jika panjang */
     .card-title {
-        font-size: 1.2rem !important;
+        font-size: clamp(0.85rem, 4.5vw, 1.15rem) !important;
         margin: 0 !important;
         color: var(--color-primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .card-content-wrapper {
@@ -78,40 +100,39 @@
     }
 
     .card-text {
-        display: -webkit-box;
-        -webkit-line-clamp: 9;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 0.95rem;
         line-height: 1.5;
-        color: #e2e8f0;
+        color: #cbd5e1;
     }
 
-    /* TOMBOL BACA SELENGKAPNYA + EFEK TAP */
     .read-more-btn {
-        margin-top: auto;
         color: white;
         font-weight: bold;
         text-align: center;
         padding: 12px;
-        background: linear-gradient(90deg, rgba(147, 51, 234, 0.3), rgba(192, 132, 252, 0.3));
+        background: rgba(192, 132, 252, 0.15);
         border: 1px solid var(--color-primary);
         border-radius: 12px;
-        transition: all 0.2s;
     }
-    .read-more-btn:active { transform: scale(0.95); background: var(--color-primary); }
+    .read-more-btn:active { transform: scale(0.95); }
 
-    /* TOMBOL NAVIGASI + EFEK TAP */
-    .mail-container, .chat-container {
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        cursor: pointer;
+    /* SOSMED CORNER (Bawah Kiri) */
+    .sosmed-corner {
+        position: fixed;
+        bottom: 35px;
+        left: 25px;
+        display: flex;
+        gap: 15px;
+        z-index: 1100;
     }
-    .mail-container:active, .chat-container:active {
-        transform: scale(0.85); /* Efek membal saat ditekan */
-        filter: brightness(1.2);
+    .sosmed-link {
+        color: rgba(255,255,255,0.6);
+        font-size: 1.2rem;
+        transition: 0.2s;
     }
+    .sosmed-link:active { color: var(--color-primary); transform: scale(0.8); }
 
+    /* TOMBOL UTAMA */
     .mail-container {
         position: fixed;
         top: 25px;
@@ -125,54 +146,48 @@
         align-items: center;
         gap: 10px;
         color: white;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
+        font-size: 0.8rem;
+        font-weight: bold;
     }
+    .mail-container:active { transform: scale(0.9); }
 
     .chat-container {
         position: fixed;
         bottom: 30px;
         right: 25px;
         z-index: 1100;
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
         background: var(--color-primary);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        color: white;
     }
+    .chat-container:active { transform: scale(0.8); }
 
-    /* MODAL POPUP */
+    /* MODAL */
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.95);
+        background: rgba(10, 10, 20, 0.98);
         z-index: 9999;
         display: none;
         align-items: center;
         justify-content: center;
-        backdrop-filter: blur(10px);
+        padding: 20px;
     }
-
     .modal-content {
         background: #1e1b4b;
-        width: 90vw;
+        width: 100%;
         max-height: 80dvh;
-        padding: 25px;
         border-radius: 20px;
         border: 1px solid var(--color-primary);
+        padding: 20px;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 0 30px rgba(192, 132, 252, 0.3);
+        position: relative;
     }
-
-    .modal-scroll {
-        overflow-y: auto !important;
-        margin-top: 15px;
-        flex: 1;
-        padding-right: 8px;
-        font-size: 1rem;
-    }
+    .modal-scroll { overflow-y: auto; flex: 1; margin-top: 15px; }
 }
