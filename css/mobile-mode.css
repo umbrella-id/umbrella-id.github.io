@@ -1,25 +1,30 @@
-/* Layout Mobile: Floating & Stacking System */
-.master-frame { 
-    position: relative; 
-    height: 100vh; 
+/* --- KHUSUS MODE MOBILE (PORTRAIT) --- */
+
+/* 1. Master Frame: Sederhanakan agar tidak pakai Grid PC */
+.master-frame {
+    display: block; /* Matikan Grid PC */
+    position: relative;
+    height: 100vh;
     width: 100vw;
-    display: block; 
     overflow: hidden;
 }
 
-/* Sembunyikan elemen PC agar tidak mengganggu tumpukan */
-.pc-header-text, .pc-footer-text, .sidebar-brand { 
-    display: none; 
+/* 2. Sembunyikan Elemen PC (Sidebar & Text Header/Footer) */
+.sidebar-brand, 
+.pc-header-text, 
+.pc-footer-text {
+    display: none !important;
 }
 
-/* 1. AREA SLIDER: Menjadi kontainer tumpukan tepat di tengah */
+/* 3. Slider Container: Buat jadi panggung tumpukan */
 #slider-container {
-    height: 100vh; 
-    width: 100vw;
-    display: flex; 
-    align-items: center; 
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    perspective: 1000px; /* Memberikan efek kedalaman saat swipe */
+    /* Memberikan efek 3D saat kartu ditarik */
+    perspective: 1200px; 
 }
 
 #main-slider {
@@ -31,46 +36,49 @@
     justify-content: center;
 }
 
-/* 2. KARTU: Posisi Absolute (Menumpuk) */
+/* 4. Card Element: Mode Tumpuk (Absolute) */
 .card-element {
-    position: absolute;
-    width: 88vw;   /* Lebar pas di HP */
-    height: 75vh;  /* Tinggi pas di HP */
-    opacity: 0; 
+    position: absolute; /* Kunci utama stacking */
+    width: 88vw;   /* Lebar kartu di HP */
+    height: 72vh;  /* Tinggi kartu di HP */
+    opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Nonaktifkan kartu yang tidak terlihat */
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
+    transform: scale(0.8) translateY(50px);
+    transition: 
+        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
+        opacity 0.4s ease,
+        visibility 0.4s;
     will-change: transform, opacity;
 }
 
-/* 3. LOGIKA KASTA KARTU (Z-Index) */
+/* 5. State Kartu (Diatur via JS) */
 
-/* Kartu Utama (Tengah) */
-.card-element.is-active { 
-    opacity: 1; 
-    visibility: visible; 
-    z-index: 50; 
-    pointer-events: auto;
+/* Kartu yang aktif/terlihat di depan */
+.card-element.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 100;
     transform: scale(1) translateY(0);
 }
 
-/* Kartu yang Sedang Ditarik / Muncul dari atas/bawah */
-.card-element.on-top { 
-    opacity: 1; 
-    visibility: visible; 
-    z-index: 100; 
-    pointer-events: auto;
+/* Kartu yang sedang diproses/paling atas saat swipe */
+.card-element.on-top {
+    z-index: 200;
+    opacity: 1;
+    visibility: visible;
 }
 
-/* 4. POSISI FLOATING (Sesuai Sketsa) */
-.mail-container { 
-    position: fixed;
-    top: 25px; 
-    right: 25px; 
+/* 6. Navigasi Floating (Sesuai Sketsa Kotak Surat & Chat) */
+.top-bar {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 1000;
 }
 
-.chat-container { 
-    position: fixed;
-    bottom: 30px; 
-    right: 25px; 
+.bottom-bar {
+    position: absolute;
+    bottom: 30px;
+    right: 25px;
+    z-index: 1000;
 }
