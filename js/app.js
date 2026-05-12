@@ -2,101 +2,155 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2E
 let globalData = [], currentIndex = 0;
 let startY = 0, deltaY = 0;
 
+// 1. INISIALISASI DATA
 async function init() {
     try {
         const res = await fetch(GAS_URL);
         const data = await res.json();
+        // Filter data kosong
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { document.getElementById('status-text').innerText = "ERROR"; }
+    } catch (e) { 
+        console.error("Gagal memuat data:", e);
+        const status = document.getElementById('status-text');
+        if(status) status.innerText = "ERROR LOAD DATA"; 
+    }
 }
 
+// 2. RENDER HTML (Sinkron dengan CSS Stacking)
 function render() {
-    const isPortrait = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
+    
+    if (!globalData.length) return;
+
     slider.innerHTML = globalData.map((item, i) => `
-        <div class="stack-card ${isPortrait ? '' : 'slide-card card-frame-base'}" id="sc-${i}">
-            <div class="card-frame-base">
-                <h2 class="card-title">${item.Header || 'MEMBER'}</h2>
-                <div class="scroll-area">${(item.Body || "").replace(/\n/g, '<br>')}</div>
+        <div class="card-element" id="card-${i}">
+            <div class="card-content-wrapper">
+                <h2 class="card-title">${item.Header || 'INFO'}</h2>
+                <div class="card-text">
+                    ${(item.Body || "").replace(/\n/g, '<br>')}
+                </div>
             </div>
         </div>`).join('');
-    if (isPortrait) updateStack(0);
+
+    // Set kartu pertama sebagai aktif
+    if (isMobile) {
+        updateStack(0);
+    } else {
+        // Reset untuk tampilan PC
+        const allCards = document.querySelectorAll('.card-element');
+        allCards.forEach(c => {
+            c.style.opacity = "1";
+            c.style.visibility = "visible";
+        });
+    }
+    
+    // Pastikan posisi logo benar setelah render
+    updateLogoPosition();
 }
 
+// 3. LOGIKA STACKING (SWIPE UP/DOWN)
 function updateStack(drag = 0) {
-    const cards = document.querySelectorAll('.stack-card');
+    const cards = document.querySelectorAll('.card-element');
     if (cards.length === 0) return;
+    
     const h = window.innerHeight;
 
     cards.forEach((card, i) => {
-        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s" : "none";
+        // Transisi halus saat tidak sedang ditarik
+        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s" : "none";
 
         if (i === currentIndex) {
             card.classList.add('is-active');
-            let scale = 1 - Math.abs(drag) / 4000;
-            card.style.transform = `translateY(0px) scale(${scale})`;
-            card.style.opacity = 1 - Math.abs(drag) / 2000;
+            // Efek mengecil saat ditarik (visual feedback)
+            let scale = 1 - Math.abs(drag) / 3000;
+            card.style.transform = `translate(-50%, calc(-50% + ${drag}px)) scale(${scale})`;
+            card.style.opacity = 1 - Math.abs(drag) / 1500;
+            card.style.zIndex = 100;
         } 
         else if (i === currentIndex + 1) {
-            card.className = 'stack-card is-next';
+            // Kartu selanjutnya (berada di bawah layar menunggu di-swipe up)
+            card.classList.remove('is-active');
             let pos = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translateY(${pos}px)`;
-        } 
-        else if (i === currentIndex - 1) {
-            card.className = 'stack-card is-stacked';
-            let pos = -h + (drag > 0 ? drag : 0);
-            card.style.transform = `translateY(${pos}px)`;
-        } 
+            card.style.transform = `translate(-50%, calc(-50% + ${pos}px))`;
+            card.style.opacity = "1";
+            card.style.visibility = "visible";
+            card.style.zIndex = 90;
+        }
         else {
-            card.className = 'stack-card';
-            card.style.transform = i < currentIndex ? `translateY(-100%)` : `translateY(100%)`;
+            card.classList.remove('is-active');
+            card.style.opacity = "0";
+            card.style.visibility = "hidden";
+            card.style.zIndex = 1;
         }
     });
 }
 
-window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
+// 4. LOGIKA PINDAH LOGO (Satu Logo Banyak Kartu)
+function updateLogoPosition() {
+    const logo = document.getElementById('main-logo');
+    const logoWrapper = document.querySelector('.logo-wrapper');
+    const activeCard = document.querySelector('.card-element.is-active');
+    
+    if (!logo || !logoWrapper) return;
+
+    // Di mobile, pastikan wrapper logo ada di kasta tertinggi
+    if (window.innerWidth <= 767) {
+        logoWrapper.style.zIndex = "1000";
+    }
+}
+
+// 5. EVENT LISTENERS (TOUCH & MOUSE)
+window.addEventListener('touchstart', e => { 
+    startY = e.touches[0].pageY; 
+}, {passive: false});
+
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
+    
+    // Batasi tarikan agar tidak melampaui batas data
+    if (currentIndex === 0 && deltaY > 0) deltaY /= 3; 
+    if (currentIndex === globalData.length - 1 && deltaY < 0) deltaY /= 3;
+
     if (e.cancelable) e.preventDefault();
     updateStack(deltaY);
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 140;
-    if (deltaY < -threshold && currentIndex < globalData.length - 1) currentIndex++;
-    else if (deltaY > threshold && currentIndex > 0) currentIndex--;
+    const threshold = 100; // Sensitivitas swipe
+
+    if (deltaY < -threshold && currentIndex < globalData.length - 1) {
+        currentIndex++;
+    } else if (deltaY > threshold && currentIndex > 0) {
+        currentIndex--;
+    }
+    
     deltaY = 0;
     updateStack(0);
+    // Jalankan update logo tiap ganti kartu
+    setTimeout(updateLogoPosition, 300);
 }, {passive: true});
 
+// Support Wheel (Scroll Mouse)
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768) return;
-    if (Math.abs(e.deltaY) < 30) return;
+    if (Math.abs(e.deltaY) < 50) return; // Debounce scroll
+    
     if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
+    
     updateStack(0);
+    setTimeout(updateLogoPosition, 300);
 }, {passive: true});
 
-window.addEventListener('resize', render);
+// Handle Resize
+window.addEventListener('resize', () => {
+    render();
+    updateLogoPosition();
+});
+
+// Start App
 document.addEventListener('DOMContentLoaded', init);
-
-function updateLogoPosition() {
-    const logo = document.getElementById('main-logo');
-    const isMobile = window.innerWidth <= 767;
-    const activeCard = document.querySelector('.card-element.is-active');
-    const logoHome = document.getElementById('logo-home');
-
-    if (isMobile && activeCard) {
-        activeCard.prepend(logo); // Masuk ke kartu
-    } else if (logoHome) {
-        logoHome.prepend(logo); // Balik ke Sidebar PC
-    }
-}
-
-// Jalankan fungsi ini di akhir fungsi SWIPE kamu dan di event resize
-window.addEventListener('resize', updateLogoPosition);
-// Panggil pertama kali saat load
-document.addEventListener('DOMContentLoaded', updateLogoPosition);
