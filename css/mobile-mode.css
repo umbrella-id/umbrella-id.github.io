@@ -103,7 +103,7 @@
     /* SOSMED CORNER (Bawah Kiri) */
     .sosmed-corner {
         position: fixed;
-        bottom: 35px;
+        bottom: 30px;
         left: 25px;
         display: flex;
         gap: 15px;
