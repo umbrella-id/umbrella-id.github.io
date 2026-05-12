@@ -1,38 +1,146 @@
+/* PC MODE - Fokus pada Desktop (Layar > 768px) */
 @media screen and (min-width: 768px) {
-    /* Layout Grid PC */
-    .content-wrapper {
-        display: grid;
-        grid-template-columns: 350px 1fr;
-        height: calc(100vh - 180px);
+    .master-frame {
+        display: flex;
+        flex-direction: row; /* Layout menyamping */
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        overflow: hidden;
     }
 
-    /* Logo di PC kembali ke Sidebar */
+    /* SIDEBAR: Area Brand & Navigasi Utama */
+    .sidebar-wrapper {
+        width: 320px;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+        position: relative;
+        z-index: 100;
+    }
+
+    .sidebar-brand {
+        margin-bottom: 50px;
+    }
+
     .logo-wrapper {
+        width: 80px;
+        height: 80px;
+        background: var(--color-primary);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(192, 132, 252, 0.3);
+    }
+
+    .pc-header-text h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 5px;
+    }
+
+    .slogan-text {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        letter-spacing: 1px;
+    }
+
+    /* MAIN CONTENT: Area Kartu */
+    #main-slider {
+        flex: 1;
         position: relative;
         display: flex;
+        align-items: center;
         justify-content: center;
-        padding-top: 40px;
+        padding: 50px;
     }
 
-    #main-logo {
-        width: 180px; /* Ukuran besar di PC */
-    }
-
-    #slider-container {
-        display: block;
-        padding: 40px;
-        overflow-x: auto;
-    }
-
-    /* Kartu di PC tidak menumpuk, tapi berderet ke samping */
+    /* KARTU PC: Lebih lebar dan statis (tapi tetap ada transisi) */
     .card-element {
-        position: relative !important;
-        display: inline-block;
-        width: 320px;
-        height: 480px;
-        margin-right: 20px;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: none !important;
+        position: absolute;
+        width: 600px !important; /* Ukuran lebar proporsional PC */
+        height: 450px !important;
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 30px;
+        padding: 40px !important;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-element.is-active {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1) translateX(0);
+        z-index: 10;
+    }
+
+    /* Efek "Tumpukan" di PC: Kartu antrian sedikit bergeser/miring */
+    .card-element:not(.is-active) {
+        transform: scale(0.9) translateX(50px);
+        opacity: 0;
+    }
+
+    /* FLOATING BUTTONS PC: Pojok Kanan Atas & Bawah */
+    .mail-container {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        padding: 15px 25px;
+        background: #1e293b;
+        border-radius: 15px;
+        border: 1px solid var(--color-primary);
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .mail-container:hover {
+        background: var(--color-primary);
+        transform: scale(1.05);
+    }
+
+    .chat-container {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        width: 70px;
+        height: 70px;
+        background: var(--color-primary);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        cursor: pointer;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        transition: 0.3s;
+    }
+
+    .chat-container:hover {
+        transform: translateY(-10px) rotate(5deg);
+    }
+
+    .sosmed-corner {
+        margin-top: auto; /* Dorong ke bawah sidebar */
+        display: flex;
+        gap: 20px;
+    }
+
+    .pc-footer-text {
+        margin-top: 20px;
+        font-size: 0.75rem;
+        color: #64748b;
     }
 }
