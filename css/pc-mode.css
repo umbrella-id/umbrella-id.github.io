@@ -1,14 +1,5 @@
 @media screen and (min-width: 768px) {
-    /* RESET DASAR */
-    body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100vh;
-        background: #020617;
-    }
-
-    /* MASTER GRID SESUAI SPEK KAMU */
+    /* 1. JANGKAR UTAMA */
     .master-frame {
         display: grid !important;
         grid-template-areas:
@@ -19,38 +10,58 @@
         grid-template-rows: 18vh 60vh 1fr !important;
         width: 100vw;
         height: 100vh;
-        gap: 0;
+        overflow: hidden;
+        position: relative;
     }
 
-    /* AREA 1: HEADER (Header Header) */
-    .top-bar, #header-area {
-        grid-area: header;
+    /* 2. PAKSA ELEMEN MASUK KE GRID AREA */
+    /* Kita cari class-class yang sudah ada di HTML kamu */
+    
+    .top-bar { 
+        grid-area: header !important; 
+        position: relative !important;
         display: flex !important;
         justify-content: flex-end;
         align-items: center;
         padding: 0 40px;
-        border-bottom: 1px solid rgba(192, 132, 252, 0.1);
-        background: rgba(15, 23, 42, 0.2);
-        position: relative !important; /* Reset position absolute mobile */
+        z-index: 100;
+        inset: auto !important; /* Reset absolute mobile */
     }
 
-    /* AREA 2: BRAND (Brand - Area Logo Kiri) */
-    .sidebar-brand {
-        grid-area: brand;
+    .sidebar-brand { 
+        grid-area: brand !important; 
+        position: relative !important;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 20px;
-        border-right: 1px solid rgba(192, 132, 252, 0.1);
-        background: rgba(10, 15, 30, 0.4);
+        inset: auto !important;
     }
 
-    /* Fix Logo Biar Gak Obesitas lagi */
+    .content-wrapper { 
+        grid-area: slider !important; 
+        position: relative !important;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        inset: auto !important;
+    }
+
+    .bottom-bar { 
+        grid-area: footer !important; 
+        position: relative !important;
+        display: flex !important;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 100;
+        inset: auto !important;
+    }
+
+    /* 3. JINAKKAN LOGO RAKSASA (Fix image_9dd37b.png) */
     .logo-wrapper {
         position: relative !important;
         width: 100% !important;
-        max-width: 280px !important;
+        max-width: 250px !important;
         transform: none !important;
         inset: auto !important;
     }
@@ -58,43 +69,25 @@
     .logo-wrapper img {
         width: 100% !important;
         height: auto !important;
-        filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
-    /* AREA 3: SLIDER (Slider - Area Kartu Tengah) */
-    .content-wrapper, #slider-container {
-        grid-area: slider;
-        position: relative !important;
-        display: flex !important;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
-
-    /* Kartu Konten tetap Absolute tapi terhadap area Slider */
+    /* 4. KARTU SLIDER (Centering di tengah panggung 60vh) */
     .card-element {
         position: absolute !important;
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        width: 500px !important; /* Sesuaikan lebar kartu di PC */
-        height: auto;
+        width: 450px !important;
         z-index: 50;
     }
 
-    /* AREA 4: FOOTER (Footer Footer - Area Running Text) */
-    .bottom-bar, #footer-area {
-        grid-area: footer;
-        display: flex !important;
-        align-items: center;
-        padding: 0 30px;
-        background: rgba(0, 0, 0, 0.5);
-        border-top: 1px solid rgba(192, 132, 252, 0.1);
-        position: relative !important; /* Reset position absolute mobile */
+    /* 5. FLOATING ELEMENTS (Tetap Biarkan Melayang) */
+    /* Tombol chat atau wa yang pakai position fixed jangan dimasukkan grid */
+    .floating-wa, .floating-chat {
+        position: fixed !important;
+        z-index: 9999;
     }
 
-    /* JINAKKAN ELEMEN MOBILE YANG NYASAR */
-    .header-text-mobile, .footer-text-mobile {
-        display: none !important;
-    }
+    /* Bersihkan teks sisa yang numpuk di pojok */
+    .header-text-mobile, .footer-text-mobile { display: none !important; }
 }
