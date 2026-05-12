@@ -67,26 +67,28 @@ body, html {
         filter: brightness(1);
     }
     
-    /* KARTU ANTREAN: Mengecil di belakang dan sangat transparan agar tidak mengganggu */
+    /* KARTU ANTREAN (Bawah): Benar-benar transparan saat diam */
     .card-element.is-next { 
-        opacity: 0.4; /* Tipis saja */
+        opacity: 0; /* Ubah dari 0.4 ke 0 */
         z-index: 10; 
-        transform: translateY(30px) scale(0.85); /* Mengecil di bawah */
-        filter: brightness(0.3) blur(2px);
+        transform: translateY(40px) scale(0.8); 
+        filter: brightness(0);
+        pointer-events: none;
     }
-
-    /* KARTU YANG SUDAH LEWAT: Sembunyi di atas */
+    
+    /* KARTU STACKED (Atas): Tetap transparan */
     .card-element.is-stacked { 
         opacity: 0; 
         z-index: 10; 
         transform: translateY(-100%) scale(0.8); 
+        pointer-events: none;
     }
-
-    /* Saat sedang ditarik (Dragging), kartu preview harus naik z-indexnya */
+    
+    /* Saat ditarik, class 'on-top' akan memaksa opacity jadi terlihat */
     .card-element.on-top {
         z-index: 100 !important;
         opacity: 1 !important;
-        filter: brightness(1) blur(0) !important;
+        filter: brightness(1) !important;
     }
 
     .card-element .card-frame-base { width: 90%; height: 85%; }
