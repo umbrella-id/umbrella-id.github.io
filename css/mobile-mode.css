@@ -1,26 +1,76 @@
-/* Layout Mobile: Semua Floating & Absolute */
-.master-frame { position: relative; height: 100vh; display: block; }
-
-/* Sembunyikan Header/Footer PC di HP */
-.pc-header-text, .pc-footer-text, .sidebar-brand { display: none; }
-
-/* Posisi Floating Khusus Mobile */
-.mail-container { top: 20px; right: 20px; }
-.chat-container { bottom: 30px; right: 20px; }
-
-/* Card Stacking Area */
-#slider-container {
-    height: 100vh; width: 100vw;
-    display: flex; align-items: center; justify-content: center;
+/* Layout Mobile: Floating & Stacking System */
+.master-frame { 
+    position: relative; 
+    height: 100vh; 
+    width: 100vw;
+    display: block; 
+    overflow: hidden;
 }
 
+/* Sembunyikan elemen PC agar tidak mengganggu tumpukan */
+.pc-header-text, .pc-footer-text, .sidebar-brand { 
+    display: none; 
+}
+
+/* 1. AREA SLIDER: Menjadi kontainer tumpukan tepat di tengah */
+#slider-container {
+    height: 100vh; 
+    width: 100vw;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    perspective: 1000px; /* Memberikan efek kedalaman saat swipe */
+}
+
+#main-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. KARTU: Posisi Absolute (Menumpuk) */
 .card-element {
     position: absolute;
-    width: 85%; height: 75%;
-    opacity: 0; visibility: hidden;
+    width: 88vw;   /* Lebar pas di HP */
+    height: 75vh;  /* Tinggi pas di HP */
+    opacity: 0; 
+    visibility: hidden;
+    pointer-events: none; /* Nonaktifkan kartu yang tidak terlihat */
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
+    will-change: transform, opacity;
 }
 
-/* Class aktif dari JavaScript */
-.card-element.is-active { opacity: 1; visibility: visible; z-index: 50; }
-.card-element.on-top { opacity: 1; visibility: visible; z-index: 100; }
+/* 3. LOGIKA KASTA KARTU (Z-Index) */
+
+/* Kartu Utama (Tengah) */
+.card-element.is-active { 
+    opacity: 1; 
+    visibility: visible; 
+    z-index: 50; 
+    pointer-events: auto;
+    transform: scale(1) translateY(0);
+}
+
+/* Kartu yang Sedang Ditarik / Muncul dari atas/bawah */
+.card-element.on-top { 
+    opacity: 1; 
+    visibility: visible; 
+    z-index: 100; 
+    pointer-events: auto;
+}
+
+/* 4. POSISI FLOATING (Sesuai Sketsa) */
+.mail-container { 
+    position: fixed;
+    top: 25px; 
+    right: 25px; 
+}
+
+.chat-container { 
+    position: fixed;
+    bottom: 30px; 
+    right: 25px; 
+}
