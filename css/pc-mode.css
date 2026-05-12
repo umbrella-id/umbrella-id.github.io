@@ -1,94 +1,100 @@
 @media screen and (min-width: 768px) {
+    /* RESET DASAR */
     body {
         margin: 0;
+        padding: 0;
         overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+        height: 100vh;
         background: #020617;
     }
 
-    /* Mengaktifkan Grid Area sesuai referensi lama kamu */
+    /* MASTER GRID SESUAI SPEK KAMU */
     .master-frame {
         display: grid !important;
         grid-template-areas:
             "header header"
             "brand slider"
             "footer footer";
-        grid-template-columns: 350px 1fr; /* Brand area lebar tetap */
-        grid-template-rows: 80px 1fr 60px; /* Header & Footer tinggi tetap */
+        grid-template-columns: 350px 1fr !important;
+        grid-template-rows: 18vh 60vh 1fr !important;
         width: 100vw;
         height: 100vh;
         gap: 0;
-        position: relative;
     }
 
-    /* 1. HEADER AREA */
+    /* AREA 1: HEADER (Header Header) */
     .top-bar, #header-area {
         grid-area: header;
-        position: relative !important; /* Cabut dari absolute mobile */
         display: flex !important;
         justify-content: flex-end;
         align-items: center;
         padding: 0 40px;
         border-bottom: 1px solid rgba(192, 132, 252, 0.1);
-        z-index: 100;
+        background: rgba(15, 23, 42, 0.2);
+        position: relative !important; /* Reset position absolute mobile */
     }
 
-    /* 2. BRAND AREA (Area Sidebar Logo) */
+    /* AREA 2: BRAND (Brand - Area Logo Kiri) */
     .sidebar-brand {
         grid-area: brand;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border-right: 1px solid rgba(192, 132, 252, 0.1);
         padding: 20px;
-        background: rgba(15, 23, 42, 0.3);
+        border-right: 1px solid rgba(192, 132, 252, 0.1);
+        background: rgba(10, 15, 30, 0.4);
     }
 
-    /* Pindahkan Logo raksasa di image_9e3fc2.png ke sini */
+    /* Fix Logo Biar Gak Obesitas lagi */
     .logo-wrapper {
         position: relative !important;
+        width: 100% !important;
+        max-width: 280px !important;
         transform: none !important;
         inset: auto !important;
-        width: 100% !important;
-        max-width: 250px !important;
     }
 
-    /* 3. SLIDER AREA (Area Kartu Konten) */
-    .content-wrapper {
+    .logo-wrapper img {
+        width: 100% !important;
+        height: auto !important;
+        filter: drop-shadow(0 0 15px var(--color-primary));
+    }
+
+    /* AREA 3: SLIDER (Slider - Area Kartu Tengah) */
+    .content-wrapper, #slider-container {
         grid-area: slider;
         position: relative !important;
-        overflow: hidden;
         display: flex !important;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
     }
 
-    /* Kartu harus tetap absolute terhadap area slider ini */
+    /* Kartu Konten tetap Absolute tapi terhadap area Slider */
     .card-element {
         position: absolute !important;
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        width: 450px !important;
+        width: 500px !important; /* Sesuaikan lebar kartu di PC */
         height: auto;
         z-index: 50;
     }
 
-    /* 4. FOOTER AREA (Running Text) */
+    /* AREA 4: FOOTER (Footer Footer - Area Running Text) */
     .bottom-bar, #footer-area {
         grid-area: footer;
-        position: relative !important;
         display: flex !important;
         align-items: center;
-        padding: 0 20px;
-        background: rgba(0, 0, 0, 0.4);
+        padding: 0 30px;
+        background: rgba(0, 0, 0, 0.5);
         border-top: 1px solid rgba(192, 132, 252, 0.1);
+        position: relative !important; /* Reset position absolute mobile */
     }
 
-    /* Hilangkan teks numpuk yang ada di image_9e3fc2.png */
-    .header-text-mobile { display: none !important; }
+    /* JINAKKAN ELEMEN MOBILE YANG NYASAR */
+    .header-text-mobile, .footer-text-mobile {
+        display: none !important;
+    }
 }
