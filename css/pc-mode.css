@@ -1,129 +1,106 @@
-/* ==========================================
-   PC MODE - GAMING HUD ARCHITECTURE
-   ========================================== */
 @media screen and (min-width: 768px) {
+    /* 1. Reset Body & Master Frame */
     body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        overflow: hidden;
-        background: #020617; /* Base dark */
+        background: #020617;
     }
 
     .master-frame {
-        display: flex; /* Pakai Flex untuk membagi Sidebar & Content */
-        width: 95vw;
-        height: 90vh;
+        display: flex !important; /* Paksa jadi row */
+        flex-direction: row !important;
+        width: 100vw;
+        height: 100vh;
         position: relative;
-        border: 1px solid rgba(192, 132, 252, 0.2);
-        background: 
-            radial-gradient(circle at center, rgba(30, 41, 59, 0.4) 0%, #020617 100%),
-            url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-        box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
     }
 
-    /* Dekorasi Siku Gaming dari Kode Lamamu */
-    .master-frame::before, .master-frame::after {
-        content: "";
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        border: 2px solid var(--color-primary);
-        pointer-events: none;
-        filter: drop-shadow(0 0 8px var(--color-primary));
-        z-index: 2000;
+    /* 2. JINAKKAN ELEMEN MOBILE (Header & Footer) */
+    /* Di image_9e52a1.png, ini yang bikin berantakan di pojok kiri */
+    .top-bar, .bottom-bar {
+        position: absolute !important;
+        width: auto !important;
+        height: auto !important;
+        background: none !important;
+        inset: auto !important; /* Reset semua posisi top/left/right/bottom */
     }
-    .master-frame::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
-    .master-frame::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
 
-    /* SIDEBAR AREA (BRAND) */
+    .top-bar { top: 20px !important; right: 20px !important; flex-direction: row !important; }
+    .bottom-bar { bottom: 20px !important; right: 20px !important; }
+    
+    /* Sembunyikan teks header mobile yang numpuk di kiri atas */
+    .header-text-mobile, .footer-text-mobile { display: none !important; }
+
+    /* 3. SIDEBAR (Area SELOGAN) */
     .sidebar-brand {
-        width: 30%;
-        height: 100%;
+        width: 30% !important;
+        height: 100% !important;
         display: flex !important;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 40px;
-        border-right: 1px solid rgba(192, 132, 252, 0.1);
-        z-index: 10;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-right: 1px solid rgba(192, 132, 252, 0.2);
+        background: rgba(15, 23, 42, 0.5);
+        padding: 20px;
     }
 
+    /* FIX LOGO TUMPANG TINDIH */
     .logo-wrapper {
         position: relative !important;
-        width: 100% !important;
-        max-width: 320px;
         transform: none !important;
-        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.3));
+        left: auto !important;
+        top: auto !important;
+        width: 80% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+        display: block !important;
     }
 
-    .slogan-text {
-        margin-top: 20px;
-        font-size: 1.2vmin;
-        color: var(--color-primary);
-        letter-spacing: 4px;
-        text-transform: uppercase;
-        opacity: 0.7;
+    .logo-wrapper img {
+        width: 100% !important;
+        height: auto !important;
+        position: relative !important; /* Paksa keluar dari absolute mobile */
     }
 
-    /* CONTENT AREA (SLIDER) */
+    /* 4. CONTENT AREA (Area Slider) */
     .content-wrapper {
-        flex: 1;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        flex: 1 !important;
+        position: relative !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     #slider-container {
-        width: 100%;
-        height: 100%;
-        perspective: 1000px; /* Efek kedalaman 3D */
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        perspective: 1000px;
     }
 
-    /* KARTU PC - Modern Stack */
+    /* 5. FIX KARTU (Agar muncul di tengah area kanan) */
     .card-element {
         position: absolute !important;
-        left: 50% !important;
         top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(0.9) !important;
         width: 450px !important;
-        height: 550px !important;
-        /* Default State: Tersembunyi di belakang */
-        transform: translate(-50%, -50%) scale(0.8) translateZ(-100px) !important;
+        height: 500px !important;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        
-        background: var(--bg-card);
-        border: 1px solid var(--border-line);
-        border-radius: 20px;
-        padding: 35px !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        transition: all 0.5s ease;
+        z-index: 10;
     }
 
-    /* State Aktif (Kartu yang muncul) */
     .card-element.is-active {
-        opacity: 1;
-        visibility: visible;
-        transform: translate(-50%, -50%) scale(1) translateZ(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translate(-50%, -50%) scale(1) !important;
         z-index: 100;
-        border: 1px solid var(--color-primary);
-        box-shadow: 0 0 30px rgba(192, 132, 252, 0.2);
-    }
-
-    /* Navigasi UI */
-    .top-bar { top: 30px; right: 40px; }
-    .bottom-bar { bottom: 30px; right: 40px; }
-
-    /* Footer Text di PC */
-    .pc-footer-info {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: rgba(255,255,255,0.2);
-        font-size: 0.7rem;
-        letter-spacing: 2px;
     }
 }
