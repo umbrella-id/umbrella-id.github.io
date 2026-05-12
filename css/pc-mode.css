@@ -1,87 +1,52 @@
-/* Kita kunci spesifik untuk layar lebar + posisi landscape */
-@media screen and (min-width: 768px) and (orientation: landscape) {
-
-    /* 1. Reset Total Master Frame sebagai Jangkar */
-    .master-frame {
+@media screen and (min-width: 768px) {
+    /* 1. RESET TOTAL MASTER FRAME */
+    /* Kita kunci Master Frame jadi Grid, tapi isinya kita kosongkan dulu */
+    html, body, .master-frame {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
         display: grid !important;
         grid-template-areas:
             "header header"
             "brand slider"
-            "footer footer" !important;
+            "footer footer";
         grid-template-columns: 350px 1fr !important;
-        grid-template-rows: 18vh 60vh 1fr !important; /* Pakai vh agar konsisten */
-        width: 100vw !important;
-        height: 100vh !important;
-        position: fixed !important; 
-        top: 0 !important;
-        left: 0 !important;
-        overflow: hidden !important;
+        grid-template-rows: 18dvh 60dvh 1fr !important;
+        background: #020617 !important; /* Background gelap total */
     }
 
-    /* 2. Jinakkan Elemen yang "Mabuk" di Tengah */
-    /* Kita paksa mereka masuk kotak masing-masing */
-    
-    .top-bar { 
-        grid-area: header !important;
-        position: relative !important;
-        inset: auto !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: flex-end;
-        padding-right: 50px;
+    /* 2. MATIKAN SEMUA ELEMEN YANG ADA (TARGET: HALAMAN KOSONG) */
+    /* Kita tembak semua selector yang mungkin ada di HTML kamu */
+    .top-bar, 
+    .sidebar-brand, 
+    .content-wrapper, 
+    .bottom-bar,
+    .logo-wrapper,
+    .mail-container,
+    .sosmed-corner,
+    .chat-container,
+    .running-text-wrapper,
+    .card-element,
+    .pc-header-text,
+    .pc-footer-text,
+    .slogan-text,
+    header,
+    footer,
+    aside,
+    main {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
 
-    .sidebar-brand { 
-        grid-area: brand !important;
-        position: relative !important;
-        inset: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
+    /* 3. RESET KONSTRUKSI */
+    /* Memastikan tidak ada padding/margin sisa dari CSS mobile */
+    * {
+        box-sizing: border-box;
     }
-
-    .content-wrapper { 
-        grid-area: slider !important;
-        position: relative !important;
-        inset: auto !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-
-    .bottom-bar { 
-        grid-area: footer !important;
-        position: relative !important;
-        inset: auto !important;
-        display: flex !important;
-        align-items: center;
-    }
-
-    /* 3. Atur Ukuran Logo Biar Gak Nutupin Kartu */
-    .logo-wrapper {
-        width: 250px !important; /* Kunci ukuran */
-        position: relative !important;
-        inset: auto !important;
-        transform: none !important;
-    }
-
-    .logo-wrapper img {
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    /* 4. Pastikan Kartu Stay di Tengah Slider */
-    .card-element {
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 480px !important;
-        max-height: 90% !important;
-        z-index: 50;
-    }
-
-    /* Hilangkan teks header/footer mobile yang numpuk di image_9d5ebc.png */
-    .header-text-mobile, .footer-text-mobile { display: none !important; }
 }
