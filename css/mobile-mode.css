@@ -4,7 +4,7 @@
         inset: 0 !important;
         overflow: hidden !important;
         width: 100vw;
-        height: 100dvh; /* Mengikuti tinggi dinamis browser */
+        height: 100dvh;
     }
 
     .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
@@ -15,39 +15,33 @@
         position: absolute;
         inset: 0;
         display: flex;
-        align-items: center;
         justify-content: center;
         z-index: 50;
-        padding-top: 20px; /* Jarak agar kartu naik sedikit ke atas */
     }
 
-    /* KARTU PREVIEW */
+    /* KARTU PREVIEW - Ukuran 80dvh */
     .card-element {
         position: absolute !important;
-        top: 45%; /* Naikkan posisi sedikit dari tengah */
+        top: 10dvh; /* Jarak tetap dari atas agar dekat dengan tombol surat */
         left: 50%;
-        transform: translate(-50%, -50%) scale(0.95);
-        width: 88vw !important;
-        height: 65dvh !important; /* Tinggi kartu lebih proporsional */
+        transform: translateX(-50%);
+        width: 92vw !important;
+        height: 80dvh !important;
         background: var(--bg-card);
         border: 2px solid var(--border-line);
-        border-radius: 20px;
+        border-radius: 25px;
         padding: 20px !important;
         display: flex;
         flex-direction: column;
         opacity: 0;
         visibility: hidden;
-        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
 
-    .card-element.is-active {
-        opacity: 1 !important;
-        visibility: visible !important;
-        z-index: 500;
-        transform: translate(-50%, -50%) scale(1);
-    }
-
+    /* Kunci agar kartu yang tidak aktif benar-benar keluar layar */
+    .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
+    
     .card-header-logo {
         display: flex;
         justify-content: space-between;
@@ -57,16 +51,16 @@
         padding-bottom: 10px;
     }
 
-    .inner-card-logo { width: 40px; height: auto; }
+    .inner-card-logo { width: 50px; height: auto; }
 
-    /* Preview Text dengan Ellipsis (...) */
     .card-text {
         display: -webkit-box;
-        -webkit-line-clamp: 6; /* Batasi maksimal 6 baris */
+        -webkit-line-clamp: 10;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #ccc;
+        font-size: 1.1rem;
+        line-height: 1.5;
     }
 
     .read-more-btn {
@@ -74,74 +68,77 @@
         color: var(--color-primary);
         font-weight: bold;
         text-align: center;
-        padding: 10px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        padding: 15px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 15px;
     }
 
-    /* TOMBOL KOTAK SURAT (Top Right) */
+    /* TOMBOL KOTAK SURAT - Pakai Font Awesome */
     .mail-container {
         position: fixed;
-        top: 15px;
-        right: 20px;
+        top: 25px;
+        right: 25px;
         z-index: 1100;
-        background: var(--bg-card);
+        background: rgba(15, 23, 42, 0.8);
         border: 1px solid var(--color-primary);
-        padding: 8px 15px;
+        padding: 10px 18px;
         border-radius: 30px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         color: white;
-        font-size: 0.8rem;
-    }
-    .mail-container::before {
-        content: "\2709"; /* Icon Amplop Baku */
-        font-size: 1.2rem;
-        color: var(--color-primary);
+        backdrop-filter: blur(10px);
     }
 
-    /* FLOATING CHAT (Bottom Right) */
+    /* FLOATING CHAT - Pakai Font Awesome */
     .chat-container {
         position: fixed;
-        bottom: 25px;
-        right: 20px;
+        bottom: 30px;
+        right: 25px;
         z-index: 1100;
-        width: 55px;
-        height: 55px;
-        background: var(--color-primary); /* Warna Primary */
+        width: 60px;
+        height: 60px;
+        background: var(--color-primary);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
-    .chat-icon { 
-        font-size: 24px; 
-        color: white;
-    }
-    /* Menggunakan icon chat standar */
-    .chat-icon::after { content: "\1F4AC"; } 
+    .chat-icon i { font-size: 28px; color: white; }
 
-    /* MODAL DETAIL (Full Pop-up untuk Scroll) */
+    /* MODAL DETAIL - Fix Tengah & Fixed Size */
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.9);
+        background: rgba(0,0,0,0.85);
         z-index: 2000;
-        display: none; /* Muncul via JS */
-        padding: 30px 20px;
-        overflow-y: auto;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
     }
     .modal-content {
         background: var(--bg-card);
+        width: 85vw;
+        max-height: 70dvh; /* Ukuran tetap */
         padding: 25px;
-        border-radius: 20px;
-        border: 1px solid var(--color-primary);
+        border-radius: 25px;
+        border: 2px solid var(--color-primary);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-scroll {
+        overflow-y: auto;
+        margin-top: 15px;
+        padding-right: 10px;
     }
     .close-modal {
-        float: right;
-        color: var(--color-primary);
-        font-size: 2rem;
-        line-height: 1;
+        position: absolute;
+        top: -50px;
+        right: 0;
+        color: white;
+        font-size: 35px;
     }
 }
