@@ -8,116 +8,96 @@ async function init() {
         const data = await res.json();
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
-    } catch (e) { 
-        console.error("Gagal memuat data:", e);
-        const status = document.getElementById('status-text');
-        if(status) status.innerText = "ERROR LOAD DATA"; 
-    }
+        createModal(); // Buat elemen modal sekali saja
+    } catch (e) { console.error(e); }
 }
 
 function render() {
     const isMobile = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
-    
     if (!globalData.length) return;
 
     slider.innerHTML = globalData.map((item, i) => `
-        <div class="card-element" id="card-${i}">
+        <div class="card-element" id="card-${i}" onclick="showDetail(${i})">
             <div class="card-header-logo">
-                <img src="logo-umbrella.svg" class="inner-card-logo" alt="Logo">
+                <img src="logo-umbrella.svg" class="inner-card-logo">
+                <span style="font-size:0.7rem; opacity:0.5">TAP TO READ</span>
             </div>
             <div class="card-content-wrapper">
                 <h2 class="card-title">${item.Header || 'INFO'}</h2>
-                <div class="card-text">
-                    ${(item.Body || "").replace(/\n/g, '<br>')}
-                </div>
+                <div class="card-text">${(item.Body || "").replace(/\n/g, '<br>')}</div>
             </div>
+            <div class="read-more-btn">BACA SELENGKAPNYA</div>
         </div>`).join('');
 
-    if (isMobile) {
-        updateStack(0);
-    } else {
-        const allCards = document.querySelectorAll('.card-element');
-        allCards.forEach(c => {
-            c.style.opacity = "1";
-            c.style.visibility = "visible";
-            c.style.position = "relative";
-            c.style.transform = "none";
-        });
-    }
+    if (isMobile) updateStack(0);
 }
 
+// FUNGSI POP-UP DETAIL
+function createModal() {
+    const modal = document.createElement('div');
+    modal.className = 'detail-modal';
+    modal.id = 'detailModal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDetail()">&times;</span>
+            <h2 id="modalTitle" style="color:var(--color-primary)"></h2>
+            <hr style="border:0; border-top:1px solid #333; margin:15px 0">
+            <div id="modalBody" style="line-height:1.6"></div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function showDetail(index) {
+    const item = globalData[index];
+    document.getElementById('modalTitle').innerText = item.Header;
+    document.getElementById('modalBody').innerHTML = (item.Body || "").replace(/\n/g, '<br>');
+    document.getElementById('detailModal').style.display = 'block';
+}
+
+function closeDetail() {
+    document.getElementById('detailModal').style.display = 'none';
+}
+
+// LOGIKA STACKING (Swipe tetap jalan)
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.card-element');
-    if (cards.length === 0) return;
-    
     const h = window.innerHeight;
-
     cards.forEach((card, i) => {
-        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s" : "none";
-
+        card.style.transition = drag === 0 ? "transform 0.4s ease, opacity 0.3s" : "none";
         if (i === currentIndex) {
             card.classList.add('is-active');
-            let scale = 1 - Math.abs(drag) / 3000;
-            card.style.transform = `translate(-50%, calc(-50% + ${drag}px)) scale(${scale})`;
-            card.style.opacity = 1 - Math.abs(drag) / 1500;
+            card.style.transform = `translate(-50%, calc(-50% + ${drag}px)) scale(1)`;
+            card.style.opacity = 1 - Math.abs(drag) / 1000;
             card.style.zIndex = 100;
-        } 
-        else if (i === currentIndex + 1) {
-            card.classList.remove('is-active');
+        } else if (i === currentIndex + 1) {
             let pos = h + (drag < 0 ? drag : 0);
             card.style.transform = `translate(-50%, calc(-50% + ${pos}px))`;
-            card.style.opacity = "1";
-            card.style.visibility = "visible";
+            card.style.opacity = 1;
             card.style.zIndex = 90;
-        }
-        else {
-            card.classList.remove('is-active');
-            card.style.opacity = "0";
-            card.style.visibility = "hidden";
+        } else {
+            card.style.opacity = 0;
             card.style.zIndex = 1;
         }
     });
 }
 
-window.addEventListener('touchstart', e => { 
-    startY = e.touches[0].pageY; 
-}, {passive: false});
-
+// EVENT HANDLERS (Sama seperti sebelumnya)
+window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
 window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
-    
-    if (currentIndex === 0 && deltaY > 0) deltaY /= 3; 
-    if (currentIndex === globalData.length - 1 && deltaY < 0) deltaY /= 3;
-
-    if (e.cancelable) e.preventDefault();
+    if (Math.abs(deltaY) > 5) e.preventDefault(); // Kunci layar saat swipe
     updateStack(deltaY);
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 100;
-
-    if (deltaY < -threshold && currentIndex < globalData.length - 1) {
-        currentIndex++;
-    } else if (deltaY > threshold && currentIndex > 0) {
-        currentIndex--;
-    }
-    
+    if (deltaY < -100 && currentIndex < globalData.length - 1) currentIndex++;
+    else if (deltaY > 100 && currentIndex > 0) currentIndex--;
     deltaY = 0;
     updateStack(0);
-}, {passive: true});
+});
 
-window.addEventListener('wheel', e => {
-    if (window.innerWidth >= 768) return;
-    if (Math.abs(e.deltaY) < 50) return;
-    
-    if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
-    else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
-    
-    updateStack(0);
-}, {passive: true});
-
-window.addEventListener('resize', render);
 document.addEventListener('DOMContentLoaded', init);
