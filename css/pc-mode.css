@@ -1,0 +1,32 @@
+/* Layout PC menggunakan Grid sesuai sketsa image_ff7833.png */
+.master-frame {
+    display: grid;
+    grid-template-rows: 80px 1fr 100px; /* Header, Content, Footer */
+    height: 100vh;
+}
+
+.top-bar { border-bottom: 1px solid var(--border-line); display: flex; align-items: center; justify-content: center; }
+.pc-header-text { font-size: 2rem; font-weight: 900; letter-spacing: 10px; }
+
+.content-body {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* Logo Sidebar | Slider Area */
+    overflow: hidden;
+}
+
+.sidebar-brand {
+    border-right: 1px solid var(--border-line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.main-logo { width: 160px; }
+.slogan { color: var(--color-primary); margin-top: 10px; letter-spacing: 3px; font-size: 12px; }
+
+#slider-container { display: flex; align-items: center; padding: 40px; overflow-x: auto; }
+#main-slider { display: flex; gap: 30px; }
+
+/* Dimensi Kartu PC */
+.card-element { width: 350px; height: 500px; flex-shrink: 0; }
+
+.bottom-bar { border-top: 1px solid var(--border-line); display: flex; align-items: center; justify-content: center; }
+.pc-footer-text { font-size: 1.5rem; font-weight: 900; }
