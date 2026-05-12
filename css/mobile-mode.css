@@ -19,14 +19,14 @@
         z-index: 50;
     }
 
-    /* KARTU PREVIEW - Ukuran 80dvh */
+    /* KARTU PREVIEW */
     .card-element {
         position: absolute !important;
-        top: 10dvh; /* Jarak tetap dari atas agar dekat dengan tombol surat */
+        top: 10dvh;
         left: 50%;
         transform: translateX(-50%);
         width: 92vw !important;
-        height: 80dvh !important;
+        height: 78dvh !important;
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 25px;
@@ -39,47 +39,85 @@
         box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
 
-    /* Kunci agar kartu yang tidak aktif benar-benar keluar layar */
     .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
     
+    /* HEADER KARTU: Judul di samping Logo */
     .card-header-logo {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        gap: 15px;
         margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(192, 132, 252, 0.2);
+        padding-bottom: 12px;
+        flex-shrink: 0;
     }
 
-    .inner-card-logo { width: 50px; height: auto; }
+    .inner-card-logo { 
+        width: 45px; 
+        height: auto; 
+        filter: drop-shadow(0 0 5px var(--color-primary));
+    }
+
+    .header-text-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-title {
+        font-size: 1.2rem !important;
+        margin: 0 !important;
+        color: var(--color-primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .card-content-wrapper {
+        flex: 1;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
 
     .card-text {
         display: -webkit-box;
-        -webkit-line-clamp: 10;
+        -webkit-line-clamp: 9;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         line-height: 1.5;
+        color: #e2e8f0;
     }
 
+    /* TOMBOL BACA SELENGKAPNYA + EFEK TAP */
     .read-more-btn {
         margin-top: auto;
-        color: var(--color-primary);
+        color: white;
         font-weight: bold;
         text-align: center;
-        padding: 15px;
-        background: rgba(255,255,255,0.03);
-        border-radius: 15px;
+        padding: 12px;
+        background: linear-gradient(90deg, rgba(147, 51, 234, 0.3), rgba(192, 132, 252, 0.3));
+        border: 1px solid var(--color-primary);
+        border-radius: 12px;
+        transition: all 0.2s;
+    }
+    .read-more-btn:active { transform: scale(0.95); background: var(--color-primary); }
+
+    /* TOMBOL NAVIGASI + EFEK TAP */
+    .mail-container, .chat-container {
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+    }
+    .mail-container:active, .chat-container:active {
+        transform: scale(0.85); /* Efek membal saat ditekan */
+        filter: brightness(1.2);
     }
 
-    /* TOMBOL KOTAK SURAT - Pakai Font Awesome */
     .mail-container {
         position: fixed;
         top: 25px;
         right: 25px;
         z-index: 1100;
-        background: rgba(15, 23, 42, 0.8);
+        background: rgba(15, 23, 42, 0.9);
         border: 1px solid var(--color-primary);
         padding: 10px 18px;
         border-radius: 30px;
@@ -88,9 +126,9 @@
         gap: 10px;
         color: white;
         backdrop-filter: blur(10px);
+        box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
     }
 
-    /* FLOATING CHAT - Pakai Font Awesome */
     .chat-container {
         position: fixed;
         bottom: 30px;
@@ -103,42 +141,38 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     }
-    .chat-icon i { font-size: 28px; color: white; }
 
-    /* MODAL DETAIL - Fix Tengah & Fixed Size */
+    /* MODAL POPUP */
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.85);
-        z-index: 2000;
+        background: rgba(15, 23, 42, 0.95);
+        z-index: 9999;
         display: none;
         align-items: center;
         justify-content: center;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(10px);
     }
+
     .modal-content {
-        background: var(--bg-card);
-        width: 85vw;
-        max-height: 70dvh; /* Ukuran tetap */
+        background: #1e1b4b;
+        width: 90vw;
+        max-height: 80dvh;
         padding: 25px;
-        border-radius: 25px;
-        border: 2px solid var(--color-primary);
-        position: relative;
+        border-radius: 20px;
+        border: 1px solid var(--color-primary);
         display: flex;
         flex-direction: column;
+        box-shadow: 0 0 30px rgba(192, 132, 252, 0.3);
     }
+
     .modal-scroll {
-        overflow-y: auto;
+        overflow-y: auto !important;
         margin-top: 15px;
-        padding-right: 10px;
-    }
-    .close-modal {
-        position: absolute;
-        top: -50px;
-        right: 0;
-        color: white;
-        font-size: 35px;
+        flex: 1;
+        padding-right: 8px;
+        font-size: 1rem;
     }
 }
