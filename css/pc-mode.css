@@ -1,52 +1,38 @@
-/* PC MODE - Fokus pada Desktop (Layar >= 768px) */
 @media screen and (min-width: 768px) {
-    body {
-        overflow: hidden; /* Mencegah scroll body karena kita pakai sistem slider */
-    }
-
-    .master-frame {
-        display: flex;
-        width: 100vw;
-        height: 100vh;
-        background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
-    }
-
-    /* AREA KIRI: Logo & Brand */
+    /* 1. Paksa Logo ke Sidebar Kiri */
     .sidebar-brand {
-        width: 35%;
-        height: 100%;
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 50px;
+        width: 350px !important; /* Ukuran sidebar tetap */
         border-right: 1px solid var(--border-line);
-        background: rgba(15, 23, 42, 0.3);
+        background: rgba(15, 23, 42, 0.4);
+        padding: 40px;
     }
 
+    /* Reset posisi Logo yang di image_9f2861.png masih di tengah */
     .logo-wrapper {
-        width: 100%;
-        max-width: 350px;
-        filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.4));
-        margin-bottom: 20px;
+        position: relative !important;
+        inset: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 300px;
+        margin-bottom: 30px;
     }
 
     .logo-wrapper img {
         width: 100%;
-        height: auto;
+        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.4));
     }
 
-    .slogan-text {
-        font-size: 1.2rem;
-        color: var(--color-primary);
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        font-weight: 300;
-        opacity: 0.8;
-    }
-
-    /* AREA KANAN: Slider Kartu */
+    /* 2. Posisikan Kartu di Area Kosong (Tengah-Kanan) */
     .content-wrapper {
+        display: flex;
+        flex: 1;
+    }
+
+    #slider-container {
         flex: 1;
         position: relative;
         display: flex;
@@ -54,96 +40,32 @@
         justify-content: center;
     }
 
-    #slider-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* KARTU DI PC */
+    /* Perbaikan Kartu agar tidak terpotong di pojok */
     .card-element {
-        position: absolute;
+        position: absolute !important;
+        /* Fokuskan ke tengah sisa layar */
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        
         width: 550px !important;
-        min-height: 400px;
+        height: 400px !important;
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 30px;
         padding: 40px !important;
-        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        
+        /* Transisi halus saat ganti kartu */
         opacity: 0;
         visibility: hidden;
-        transform: scale(0.8) translateX(100px);
-        transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
+    /* Munculkan kartu yang aktif */
     .card-element.is-active {
         opacity: 1;
         visibility: visible;
-        transform: scale(1) translateX(0);
-        z-index: 100;
-    }
-
-    /* Header di dalam kartu PC */
-    .card-header-logo {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .inner-card-logo { width: 50px; }
-    .card-title { font-size: 1.8rem !important; }
-
-    /* UI NAVIGATION (Floating) */
-    .top-bar {
-        position: fixed;
-        top: 40px;
-        right: 50px;
-        z-index: 1500;
-    }
-
-    .mail-container {
-        background: rgba(192, 132, 252, 0.1);
-        border: 1px solid var(--color-primary);
-        color: white;
-        padding: 15px 30px;
-        border-radius: 50px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .mail-container:hover {
-        background: var(--color-primary);
-        box-shadow: 0 0 20px var(--color-primary);
-    }
-
-    .bottom-bar {
-        position: fixed;
-        bottom: 40px;
-        right: 50px;
-        z-index: 1500;
-    }
-
-    .chat-container .chat-icon {
-        width: 70px;
-        height: 70px;
-        background: var(--color-primary);
-        color: white;
-        font-size: 30px;
-        border: none;
-    }
-
-    /* Footer Text PC */
-    .pc-footer-text {
-        position: fixed;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        color: rgba(255,255,255,0.2);
-        letter-spacing: 2px;
+        transform: translate(-50%, -50%) scale(1) !important;
     }
 }
