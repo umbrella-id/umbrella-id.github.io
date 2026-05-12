@@ -2,12 +2,10 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2E
 let globalData = [], currentIndex = 0;
 let startY = 0, deltaY = 0;
 
-// 1. INISIALISASI DATA
 async function init() {
     try {
         const res = await fetch(GAS_URL);
         const data = await res.json();
-        // Filter data kosong
         globalData = data.filter(item => item.ID && item.ID.trim() !== "");
         render();
     } catch (e) { 
@@ -17,7 +15,6 @@ async function init() {
     }
 }
 
-// 2. RENDER HTML (Sinkron dengan CSS Stacking)
 function render() {
     const isMobile = window.innerWidth < 768;
     const slider = document.getElementById('main-slider');
@@ -26,11 +23,9 @@ function render() {
 
     slider.innerHTML = globalData.map((item, i) => `
         <div class="card-element" id="card-${i}">
-            <!-- LOGO SEBAGAI IDENTITAS/CAP DI DALAM KARTU -->
             <div class="card-header-logo">
                 <img src="logo-umbrella.svg" class="inner-card-logo" alt="Logo">
             </div>
-
             <div class="card-content-wrapper">
                 <h2 class="card-title">${item.Header || 'INFO'}</h2>
                 <div class="card-text">
@@ -46,15 +41,12 @@ function render() {
         allCards.forEach(c => {
             c.style.opacity = "1";
             c.style.visibility = "visible";
+            c.style.position = "relative";
+            c.style.transform = "none";
         });
     }
 }
-    
-    // Pastikan posisi logo benar setelah render
-    updateLogoPosition();
-}
 
-// 3. LOGIKA STACKING (SWIPE UP/DOWN)
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.card-element');
     if (cards.length === 0) return;
@@ -62,19 +54,16 @@ function updateStack(drag = 0) {
     const h = window.innerHeight;
 
     cards.forEach((card, i) => {
-        // Transisi halus saat tidak sedang ditarik
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s" : "none";
 
         if (i === currentIndex) {
             card.classList.add('is-active');
-            // Efek mengecil saat ditarik (visual feedback)
             let scale = 1 - Math.abs(drag) / 3000;
             card.style.transform = `translate(-50%, calc(-50% + ${drag}px)) scale(${scale})`;
             card.style.opacity = 1 - Math.abs(drag) / 1500;
             card.style.zIndex = 100;
         } 
         else if (i === currentIndex + 1) {
-            // Kartu selanjutnya (berada di bawah layar menunggu di-swipe up)
             card.classList.remove('is-active');
             let pos = h + (drag < 0 ? drag : 0);
             card.style.transform = `translate(-50%, calc(-50% + ${pos}px))`;
@@ -91,21 +80,6 @@ function updateStack(drag = 0) {
     });
 }
 
-// 4. LOGIKA PINDAH LOGO (Satu Logo Banyak Kartu)
-function updateLogoPosition() {
-    const logo = document.getElementById('main-logo');
-    const logoWrapper = document.querySelector('.logo-wrapper');
-    const activeCard = document.querySelector('.card-element.is-active');
-    
-    if (!logo || !logoWrapper) return;
-
-    // Di mobile, pastikan wrapper logo ada di kasta tertinggi
-    if (window.innerWidth <= 767) {
-        logoWrapper.style.zIndex = "1000";
-    }
-}
-
-// 5. EVENT LISTENERS (TOUCH & MOUSE)
 window.addEventListener('touchstart', e => { 
     startY = e.touches[0].pageY; 
 }, {passive: false});
@@ -114,7 +88,6 @@ window.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
     deltaY = e.touches[0].pageY - startY;
     
-    // Batasi tarikan agar tidak melampaui batas data
     if (currentIndex === 0 && deltaY > 0) deltaY /= 3; 
     if (currentIndex === globalData.length - 1 && deltaY < 0) deltaY /= 3;
 
@@ -124,7 +97,7 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => {
     if (window.innerWidth >= 768) return;
-    const threshold = 100; // Sensitivitas swipe
+    const threshold = 100;
 
     if (deltaY < -threshold && currentIndex < globalData.length - 1) {
         currentIndex++;
@@ -134,27 +107,17 @@ window.addEventListener('touchend', () => {
     
     deltaY = 0;
     updateStack(0);
-    // Jalankan update logo tiap ganti kartu
-    setTimeout(updateLogoPosition, 300);
 }, {passive: true});
 
-// Support Wheel (Scroll Mouse)
 window.addEventListener('wheel', e => {
     if (window.innerWidth >= 768) return;
-    if (Math.abs(e.deltaY) < 50) return; // Debounce scroll
+    if (Math.abs(e.deltaY) < 50) return;
     
     if (e.deltaY > 0 && currentIndex < globalData.length - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
     
     updateStack(0);
-    setTimeout(updateLogoPosition, 300);
 }, {passive: true});
 
-// Handle Resize
-window.addEventListener('resize', () => {
-    render();
-    updateLogoPosition();
-});
-
-// Start App
+window.addEventListener('resize', render);
 document.addEventListener('DOMContentLoaded', init);
