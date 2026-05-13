@@ -1,6 +1,8 @@
 @media screen and (max-width: 767px) {
+    /* --- PENGUNCIAN LAYAR UTAMA --- */
+    /* Mengunci viewport agar aplikasi tidak goyang saat di-swipe */
     html, body, .master-frame {
-        position: fixed !important;
+        position: fixed !important; 
         inset: 0 !important;
         overflow: hidden !important;
         width: 100vw;
@@ -8,30 +10,36 @@
         background: #0f172a;
     }
 
-    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
+    /* --- PEMBERSIHAN ELEMEN PC --- */
+    /* Menghilangkan komponen yang hanya boleh muncul di monitor besar */
+    .sidebar-brand, 
+    .pc-header-text, 
+    .pc-footer-text, 
+    .slogan-text, 
+    .logo-wrapper {
         display: none !important;
     }
 
-    
-
+    /* --- ANIMASI RUNNING TEXT --- */
     @keyframes marquee {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
     }
 
-    /* KARTU PREVIEW */
-    .card-element {
+    /* --- KARTU PREVIEW (MOBILE STACKER) --- */
+    /* !important pada position tetap dijaga agar tidak kalah oleh kalkulasi JS */
+    .stacker-card {
         position: absolute !important;
         top: 47px;
         bottom: 57px;
         left: 50%;
-        width: 92vw !important; 
-        height: auto !important;
+        width: 92vw; 
+        height: auto;
         transform: translateX(-50%);
         background: var(--bg-card);
         border: 2px solid var(--border-line);
         border-radius: 25px;
-        padding: 20px !important;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         opacity: 0;
@@ -40,8 +48,13 @@
         box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
 
-    .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
+    .stacker-card.is-active { 
+        opacity: 1; 
+        visibility: visible; 
+        z-index: 500; 
+    }
     
+    /* --- HEADER KARTU --- */
     .card-header-logo {
         display: flex;
         align-items: center;
@@ -60,23 +73,21 @@
         overflow: hidden;
     }
 
-    /* LOGIKA: Turun baris dulu (max 2), baru kecilkan font */
+    /* --- JUDUL KARTU (RESPONSIF) --- */
     .card-title {
-        font-size: clamp(0.75rem, 4.2vw, 1.1rem) !important; 
+        font-size: clamp(0.75rem, 4.2vw, 1.1rem);
         line-height: 1.2;
-        margin: 0 !important;
+        margin: 0;
         color: var(--color-primary);
         font-weight: 800;
         text-transform: uppercase;
-        /* Biarkan membungkus ke baris 2 secara alami */
-        display: block; 
-        word-wrap: break-word;
-        overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
+    /* --- KONTEN TEKS KARTU --- */
     .card-content-wrapper {
         flex: 1;
         overflow: hidden;
@@ -89,6 +100,7 @@
         color: #cbd5e1;
     }
 
+    /* --- TOMBOL AKSI MOBILE --- */
     .read-more-btn {
         color: white;
         font-weight: bold;
@@ -100,7 +112,7 @@
     }
     .read-more-btn:active { transform: scale(0.95); }
 
-    /* SOSMED CORNER (Bawah Kiri) */
+    /* --- SOSMED DOCK (POJOK KIRI) --- */
     .sosmed-corner {
         position: fixed;
         bottom: 30px;
@@ -114,9 +126,8 @@
         font-size: 1.2rem;
         transition: 0.2s;
     }
-    .sosmed-link:active { color: var(--color-primary); transform: scale(0.8); }
 
-    /* TOMBOL UTAMA */
+    /* --- TOMBOL NAVIGASI ATAS (KOTAK SURAT) --- */
     .mail-container {
         position: fixed;
         top: 22px;
@@ -125,7 +136,7 @@
         z-index: 1100;
         background: rgba(15, 23, 42, 0.9);
         border: 1px solid var(--color-primary);
-        padding: 0px 18px;
+        padding: 0 18px;
         border-radius: 30px;
         display: flex;
         align-items: center;
@@ -134,9 +145,8 @@
         font-size: 0.8rem;
         font-weight: bold;
     }
-    .mail-container:active { transform: scale(0.9); }
 
-    /* RUNNING TEXT - Efek Memudar (Fade) */
+    /* --- RUNNING TEXT (FADED MARQUEE) --- */
     .running-text-wrapper {
         position: fixed;
         top: 29px;
@@ -145,7 +155,6 @@
         overflow: hidden;
         white-space: nowrap;
         z-index: 1090;
-        /* Masking untuk efek pudar di awal dan akhir */
         -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
         mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     }
@@ -161,6 +170,7 @@
         padding-left: 20px;
     }
 
+    /* --- TOMBOL CHAT (POJOK KANAN) --- */
     .chat-container {
         position: fixed;
         bottom: 30px;
@@ -175,9 +185,8 @@
         justify-content: center;
         color: white;
     }
-    .chat-container:active { transform: scale(0.8); }
 
-    /* MODAL */
+    /* --- MODAL DETAIL (POPUPS) --- */
     .detail-modal {
         position: fixed;
         inset: 0;
@@ -199,7 +208,9 @@
         flex-direction: column;
         position: relative;
     }
-    .modal-scroll { overflow-y: auto; flex: 1; margin-top: 15px; }
+    .modal-scroll { 
+        overflow-y: auto; 
+        flex: 1; 
+        margin-top: 15px; 
+    }
 }
-
-
