@@ -6,19 +6,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Umbrella Guild Portal</title>
     
-    <!-- CSS kamu tetap sama -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
 <body>
 
+    <!-- 1. TAMBAHKAN INI (Untuk Running Text & Sosmed yang melayang) -->
+    <div class="running-text-wrapper" id="marquee-area">
+        <div class="running-text-content" id="pc-marquee"></div>
+    </div>
+
+    <div class="sosmed-corner" id="sosmed-area">
+        <a href="#" class="sosmed-link"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="sosmed-link"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="sosmed-link"><i class="fab fa-discord"></i></a>
+    </div>
+
+    <!-- 2. MASTER FRAME (STRUKTUR ASLI KAMU - JANGAN DIUBAH) -->
     <div class="master-frame">
         
         <!-- HEADER -->
         <div class="top-bar">
-            <div class="pc-header-text">SELAMAT DATANG</div>
-            <!-- JS mencari mail-container untuk mengisi icon & teks -->
+            <div class="pc-header-text" id="pc-title-target">SELAMAT DATANG</div>
             <div class="mail-container" id="mail-trigger"></div> 
         </div>
 
@@ -27,7 +37,6 @@
             
             <!-- SIDEBAR (PC ONLY) -->
             <div class="sidebar-brand" id="sidebar-area">
-                <!-- Logo ini akan tampil di PC melalui CSS -->
                 <div class="logo-wrapper">
                     <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
                 </div>
@@ -36,9 +45,7 @@
 
             <!-- stacker CONTAINER -->
             <div id="stacker-container">
-                <!-- [PENTING] JS kamu menyuntikkan kartu ke dalam id="main-stacker" -->
                 <div id="main-stacker">
-                    <!-- Biarkan kosong atau isi 1 kartu 'Loading' -->
                     <div class="stacker-card is-active">
                         <div class="card-content">
                             <h2>MEMUAT DATA...</h2>
@@ -51,14 +58,12 @@
 
         <!-- FOOTER -->
         <div class="bottom-bar">
-            <div class="pc-footer-text">© 2024 UMBRELLA CORP</div>
-            <!-- JS mencari chat-container untuk mengisi icon -->
+            <div class="pc-footer-text" id="pc-body-target">© 2024 UMBRELLA CORP</div>
             <div class="chat-container" id="chat-trigger"></div>
         </div>
 
     </div>
 
-    <!-- JS di bawah agar elemen HTML terbaca dulu -->
     <script src="js/app.js"></script>
 </body>
 </html>
