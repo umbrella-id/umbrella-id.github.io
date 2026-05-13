@@ -33,7 +33,7 @@ async function init() {
  * Menentukan apakah membangun "Kamar Mobile" atau "Kamar PC".
  */
 function renderApp() {
-    const container = document.getElementById('stacker-container'); 
+    const container = document.getElementById('app-container'); 
     if (!container) return;
 
     const isMobile = window.innerWidth < 768;
