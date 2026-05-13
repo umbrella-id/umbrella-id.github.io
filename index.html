@@ -15,66 +15,93 @@
     <!-- 3. CSS MOBILE: Layout Tumpuk & Floating -->
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
-<div class="master-frame">
-    
-    <!-- HEADER -->
-    <div class="top-bar">
-        <div class="pc-header-text">HEADER</div>
-        <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
-    </div>
-
-    <div class="content-wrapper">
-        
-        <!-- SIDEBAR PC (Biarkan begini, nanti kita urus di PC Mode) -->
-        <div class="sidebar-brand" id="sidebar-area">
-            <div class="slogan-text">Selogan</div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- AREA MOBILE (FOKUS KITA SEKARANG)          -->
-        <!-- ========================================== -->
-        <div class="mobile-only-stack" id="slider-container">
-            
-            <!-- Logo Umbrella: Biar muncul di HP di tengah layar -->
-            <div class="logo-wrapper">
-                <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
-            </div>
-
-            <!-- Slider tempat kartu bertumpuk -->
-            <div id="main-slider">
-                <!-- KARTU 1 -->
-                <div class="card-element is-active">
-                    <div class="card-content">
-                        <h2>BUFF SERIKAT</h2>
-                        <ul>
-                            <li>PARON SERIKAT LV.10 - ✅</li>
-                            <li>MEJA JAHIT SERIKAT LV.10 - ✅</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- KARTU 2 -->
-                <div class="card-element">
-                    <div class="card-content">
-                        <h2>WHATSAPP</h2>
-                        <p>https:// ....</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AREA PC (Kosongin aja dulu, biar nggak ganggu) -->
-        <div class="pc-only-slider"></div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div class="bottom-bar">
-        <div class="pc-footer-text">FOTHER</div>
-        <div class="chat-container" id="chat-trigger">
-            <div class="chat-icon">💬</div>
-        </div>
-    </div>
-
-</div>
+<body>
+  <div class="master-frame">
+      
+      <!-- HEADER -->
+      <div class="top-bar">
+          <div class="pc-header-text">HEADER</div>
+          <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
+      </div>
+  
+      <div class="content-wrapper">
+          
+          <!-- SIDEBAR PC (Biarkan begini, nanti kita urus di PC Mode) -->
+          <div class="sidebar-brand" id="sidebar-area">
+              <!-- Logo Umbrella: Biar muncul di HP di tengah layar -->
+              <div class="logo-wrapper">
+                  <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
+              </div>
+              <div class="slogan-text">Selogan</div>
+          </div>
+  
+          <!-- ========================================== -->
+          <!--                  PC-MODE                   -->
+          <!-- ========================================== -->
+          <div class="pc-only-slider" id="slider-container">
+              <!-- KARTU 1 -->
+              <div class="slide-card">
+                  <div class="card-content">
+                      <h2>PC MODE</h2>
+                      <ul>
+                          <li>- min-width: 768px</li>
+                          <li>- landscape</li>
+                      </ul>
+                  </div>
+              </div>
+  
+              <!-- KARTU 2 -->
+              <div class="slide-card">
+                  <div class="card-content">
+                      <h2>WHATSAPP</h2>
+                      <p>https:// ....</p>
+                  </div>
+              </div>
+          </div>
+  
+          <!-- ========================================== -->
+          <!--                MOBILE-MODE                 -->
+          <!-- ========================================== -->
+          <div class="mobile-only-stack" id="stacker-container">
+              
+              <!-- Logo Umbrella: Biar muncul di HP di tengah layar -->
+              <div class="logo-wrapper">
+                  <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
+              </div>
+  
+              <!-- Slider tempat kartu bertumpuk -->
+              <div id="main-stack">
+                  <!-- KARTU 1 -->
+                  <div class="stack-card is-active">
+                      <div class="card-content">
+                          <h2>MOBILE MODE</h2>
+                          <ul>
+                              <li>- max-width: 767px</li>
+                              <li>- portrait</li>
+                          </ul>
+                      </div>
+                  </div>
+  
+                  <!-- KARTU 2 -->
+                  <div class="stack-card">
+                      <div class="card-content">
+                          <h2>WHATSAPP</h2>
+                          <p>https:// ....</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+  
+      </div>
+  
+      <!-- FOOTER -->
+      <div class="bottom-bar">
+          <div class="pc-footer-text">FOTHER</div>
+          <div class="chat-container" id="chat-trigger">
+              <div class="chat-icon">💬</div>
+          </div>
+      </div>
+  
+  </div>
+</body>
 </html>
