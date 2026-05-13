@@ -39,35 +39,69 @@ function renderApp() {
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-        // --- KAMAR MOBILE (STACKER) ---
-        container.innerHTML = `
-            <div id="main-stacker">
-                ${cardData.map((item, i) => `
-                    <div class="stacker-card" id="card-${i}">
-                        <div class="card-header-logo">
-                            <img src="logo-umbrella.svg" class="inner-card-logo">
-                            <div class="header-text-group">
-                                <h2 class="card-title">${item.Header}</h2>
-                            </div>
+    // --- KAMAR MOBILE (STACKER) ---
+    
+    // Fungsi pemotong teks ringan (opsional, sesuaikan angka 150 jika ingin lebih pendek)
+    const truncateMobile = (str, n) => {
+        return (str.length > n) ? str.substr(0, n - 1) + " . . ." : str;
+    };
+
+    container.innerHTML = `
+        <div id="main-stacker">
+            ${cardData.map((item, i) => `
+                <div class="stacker-card" id="card-${i}" onclick="showDetail(${i})">
+                    <div class="card-header-logo">
+                        <img src="logo-umbrella.svg" class="inner-card-logo">
+                        <div class="header-text-group">
+                            <h2 class="card-title">${item.Header}</h2>
                         </div>
-                        <div class="card-content-wrapper">
-                            <div class="card-text">${item.Body.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    
+                    <div class="card-content-wrapper">
+                        <div class="card-text">
+                            ${item.Body.replace(/\n/g, '<br>')}
                         </div>
-                        <div class="read-more-btn" onclick="showDetail(${i})">BACA SELENGKAPNYA</div>
-                    </div>`).join('')}
-            </div>`;
+                    </div>
+
+                    <!-- Teks indikator rata tengah di bawah -->
+                    <div class="mobile-read-more">baca selengkapnya</div>
+                </div>`).join('')}
+        </div>`;
     } else {
         // --- KAMAR PC (GRID SLIDER) ---
+        const headline = cardData.find(item => item.ID.toLowerCase() === 'headline');
+        // Ambil data selain headline
+        const displayCards = cardData.filter(item => item.ID.toLowerCase() !== 'headline');
+    
+        if (headline) {
+            document.querySelector('.pc-header-text').innerText = headline.Header;
+            document.querySelector('.pc-footer-text').innerText = headline.Body;
+        }
+    
+        // Fungsi pemotong teks (Truncate)
+        const truncate = (str, n) => {
+            return (str.length > n) ? str.substr(0, n - 1) + " . . ." : str;
+        };
+    
         container.innerHTML = `
             <div id="main-slider">
-                ${cardData.map((item, i) => `
-                    <div class="slider-card">
+                ${displayCards.map((item) => {
+                    // Cari index asli dari item ini di cardData untuk fungsi showDetail
+                    const originalIndex = cardData.findIndex(c => c === item);
+                    
+                    return `
+                    <div class="slider-card" onclick="showDetail(${originalIndex})" style="cursor:pointer">
                         <div class="slider-card-content">
                             <h2 class="pc-card-title">${item.Header}</h2>
-                            <div class="pc-card-body">${item.Body.replace(/\n/g, '<br>')}</div>
-                            <button class="pc-btn" onclick="showDetail(${i})">DETAIL</button>
+                            <!-- Teks dipotong di sini (contoh 180 karakter) -->
+                            <div class="pc-card-body">
+                                ${item.Body.replace(/\n/g, '<br>')}
+                            </div>
+                            <!-- Indikator estetika di paling bawah -->
+                            <div class="pc-read-more-hint">baca selengkapnya</div>
                         </div>
-                    </div>`).join('')}
+                    </div>`;
+                }).join('')}
             </div>`;
     }
 
@@ -129,20 +163,24 @@ function updateUIElements() {
 function createModal() {
     if (document.getElementById('detailModal')) return;
     const modal = document.createElement('div');
-    modal.className = 'detail-modal';
+    // Pastikan class ini sesuai dengan yang ada di CSS (kita pakai detail-modal)
+    modal.className = 'detail-modal'; 
     modal.id = 'detailModal';
     modal.innerHTML = `
         <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 id="modalTitle" style="color:var(--color-primary); margin:0; font-size:1.1rem"></h2>
-                <i class="fa-solid fa-xmark" onclick="closeDetail()" style="font-size:1.5rem; cursor:pointer"></i>
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <i class="fa-solid fa-xmark" onclick="closeDetail()"></i>
             </div>
-            <div class="modal-scroll" id="modalBody"></div>
+            <!-- Gunakan class modal-body agar mudah diatur scroll-nya di CSS -->
+            <div class="modal-body" id="modalBody"></div>
         </div>`;
     document.body.appendChild(modal);
     
-    // Cegah interaksi di belakang modal saat menyentuh modal
-    modal.addEventListener('touchstart', e => e.stopPropagation());
+    // Close modal jika klik area hitam (overlay)
+    modal.onclick = function(e) {
+        if (e.target === modal) closeDetail();
+    };
 }
 
 function showDetail(index) {
