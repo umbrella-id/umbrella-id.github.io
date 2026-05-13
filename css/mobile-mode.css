@@ -1,4 +1,20 @@
 @media screen and (max-width: 767px) {
+    /* MATIKAN SEMUA ELEMEN PC */
+    .sidebar-brand, 
+    .pc-only-slider, 
+    .pc-header-text, 
+    .pc-footer-text,
+    .logo-sidebar,
+    .logo-wrapper,
+    .slogan-text {
+        display: none !important;
+    }
+
+    /* HIDUPKAN ELEMEN MOBILE */
+    .mobile-only-stack {
+        display: block;
+    }
+
     html, body, .master-frame {
         position: fixed !important;
         inset: 0 !important;
@@ -6,10 +22,6 @@
         width: 100vw;
         height: 100dvh;
         background: #0f172a;
-    }
-
-    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
-        display: none !important;
     }
 
     
@@ -20,7 +32,7 @@
     }
 
     /* KARTU PREVIEW */
-    .card-element {
+    .stack-card {
         position: absolute !important;
         top: 47px;
         bottom: 57px;
@@ -40,7 +52,7 @@
         box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
 
-    .card-element.is-active { opacity: 1; visibility: visible; z-index: 500; }
+    .stack-card.is-active { opacity: 1; visibility: visible; z-index: 500; }
     
     .card-header-logo {
         display: flex;
