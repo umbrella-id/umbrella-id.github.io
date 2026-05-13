@@ -9,54 +9,90 @@
         overflow: hidden;
     }
 
-/* --- 1. HEADER (Top Bar) Optimization --- */
+    /* --- HEADER (Top Bar) --- */
     .top-bar {
-        width: 80vw; /* Batasi lebar agar tidak mentok ke tepi */
-        margin: 0 auto; /* Posisi di tengah */
-        text-align: center;
+        width: 70vw;
+        margin: 0 auto;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
+        padding: 20px 0;
+        /* Garis bawah neon yang tipis */
+        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+        position: relative;
     }
-
+    
+    /* Tambahkan aksen dekoratif kecil di sudut header */
+    .top-bar::before, .top-bar::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        width: 20px;
+        height: 3px;
+        background: var(--color-primary);
+        box-shadow: 0 0 10px var(--color-primary);
+    }
+    .top-bar::before { left: 0; }
+    .top-bar::after { right: 0; }
+    
     .pc-header-text {
-        /* Gunakan Clamp agar ukuran huruf menyesuaikan lebar layar */
-        font-size: clamp(1.5rem, 4vw, 2.8rem); 
+        font-size: clamp(1.8rem, 3.5vw, 2.2rem);
         font-weight: 900;
         letter-spacing: 3px;
+        color: #fff;
         text-transform: uppercase;
-        line-height: 1.2;
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        /* Efek pendaran teks */
+        text-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+        line-height: 1.1;
+        text-align: center;
     }
 
-    /* --- 2. FOOTER (Bottom Bar) Optimization --- */
+    /* --- FOOTER (Bottom Bar) --- */
     .bottom-bar {
-        width: 80vw; /* Sedikit lebih lebar dari header agar nyaman dibaca */
+        width: 75vw;
         margin: 0 auto;
-        padding-bottom: 70px; /* Ruang untuk running text di bawahnya */
+        padding: 5px 0 80px 0; /* Ruang bawah ekstra untuk running text */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
-
-    /* Area Teks Detail di Footer */
+    
     .headline-body-pc {
-        /* Ukuran teks fleksibel */
-        font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-        color: #cbd5e1;
-        line-height: 1.6;
-        max-width: 100%;
+        font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+        color: #94a3b8; /* Warna abu-abu kebiruan agar mata tidak lelah */
+        line-height: 1.7;
+        max-width: 800px;
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Tampilkan maks 3 baris di footer */
+        -webkit-line-clamp: 2; /* Batasi 2 baris agar tetap rapi */
         -webkit-box-orient: vertical;
         overflow: hidden;
-        position: relative;
+        margin-bottom: 15px;
+    }
+    
+    /* Tombol Baca Selengkapnya Versi PC */
+    .footer-more-btn {
+        background: rgba(192, 132, 252, 0.1);
+        border: 1px solid var(--color-primary);
+        color: #fff;
+        padding: 5px 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    
+    .footer-more-btn:hover {
+        background: var(--color-primary);
+        color: #000;
+        box-shadow: 0 0 15px var(--color-primary);
+        transform: translateY(-2px);
     }
 
     /* Tombol pemicu detail jika teks di footer dipotong */
@@ -394,5 +430,35 @@
     .slider-card:hover::before {
         left: 100%;
         top: 100%;
+    }
+    /* --- Keadaan Normal Kartu --- */
+    .slider-card {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(192, 132, 252, 0.2); /* Border redup saat normal */
+        border-radius: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* --- Efek Saat Kartu Tersorot (Hover) --- */
+    .slider-card:hover {
+        transform: translateY(-15px) scale(1.02); /* Terangkat dan sedikit membesar */
+        border-color: var(--color-primary); /* Border berubah jadi ungu terang */
+        
+        /* Efek Menyala (Glow) */
+        box-shadow: 
+            0 0 20px rgba(192, 132, 252, 0.3), 
+            0 0 40px rgba(192, 132, 252, 0.1),
+            inset 0 0 15px rgba(192, 132, 252, 0.2); /* Glow di bagian dalam kartu */
+        
+        background: rgba(192, 132, 252, 0.05); /* Sedikit warna ungu transparan pada background */
+    }
+    
+    /* Tambahan: Efek menyala pada teks judul saat di-hover */
+    .slider-card:hover .pc-card-title {
+        color: #fff;
+        text-shadow: 0 0 10px var(--color-primary);
     }
 }
