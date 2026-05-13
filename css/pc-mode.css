@@ -93,13 +93,30 @@
         justify-content: center; /* KUNCI 2: Memastikan konten di dalamnya rata tengah */
     }
     
-    .slogan-text {
-    width: 100%;
-    text-align: center; /* Memastikan teks juga dipaksa ke tengah */
-    margin-top: 10px;
-    font-weight: bold;
-    letter-spacing: 2px;
-}
+    .brand-container {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    /* Gaya Baris 1: Besar & Tegas */
+    .brand-main {
+        font-size: 0.8rem;
+        font-weight: 900;
+        letter-spacing: 1px;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    /* Gaya Baris 2: Kecil & Elegant */
+    .brand-sub {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: var(--color-primary); /* Warna ungu khasmu */
+        letter-spacing: 2px;
+        text-transform: lowercase;
+        margin-top: 5px;
+        opacity: 0.8;
+    }
     
     .logo-wrapper img {
         /* Ganti 25dvh dengan ukuran yang lebih mantap, misal 35dvh atau pakai % */
