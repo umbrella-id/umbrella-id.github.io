@@ -159,4 +159,3 @@ window.addEventListener('wheel', e => {
 }, {passive: true});
 
 document.addEventListener('DOMContentLoaded', init);
-
