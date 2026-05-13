@@ -80,16 +80,31 @@
     }
 
     .sidebar-brand {
-        display: flex !important; /* Paksa muncul di PC */
+        display: flex !important;
         flex-direction: column;
-        align-items: center;
+        align-items: center;    /* KUNCI 1: Memaksa semua anak (logo & teks) ke tengah */
         justify-content: center;
-        border-right: 1px solid rgba(255,255,255,0.1);
+        width: 350px;           /* Lebar sidebar kamu */
     }
-
+    
+    .logo-wrapper {
+        width: 90%;            /* Memenuhi 350px */
+        display: flex;
+        justify-content: center; /* KUNCI 2: Memastikan konten di dalamnya rata tengah */
+    }
+    
+    .slogan-text {
+    width: 100%;
+    text-align: center; /* Memastikan teks juga dipaksa ke tengah */
+    margin-top: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+    
     .logo-wrapper img {
-        width: 80%;
-        align-items: center;
+        /* Ganti 25dvh dengan ukuran yang lebih mantap, misal 35dvh atau pakai % */
+        width: 30dvh;             
+        height: auto;
         filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
