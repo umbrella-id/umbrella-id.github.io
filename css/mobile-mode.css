@@ -87,30 +87,46 @@
         overflow: hidden;
     }
 
-    /* --- KONTEN TEKS KARTU --- */
+    /* --- KONTEN TEKS KARTU MOBILE --- */
     .card-content-wrapper {
-        flex: 1;
-        overflow: hidden;
+        flex: 1; 
+        overflow: hidden; /* Tetap perlu ini agar tidak meluber keluar kartu */
         margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
     }
-
+    
     .card-text {
         font-size: 0.95rem;
         line-height: 1.5;
         color: #cbd5e1;
+        /* HAPUS line-clamp di sini agar teks mengalir natural */
+        overflow: hidden; 
     }
-
-    /* --- TOMBOL AKSI MOBILE --- */
-    .read-more-btn {
-        color: white;
-        font-weight: bold;
-        text-align: center;
-        padding: 12px;
-        background: rgba(192, 132, 252, 0.15);
-        border: 1px solid var(--color-primary);
-        border-radius: 12px;
+    
+    /* --- INDIKATOR BACA SELENGKAPNYA --- */
+    .read-more-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 10px;
+        margin-top: auto; /* Ini yang bikin dia selalu di dasar kartu */
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .read-more-btn:active { transform: scale(0.95); }
+    
+    .read-more-text {
+        font-size: 0.75rem;
+        color: var(--color-primary);
+        font-style: italic;
+        opacity: 0.8;
+    }
+    
+    /* Efek Feedback saat kartu di-tap */
+    .stacker-card:active {
+        transform: translate(-50%, 2px) scale(0.98);
+        background: rgba(255, 255, 255, 0.05);
+        transition: 0.1s;
+    }
 
     /* --- SOSMED DOCK (POJOK KIRI) --- */
     .sosmed-corner {
@@ -186,31 +202,60 @@
         color: white;
     }
 
-    /* --- MODAL DETAIL (POPUPS) --- */
+    /* --- OVERLAY MODAL --- */
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(10, 10, 20, 0.98);
-        z-index: 9999;
-        display: none;
-        align-items: center;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        display: none; /* Sembunyi default */
         justify-content: center;
+        align-items: center;
+        z-index: 10000;
         padding: 20px;
     }
+    
+    /* --- KOTAK KONTEN --- */
     .modal-content {
-        background: #1e1b4b;
-        width: 100%;
-        max-height: 80dvh;
-        border-radius: 20px;
+        background: #111;
         border: 1px solid var(--color-primary);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
+        width: 100%;
+        max-width: 600px;
+        border-radius: 20px;
+        padding: 30px;
         position: relative;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
-    .modal-scroll { 
-        overflow-y: auto; 
-        flex: 1; 
-        margin-top: 15px; 
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    #modalTitle {
+        color: var(--color-primary);
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+    
+    .modal-body {
+        max-height: 60vh; /* Batasi tinggi agar bisa scroll internal */
+        overflow-y: auto;
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 1rem;
+        padding-right: 10px;
+    }
+    
+    /* Custom Scrollbar untuk Modal */
+    .modal-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 10px;
     }
 }
