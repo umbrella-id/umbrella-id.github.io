@@ -4,23 +4,72 @@
     .master-frame {
         display: grid;
         grid-template-rows: 18dvh 60dvh 1fr;
-        height: 100dvh;
+        height: 95dvh;
+        margin-top: 5dvh;
         overflow: hidden;
     }
 
-    /* 2. Header & Footer (Banner) */
-    .top-bar, .bottom-bar {
+/* --- 1. HEADER (Top Bar) Optimization --- */
+    .top-bar {
+        width: 80vw; /* Batasi lebar agar tidak mentok ke tepi */
+        margin: 0 auto; /* Posisi di tengah */
+        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative; /* Bukan Fixed di PC agar masuk ke Grid */
+        overflow: hidden;
     }
 
     .pc-header-text {
-        font-size: 3rem;
+        /* Gunakan Clamp agar ukuran huruf menyesuaikan lebar layar */
+        font-size: clamp(1.5rem, 4vw, 2.8rem); 
         font-weight: 900;
-        letter-spacing: 5px;
+        letter-spacing: 3px;
         text-transform: uppercase;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* --- 2. FOOTER (Bottom Bar) Optimization --- */
+    .bottom-bar {
+        width: 80vw; /* Sedikit lebih lebar dari header agar nyaman dibaca */
+        margin: 0 auto;
+        padding-bottom: 70px; /* Ruang untuk running text di bawahnya */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Area Teks Detail di Footer */
+    .headline-body-pc {
+        /* Ukuran teks fleksibel */
+        font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+        color: #cbd5e1;
+        line-height: 1.6;
+        max-width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Tampilkan maks 3 baris di footer */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Tombol pemicu detail jika teks di footer dipotong */
+    .footer-more-btn {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: var(--color-primary);
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: underline;
+        background: none;
+        border: none;
+        text-transform: lowercase;
     }
 
     /* 3. Area Tengah (Logo Kiri, Slider Kanan) */
@@ -57,8 +106,8 @@
     }
 
     .slider-card {
-        width: 35dvh;
-        height: 48dvh;
+        width: 50dvh;
+        height: 55dvh;
         background: rgba(0,0,0,0.5);
         border: 1px solid var(--color-primary);
         border-radius: 15px;
@@ -193,4 +242,95 @@
         border-radius: 10px;
     }
     
+/* --- RUNNING TEXT (Murni 1 Baris & Transparan) --- */
+    .running-text-wrapper {
+        position: fixed;
+        bottom: 1dvh; /* Sangat dekat dengan dasar layar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70vw;
+        background: transparent; /* Box transparan total */
+        overflow: hidden;
+        z-index: 2000;
+        pointer-events: none; /* Agar tidak menghalangi klik di belakangnya */
+        
+        /* Efek Fade Kiri-Kanan */
+        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .running-text-content {
+        display: inline-block;
+        white-space: nowrap; /* KUNCI: Paksa teks tetap 1 baris, dilarang jadi paragraf */
+        font-size: 1.1rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        color: rgba(255, 255, 255, 0.8);
+        padding-left: 100%; /* Mulai jalan dari ujung kanan wrapper */
+        animation: marquee-pc 25s linear infinite;
+    }
+
+    @keyframes marquee-pc {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+
+    /* ---  KOTAK SURAT (Pojok Kiri Atas - Tanpa Box) --- */
+    .mail-container {
+        position: fixed;
+        top: 20px;
+        left: 40px;
+        background: transparent;
+        border: none;
+        color: white;
+        font-weight: 800;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        cursor: pointer;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: 0.3s;
+    }
+
+    .mail-container i {
+        font-size: 1.5rem;
+        color: var(--color-primary);
+    }
+
+    .mail-container:hover {
+        transform: translateX(10px);
+        text-shadow: 0 0 15px var(--color-primary);
+    }
+
+    /* ---  CHAT BUTTON (Bulat - Pojok Kanan Bawah) --- */
+    .chat-container {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        width: 65px;
+        height: 65px;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1001;
+        box-shadow: 0 8px 25px rgba(192, 132, 252, 0.4);
+        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .chat-container i {
+        font-size: 1.8rem;
+    }
+
+    .chat-container:hover {
+        transform: scale(1.1) rotate(-10deg);
+        background: white;
+        color: var(--color-primary);
+    }
 }
