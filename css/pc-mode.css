@@ -93,7 +93,7 @@
     }
 
     /* 4. Slider Area */
-    #stacker-container {
+    #app-container {
         display: flex;
         align-items: center;
         overflow-x: auto;
@@ -146,27 +146,27 @@
     }
     
     /* --- 1. Custom Scrollbar untuk Slider Area --- */
-    #stacker-container::-webkit-scrollbar {
+    #app-container::-webkit-scrollbar {
         height: 6px; /* Tinggi scrollbar horizontal */
     }
     
-    #stacker-container::-webkit-scrollbar-track {
+    #app-container::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.05);
         border-radius: 10px;
     }
     
-    #stacker-container::-webkit-scrollbar-thumb {
+    #app-container::-webkit-scrollbar-thumb {
         background: var(--color-primary);
         border-radius: 10px;
         opacity: 0.5;
     }
     
-    #stacker-container::-webkit-scrollbar-thumb:hover {
+    #app-container::-webkit-scrollbar-thumb:hover {
         background: #fff; /* Highlight saat kursor di atas scrollbar */
     }
     
     /* --- 2. Perbaikan Area Slider --- */
-    #stacker-container {
+    #app-container {
         display: flex;
         align-items: center;
         overflow-x: auto;
