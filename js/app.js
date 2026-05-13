@@ -111,25 +111,44 @@ function closeDetail() {
 function updateStack(drag = 0) {
     const cards = document.querySelectorAll('.stack-card');
     const h = window.innerHeight;
-    if (window.innerWidth >= 768) return;
+    const isMobile = window.innerWidth < 768;
 
     cards.forEach((card, i) => {
-        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
-        if (i === currentIndex) {
-            card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
-            card.style.opacity = 1;
-            card.style.zIndex = 500;
-            card.style.visibility = "visible";
-        } else if (i < currentIndex) {
-            card.style.transform = `translate(-50%, -${h}px)`;
-            card.style.opacity = 0;
-            card.style.zIndex = 1;
+        card.classList.remove('is-active');
+        
+        if (isMobile) {
+            // Logika Mobile tetap seperti punyamu
+            card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
+            if (i === currentIndex) {
+                card.classList.add('is-active');
+                card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
+                card.style.opacity = 1;
+                card.style.zIndex = 500;
+                card.style.visibility = "visible";
+            } else if (i < currentIndex) {
+                card.style.transform = `translate(-50%, -${h}px)`;
+                card.style.opacity = 0;
+            } else {
+                let pos = h + (drag < 0 ? drag : 0);
+                card.style.transform = `translate(-50%, ${pos}px)`;
+                card.style.opacity = 1;
+                card.style.zIndex = 400;
+            }
         } else {
-            let pos = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translate(-50%, ${pos}px)`;
-            card.style.opacity = 1;
-            card.style.zIndex = 400;
-            card.style.visibility = "visible";
+            // LOGIKA UNTUK PC AGAR KONTEN MAU UPDATE
+            card.style.transition = "all 0.6s ease";
+            if (i === currentIndex) {
+                card.classList.add('is-active');
+                card.style.transform = "translate(-50%, 0) scale(1)";
+                card.style.opacity = "1";
+                card.style.visibility = "visible";
+                card.style.zIndex = 500;
+            } else {
+                card.style.transform = "translate(-50%, 20px) scale(0.95)";
+                card.style.opacity = "0";
+                card.style.visibility = "hidden";
+                card.style.zIndex = 1;
+            }
         }
     });
 }
