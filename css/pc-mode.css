@@ -1,60 +1,261 @@
-@media screen and (min-width: 768px) {
-    /* --- JINAKKAN IKON YANG TERKURUNG --- */
-    .sosmed-corner {
-        all: unset !important; /* Buang paksa koordinat mobile */
-        position: fixed !important;
-        bottom: 30px !important;
-        left: 30px !important;
-        display: flex !important;
-        gap: 20px !important;
-        z-index: 9999;
+@media screen and (max-width: 767px) {
+    /* --- PENGUNCIAN LAYAR UTAMA --- */
+    /* Mengunci viewport agar aplikasi tidak goyang saat di-swipe */
+    html, body, .master-frame {
+        position: fixed !important; 
+        inset: 0 !important;
+        overflow: hidden !important;
+        width: 100vw;
+        height: 100dvh;
+        background: #0f172a;
     }
 
+    /* --- PEMBERSIHAN ELEMEN PC --- */
+    /* Menghilangkan komponen yang hanya boleh muncul di monitor besar */
+    .sidebar-brand, 
+    .pc-header-text, 
+    .pc-footer-text, 
+    .slogan-text, 
+    .logo-wrapper {
+        display: none !important;
+    }
+
+    /* --- ANIMASI RUNNING TEXT --- */
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    /* --- KARTU PREVIEW (MOBILE STACKER) --- */
+    /* !important pada position tetap dijaga agar tidak kalah oleh kalkulasi JS */
+    .stacker-card {
+        position: absolute !important;
+        top: 47px;
+        bottom: 57px;
+        left: 50%;
+        width: 92vw; 
+        height: auto;
+        transform: translateX(-50%);
+        background: var(--bg-card);
+        border: 2px solid var(--border-line);
+        border-radius: 25px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    }
+
+    .stacker-card.is-active { 
+        opacity: 1; 
+        visibility: visible; 
+        z-index: 500; 
+    }
+    
+    /* --- HEADER KARTU --- */
+    .card-header-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 12px;
+        flex-shrink: 0;
+    }
+
+    .inner-card-logo { width: 45px; height: auto; }
+
+    .header-text-group {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* --- JUDUL KARTU (RESPONSIF) --- */
+    .card-title {
+        font-size: clamp(0.75rem, 4.2vw, 1.1rem);
+        line-height: 1.2;
+        margin: 0;
+        color: var(--color-primary);
+        font-weight: 800;
+        text-transform: uppercase;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* --- KONTEN TEKS KARTU MOBILE --- */
+    .card-content-wrapper {
+        flex: 1; 
+        overflow: hidden; /* Tetap perlu ini agar tidak meluber keluar kartu */
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #cbd5e1;
+        /* HAPUS line-clamp di sini agar teks mengalir natural */
+        overflow: hidden; 
+    }
+    
+    /* --- INDIKATOR BACA SELENGKAPNYA --- */
+    .read-more-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 10px;
+        margin-top: auto; /* Ini yang bikin dia selalu di dasar kartu */
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .read-more-text {
+        font-size: 0.75rem;
+        color: var(--color-primary);
+        font-style: italic;
+        opacity: 0.8;
+    }
+    
+    /* Efek Feedback saat kartu di-tap */
+    .stacker-card:active {
+        transform: translate(-50%, 2px) scale(0.98);
+        background: rgba(255, 255, 255, 0.05);
+        transition: 0.1s;
+    }
+
+    /* --- SOSMED DOCK (POJOK KIRI) --- */
+    .sosmed-corner {
+        position: fixed;
+        bottom: 30px;
+        left: 25px;
+        display: flex;
+        gap: 15px;
+        z-index: 1100;
+    }
+    .sosmed-link {
+        color: rgba(255,255,255,0.6);
+        font-size: 1.2rem;
+        transition: 0.2s;
+    }
+
+    /* --- TOMBOL NAVIGASI ATAS (KOTAK SURAT) --- */
+    .mail-container {
+        position: fixed;
+        top: 22px;
+        right: 22px;
+        height: 50px;
+        z-index: 1100;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid var(--color-primary);
+        padding: 0 18px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    /* --- RUNNING TEXT (FADED MARQUEE) --- */
+    .running-text-wrapper {
+        position: fixed;
+        top: 29px;
+        left: 22px;
+        right: 185px; 
+        overflow: hidden;
+        white-space: nowrap;
+        z-index: 1090;
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .running-text-content {
+        display: inline-block;
+        font-size: 0.75rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+        animation: marquee 20s linear infinite;
+        padding-left: 20px;
+    }
+
+    /* --- TOMBOL CHAT (POJOK KANAN) --- */
     .chat-container {
-        all: unset !important;
-        position: fixed !important;
-        bottom: 30px !important;
-        right: 30px !important;
-        width: 60px !important;
-        height: 60px !important;
-        background: var(--color-primary) !important;
-        border-radius: 50% !important;
-        display: flex !important;
+        position: fixed;
+        bottom: 30px;
+        right: 25px;
+        z-index: 1100;
+        width: 55px;
+        height: 55px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 9999;
-    }
-
-    /* --- ISI AREA LOGO (BRAND) --- */
-    .sidebar-brand {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        padding: 20px !important;
-    }
-
-    .logo-wrapper {
-        display: block !important;
-        position: relative !important;
-        inset: auto !important;
-        width: 280px !important; /* Ukuran proporsional PC */
-        transform: none !important;
-    }
-
-    .logo-wrapper img {
-        width: 100% !important;
-        height: auto !important;
-        filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.3));
-    }
-
-    /* Tambahkan Slogan di bawah Logo kalau ada */
-    .slogan-text {
-        display: block !important;
-        margin-top: 20px;
         color: white;
-        font-size: 0.9rem;
-        text-align: center;
-        opacity: 0.7;
+    }
+
+    /* --- OVERLAY MODAL --- */
+    .detail-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        display: none; /* Sembunyi default */
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        padding: 20px;
+    }
+    
+    /* --- KOTAK KONTEN --- */
+    .modal-content {
+        background: #111;
+        border: 1px solid var(--color-primary);
+        width: 100%;
+        max-width: 600px;
+        border-radius: 20px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    #modalTitle {
+        color: var(--color-primary);
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+    
+    .modal-body {
+        max-height: 60vh; /* Batasi tinggi agar bisa scroll internal */
+        overflow-y: auto;
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 1rem;
+        padding-right: 10px;
+    }
+    
+    /* Custom Scrollbar untuk Modal */
+    .modal-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 10px;
     }
 }
