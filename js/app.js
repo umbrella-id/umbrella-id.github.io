@@ -20,10 +20,10 @@ async function init() {
 }
 
 function renderApp() {
-    // 1. Render Slider
-    const slider = document.getElementById('main-slider');
-    slider.innerHTML = cardData.map((item, i) => `
-        <div class="card-element" id="card-${i}">
+    // 1. Render stacker
+    const stacker = document.getElementById('main-stacker');
+    stacker.innerHTML = cardData.map((item, i) => `
+        <div class="stack-card" id="card-${i}">
             <div class="card-header-logo">
                 <img src="logo-umbrella.svg" class="inner-card-logo">
                 <div class="header-text-group">
@@ -109,7 +109,7 @@ function closeDetail() {
 }
 
 function updateStack(drag = 0) {
-    const cards = document.querySelectorAll('.card-element');
+    const cards = document.querySelectorAll('.stack-card');
     const h = window.innerHeight;
     if (window.innerWidth >= 768) return;
 
@@ -161,7 +161,7 @@ window.addEventListener('wheel', e => {
 document.addEventListener('DOMContentLoaded', init);
 
 function updateStack(drag = 0) {
-    const cards = document.querySelectorAll('.card-element');
+    const cards = document.querySelectorAll('.stack-card');
     const isMobile = window.innerWidth < 768;
 
     cards.forEach((card, i) => {
