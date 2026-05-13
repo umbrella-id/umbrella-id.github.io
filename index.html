@@ -6,80 +6,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Umbrella Guild Portal</title>
     
-    <!-- 1. CSS INTI: Gaya kartu & Z-Index -->
+    <!-- CSS kamu tetap sama -->
     <link rel="stylesheet" href="css/base.css">
-    
-    <!-- 2. CSS PC: Layout Grid & Sidebar -->
     <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
-    
-    <!-- 3. CSS MOBILE: Layout Tumpuk & Floating -->
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
 </head>
 <body>
 
     <div class="master-frame">
         
-        <!-- HEADER: Kotak Surat -->
+        <!-- HEADER -->
         <div class="top-bar">
-            <div class="pc-header-text">HEADER</div>
-            <div class="mail-container" id="mail-trigger">KOTAK SURAT</div>
+            <div class="pc-header-text">SELAMAT DATANG</div>
+            <!-- JS mencari mail-container untuk mengisi icon & teks -->
+            <div class="mail-container" id="mail-trigger"></div> 
         </div>
 
-        <!-- AREA TENGAH: Sidebar & Slider -->
+        <!-- AREA TENGAH -->
         <div class="content-wrapper">
             
-            <!-- SIDEBAR: Tempat Logo di PC -->
+            <!-- SIDEBAR (PC ONLY) -->
             <div class="sidebar-brand" id="sidebar-area">
-                <!-- Di Mobile, area ini akan kosong karena logo pindah ke dalam slider -->
-                <div class="slogan-text">Selogan</div>
-            </div>
-
-            <!-- SLIDER: Tempat Kartu & Logo Mobile -->
-            <div id="slider-container">
-                
-                <!-- KONTEN LOGO: Satu-satunya elemen logo yang dipakai bersama -->
+                <!-- Logo ini akan tampil di PC melalui CSS -->
                 <div class="logo-wrapper">
                     <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
                 </div>
+                <div class="slogan-text">UMBRELLA GUILD</div>
+            </div>
 
-                <div id="main-slider">
-                    <!-- KARTU 1 -->
-                    <div class="card-element is-active">
+            <!-- stacker CONTAINER -->
+            <div id="stacker-container">
+                <!-- [PENTING] JS kamu menyuntikkan kartu ke dalam id="main-stacker" -->
+                <div id="main-stacker">
+                    <!-- Biarkan kosong atau isi 1 kartu 'Loading' -->
+                    <div class="stacker-card is-active">
                         <div class="card-content">
-                            <h2>BUFF SERIKAT</h2>
-                            <ul>
-                                <li>PARON SERIKAT LV.10 - ✅</li>
-                                <li>MEJA JAHIT SERIKAT LV.10 - ✅</li>
-                            </ul>
+                            <h2>MEMUAT DATA...</h2>
+                            <p>Menghubungkan ke server Umbrella...</p>
                         </div>
                     </div>
-
-                    <!-- KARTU 2 -->
-                    <div class="card-element">
-                        <div class="card-content">
-                            <h2>WHATSAPP</h2>
-                            <p>https:// ....</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Tambahkan kartu lainnya di sini -->
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER: Icon Chat -->
+        <!-- FOOTER -->
         <div class="bottom-bar">
-            <div class="pc-footer-text">FOTHER</div>
-            <div class="chat-container" id="chat-trigger">
-                <div class="chat-icon">💬</div>
-            </div>
+            <div class="pc-footer-text">© 2024 UMBRELLA CORP</div>
+            <!-- JS mencari chat-container untuk mengisi icon -->
+            <div class="chat-container" id="chat-trigger"></div>
         </div>
 
     </div>
 
+    <!-- JS di bawah agar elemen HTML terbaca dulu -->
     <script src="js/app.js"></script>
 </body>
 </html>
-
-
-
