@@ -20,24 +20,43 @@ async function init() {
 }
 
 function renderApp() {
-    // 1. Render stacker
-    const stacker = document.getElementById('main-stacker');
-    stacker.innerHTML = cardData.map((item, i) => `
-        <div class="stack-card" id="card-${i}">
-            <div class="card-header-logo">
-                <img src="logo-umbrella.svg" class="inner-card-logo">
-                <div class="header-text-group">
-                    <h2 class="card-title">${item.Header}</h2>
-                    <span style="font-size:0.5rem; opacity:0.5; letter-spacing:1px">SECURE_LINK: ONLINE</span>
-                </div>
-            </div>
-            <div class="card-content-wrapper">
-                <div class="card-text">${item.Body.replace(/\n/g, '<br>')}</div>
-            </div>
-            <div class="read-more-btn" onclick="showDetail(${i})">BACA SELENGKAPNYA</div>
-        </div>`).join('');
+    // 1. Ambil target container untuk PC dan Mobile
+    const pcContainer = document.getElementById('slider-container');
+    const mobileContainer = document.getElementById('main-stacker');
+    
+    // 2. Cek apakah kita sedang di Mobile atau PC (untuk menentukan class kartu)
+    const isMobile = window.innerWidth < 768;
 
-    // 2. Render Running Text (Faded Marquee)
+    // 3. Buat isi kartu dari data Google Sheets
+    // Kita buat logic agar class-nya menyesuaikan (slide-card untuk PC, stack-card untuk mobile)
+    const generateHTML = (cardClass) => {
+        return cardData.map((item, i) => `
+            <div class="${cardClass} ${i === currentIndex ? 'is-active' : ''}" id="card-${i}">
+                <div class="card-header-logo">
+                    <img src="logo-umbrella.svg" class="inner-card-logo">
+                    <div class="header-text-group">
+                        <h2 class="card-title">${item.Header}</h2>
+                        <span style="font-size:0.5rem; opacity:0.5; letter-spacing:1px">SECURE_LINK: ONLINE</span>
+                    </div>
+                </div>
+                <div class="card-content-wrapper">
+                    <div class="card-text">${item.Body.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="read-more-btn" onclick="showDetail(${i})">BACA SELENGKAPNYA</div>
+            </div>`).join('');
+    };
+
+    // 4. Masukkan konten ke masing-masing kontainer
+    // Kita isi dua-duanya agar saat resize layar, konten sudah siap
+    if (pcContainer) {
+        pcContainer.innerHTML = generateHTML('slide-card');
+    }
+    
+    if (mobileContainer) {
+        mobileContainer.innerHTML = generateHTML('stack-card');
+    }
+
+    // 5. Render Running Text (Faded Marquee)
     if (runningTexts.length > 0) {
         let existing = document.querySelector('.running-text-wrapper');
         if(existing) existing.remove();
@@ -49,7 +68,7 @@ function renderApp() {
         document.body.appendChild(marqueeCont);
     }
 
-    // 3. Render Sosmed (Bottom Left)
+    // 6. Render Sosmed (Bottom Left)
     let existingSosmed = document.querySelector('.sosmed-corner');
     if(existingSosmed) existingSosmed.remove();
 
@@ -67,7 +86,11 @@ function renderApp() {
     document.body.appendChild(sosmedDock);
 
     updateMailIcon();
-    updateStack(0);
+
+    // 7. Update posisi visual (Hanya untuk Mobile Stack)
+    if (isMobile) {
+        updateStack(0);
+    }
 }
 
 function updateMailIcon() {
