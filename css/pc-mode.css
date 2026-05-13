@@ -75,7 +75,7 @@
     /* 3. Area Tengah (Logo Kiri, Slider Kanan) */
     .content-wrapper {
         display: grid;
-        grid-template-columns: 40dvh 1fr; /* Sidebar 40% dari tinggi layar */
+        grid-template-columns: 350px 1fr; /* Sidebar 40% dari tinggi layar */
         height: 100%;
     }
 
@@ -88,7 +88,7 @@
     }
 
     .logo-wrapper img {
-        width: 25dvh;
+        width: 80%;
         filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
@@ -156,13 +156,13 @@
     }
     
     #app-container::-webkit-scrollbar-thumb {
-        background: var(--color-primary);
+        background: transparent;;
         border-radius: 10px;
         opacity: 0.5;
     }
     
     #app-container::-webkit-scrollbar-thumb:hover {
-        background: #fff; /* Highlight saat kursor di atas scrollbar */
+        background: var(--color-primary); /* Highlight saat kursor di atas scrollbar */
     }
     
     /* --- 2. Perbaikan Area Slider --- */
@@ -332,5 +332,34 @@
         transform: scale(1.1) rotate(-10deg);
         background: white;
         color: var(--color-primary);
+    }
+    
+    .slider-card {
+    background: rgba(15, 23, 42, 0.4) !important; /* Lebih transparan */
+    backdrop-filter: blur(12px); 
+    
+    /* Efek kaca */
+    border: 1px solid rgba(192, 132, 252, 0.3); /* Border tipis */
+    position: relative;
+    overflow: hidden;
+    }
+    
+    /* Tambahkan efek kilatan cahaya saat di-hover */
+    .slider-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+        transform: rotate(45deg);
+        transition: 0.5s;
+        pointer-events: none;
+    }
+    
+    .slider-card:hover::before {
+        left: 100%;
+        top: 100%;
     }
 }
