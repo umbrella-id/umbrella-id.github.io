@@ -1,207 +1,141 @@
-@media screen and (max-width: 767px) {
-    /* --- PENGUNCIAN LAYAR UTAMA --- */
-    /* Mengunci viewport agar aplikasi tidak goyang saat di-swipe */
-    html, body, .master-frame {
-        position: fixed !important; 
-        inset: 0 !important;
-        overflow: hidden !important;
-        width: 100vw;
+/* pc-mode.css */
+@media screen and (min-width: 768px) {
+    /* 1. Atur Frame Utama */
+    .master-frame {
+        display: grid;
+        grid-template-rows: 18dvh 60dvh 1fr;
         height: 100dvh;
-        background: #0f172a;
+        overflow: hidden;
     }
 
-    /* --- PEMBERSIHAN ELEMEN PC --- */
-    /* Menghilangkan komponen yang hanya boleh muncul di monitor besar */
-    .sidebar-brand, 
-    .pc-header-text, 
-    .pc-footer-text, 
-    .slogan-text, 
-    .logo-wrapper {
-        display: none !important;
-    }
-
-    /* --- ANIMASI RUNNING TEXT --- */
-    @keyframes marquee {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
-
-    /* --- KARTU PREVIEW (MOBILE STACKER) --- */
-    /* !important pada position tetap dijaga agar tidak kalah oleh kalkulasi JS */
-    .stacker-card {
-        position: absolute !important;
-        top: 47px;
-        bottom: 57px;
-        left: 50%;
-        width: 92vw; 
-        height: auto;
-        transform: translateX(-50%);
-        background: var(--bg-card);
-        border: 2px solid var(--border-line);
-        border-radius: 25px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-    }
-
-    .stacker-card.is-active { 
-        opacity: 1; 
-        visibility: visible; 
-        z-index: 500; 
-    }
-    
-    /* --- HEADER KARTU --- */
-    .card-header-logo {
+    /* 2. Header & Footer (Banner) */
+    .top-bar, .bottom-bar {
         display: flex;
         align-items: center;
-        gap: 12px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 12px;
+        justify-content: center;
+        position: relative; /* Bukan Fixed di PC agar masuk ke Grid */
+    }
+
+    .pc-header-text {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+    }
+
+    /* 3. Area Tengah (Logo Kiri, Slider Kanan) */
+    .content-wrapper {
+        display: grid;
+        grid-template-columns: 40dvh 1fr; /* Sidebar 40% dari tinggi layar */
+        height: 100%;
+    }
+
+    .sidebar-brand {
+        display: flex !important; /* Paksa muncul di PC */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo-wrapper img {
+        width: 25dvh;
+        filter: drop-shadow(0 0 15px var(--color-primary));
+    }
+
+    /* 4. Slider Area */
+    #stacker-container {
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        padding-left: 40px;
+    }
+
+    #main-slider {
+        display: flex;
+        gap: 30px;
+    }
+
+    .slider-card {
+        width: 35dvh;
+        height: 48dvh;
+        background: rgba(0,0,0,0.5);
+        border: 1px solid var(--color-primary);
+        border-radius: 15px;
+        padding: 25px;
         flex-shrink: 0;
     }
-
-    .inner-card-logo { width: 45px; height: auto; }
-
-    .header-text-group {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    /* --- JUDUL KARTU (RESPONSIF) --- */
-    .card-title {
-        font-size: clamp(0.75rem, 4.2vw, 1.1rem);
-        line-height: 1.2;
-        margin: 0;
-        color: var(--color-primary);
-        font-weight: 800;
-        text-transform: uppercase;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    /* --- KONTEN TEKS KARTU MOBILE --- */
-    .card-content-wrapper {
-        flex: 1; 
-        overflow: hidden; /* Tetap perlu ini agar tidak meluber keluar kartu */
-        margin-bottom: 10px;
-        display: flex;
-        flex-direction: column;
+    .slider-card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
     }
     
-    .card-text {
+    .pc-card-body {
         font-size: 0.95rem;
-        line-height: 1.5;
+        line-height: 1.6;
         color: #cbd5e1;
-        /* HAPUS line-clamp di sini agar teks mengalir natural */
-        overflow: hidden; 
+        overflow: hidden; /* Mencegah teks meluber keluar */
+        margin-bottom: 30px; /* Ruang untuk teks petunjuk di bawah */
     }
     
-    /* --- INDIKATOR BACA SELENGKAPNYA --- */
-    .read-more-indicator {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 10px;
-        margin-top: auto; /* Ini yang bikin dia selalu di dasar kartu */
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .read-more-text {
-        font-size: 0.75rem;
+    .pc-read-more-hint {
+        margin-top: auto; /* Memaksa ke dasar kartu */
+        font-size: 0.8rem;
         color: var(--color-primary);
+        font-weight: bold;
+        text-transform: lowercase;
         font-style: italic;
         opacity: 0.8;
+        text-align: right;
     }
     
-    /* Efek Feedback saat kartu di-tap */
-    .stacker-card:active {
-        transform: translate(-50%, 2px) scale(0.98);
+    /* Efek Hover agar user tahu kartu bisa diklik */
+    .slider-card {
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* --- 1. Custom Scrollbar untuk Slider Area --- */
+    #stacker-container::-webkit-scrollbar {
+        height: 6px; /* Tinggi scrollbar horizontal */
+    }
+    
+    #stacker-container::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.05);
-        transition: 0.1s;
+        border-radius: 10px;
     }
-
-    /* --- SOSMED DOCK (POJOK KIRI) --- */
-    .sosmed-corner {
-        position: fixed;
-        bottom: 30px;
-        left: 25px;
-        display: flex;
-        gap: 15px;
-        z-index: 1100;
-    }
-    .sosmed-link {
-        color: rgba(255,255,255,0.6);
-        font-size: 1.2rem;
-        transition: 0.2s;
-    }
-
-    /* --- TOMBOL NAVIGASI ATAS (KOTAK SURAT) --- */
-    .mail-container {
-        position: fixed;
-        top: 22px;
-        right: 22px;
-        height: 50px;
-        z-index: 1100;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid var(--color-primary);
-        padding: 0 18px;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: white;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
-
-    /* --- RUNNING TEXT (FADED MARQUEE) --- */
-    .running-text-wrapper {
-        position: fixed;
-        top: 29px;
-        left: 22px;
-        right: 185px; 
-        overflow: hidden;
-        white-space: nowrap;
-        z-index: 1090;
-        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-    }
-
-    .running-text-content {
-        display: inline-block;
-        font-size: 0.75rem;
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 500;
-        animation: marquee 20s linear infinite;
-        padding-left: 20px;
-    }
-
-    /* --- TOMBOL CHAT (POJOK KANAN) --- */
-    .chat-container {
-        position: fixed;
-        bottom: 30px;
-        right: 25px;
-        z-index: 1100;
-        width: 55px;
-        height: 55px;
+    
+    #stacker-container::-webkit-scrollbar-thumb {
         background: var(--color-primary);
-        border-radius: 50%;
+        border-radius: 10px;
+        opacity: 0.5;
+    }
+    
+    #stacker-container::-webkit-scrollbar-thumb:hover {
+        background: #fff; /* Highlight saat kursor di atas scrollbar */
+    }
+    
+    /* --- 2. Perbaikan Area Slider --- */
+    #stacker-container {
         display: flex;
         align-items: center;
-        justify-content: center;
-        color: white;
+        overflow-x: auto;
+        padding: 0 40px; /* Padding kiri kanan seimbang */
+        scroll-behavior: smooth;
+        /* Hilangkan scrollbar di Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.2);
     }
-
+    
+    /* --- 3. Tambahan Style Slider Card --- */
+    .slider-card:hover {
+        transform: translateY(-10px); /* Efek melayang sedikit */
+        border-color: #fff;
+        background: rgba(192, 132, 252, 0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
     /* --- OVERLAY MODAL --- */
     .detail-modal {
         position: fixed;
@@ -258,4 +192,5 @@
         background: var(--color-primary);
         border-radius: 10px;
     }
+    
 }
