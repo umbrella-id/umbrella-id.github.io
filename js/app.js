@@ -37,64 +37,63 @@ function renderApp() {
     if (!container) return;
 
     const isMobile = window.innerWidth < 768;
+    
+    // Ambil data headline di awal agar bisa dipakai di Mobile maupun PC jika perlu
+    const headline = cardData.find(item => item.ID.toLowerCase() === 'headline');
+    const displayCards = cardData.filter(item => item.ID.toLowerCase() !== 'headline');
 
     if (isMobile) {
-    // --- KAMAR MOBILE (STACKER) ---
-    
-    // Fungsi pemotong teks ringan (opsional, sesuaikan angka 150 jika ingin lebih pendek)
-    const truncateMobile = (str, n) => {
-        return (str.length > n) ? str.substr(0, n - 1) + " . . ." : str;
-    };
-    
-    // --- TAMBAHKAN INI: Bersihkan sisa konten PC di footer ---
-    const footerContainer = document.querySelector('.bottom-bar');
-    if (footerContainer) footerContainer.innerHTML = '';
+        // --- KAMAR MOBILE (STACKER) ---
+        
+        // 1. Bersihkan footer PC saat di mode mobile
+        const footerContainer = document.querySelector('.bottom-bar');
+        if (footerContainer) footerContainer.innerHTML = '';
 
-    container.innerHTML = `
-        <div id="main-stacker">
-            ${cardData.map((item, i) => `
-                <div class="stacker-card" id="card-${i}" onclick="showDetail(${i})">
-                    <div class="card-header-logo">
-                        <img src="logo-umbrella.svg" class="inner-card-logo">
-                        <div class="header-text-group">
-                            <h2 class="card-title">${item.Header}</h2>
+        container.innerHTML = `
+            <div id="main-stacker">
+                ${cardData.map((item, i) => `
+                    <div class="stacker-card" id="card-${i}" onclick="showDetail(${i})">
+                        <div class="card-header-logo">
+                            <img src="logo-umbrella.svg" class="inner-card-logo">
+                            <div class="header-text-group">
+                                <h2 class="card-title">${item.Header}</h2>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="card-content-wrapper">
-                        <div class="card-text">
-                            ${item.Body.replace(/\n/g, '<br>')}
+                        
+                        <div class="card-content-wrapper">
+                            <div class="card-text">
+                                ${item.Body.replace(/\n/g, '<br>')}
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Teks indikator rata tengah di bawah -->
-                    <div class="mobile-read-more">baca selengkapnya</div>
-                </div>`).join('')}
-        </div>`;
+                        <div class="mobile-read-more">baca selengkapnya</div>
+                    </div>`).join('')}
+            </div>`;
+            
     } else {
         // --- KAMAR PC (GRID SLIDER) ---
-        const headline = cardData.find(item => item.ID.toLowerCase() === 'headline');
-        // Ambil data selain headline
-        const displayCards = cardData.filter(item => item.ID.toLowerCase() !== 'headline');
-    
         if (headline) {
-            // 1. Update Judul Atas
+            // 1. Update Judul Atas PC
             const headerElement = document.querySelector('.pc-header-text');
             if (headerElement) headerElement.innerText = headline.Header;
         
-            // 2. Update Footer (Teks + Link)
+            // 2. Update Footer PC (Gunakan Logika Potong Teks Kamu)
             const footerContainer = document.querySelector('.bottom-bar');
             if (footerContainer) {
                 const headlineIndex = cardData.indexOf(headline);
+                const limit = 160; 
+                const fullText = headline.Body;
                 
-                // Gunakan struktur yang memaksa teks dan link dalam satu baris (inline)
+                // Eksekusi Logika Potong
+                const truncatedText = fullText.length > limit 
+                    ? fullText.substring(0, limit) + "... " 
+                    : fullText;
+
                 footerContainer.innerHTML = `
-                    <div class="headline-wrapper-pc" style="text-align: center; color: #94a3b8; font-size: 1rem;">
-                        ${headline.Body} 
-                        <span class="inline-link-text" 
-                              onclick="showDetail(${headlineIndex})" 
-                              style="color: var(--color-primary); cursor: pointer; font-weight: bold; text-decoration: underline; display: inline-block; margin-left: 5px;">
-                            ... selengkapnya
+                    <div class="headline-body-pc">
+                        ${truncatedText}
+                        <span class="inline-link-text" onclick="showDetail(${headlineIndex})">
+                            selengkapnya
                         </span>
                     </div>
                 `;
@@ -104,18 +103,14 @@ function renderApp() {
         container.innerHTML = `
             <div id="main-slider">
                 ${displayCards.map((item) => {
-                    // Cari index asli dari item ini di cardData untuk fungsi showDetail
                     const originalIndex = cardData.findIndex(c => c === item);
-                    
                     return `
                     <div class="slider-card" onclick="showDetail(${originalIndex})" style="cursor:pointer">
                         <div class="slider-card-content">
                             <h2 class="pc-card-title">${item.Header}</h2>
-                            <!-- Teks dipotong di sini (contoh 180 karakter) -->
                             <div class="pc-card-body">
                                 ${item.Body.replace(/\n/g, '<br>')}
                             </div>
-                            <!-- Indikator estetika di paling bawah -->
                             <div class="pc-read-more-hint">baca selengkapnya</div>
                         </div>
                     </div>`;
@@ -128,7 +123,6 @@ function renderApp() {
     renderSosmed();
     updateUIElements();
     
-    // Jalankan kalkulasi tumpukan kartu jika di mobile
     if (isMobile) updateStack(0);
 }
 
