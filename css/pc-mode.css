@@ -208,27 +208,40 @@
        6. FOOTER (BOTTOM BAR & SELENGKAPNYA)
        ========================================== */
     .headline-body-pc {
-        width: 75vw;           /* Lebar kolom sesuai keinginanmu */
+        width: 75vw;
         margin: 0 auto;
+        
+        /* MEMBUAT BOX PEMBATAS */
+        height: 80px;            /* Tinggi box tetap agar layout stabil */
+        max-height: 80px;        /* Batas keras agar tidak tembus ke running text */
+        
+        /* PENYELARASAN ISI */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Teks tetap di tengah secara vertikal */
+        align-items: center;     /* Teks tetap di tengah secara horizontal */
+        
         text-align: center;
         color: #94a3b8;
         
-        /* Font dibuat adaptif/auto agar pas di kolom */
-        font-size: clamp(0.9rem, 1.1vw, 1.1rem); 
-        line-height: 1.5;
-    
-        /* JANGAN PAKAI overflow: hidden atau line-clamp di sini! */
-        /* Biarkan teks hasil potongan JS mengalir apa adanya */
+        /* FONT FLEXIBLE */
+        /* Jika teks panjang, dia akan mengecil otomatis (hanya jika kamu pakai unit vw) */
+        font-size: clamp(0.8rem, 1vw, 1.1rem); 
+        line-height: 1.4;
+        
+        overflow: hidden;        /* Proteksi terakhir jika limit JS bocor */
+        position: relative;
+        z-index: 10;             /* Di atas background, di bawah modal */
     }
     
     .inline-link-text {
-        display: inline;       /* Biar dia jadi satu kesatuan sama teks sebelumnya */
+        display: inline;
         color: var(--color-primary);
         font-weight: bold;
         text-decoration: underline;
         cursor: pointer;
         margin-left: 5px;
-        white-space: nowrap;   /* Biar tulisan 'selengkapnya' gak keputus jadi dua baris */
+        white-space: nowrap;
     }    
     .inline-link-text {
         display: inline; /* Harus INLINE agar bisa masuk ke sela-sela teks baris ke-2 */
