@@ -208,25 +208,28 @@
        6. FOOTER (BOTTOM BAR & SELENGKAPNYA)
        ========================================== */
     .headline-body-pc {
-        width: 75vw; /* Sesuai logika box kamu */
+        width: 75vw;           /* Lebar kolom sesuai keinginanmu */
         margin: 0 auto;
         text-align: center;
         color: #94a3b8;
-        font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+        
+        /* Font dibuat adaptif/auto agar pas di kolom */
+        font-size: clamp(0.9rem, 1.1vw, 1.1rem); 
         line-height: 1.5;
-        /* Kita hapus overflow hidden agar link tidak hilang */
+    
+        /* JANGAN PAKAI overflow: hidden atau line-clamp di sini! */
+        /* Biarkan teks hasil potongan JS mengalir apa adanya */
     }
     
     .inline-link-text {
-        display: inline; /* Tetap inline agar menyatu dengan ujung teks */
+        display: inline;       /* Biar dia jadi satu kesatuan sama teks sebelumnya */
         color: var(--color-primary);
-        cursor: pointer;
         font-weight: bold;
         text-decoration: underline;
+        cursor: pointer;
         margin-left: 5px;
-        white-space: nowrap; /* Mencegah kata 'selengkapnya' terpotong sendirian */
-    }
-    
+        white-space: nowrap;   /* Biar tulisan 'selengkapnya' gak keputus jadi dua baris */
+    }    
     .inline-link-text {
         display: inline; /* Harus INLINE agar bisa masuk ke sela-sela teks baris ke-2 */
         color: var(--color-primary);
