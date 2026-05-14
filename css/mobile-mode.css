@@ -32,15 +32,13 @@
         left: 50%;
         width: 92vw; 
         height: auto;
+        border: 1px solid var(--color-primary);
         transform: translateX(-50%);
         
         /* MODIFIKASI: Ubah background agar semi-transparan (Efek Kaca) */
-        background: rgba(15, 23, 42, 0.8) !important; 
+        background: rgba(15, 23, 42, 0.9) !important; 
         backdrop-filter: blur(12px) saturate(160%);
         -webkit-backdrop-filter: blur(12px) saturate(160%);
-        
-        /* MODIFIKASI: Border lebih tipis agar kesan 'Cyber' PC masuk */
-        border: 1px solid rgba(192, 132, 252, 0.3); 
         
         border-radius: 25px;
         padding: 20px;
@@ -68,7 +66,7 @@
     0% { border-color: rgba(255, 255, 255, 0.15); }
     50% { 
         border-color: var(--color-primary); 
-        box-shadow: 0 0 20px rgba(192, 132, 252, 0.4); 
+        box-shadow: 0 0 10px rgba(192, 132, 252, 0.4); 
     }
     100% { border-color: rgba(255, 255, 255, 0.15); }
 }
@@ -106,7 +104,7 @@
     }
 
     .card-title {
-        font-size: clamp(0.75rem, 4.2vw, 1.1rem);
+        font-size: clamp(0.75rem, 5.5vw, 2.0rem);
         line-height: 1.2;
         margin: 0;
         color: var(--color-primary);
@@ -128,7 +126,7 @@
     }
     
     .card-text {
-        font-size: 0.95rem;
+        font-size: 1.2rem;
         line-height: 1.5;
         color: #cbd5e1;
         overflow: hidden; 
@@ -241,7 +239,7 @@
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0,40);
         backdrop-filter: blur(10px);
         display: none;
         justify-content: center;
@@ -264,7 +262,7 @@
     .modal-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: top;
         margin-bottom: 20px;
     }
     
