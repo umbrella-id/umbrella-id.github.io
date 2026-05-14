@@ -10,7 +10,7 @@
         overflow: hidden !important;
         width: 100vw;
         height: 100dvh;
-        background: radial-gradient(circle at top right, #1e293b, #0f172a) !important;
+        background: radial-gradient(circle at 50% -20%, #2e1065 0%, #0f172a 80%) !important;
     }
 
     /* Pembersihan Elemen Desktop */
@@ -35,10 +35,16 @@
         border: 1px solid var(--color-primary);
         transform: translateX(-50%);
         
-        /* MODIFIKASI: Ubah background agar semi-transparan (Efek Kaca) */
-        background: rgba(15, 23, 42, 0.9) !important; 
-        backdrop-filter: blur(12px) saturate(160%);
-        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        /* BACKGROUND: Efek Kaca Gelap yang Mewah */
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
+        /* SHADOW: Kombinasi Glow Luar dan Dalam */
+        box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.8),            /* Bayangan dasar */
+            0 0 20px rgba(192, 132, 252, 0.2),         /* Glow luar halus */
+            inset 0 0 15px rgba(192, 132, 252, 0.15);  /* Glow dalam (Vibe PC) */
         
         border-radius: 25px;
         padding: 20px;
@@ -50,7 +56,6 @@
         
         /* Transition tetap milikmu */
         transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
 
     .stacker-card.is-active { 
@@ -66,10 +71,10 @@
     0% { border-color: rgba(255, 255, 255, 0.15); }
     50% { 
         border-color: var(--color-primary); 
-        box-shadow: 0 0 10px rgba(192, 132, 252, 0.4); 
+        box-shadow: 0 0 5px rgba(192, 132, 252, 0.4); 
     }
     100% { border-color: rgba(255, 255, 255, 0.15); }
-}
+    }
 
     /* Efek Feedback Tap */
     .stacker-card:active {
@@ -159,7 +164,6 @@
         right: 22px;
         height: 50px;
         z-index: 1100;
-        background: rgba(15, 23, 42, 0.9);
         border: 1px solid var(--color-primary);
         padding: 0 18px;
         border-radius: 30px;
@@ -169,6 +173,11 @@
         color: white;
         font-size: 0.8rem;
         font-weight: bold;
+        
+        /* BACKGROUND: Efek Kaca Gelap yang Mewah */
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
     }
 
     /* Running Text (Top Left) */
