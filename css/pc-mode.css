@@ -1,6 +1,9 @@
-/* pc-mode.css */
+/* pc-mode.css - Full Features & Organized Version */
 @media screen and (min-width: 768px) {
-    /* 1. Atur Frame Utama */
+
+    /* ==========================================
+       1. LAYOUT & FRAME UTAMA
+       ========================================== */
     .master-frame {
         display: grid;
         grid-template-rows: 18dvh 60dvh 1fr;
@@ -9,7 +12,15 @@
         overflow: hidden;
     }
 
-    /* --- HEADER (Top Bar) --- */
+    .content-wrapper {
+        display: grid;
+        grid-template-columns: 350px 1fr; /* Sidebar & Slider */
+        height: 100%;
+    }
+
+    /* ==========================================
+       2. HEADER (TOP BAR)
+       ========================================== */
     .top-bar {
         width: 70vw;
         margin: 0 auto;
@@ -18,12 +29,11 @@
         align-items: center;
         justify-content: center;
         padding: 20px 0;
-        /* Garis bawah neon yang tipis */
         border-bottom: 1px solid rgba(192, 132, 252, 0.2);
         position: relative;
     }
-    
-    /* Tambahkan aksen dekoratif kecil di sudut header */
+
+    /* Aksen Neon di Header */
     .top-bar::before, .top-bar::after {
         content: '';
         position: absolute;
@@ -35,7 +45,7 @@
     }
     .top-bar::before { left: 0; }
     .top-bar::after { right: 0; }
-    
+
     .pc-header-text {
         font-size: clamp(1.8rem, 3.5vw, 2.2rem);
         font-weight: 900;
@@ -48,74 +58,34 @@
         text-align: center;
     }
 
-    /* --- FOOTER (Bottom Bar) --- */
-    .bottom-bar {
-        width: 70vw;
-        margin: 0 auto;
-        padding: 5px 0 80px 0; /* Ruang bawah ekstra untuk running text */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .headline-body-pc {
-        font-size: clamp(0.9rem, 1.1vw, 1.05rem);
-        color: #94a3b8; /* Warna abu-abu kebiruan agar mata tidak lelah */
-        line-height: 1.7;
-        max-width: 800px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* Batasi 2 baris agar tetap rapi */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        margin-bottom: 15px;
-    }
-    
-    /* PENGGANTI .footer-more-btn */
-    .inline-link-text {
-        color: var(--color-primary);
-        font-weight: bold;
-        cursor: pointer;
-        text-decoration: underline;
-        margin-left: 5px;
-        display: inline; /* WAJIB: Agar teks menyambung di akhir kalimat */
-    }
-    
-    .inline-link-text:hover {
-        color: #fff;
-        text-shadow: 0 0 10px var(--color-primary);
-        transform: scale(1.05); /* Sedikit membesar saat disorot */
-    }
-
-    /* 3. Area Tengah (Logo Kiri, Slider Kanan) */
-    .content-wrapper {
-        display: grid;
-        grid-template-columns: 350px 1fr; /* Sidebar 40% dari tinggi layar */
-        height: 100%;
-    }
-
+    /* ==========================================
+       3. SIDEBAR (LOGO & BRANDING)
+       ========================================== */
     .sidebar-brand {
         display: flex !important;
         flex-direction: column;
-        align-items: center;    /* KUNCI 1: Memaksa semua anak (logo & teks) ke tengah */
+        align-items: center;
         justify-content: center;
-        width: 350px;           /* Lebar sidebar kamu */
+        width: 350px;
     }
-    
+
     .logo-wrapper {
-        width: 100%;            /* Memenuhi 350px */
+        width: 100%;
         display: flex;
-        justify-content: center; /* KUNCI 2: Memastikan konten di dalamnya rata tengah */
+        justify-content: center;
     }
-    
+
+    .logo-wrapper img {
+        width: 30dvh;
+        height: auto;
+        filter: drop-shadow(0 0 15px var(--color-primary));
+    }
+
     .brand-container {
         text-align: center;
         margin-top: 15px;
     }
-    
-    /* Gaya Baris 1: Besar & Tegas */
+
     .brand-main {
         font-size: 0.8rem;
         font-weight: 900;
@@ -123,275 +93,62 @@
         color: #fff;
         text-transform: uppercase;
     }
-    
-    /* Gaya Baris 2: Kecil & Elegant */
+
     .brand-sub {
         font-size: 0.8rem;
         font-weight: 400;
-        color: var(--color-primary); /* Warna ungu khasmu */
+        color: var(--color-primary);
         letter-spacing: 2px;
         text-transform: lowercase;
         margin-top: 5px;
         opacity: 0.8;
     }
-    
-    .logo-wrapper img {
-        /* Ganti 25dvh dengan ukuran yang lebih mantap, misal 35dvh atau pakai % */
-        width: 30dvh;             
-        height: auto;
-        filter: drop-shadow(0 0 15px var(--color-primary));
-    }
 
-    /* 4. Slider Area */
+    /* ==========================================
+       4. AREA SLIDER & SCROLLBAR
+       ========================================== */
     #app-container {
         display: flex;
         align-items: center;
         overflow-x: auto;
-        padding-left: 40px;
+        padding: 0 40px;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.2);
     }
+
+    /* Styling Scrollbar Slider */
+    #app-container::-webkit-scrollbar { height: 6px; }
+    #app-container::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+    #app-container::-webkit-scrollbar-thumb { 
+        background: rgba(192, 132, 252, 0.2); 
+        border-radius: 10px; 
+    }
+    #app-container::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
     #main-slider {
         display: flex;
         gap: 30px;
     }
 
+    /* ==========================================
+       5. SLIDER CARD (GLASSMORPHISM & HOVER)
+       ========================================== */
     .slider-card {
         width: 50dvh;
         height: 55dvh;
-        background: rgba(0,0,0,0.5);
-        border: 1px solid var(--color-primary);
-        border-radius: 15px;
-        padding: 25px;
-        margin-top: 15px;
-        flex-shrink: 0;
-    }
-    .slider-card-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: relative;
-    }
-    
-    .pc-card-body {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: #cbd5e1;
-        overflow: hidden; /* Mencegah teks meluber keluar */
-        margin-bottom: 30px; /* Ruang untuk teks petunjuk di bawah */
-    }
-    
-    .pc-read-more-hint {
-        margin-top: auto; /* Memaksa ke dasar kartu */
-        font-size: 0.8rem;
-        color: var(--color-primary);
-        font-weight: bold;
-        text-transform: lowercase;
-        font-style: italic;
-        opacity: 0.8;
-        text-align: right;
-    }
-    
-    /* Efek Hover agar user tahu kartu bisa diklik */
-    .slider-card {
-        transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-    
-    /* --- 1. Custom Scrollbar untuk Slider Area --- */
-    #app-container::-webkit-scrollbar {
-        height: 6px; /* Tinggi scrollbar horizontal */
-    }
-    
-    #app-container::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-    }
-    
-    #app-container::-webkit-scrollbar-thumb {
-        background: transparent;;
-        border-radius: 10px;
-        opacity: 0.5;
-    }
-    
-    #app-container::-webkit-scrollbar-thumb:hover {
-        background: var(--color-primary); /* Highlight saat kursor di atas scrollbar */
-    }
-    
-    /* --- 2. Perbaikan Area Slider --- */
-    #app-container {
-        display: flex;
-        align-items: center;
-        overflow-x: auto;
-        padding: 0 40px; /* Padding kiri kanan seimbang */
-        scroll-behavior: smooth;
-        /* Hilangkan scrollbar di Firefox */
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.2);
-    }
-    
-    /* --- 3. Tambahan Style Slider Card --- */
-    .slider-card:hover {
-        transform: translateY(-10px); /* Efek melayang sedikit */
-        border-color: #fff;
-        background: rgba(192, 132, 252, 0.1);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    
-    /* --- OVERLAY MODAL --- */
-    .detail-modal {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(10px);
-        display: none; /* Sembunyi default */
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        padding: 20px;
-    }
-    
-    /* --- KOTAK KONTEN --- */
-    .modal-content {
-        background: #111;
-        border: 1px solid var(--color-primary);
-        width: 100%;
-        max-width: 600px;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(192, 132, 252, 0.2);
         border-radius: 20px;
-        padding: 30px;
+        padding: 25px;
+        flex-shrink: 0;
         position: relative;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-    
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    #modalTitle {
-        color: var(--color-primary);
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 800;
-    }
-    
-    .modal-body {
-        max-height: 60vh; /* Batasi tinggi agar bisa scroll internal */
-        overflow-y: auto;
-        color: #cbd5e1;
-        line-height: 1.7;
-        font-size: 1rem;
-        padding-right: 10px;
-    }
-    
-    /* Custom Scrollbar untuk Modal */
-    .modal-body::-webkit-scrollbar {
-        width: 4px;
-    }
-    .modal-body::-webkit-scrollbar-thumb {
-        background: var(--color-primary);
-        border-radius: 10px;
-    }
-    
-/* --- RUNNING TEXT (Murni 1 Baris & Transparan) --- */
-    .running-text-wrapper {
-        position: fixed;
-        bottom: 1dvh; /* Sangat dekat dengan dasar layar */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70vw;
-        background: transparent; /* Box transparan total */
         overflow: hidden;
-        z-index: 2000;
-        pointer-events: none; /* Agar tidak menghalangi klik di belakangnya */
-        
-        /* Efek Fade Kiri-Kanan */
-        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .running-text-content {
-        display: inline-block;
-        white-space: nowrap; /* KUNCI: Paksa teks tetap 1 baris, dilarang jadi paragraf */
-        font-size: 1.1rem;
-        font-weight: 500;
-        letter-spacing: 2px;
-        color: rgba(255, 255, 255, 0.8);
-        padding-left: 100%; /* Mulai jalan dari ujung kanan wrapper */
-        animation: marquee-pc 25s linear infinite;
-    }
-
-    @keyframes marquee-pc {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-100%); }
-    }
-
-
-    /* ---  KOTAK SURAT (Pojok Kiri Atas - Tanpa Box) --- */
-    .mail-container {
-        position: fixed;
-        top: 20px;
-        left: 40px;
-        background: transparent;
-        border: none;
-        color: white;
-        font-weight: 800;
-        font-size: 0.9rem;
-        letter-spacing: 2px;
-        cursor: pointer;
-        z-index: 1500;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        transition: 0.3s;
-    }
-
-    .mail-container i {
-        font-size: 1.5rem;
-        color: var(--color-primary);
-    }
-
-    .mail-container:hover {
-        transform: translateX(10px);
-        text-shadow: 0 0 15px var(--color-primary);
-    }
-
-    /* ---  CHAT BUTTON (Bulat - Pojok Kanan Bawah) --- */
-    .chat-container {
-        position: fixed;
-        bottom: 30px;
-        right: 40px;
-        width: 65px;
-        height: 65px;
-        background: var(--color-primary);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 1500;
-        box-shadow: 0 8px 25px rgba(192, 132, 252, 0.4);
-        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .chat-container i {
-        font-size: 1.8rem;
-    }
-
-    .chat-container:hover {
-        transform: scale(1.1) rotate(-10deg);
-        background: white;
-        color: var(--color-primary);
-    }
-    
-    /* Efek kaca */
-    border: 1px solid rgba(192, 132, 252, 0.3); /* Border tipis */
-    position: relative;
-    overflow: hidden;
-    }
-    
-    /* Tambahkan efek kilatan cahaya saat di-hover */
+    /* Efek Kilatan Cahaya (Glow Shine) */
     .slider-card::before {
         content: '';
         position: absolute;
@@ -404,39 +161,218 @@
         transition: 0.5s;
         pointer-events: none;
     }
-    
+
+    /* Hover Effect Kartu */
+    .slider-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--color-primary);
+        background: rgba(192, 132, 252, 0.05);
+        box-shadow: 0 0 20px rgba(192, 132, 252, 0.3), 
+                    0 0 40px rgba(192, 132, 252, 0.1),
+                    inset 0 0 15px rgba(192, 132, 252, 0.2);
+    }
+
     .slider-card:hover::before {
         left: 100%;
         top: 100%;
     }
-    /* --- Keadaan Normal Kartu --- */
-    .slider-card {
-        background: rgba(15, 23, 42, 0.4);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(192, 132, 252, 0.2); /* Border redup saat normal */
-        border-radius: 20px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
+
+    /* Konten di dalam Kartu */
+    .slider-card-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .pc-card-body {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #cbd5e1;
         overflow: hidden;
+        margin-bottom: 30px;
     }
-    
-    /* --- Efek Saat Kartu Tersorot (Hover) --- */
-    .slider-card:hover {
-        transform: translateY(-15px) scale(1.02); /* Terangkat dan sedikit membesar */
-        border-color: var(--color-primary); /* Border berubah jadi ungu terang */
-        
-        /* Efek Menyala (Glow) */
-        box-shadow: 
-            0 0 20px rgba(192, 132, 252, 0.3), 
-            0 0 40px rgba(192, 132, 252, 0.1),
-            inset 0 0 15px rgba(192, 132, 252, 0.2); /* Glow di bagian dalam kartu */
-        
-        background: rgba(192, 132, 252, 0.05); /* Sedikit warna ungu transparan pada background */
+
+    .pc-read-more-hint {
+        margin-top: auto;
+        font-size: 0.8rem;
+        color: var(--color-primary);
+        font-weight: bold;
+        text-transform: lowercase;
+        font-style: italic;
+        opacity: 0.8;
+        text-align: right;
     }
-    
-    /* Tambahan: Efek menyala pada teks judul saat di-hover */
-    .slider-card:hover .pc-card-title {
+
+    /* ==========================================
+       6. FOOTER (BOTTOM BAR & SELENGKAPNYA)
+       ========================================== */
+    .bottom-bar {
+        width: 70vw;
+        margin: 0 auto;
+        padding: 5px 0 80px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        pointer-events: none; /* Pointer events dikontrol di level tombol */
+    }
+
+    .headline-body-pc {
+        font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+        color: #94a3b8;
+        line-height: 1.7;
+        max-width: 800px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Batasi 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+
+    .inline-link-text {
+        color: var(--color-primary);
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-left: 5px;
+        display: inline;
+        pointer-events: auto; /* Agar bisa diklik meskipun parent-nya 'none' */
+        transition: 0.3s;
+    }
+
+    .inline-link-text:hover {
         color: #fff;
         text-shadow: 0 0 10px var(--color-primary);
+        transform: scale(1.05);
     }
-}
+
+    /* ==========================================
+       7. RUNNING TEXT (MARQUEE & MASKING)
+       ========================================== */
+    .running-text-wrapper {
+        position: fixed;
+        bottom: 1dvh;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70vw;
+        background: transparent;
+        overflow: hidden;
+        z-index: 2000;
+        pointer-events: none;
+        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .running-text-content {
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 1.1rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        color: rgba(255, 255, 255, 0.8);
+        padding-left: 100%;
+        animation: marquee-pc 25s linear infinite;
+    }
+
+    @keyframes marquee-pc {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    /* ==========================================
+       8. FLOATING WIDGETS (MAIL & CHAT)
+       ========================================== */
+    .mail-container, .chat-container {
+        position: fixed;
+        z-index: 1500;
+        cursor: pointer;
+        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Kotak Surat */
+    .mail-container {
+        top: 20px;
+        left: 40px;
+        background: transparent;
+        color: white;
+        font-weight: 800;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .mail-container i { font-size: 1.5rem; color: var(--color-primary); }
+    .mail-container:hover { transform: translateX(10px); text-shadow: 0 0 15px var(--color-primary); }
+
+    /* Tombol Chat */
+    .chat-container {
+        bottom: 30px;
+        right: 40px;
+        width: 65px;
+        height: 65px;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 25px rgba(192, 132, 252, 0.4);
+    }
+    .chat-container i { font-size: 1.8rem; }
+    .chat-container:hover { transform: scale(1.1) rotate(-10deg); background: white; color: var(--color-primary); }
+
+    /* ==========================================
+       9. DETAIL MODAL (OVERLAY)
+       ========================================== */
+    .detail-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        padding: 20px;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    #modalTitle {
+        color: var(--color-primary);
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .modal-content {
+        background: #111;
+        border: 1px solid var(--color-primary);
+        width: 100%;
+        max-width: 600px;
+        border-radius: 20px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+        color: #cbd5e1;
+        line-height: 1.7;
+        padding-right: 10px;
+    }
+
+    /* Scrollbar Modal */
+    .modal-body::-webkit-scrollbar { width: 4px; }
+    .modal-body::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 10px; }
+
+} /* Akhir Media Query */
