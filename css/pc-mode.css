@@ -212,8 +212,7 @@
         margin: 0 auto;
         
         /* MEMBUAT BOX PEMBATAS */
-        height: 80px;            /* Tinggi box tetap agar layout stabil */
-        max-height: 80px;        /* Batas keras agar tidak tembus ke running text */
+        height: 15dvb;            /* Tinggi box tetap agar layout stabil */
         
         /* PENYELARASAN ISI */
         display: flex;
@@ -226,7 +225,7 @@
         
         /* FONT FLEXIBLE */
         /* Jika teks panjang, dia akan mengecil otomatis (hanya jika kamu pakai unit vw) */
-        font-size: clamp(0.8rem, 1vw, 1.1rem); 
+        font-size: clamp(0.8rem, 2vw, 2.5rem); 
         line-height: 1.4;
         
         overflow: hidden;        /* Proteksi terakhir jika limit JS bocor */
