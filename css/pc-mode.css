@@ -47,7 +47,7 @@
     .top-bar::after { right: 0; }
 
     .pc-header-text {
-        font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+        font-size: clamp(2.5vw, 3.0vw, 3.5vw);
         font-weight: 900;
         letter-spacing: 3px;
         color: #fff;
