@@ -45,6 +45,10 @@ function renderApp() {
     const truncateMobile = (str, n) => {
         return (str.length > n) ? str.substr(0, n - 1) + " . . ." : str;
     };
+    
+    // --- TAMBAHKAN INI: Bersihkan sisa konten PC di footer ---
+    const footerContainer = document.querySelector('.bottom-bar');
+    if (footerContainer) footerContainer.innerHTML = '';
 
     container.innerHTML = `
         <div id="main-stacker">
@@ -74,14 +78,28 @@ function renderApp() {
         const displayCards = cardData.filter(item => item.ID.toLowerCase() !== 'headline');
     
         if (headline) {
-            document.querySelector('.pc-header-text').innerText = headline.Header;
-            document.querySelector('.pc-footer-text').innerText = headline.Body;
+            // 1. Update Judul Atas
+            const headerElement = document.querySelector('.pc-header-text');
+            if (headerElement) headerElement.innerText = headline.Header;
+        
+            // 2. Update Footer (Teks + Link)
+            const footerContainer = document.querySelector('.bottom-bar');
+            if (footerContainer) {
+                const headlineIndex = cardData.indexOf(headline);
+                
+                // Gunakan struktur yang memaksa teks dan link dalam satu baris (inline)
+                footerContainer.innerHTML = `
+                    <div class="headline-wrapper-pc" style="text-align: center; color: #94a3b8; font-size: 1rem;">
+                        ${headline.Body} 
+                        <span class="inline-link-text" 
+                              onclick="showDetail(${headlineIndex})" 
+                              style="color: var(--color-primary); cursor: pointer; font-weight: bold; text-decoration: underline; display: inline-block; margin-left: 5px;">
+                            ... selengkapnya
+                        </span>
+                    </div>
+                `;
+            }
         }
-    
-        // Fungsi pemotong teks (Truncate)
-        const truncate = (str, n) => {
-            return (str.length > n) ? str.substr(0, n - 1) + " . . ." : str;
-        };
     
         container.innerHTML = `
             <div id="main-slider">
