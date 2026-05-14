@@ -221,7 +221,7 @@
     }
 
     .headline-body-pc {
-        font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+        font-size: clamp(0.9rem, 2.0vw, 2.5rem);
         color: #94a3b8;
         line-height: 1.7;
         max-width: 800px;
