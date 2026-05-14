@@ -212,11 +212,10 @@
         margin: 0 auto;
         
         /* MEMBUAT BOX PEMBATAS */
-        height: 15dvb;            /* Tinggi box tetap agar layout stabil */
+        height: 10dvh;            /* Tinggi box tetap agar layout stabil */
         
         /* PENYELARASAN ISI */
-        display: flex;
-        flex-direction: column;
+        display: flex-shrink;
         justify-content: center; /* Teks tetap di tengah secara vertikal */
         align-items: center;     /* Teks tetap di tengah secara horizontal */
         
@@ -225,10 +224,10 @@
         
         /* FONT FLEXIBLE */
         /* Jika teks panjang, dia akan mengecil otomatis (hanya jika kamu pakai unit vw) */
-        font-size: clamp(0.8rem, 2vw, 2.5rem); 
+        font-size: clamp(1.8vw, 3dvh, 4dvh); 
         line-height: 1.4;
         
-        overflow: hidden;        /* Proteksi terakhir jika limit JS bocor */
+        overflow: visible;        /* Proteksi terakhir jika limit JS bocor */
         position: relative;
         z-index: 10;             /* Di atas background, di bawah modal */
     }
