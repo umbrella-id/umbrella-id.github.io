@@ -72,13 +72,6 @@
         overflow: hidden;
         margin-bottom: 15px;
     }
-    .bottom-bar {
-        pointer-events: none; /* Supaya klik tembus ke ikon chat */
-    }
-    /* Jika ada tombol di dalam footer mobile yang harus diklik, aktifkan kembali */
-    .bottom-bar button, .bottom-bar a {
-        pointer-events: auto;
-    }
     
     /* PENGGANTI .footer-more-btn */
     .inline-link-text {
@@ -391,10 +384,6 @@
         background: white;
         color: var(--color-primary);
     }
-    
-    .slider-card {
-    background: rgba(15, 23, 42, 0.4) !important; /* Lebih transparan */
-    backdrop-filter: blur(12px); 
     
     /* Efek kaca */
     border: 1px solid rgba(192, 132, 252, 0.3); /* Border tipis */
