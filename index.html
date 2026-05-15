@@ -7,12 +7,28 @@
     <title>Umbrella Guild Portal</title>
     
     <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/identity.css">
     <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
+    <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
 
-    <!-- 1. TAMBAHKAN INI (Untuk Running Text & Sosmed yang melayang) -->
+    <div id="site-gatekeeper">
+        <div class="portal-box">
+            <span class="close-gate" onclick="closeGate()">&times;</span>
+            <h2 id="gate-title">UMBRELLA NETWORK</h2>
+            <div class="input-group">
+                <input type="text" id="global-ign-input" placeholder="ENTER NICKNAME...">
+                <button onclick="saveIdentity()">INITIALIZE</button>
+                </div>
+        </div>
+    </div>
+    <div id="ign-label-container" onclick="unlockSite()">
+        <i class="fas fa-user-circle"></i>
+        <span id="current-ign-display">Operator</span>
+    </div>
+    
     <div class="running-text-wrapper" id="marquee-area">
         <div class="running-text-content" id="pc-marquee"></div>
     </div>
@@ -65,9 +81,25 @@
             <span class="inline-link-text"></span>
         </div>
     </div>
-    <div class="chat-container" id="chat-trigger">
-        <i class="fab fa-whatsapp"></i> <!-- Pastikan ada icon di dalamnya -->
+    
+    <div class="chat-container" id="chat-trigger" onclick="toggleChat()">
+        <i class="fab fa-whatsapp"></i>
     </div>
+    
+    <div id="chat-popup" class="chat-popup-hidden">
+        <div id="chat-header">
+            <span>Portal Umbrella</span>
+            <span id="admin-indicator">●</span>
+        </div>
+        <div id="chat-logs"></div>
+        <div id="chat-input-area">
+            <input type="text" id="msg-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+    
+    <script src="js/identity.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/chat.js"></script>
 </body>
 </html>
