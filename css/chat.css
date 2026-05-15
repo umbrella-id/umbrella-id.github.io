@@ -1,0 +1,39 @@
+/* Keadaan awal: Benar-benar sembunyi */
+#chat-popup {
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 9999;
+    
+    /* Efek Sembunyi */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none; /* Supaya tidak bisa diklik saat sembunyi */
+}
+
+/* Keadaan saat aktif (Setelah diklik) */
+#chat-popup.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto; /* Bisa diklik lagi */
+}
+
+#chat-logs {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* JANGAN pakai scroll-behavior: smooth; agar instan */
+}
