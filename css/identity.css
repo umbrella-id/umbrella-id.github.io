@@ -1,0 +1,66 @@
+/* identity.css - Portal Umbrella Identity System */
+
+#site-gatekeeper {
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.98);
+    z-index: 999999; /* Pastikan angka ini paling tinggi di antara semua elemen */
+    display: none; 
+    align-items: center; 
+    justify-content: center;
+    backdrop-filter: blur(15px);
+}
+
+.portal-box {
+    width: 320px;
+    padding: 40px 30px;
+    background: #080808;
+    border: 1px solid #ffcc00;
+    text-align: center;
+    /* Efek sudut terpotong Cyberpunk */
+    clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
+    box-shadow: 0 0 30px rgba(255, 204, 0, 0.1);
+}
+
+.portal-box h2 {
+    color: #ffcc00;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    letter-spacing: 4px;
+    margin-bottom: 25px;
+}
+
+#global-ign-input {
+    width: 100%;
+    background: #151515;
+    border: none;
+    border-bottom: 2px solid #333;
+    padding: 12px;
+    color: #ffcc00;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#global-ign-input:focus {
+    border-bottom-color: #ffcc00;
+    outline: none;
+}
+
+.portal-box button {
+    width: 100%;
+    padding: 12px;
+    background: #ffcc00;
+    color: #000;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.portal-box button:hover {
+    background: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
