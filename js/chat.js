@@ -1,5 +1,6 @@
 /**
- * PORTAL UMBRELLA - CHAT ENGINE (FULL REVISED)
+ * chat.js - Umbrella Chat Engine
+ * Fokus: Sinkronisasi Chat & Logika Mute (Link to Identity System)
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
@@ -30,7 +31,7 @@ function fastScroll() {
     if(b) b.scrollTop = b.scrollHeight;
 }
 
-// 3. SYNC CHAT (Mengambil data dari identity.js)
+// 3. SYNC CHAT (Mengambil data berdasarkan Identity Global)
 function syncChat() {
     // Pastikan identity.js sudah siap menyediakan data
     if (!window.myUID || !window.myIGN) return;
@@ -45,7 +46,7 @@ function syncChat() {
         lb.innerHTML = ''; 
 
         data.logs.forEach(msg => {
-            // Logika Mute otomatis
+            // Logika Mute otomatis per UID
             if (msg.type.startsWith('MUTE|') && msg.type.includes(window.myUID)) activateMute();
             
             const d = document.createElement('div');
@@ -53,7 +54,8 @@ function syncChat() {
             d.style.cssText = "margin-bottom:6px; font-size:13px;";
             
             if (msg.uid === 'ADMIN_CMD') {
-                d.innerHTML = `<center><span style="color:#ffcc00;font-style:italic;">${msg.message}</span></center>`;
+                // Admin CMD menggunakan warna primary Umbrella
+                d.innerHTML = `<center><span style="color:var(--color-primary);font-style:italic;font-weight:bold;">${msg.message}</span></center>`;
             } else {
                 d.innerHTML = `<span style="color:${getHashColor(msg.uid)};font-weight:bold;">${msg.username}:</span> <span style="color:#eee;">${msg.message}</span>`;
             }
@@ -63,7 +65,7 @@ function syncChat() {
     });
 }
 
-// 4. SEND MESSAGE (Menggunakan identity.js)
+// 4. SEND MESSAGE (Menggunakan Identitas dari window)
 function sendMessage() {
     if (isMuted) return;
     const input = document.getElementById('msg-input');
@@ -88,10 +90,10 @@ function sendMessage() {
 
 // 5. UTILITIES
 function getHashColor(u) {
-    if (u === 'ADMIN_CMD') return '#ffcc00';
+    if (u === 'ADMIN_CMD') return 'var(--color-primary)';
     let h = 0;
     for (let i = 0; i < u.length; i++) h = u.charCodeAt(i) + ((h << 5) - h);
-    return `hsl(${Math.abs(h) % 360}, 70%, 75%)`;
+    return `hsl(${Math.abs(h) % 360}, 75%, 75%)`;
 }
 
 function activateMute() {
@@ -107,7 +109,7 @@ function handleEnter(e) {
     if (e.key === 'Enter') sendMessage(); 
 }
 
-// 6. LIFECYCLE (Jaga Kuota)
+// 6. LIFECYCLE (Jaga Kuota Google Apps Script)
 function start() { 
     if(!chatTimer) { 
         syncChat(); 
@@ -120,12 +122,12 @@ function stop() {
     chatTimer = null; 
 }
 
-// Event Listeners
+// Event Listeners (Hemat kuota saat tab tidak aktif)
 document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
 window.onfocus = start; 
 window.onblur = stop;
 
-// Ekspos ke Global agar bisa dipanggil identity.js
+// Daftarkan syncChat ke window agar bisa dipanggil saat ganti nama di identity.js
 window.syncChat = syncChat;
 
 // Jalankan Mesin
