@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Umbrella Guild Portal</title>
-    
+    <title>Umbrella - Toram Online</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/identity.css">
     <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
@@ -13,7 +12,6 @@
     <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
-
     <div id="site-gatekeeper">
         <div class="portal-box">
             <span class="close-gate" onclick="closeGate()">&times;</span>
@@ -28,32 +26,32 @@
             </div>
         </div>
     </div>
+    
+    <div class="mail-container" id="mail-trigger" onclick="toggleMail()">
+        <i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT
+    </div>
     <div id="ign-label-container" onclick="unlockSite()">
         <i class="fas fa-user-circle"></i>
-        <span id="current-ign-display">Operator</span>
+        <span id="current-ign-display"></span>
     </div>
-    
     <div class="running-text-wrapper" id="marquee-area">
         <div class="running-text-content" id="pc-marquee"></div>
     </div>
-
     <div class="sosmed-corner" id="sosmed-area">
         <a href="#" class="sosmed-link"><i class="fab fa-whatsapp"></i></a>
         <a href="#" class="sosmed-link"><i class="fab fa-facebook"></i></a>
         <a href="#" class="sosmed-link"><i class="fab fa-discord"></i></a>
     </div>
-
+    <div class="chat-container" id="chat-trigger" onclick="toggleChat()">
+        <i class="fa-solid fa-comments"></i>
+    </div>
+    
     <!-- 2. MASTER FRAME (STRUKTUR ASLI KAMU - JANGAN DIUBAH) -->
     <div class="master-frame">
-        
         <!-- HEADER -->
         <div class="top-bar">
             <div class="pc-header-text" id="pc-title-target">SELAMAT DATANG</div>
-            <div class="mail-container" id="mail-trigger" onclick="toggleChat()">
-                <i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT
-            </div>
         </div>
-
         <!-- AREA TENGAH -->
         <div class="content-wrapper">
             
@@ -87,14 +85,11 @@
             <span class="inline-link-text"></span>
         </div>
     </div>
-    
-    <div class="chat-container" id="chat-trigger" onclick="toggleChat()">
-        <i class="fa-solid fa-comments"></i>
-    </div>
+
     
     <div id="chat-popup" class="chat-popup-hidden">
         <div id="chat-header">
-            <span id="admin-status">ADMIN : <b class="status-online">ONLINE</b></span>
+            <span id="admin-status">' ADMIN : <b class="status-online">ONLINE</b></span>
         </div>
         <div id="chat-logs"></div>
         <div class="chat-input-area">
