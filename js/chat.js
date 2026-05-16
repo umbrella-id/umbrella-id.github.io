@@ -1,6 +1,6 @@
 /**
- * chat.js - Umbrella Chat Engine (Final Gold - Smart Sleep Edition)
- * Fitur: Polling 4.5s, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Smart Sleep (Hemat Kuota Saat Tertutup).
+ * chat.js - Umbrella Chat Engine (Final Gold - Gatekeeper Sleep Edition)
+ * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
@@ -8,14 +8,13 @@ const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgd
 
 // State System Engine
 let isMuted = false, lastChatStamp = "", isSending = false;
-let localPollingTimer = null; // Penampung detak jam dinding agar bisa dimatikan/dinyalakan
 
 function fastScroll() {
     const lb = document.getElementById('chat-logs');
     if (lb) lb.scrollTop = lb.scrollHeight;
 }
 
-// --- [ 💸 UPGRADE FITUR: TOGGLE POPUP + SMART SLEEP CONTROL ] ---
+// 2. TOGGLE POPUP (Hanya urusan CSS & Focus saja, tidak mengutak-atik timer)
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     if (!popup) return;
@@ -23,16 +22,10 @@ function toggleChat() {
     popup.classList.toggle('show');
     
     if (popup.classList.contains('show')) {
-        // POSISI TERBUKA: Bangunkan mesin chatbox seketika
         fastScroll();
         setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
-        
-        console.log("🔓 Chatbox Dibuka: Menyalakan Mesin Polling...");
-        mulaiMesinPolling(); 
-    } else {
-        // POSISI TERTUTUP: Tidurkan mesin murni demi hemat kuota GAS harian!
-        console.log("🔒 Chatbox Ditutup: Menidurkan Mesin Polling (Kuota Aman)...");
-        matikanMesinPolling();
+        // Paksa tarik data instan begitu dibuka agar chat tidak kosong/delay
+        syncChat(true); 
     }
 }
 
@@ -42,8 +35,18 @@ function dapatkanIdentitasAman() {
     return { uid: uid, ign: ign };
 }
 
-// SINKRONISASI UTAMA
+// 4. SINKRONISASI UTAMA (Dengan Penjaga Gerbang Fisik Popup)
 function syncChat(force = false) {
+    // --- [ 🔒 GEMBOK HULU: PENGHEMAT KUOTA POSISI TERTUTUP ] ---
+    const popup = document.getElementById('chat-popup');
+    
+    // Jika popup tidak ditemukan, atau popup TIDAK memiliki class 'show', 
+    // JANGAN tembak fetch ke GAS! Langsung stop di gerbang paling depan.
+    if (!force && (!popup || !popup.classList.contains('show'))) {
+        console.log("💤 Chatbox tertutup. Detak interval dilewati murni (Kuota GAS Aman).");
+        return; 
+    }
+
     const user = dapatkanIdentitasAman();
 
     fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`)
@@ -109,7 +112,7 @@ function syncChat(force = false) {
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
-// KIRIM PESAN
+// 5. KIRIM PESAN
 function sendMessage() {
     if (isMuted || isSending) return;
     const input = document.getElementById('msg-input');
@@ -132,7 +135,7 @@ function sendMessage() {
     fetch(`${URL_WRITE}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}`)
     .then(() => { 
         isSending = false; 
-        setTimeout(() => { syncChat(true); }, 500); // Action Trigger
+        setTimeout(() => { syncChat(true); }, 500); // Action Trigger (Diberi akses tembus 'force' agar langsung tampil)
     })
     .catch(() => { isSending = false; });
 }
@@ -153,27 +156,12 @@ window.handleEnter = handleEnter;
 window.syncChat = syncChat;
 
 // ==========================================
-// [7] MANAJEMEN SIKLUS HIDUP SAKLAR POLLING
+// [7] MESIN PENGASUH UTAMA (FORCE-LOOP INDEPENDEN)
 // ==========================================
-function mulaiMesinPolling() {
-    // Jalankan sinkronisasi instan sekali saat dibangunkan
-    syncChat(true);
-    
-    // Pasang interval agar berdetak tiap 4.5 detik
-    if (!localPollingTimer) {
-        localPollingTimer = setInterval(() => {
-            syncChat(false);
-        }, 4500);
-    }
-}
+// Nyalakan interval abadi 4.5 detik sejak halaman load.
+// Interval ini tidak akan pernah dibongkar pasang, jadi sangat aman dan stabil.
+setInterval(() => {
+    syncChat(false);
+}, 4500);
 
-function matikanMesinPolling() {
-    if (localPollingTimer) {
-        clearInterval(localPollingTimer); // Hancurkan interval harian agar berhenti menembak GAS
-        localPollingTimer = null; // Kosongkan saklar penampung
-    }
-}
-
-// KONDISI AWAL Halaman Dimuat:
-// Sesuai logika kamu, chatbox mulanya tertutup. Maka kita diamkan dulu demi hemat kuota harian.
-console.log("🛡️ Umbrella Chat Engine: Siap dalam Mode Hemat Kuota (Menunggu Klik Popup)...");
+console.log("🛡️ Umbrella Chat Engine: Gembok Hulu Posisi Tertutup Berhasil Diaktifkan!");
