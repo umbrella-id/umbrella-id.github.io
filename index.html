@@ -49,7 +49,9 @@
         <!-- HEADER -->
         <div class="top-bar">
             <div class="pc-header-text" id="pc-title-target">SELAMAT DATANG</div>
-            <div class="mail-container" id="mail-trigger"></div> 
+            <div class="mail-container" id="mail-trigger" onclick="toggleChat()">
+                <i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT
+            </div>
         </div>
 
         <!-- AREA TENGAH -->
@@ -87,7 +89,7 @@
     </div>
     
     <div class="chat-container" id="chat-trigger" onclick="toggleChat()">
-        <i class="fab fa-whatsapp"></i>
+        <i class="fa-solid fa-comments"></i>
     </div>
     
     <div id="chat-popup" class="chat-popup-hidden">
