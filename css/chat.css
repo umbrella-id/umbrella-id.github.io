@@ -6,25 +6,35 @@
     bottom: 95px;
     right: 25px;
     width: 330px;
-    height: 500px;
-    background: rgba(15, 15, 15, 0.95);
+    height: 75vh;
+    max-height: 500px;
+    background: var(--bg-card);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--color-primary);
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     overflow: hidden;
     z-index: 9999;
+    
+    /* 🎯 BENTENG ANTI-GHOST CLICK: */
     opacity: 0;
+    visibility: hidden;       /* 1. Melenyapkan elemen dari pohon render browser */
+    pointer-events: none;     /* 2. Membuat klik/tap tembus ke elemen di belakangnya */
+    
     transform: translateY(20px);
-    transition: all 0.3s ease;
+    /* Tambahkan transisi visibility agar selaras dengan opacity saat memudar */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
 #chat-popup.show {
     opacity: 1;
+    visibility: visible;      /* 1. Memunculkan kembali fisiknya */
+    pointer-events: auto;     /* 2. Mengaktifkan kembali sensor kliknya */
     transform: translateY(0);
 }
+
 /* Warna untuk Status Admin di Header */
 .status-online {
     color: #00ff88 !important; /* Hijau Neon */
@@ -39,7 +49,7 @@
 /* Header Minimalis */
 .chat-header {
     background: transparent;
-    padding: 15px 20px;
+    padding: 15px 40px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
@@ -91,24 +101,33 @@
 }
 
 /* ==========================================
-   [3] BUBBLE CHAT DESIGN
+   [3] BUBBLE CHAT DESIGN (FIXED PARAGRAF)
    ========================================== */
 .chat-row {
     display: flex;
     flex-direction: column;
-    max-width: 80%;
+    /* 🎯 BATASI LEBAR MAKSIMAL: Kontainer baris chat maksimal 75% dari lebar box */
+    max-width: 75%; 
+    /* Memastikan kontainer mengkerut pas sesuai panjang teks pendek */
+    width: max-content; 
 }
 
 .msg-text {
-    padding: 8px 12px;
+    padding: 10px 14px;
     font-size: 13.5px;
-    line-height: 1.4;
+    line-height: 1.5; /* Jeda antar baris sedikit renggang agar enak dibaca */
+    
+    /* 🎯 RUMUS UTAMA PARAGRAF (ANTI-BABLAS): */
+    word-break: break-word;   /* Memotong kata yang terlalu panjang agar tidak jebol keluar */
+    white-space: pre-wrap;    /* Menjaga enter/spasi manual dari user tetap rapi sebagai paragraf */
+    display: inline-block;    /* Memaksa gelembung membungkus teks dengan pas */
 }
 
 /* SAYA (ANDA) - Abu Muda */
 .chat-row.me {
     align-self: flex-end;
     align-items: flex-end;
+    margin-left: auto; /* Memastikan chat kita mepet ke kanan */
 }
 .me .msg-text {
     background: #e5e5e5;
@@ -120,31 +139,49 @@
 .chat-row.other {
     align-self: flex-start;
     align-items: flex-start;
+    margin-right: auto; /* Memastikan chat orang lain mepet ke kiri */
 }
 .other .msg-text {
-    background: #222;
-    color: #ccc;
+    background: #666;
+    color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 15px 15px 15px 2px;
 }
 
+/* Identitas kecil di atas bubble */
+.chat-row b {
+    font-size: 10px;
+    color: #888; /* Dibikin sedikit lebih terang dari #666 agar terbaca di background gelap */
+    margin-bottom: 4px;
+    padding: 0 5px;
+}
+
 /* ADMIN - Ungu Khas Umbrella */
 .chat-row.admin-msg {
-    align-self: center;
-    max-width: 90%;
-    margin: 10px 0;
+    align-self: flex-start; /* 🎯 SAMA KAYA LAWAN: Mepet ke kiri */
+    align-items: flex-start;
+    max-width: 75%;
+    width: max-content;
+    margin-right: auto;
 }
+
 .admin-msg center {
-    background: rgba(var(--color-primary-rgb), 0.1);
-    border: 1px solid var(--color-primary);
-    padding: 6px 15px;
-    border-radius: 30px;
+    background: var(--color-primary); /* 🎯 WARNA BUBBLE: Menggunakan warna utama portal */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    border-radius: 15px 15px 15px 2px; /* Lengkungan bubble kiri bawah khas lawan */
+    text-align: left; /* Kembalikan text ke kiri */
 }
+
 .admin-msg span {
-    color: var(--color-primary) !important;
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
+    color: #ffffff !important; /* Teks putih polos agar kontras di atas warna primary */
+    font-size: 13.5px; /* Samakan ukuran font-nya dengan teks chat biasa */
+    font-weight: normal;
+    text-transform: none; /* Matikan fitur huruf besar semua */
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+    display: inline-block;
 }
 
 /* ==========================================
@@ -193,4 +230,36 @@
     color: #666;
     margin-bottom: 3px;
     padding: 0 5px;
+}
+
+/* ==========================================
+   [5] RESPONSIVE MOBILE MODE (CENTER MODAL)
+   ========================================== */
+@media screen and (max-width: 767px) {
+    #chat-popup {
+        /* 🎯 PINDAH KE TENGAH LAYAR HP */
+        top: 44% !important;
+        left: 50% !important;
+        right: auto !important;
+        bottom: auto !important;
+        
+        /* RESPONSIF: Lebar 90% dari layar HP, tinggi proporsional */
+        width: 92vw !important;       
+        height: 80vh !important;  
+        
+        /* Set titik pertumbuhan animasi murni dari tengah kotak */
+        transform-origin: bottom right !important;
+        
+        /* 🎯 KONDISI TERSEDUT (HIDDEN): Diturunkan sedikit (+20px) dan dikecilkan ke pusat tengah */
+        transform: translate(-50%, -40%) scale(0) !important;
+        
+        /* Efek transisi melambat di akhir (Quintic Out) agar berasa premium di layar sentuh */
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease-out, visibility 0.25s !important;
+    }
+
+    /* 🎯 KONDISI MEKAR (SHOW): Kembali tegak lurus sempurna di tengah layar HP */
+    #chat-popup.show {
+        /* -50% -50% adalah rumus mutlak centering fixed element */
+        transform: translate(-50%, -50%) scale(1) !important;
+    }
 }
