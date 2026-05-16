@@ -125,7 +125,7 @@ function sendMessage() {
     
     const t = document.createElement('div');
     t.className = 'chat-row me';
-    t.style.opacity = "0.5";
+    t.style.opacity = "0.9";
     t.innerHTML = `<b>${user.ign}</b><span class="msg-text">${msg}</span>`;
     if (lb) lb.appendChild(t);
     fastScroll();
