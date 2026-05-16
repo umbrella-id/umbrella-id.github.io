@@ -166,7 +166,7 @@ function updateUIElements() {
     const mailBtn = document.querySelector('.mail-container');
     const chatBtn = document.querySelector('.chat-container');
     if (mailBtn) mailBtn.innerHTML = '<i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT';
-    if (chatBtn) chatBtn.innerHTML = '<i class="fa-solid fa-comment-dots"></i>';
+    if (chatBtn) chatBtn.innerHTML = '<i class="fa-solid fa-comments"></i>';
 }
 
 /**
