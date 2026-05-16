@@ -94,13 +94,16 @@
     
     <div id="chat-popup" class="chat-popup-hidden">
         <div id="chat-header">
-            <span>Portal Umbrella</span>
-            <span id="admin-indicator">●</span>
+            <span id="admin-status">ADMIN : <b class="status-online">ONLINE</b></span>
         </div>
         <div id="chat-logs"></div>
-        <div id="chat-input-area">
-            <input type="text" id="msg-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
-            <button onclick="sendMessage()">➤</button>
+        <div class="chat-input-area">
+            <div class="input-row">
+                <input type="text" id="msg-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
     </div>
     
