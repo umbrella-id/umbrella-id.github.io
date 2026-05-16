@@ -23,10 +23,10 @@ function unlockSite() {
     if (!gate) return;
 
     if (window.myIGN) {
-        if (title) title.innerText = "RE-IDENTIFICATION";
+        if (title) title.innerText = "Nama / IGN";
         if (input) input.value = window.myIGN;
     } else {
-        if (title) title.innerText = "UMBRELLA NETWORK";
+        if (title) title.innerText = "Selamat Datang";
     }
 
     gate.style.display = 'flex';
@@ -108,3 +108,11 @@ function skipLogin() {
     const guestName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
     finalizeLogin(guestName);
 }
+
+// Tutup/Skip saat klik area di luar kotak (overlay)
+document.getElementById('site-gatekeeper')?.addEventListener('click', function(e) {
+    // Jika yang diklik adalah backgroundnya (bukan kotak portal-box di dalamnya)
+    if (e.target === this) {
+        closeGate();
+    }
+});
