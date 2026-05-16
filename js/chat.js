@@ -1,7 +1,6 @@
 /**
- * chat.js - Umbrella Chat Engine (Blueprint Compliant - Final Gold Edition)
- * Arsitektur: Sesuai Master Blueprint Portal Umbrella (Quad-Pipe GAS)
- * Fitur: Polling 4.5s Mandiri, Penghemat Kuota (Text-Stamp), Presence Admin, Mute Logic, UID-Match.
+ * chat.js - Umbrella Chat Engine (Final Gold - Smart Sleep Edition)
+ * Fitur: Polling 4.5s, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Smart Sleep (Hemat Kuota Saat Tertutup).
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
@@ -9,32 +8,41 @@ const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgd
 
 // State System Engine
 let isMuted = false, lastChatStamp = "", isSending = false;
+let localPollingTimer = null; // Penampung detak jam dinding agar bisa dimatikan/dinyalakan
 
-// 1. INSTANT SCROLL (UX No. 1 Blueprint)
 function fastScroll() {
     const lb = document.getElementById('chat-logs');
     if (lb) lb.scrollTop = lb.scrollHeight;
 }
 
-// 2. TOGGLE POPUP (Pemicu Bukaan Chat)
+// --- [ 💸 UPGRADE FITUR: TOGGLE POPUP + SMART SLEEP CONTROL ] ---
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     if (!popup) return;
+    
     popup.classList.toggle('show');
+    
     if (popup.classList.contains('show')) {
+        // POSISI TERBUKA: Bangunkan mesin chatbox seketika
         fastScroll();
         setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
+        
+        console.log("🔓 Chatbox Dibuka: Menyalakan Mesin Polling...");
+        mulaiMesinPolling(); 
+    } else {
+        // POSISI TERTUTUP: Tidurkan mesin murni demi hemat kuota GAS harian!
+        console.log("🔒 Chatbox Ditutup: Menidurkan Mesin Polling (Kuota Aman)...");
+        matikanMesinPolling();
     }
 }
 
-// 3. LOGIKA PENCOCOKAN IDENTITAS
 function dapatkanIdentitasAman() {
     let uid = window.myUID || localStorage.getItem('UG_ID') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('UG_NAME') || "Guest";
     return { uid: uid, ign: ign };
 }
 
-// 4. SINKRONISASI UTAMA (Lurus Tanpa Interupsi Return di Tengah Fungsi)
+// SINKRONISASI UTAMA
 function syncChat(force = false) {
     const user = dapatkanIdentitasAman();
 
@@ -43,29 +51,21 @@ function syncChat(force = false) {
     .then(data => {
         if (!data) return;
 
-        // --- [ 🟢 PEMBETULAN INDIKATOR STATUS ADMIN ] ---
+        // BONCENGAN STATUS ADMIN
         const statusEl = document.querySelector('#admin-status b');
         if (statusEl) {
-            // Membaca properti "adminOnline" sesuai dengan paketan asli JSON dari GAS kamu
-            const rawStatus = data.adminOnline ?? data.admin_online ?? data.adminStatus ?? false;
-            
-            // Konversi nilai menjadi Boolean murni
-            const isOnline = (rawStatus === true || String(rawStatus).toUpperCase().trim() === "ONLINE" || String(rawStatus) === "1");
-            
-            // Suntikkan perubahan class CSS dan Teks ke Elemen HTML
-            statusEl.className = isOnline ? "status-online" : "status-offline";
-            statusEl.innerText = isOnline ? "ONLINE" : "OFFLINE";
-            
-            console.log(`[Presence Admin] Data Server: ${rawStatus} -> Hasil Kesimpulan: ${isOnline ? 'ONLINE (HIJAU)' : 'OFFLINE (MERAH)'}`);
+            const onlineStatus = (data.adminOnline !== undefined) ? data.adminOnline : (data.adminStatus === "ONLINE");
+            statusEl.className = onlineStatus ? "status-online" : "status-offline";
+            statusEl.innerText = onlineStatus ? "ONLINE" : "OFFLINE";
         }
 
         const arrayChat = data.logs || data.chats || [];
         if (!Array.isArray(arrayChat)) return;
 
-        // --- [ FITUR PENGHEMAT KUOTA (TEXT STAMP) ] ---
+        // PENGHEMAT RENDERING (TEXT STAMP)
         const currentStamp = JSON.stringify(arrayChat);
         if (!force && currentStamp === lastChatStamp) {
-            // Data chat sama, logs skip render demi hemat baterai & RAM client
+            // Logs skip render
         } else {
             lastChatStamp = currentStamp;
             const lb = document.getElementById('chat-logs');
@@ -100,7 +100,7 @@ function syncChat(force = false) {
                             d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
                         }
                         lb.appendChild(d);
-                    } catch (e) { console.error("Error baris chat:", e); }
+                    } catch (e) { console.error("Error baris:", e); }
                 });
                 fastScroll();
             }
@@ -109,7 +109,7 @@ function syncChat(force = false) {
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
-// 5. KIRIM PESAN (Optimistic UI & Action Trigger)
+// KIRIM PESAN
 function sendMessage() {
     if (isMuted || isSending) return;
     const input = document.getElementById('msg-input');
@@ -118,10 +118,8 @@ function sendMessage() {
 
     const user = dapatkanIdentitasAman();
     isSending = true;
-    
     const lb = document.getElementById('chat-logs');
     
-    // Optimistic UI sementara (Nama tetap nama profil asli kamu, di sebelah kanan)
     const t = document.createElement('div');
     t.className = 'chat-row me';
     t.style.opacity = "0.5";
@@ -131,22 +129,14 @@ function sendMessage() {
 
     input.value = '';
 
-    // Kirim Tulis ke Pipa GAS 3 (Messenger)
     fetch(`${URL_WRITE}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}`)
     .then(() => { 
         isSending = false; 
-        // --- [ ACTION TRIGGER BLUEPRINT POIN 4 ] ---
-        // Menunggu 500ms jeda server menulis, lalu PAKSA eksekusi syncChat(true) 
-        // agar status paksa (force) tembus tanpa terhadang filter hemat kuota
-        setTimeout(() => { syncChat(true); }, 500); 
+        setTimeout(() => { syncChat(true); }, 500); // Action Trigger
     })
-    .catch(() => { 
-        isSending = false; 
-        t.innerHTML = `<b>${user.ign}</b><span class="msg-text" style="background:#e74c3c;color:#fff;">Gagal mengirim!</span>`;
-    });
+    .catch(() => { isSending = false; });
 }
 
-// 6. UTILITIES (Pewarnaan Khas Nama Pengguna)
 function getHashColor(u) {
     if (!u) return '#ccc';
     let h = 0;
@@ -163,13 +153,27 @@ window.handleEnter = handleEnter;
 window.syncChat = syncChat;
 
 // ==========================================
-// [7] MESIN PENGASUH UTAMA (FORCE-LOOP INDEPENDEN)
+// [7] MANAJEMEN SIKLUS HIDUP SAKLAR POLLING
 // ==========================================
-syncChat();
+function mulaiMesinPolling() {
+    // Jalankan sinkronisasi instan sekali saat dibangunkan
+    syncChat(true);
+    
+    // Pasang interval agar berdetak tiap 4.5 detik
+    if (!localPollingTimer) {
+        localPollingTimer = setInterval(() => {
+            syncChat(false);
+        }, 4500);
+    }
+}
 
-// Polling harian stabil dikunci di angka 4.5 detik sesuai spesifikasi baku blueprint.
-setInterval(() => {
-    syncChat(false);
-}, 4500);
+function matikanMesinPolling() {
+    if (localPollingTimer) {
+        clearInterval(localPollingTimer); // Hancurkan interval harian agar berhenti menembak GAS
+        localPollingTimer = null; // Kosongkan saklar penampung
+    }
+}
 
-console.log("🛡️ Umbrella Chat Engine: Sistem Berhasil Dikembalikan ke Tujuan Utama!");
+// KONDISI AWAL Halaman Dimuat:
+// Sesuai logika kamu, chatbox mulanya tertutup. Maka kita diamkan dulu demi hemat kuota harian.
+console.log("🛡️ Umbrella Chat Engine: Siap dalam Mode Hemat Kuota (Menunggu Klik Popup)...");
