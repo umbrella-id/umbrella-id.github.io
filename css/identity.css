@@ -16,7 +16,7 @@
     position: relative;
     width: 90%;
     max-width: 350px;
-    background: rgba(20, 20, 20, 0.8); /* Background gelap transparan */
+    background: rgba(20, 20, 20, 0.9); /* Background gelap transparan */
     padding: 30px 20px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -54,7 +54,7 @@
     background: var(--color-primary);
     color: #000;
     border: none;
-    padding: 0 15px;
+    padding: 8px 15px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
