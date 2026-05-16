@@ -17,11 +17,15 @@
     <div id="site-gatekeeper">
         <div class="portal-box">
             <span class="close-gate" onclick="closeGate()">&times;</span>
-            <h2 id="gate-title">UMBRELLA NETWORK</h2>
-            <div class="input-group">
-                <input type="text" id="global-ign-input" placeholder="ENTER NICKNAME...">
-                <button onclick="saveIdentity()">INITIALIZE</button>
-                </div>
+            
+            <h2 id="gate-title">Selamat Datang</h2>
+    
+            <div class="input-row">
+                <input type="text" id="global-ign-input" placeholder="masukan nama / IGN" maxlength="15" autocomplete="off">
+                <button id="save-btn" onclick="saveIdentity()">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            </div>
         </div>
     </div>
     <div id="ign-label-container" onclick="unlockSite()">
