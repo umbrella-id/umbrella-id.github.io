@@ -30,6 +30,9 @@ function unlockSite() {
         if (title) title.innerText = "Selamat Datang";
     }
 
+    // 🎯 SUNTIKAN BARU: Amankan tombol back Android saat panel nama kebuka
+    history.pushState({ boksTerbuka: "gatekeeper" }, "");
+
     gate.style.display = 'flex';
     gate.style.opacity = "1";
     if (input) setTimeout(() => input.focus(), 300);
@@ -78,6 +81,11 @@ function closeGate() {
     if (!gate) return;
 
     if (window.myIGN) {
+        // 🎯 SUNTIKAN BARU: Hapus riwayat palsu dari memori karena ditutup manual lewat klik X
+        if (history.state && history.state.boksTerbuka === "gatekeeper") {
+            history.back();
+        }
+
         // MODE RE-IDENTITY: Tutup saja, biarkan nama tetap yang lama
         gate.style.opacity = "0";
         setTimeout(() => {
