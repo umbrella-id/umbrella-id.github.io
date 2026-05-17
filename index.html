@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/pc-mode.css" media="screen and (min-width: 768px)">
     <link rel="stylesheet" href="css/mobile-mode.css" media="screen and (max-width: 767px)">
     <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/mailbox.css">
 </head>
 <body>
     <div id="site-gatekeeper">
@@ -46,16 +47,12 @@
         <i class="fa-solid fa-comments"></i>
     </div>
     
-    <!-- 2. MASTER FRAME (STRUKTUR ASLI KAMU - JANGAN DIUBAH) -->
     <div class="master-frame">
-        <!-- HEADER -->
         <div class="top-bar">
             <div class="pc-header-text" id="pc-title-target">SELAMAT DATANG</div>
         </div>
-        <!-- AREA TENGAH -->
         <div class="content-wrapper">
             
-            <!-- SIDEBAR (PC ONLY) -->
             <div class="sidebar-brand" id="sidebar-area">
                 <div class="logo-wrapper">
                     <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
@@ -66,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- stacker CONTAINER -->
             <div id="app-container">
                 <div id="main-stacker">
                     <div class="stacker-card is-active">
@@ -79,17 +75,15 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="bottom-bar">
             <p class="headline-body-pc"></p>
             <span class="inline-link-text"></span>
         </div>
     </div>
 
-    
     <div id="chat-popup" class="chat-popup-hidden">
         <div id="chat-header">
-            <span id="admin-status">' ADMIN : <b class="status-online">ONLINE</b></span>
+            <span id="admin-status">ADMIN : <b class="status-online">ONLINE</b></span>
         </div>
         <div id="chat-logs"></div>
         <div class="chat-input-area">
@@ -101,6 +95,40 @@
             </div>
         </div>
     </div>
+    
+    <div id="mail-modal" class="mail-modal-hidden">
+        <div class="mail-modal-content">
+            <div class="mail-modal-header">
+                <h3><i class="fa-solid fa-envelope"></i> KIRIM SURAT</h3>
+                <span class="close-mail" onclick="toggleMail()">&times;</span>
+            </div>
+                <div class="mail-modal-body">
+                    <div class="mail-input-group">
+                        <label>Kategori Surat :</label>
+                        <select id="mail-category" onchange="aturFormMailbox()">
+                            <option value="Umum">🌍 UMUM / GENERAL</option>
+                            <option value="Request Join">⚔️ REQUEST JOIN</option>
+                            <option value="Saran">💡 SARAN / MASUKAN</option>
+                        </select>
+                    </div>
+                
+                    <div class="mail-input-group" id="wa-group" style="display: none;">
+                        <label>Nomor WhatsApp Aktif :</label>
+                        <input type="number" id="mail-wa" placeholder="Contoh: 08xxxxxxxxxx">
+                    </div>
+                
+                    <div class="mail-input-group">
+                        <label id="mail-label-pesan">Pesan Anda :</label>
+                        <textarea id="mail-message" placeholder="Tulis pesan atau laporan untuk Admin Umbrella..." rows="5"></textarea>
+                    </div>
+                    
+                    <button class="mail-send-btn" onclick="sendMail()">
+                        <i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG
+                    </button>
+                </div>
+        </div>
+    </div>
+    <div id="mail-toast"></div>
     
     <script src="js/identity.js"></script>
     <script src="js/app.js"></script>
