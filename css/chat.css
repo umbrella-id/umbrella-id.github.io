@@ -240,33 +240,47 @@
 }
 
 /* ==========================================
-   [5] RESPONSIVE MOBILE MODE (CENTER MODAL)
+   [5] RESPONSIVE MOBILE MODE (CENTER MODAL - FIXED SCROLL)
    ========================================== */
 @media screen and (max-width: 767px) {
     #chat-popup {
-        /* 🎯 PINDAH KE TENGAH LAYAR HP */
-        top: 44% !important;
-        left: 50% !important;
-        right: auto !important;
-        bottom: auto !important;
+        /* 🎯 METODE CENTERING MODERN: Menghilangkan rumus persenan translate yang merusak koordinat jari */
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        margin: auto !important; /* Otomatis membuat boks mengunci tegak lurus di tengah layar */
         
-        /* RESPONSIF: Lebar 90% dari layar HP, tinggi proporsional */
+        /* RESPONSIF: Lebar 92% dari layar HP, tinggi diset 75% biar tidak menutupi seluruh bodi */
         width: 92vw !important;       
-        height: 80vh !important;  
+        height: 75vh !important;  
+        max-height: 520px !important;
         
         /* Set titik pertumbuhan animasi murni dari tengah kotak */
         transform-origin: bottom right !important;
         
-        /* 🎯 KONDISI TERSEDUT (HIDDEN): Diturunkan sedikit (+20px) dan dikecilkan ke pusat tengah */
-        transform: translate(-50%, -40%) scale(0) !important;
+        /* 🎯 KONDISI TERSEDUT (HIDDEN): Cukup pakai scale(0) untuk mengempiskan wadah */
+        transform: scale(0) !important;
         
-        /* Efek transisi melambat di akhir (Quintic Out) agar berasa premium di layar sentuh */
+        /* Efek transisi melambat di akhir (Quintic Out) milikmu tetap terjaga */
         transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease-out, visibility 0.25s !important;
     }
 
-    /* 🎯 KONDISI MEKAR (SHOW): Kembali tegak lurus sempurna di tengah layar HP */
+    /* 🎯 KONDISI MEKAR (SHOW): Kembali tegak lurus sempurna berukuran asli */
     #chat-popup.show {
-        /* -50% -50% adalah rumus mutlak centering fixed element */
-        transform: translate(-50%, -50%) scale(1) !important;
+        transform: scale(1) !important;
+    }
+
+    /* 🚨 PENYUNTIK DAYA SERAP GULIRAN: */
+    #chat-logs {
+        /* Beri tahu browser HP secara mutlak kalau area ini adalah mesin scroll vertikal utama */
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        
+        /* Mengaktifkan momentum scroll halus bawaan Android/iOS */
+        -webkit-overflow-scrolling: touch !important; 
+        
+        /* Kunci sensor gesture agar fokus murni di boks ini saat jempol bergerak */
+        touch-action: pan-y !important; 
     }
 }
