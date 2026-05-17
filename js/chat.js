@@ -322,24 +322,38 @@ window.addEventListener('click', function(e) {
 // ==========================================
 // [7] DETEKSI DEEP LINKING KOTAK SARAN STANDALONE
 // ==========================================
+// Deep link detektor saran internal (Dynamic CSS Injection Edition)
 function cekLinkSaranStandalone() {
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
     
     if (mode && mode.toLowerCase() === 'saran') {
-        setTimeout(() => {
-            const categoryEl = document.getElementById('mail-category');
-            if (categoryEl) {
-                categoryEl.value = 'Saran'; 
-                categoryEl.disabled = true; 
-                aturFormMailbox(); 
-            }
-            toggleMail(); 
-            console.log("💡 Standalone Link Detected: Kotak Saran Terkunci Aktif.");
-        }, 1000);
+        // 🎯 SUNTIK CSS KHUSUS SECARA OTOMATIS KE HEAD
+        const linkCSS = document.createElement('link');
+        linkCSS.rel = 'stylesheet';
+        linkCSS.href = 'css/standalone.css'; // Sesuaikan path foldermu jika berbeda
+        document.head.appendChild(linkCSS);
+
+        // Tambahkan tanda pengenal di body untuk logika fungsi sendMail kemarin
+        document.body.classList.add('standalone-saran-mode');
+
+        // Kunci dropdown ke kategori Saran
+        const categoryEl = document.getElementById('mail-category');
+        if (categoryEl) {
+            categoryEl.value = 'Saran'; 
+            categoryEl.disabled = true; 
+        }
+        
+        // Atur placeholder & label
+        if (typeof aturFormMailbox === "function") aturFormMailbox();
+        
+        // Tampilkan modal secara instan
+        const mailModal = document.getElementById('mail-modal');
+        if (mailModal) mailModal.classList.add('show');
+        
+        console.log("🛡️ Standalone Loaded: CSS terisolasi berhasil disuntikkan secara dinamis.");
     }
 }
-
 
 // ==========================================
 // 🎯 KOREKSI 2: Pintu Gerbang Global Expose (Wajib)
