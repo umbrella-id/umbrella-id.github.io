@@ -40,16 +40,16 @@ function toggleChat() {
 // [3] PENARIKAN IDENTITAS (DENGAN SKEMA ANONIM SARAN)
 // ==========================================
 function dapatkanIdentitasAman() {
-    const categoryEl = document.getElementById('mail-category');
+    // 🎯 DETEKSI MODE STANDALONE YANG BARU: Mengecek tanda class di body web
+    const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
     
-    // 🎯 DETEKSI MODE STANDALONE: Jika kategori dikunci di 'Saran' (disabled)
-    if (categoryEl && categoryEl.value === 'Saran' && categoryEl.disabled === true) {
+    if (isStandaloneMode) {
         // Buat UID acak unik berbasis waktu agar tidak bentrok di database
         const randomID = "ANON-" + Math.random().toString(36).substring(2, 7).toUpperCase();
         return { uid: randomID, ign: "Member" };
     }
     
-    // Jalur Normal (Untuk Chatbox atau Request Join / Umum)
+    // Jalur Normal (Untuk Chatbox atau Request Join / Umum di Halaman Utama)
     let uid = window.myUID || localStorage.getItem('UG_ID') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('UG_NAME') || "Guest";
     return { uid: uid, ign: ign };
