@@ -1,132 +1,80 @@
-/**
- * identity.js - Umbrella Identity System (Final Gold - Verified Patch)
- * Versi: Final (No Browser Prompt)
- */
+/* identity.css */
 
-// 1. INISIALISASI DATA GLOBAL
-// 🎯 PATCH FIX: Mengubah .substr() kuno menjadi .substring() standar modern agar lolos linter GitHub
-window.myUID = localStorage.getItem('u_uid') || 'U-' + Math.random().toString(36).substring(2, 11);
-window.myIGN = localStorage.getItem('u_ign') || ""; 
-localStorage.setItem('u_uid', window.myUID);
-
-// 2. FUNGSI UPDATE UI (Nama di Label ID)
-function updateIdentityUI() {
-    const display = document.getElementById('current-ign-display');
-    if (display) display.innerText = window.myIGN || "Guest";
+#site-gatekeeper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.0);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000000;
 }
 
-// 3. FUNGSI UNLOCK / BUKA PANEL (Triggered by Label ID or Startup)
-function unlockSite() {
-    const gate = document.getElementById('site-gatekeeper');
-    const input = document.getElementById('global-ign-input');
-    const title = document.getElementById('gate-title');
-
-    if (!gate) return;
-
-    if (window.myIGN) {
-        if (title) title.innerText = "Nama / IGN";
-        if (input) input.value = window.myIGN;
-    } else {
-        if (title) title.innerText = "Selamat Datang";
-    }
-
-    // 🎯 SUNTIKAN BARU: Amankan tombol back Android saat panel nama kebuka
-    history.pushState({ boksTerbuka: "gatekeeper" }, "");
-
-    gate.style.display = 'flex';
-    gate.style.opacity = "1";
-    if (input) setTimeout(() => input.focus(), 300);
+.portal-box {
+    position: relative;
+    width: 90%;
+    max-width: 350px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-primary);
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-// 4. FUNGSI SIMPAN (Tombol Initialize)
-function saveIdentity() {
-    const input = document.getElementById('global-ign-input');
-    const name = input ? input.value.trim() : "";
-    
-    if (name.length >= 2) {
-        // Jika input valid, simpan nama baru
-        finalizeLogin(name);
-    } else {
-        // LOGIKA BARU:
-        if (window.myIGN) {
-            // Jika sudah punya nama (Mode Edit), abaikan input kosong & tutup
-            closeGate();
-        } else {
-            // Jika benar-benar user baru & input kosong, jadikan Guest
-            skipLogin();
-        }
-    }
+#gate-title {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
-// 5. FINALISASI DATA & TUTUP PANEL 
-function finalizeLogin(name) {
-    window.myIGN = name.substring(0, 15);
-    localStorage.setItem('u_ign', window.myIGN);
-    
-    const gate = document.getElementById('site-gatekeeper');
-    if (gate) {
-        gate.style.opacity = "0";
-        setTimeout(() => {
-            gate.style.display = 'none';
-            updateIdentityUI();
-            // Beritahu portal.js untuk refresh chat dengan nama baru
-            if (typeof window.syncChat === "function") window.syncChat();
-        }, 500);
-    }
+/* Flexbox untuk menjajarkan Input & Tombol */
+.input-row {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-primary); /* Warna ungu/primary kamu */
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 5px;
 }
 
-// FUNGSI TUTUP / CANCEL / SKIP (Tombol X)
-function closeGate() {
-    const gate = document.getElementById('site-gatekeeper');
-    if (!gate) return;
-
-    if (window.myIGN) {
-        // 🎯 SUNTIKAN BARU: Hapus riwayat palsu dari memori karena ditutup manual lewat klik X
-        if (history.state && history.state.boksTerbuka === "gatekeeper") {
-            history.back();
-        }
-
-        // MODE RE-IDENTITY: Tutup saja, biarkan nama tetap yang lama
-        gate.style.opacity = "0";
-        setTimeout(() => {
-            gate.style.display = 'none';
-        }, 500);
-    } else {
-        // MODE USER BARU: Klik X berarti "Malas Isi", otomatis buatkan nama System
-        console.log("User skipped identification. Auto-generating Guest ID...");
-        skipLogin(); // Ini akan memanggil finalizeLogin dengan nama Guest-XXXX
-    }
+#global-ign-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
 }
 
-function skipLogin() {
-    const guestName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
-    finalizeLogin(guestName);
+#save-btn {
+    background: var(--color-primary);
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-// 6. EVENT LISTENERS GLOBAL (Disatukan setelah DOM Siap)
-document.addEventListener("DOMContentLoaded", () => {
-    // Cek akses saat pertama kali masuk
-    if (!window.myIGN) {
-        unlockSite();
-    } else {
-        updateIdentityUI();
-    }
+#save-btn:hover {
+    filter: brightness(1.2);
+}
 
-    // Handler Enter di Input
-    document.getElementById('global-ign-input')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') saveIdentity();
-    });
+#save-btn i {
+    font-size: 18px;
+}
 
-    // 🎯 PATCH FIX: Memindahkan event click overlay ke dalam DOMContentLoaded agar tidak bernilai 'null'
-    document.getElementById('site-gatekeeper')?.addEventListener('click', function(e) {
-        // Jika yang diklik adalah backgroundnya (bukan kotak portal-box di dalamnya)
-        if (e.target === this) {
-            closeGate();
-        }
-    });
-});
-
-// Expose fungsi ke window agar tombol HTML 'onclick' bisa memanggilnya tanpa kendala scope
-window.unlockSite = unlockSite;
-window.saveIdentity = saveIdentity;
-window.closeGate = closeGate;
+.close-gate {
+    position: absolute;
+    top: 10px; right: 15px;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+}
