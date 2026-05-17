@@ -244,23 +244,34 @@ function updateStack(drag = 0) {
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
         
         if (i === currentIndex) {
-            // Kartu Aktif
+            // ---- KARTU UTAMA AKTIF ----
             card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
             card.style.opacity = 1;
             card.style.zIndex = 500;
             card.style.visibility = "visible";
+
+            // 🎯 TRIK SAKTI PEMICU KILATAN: Jika kartu aktif ini belum punya class 'is-active', pasang sekarang!
+            if (!card.classList.contains('is-active')) {
+                // Hapus dulu class dari seluruh kartu lain agar tidak ada kilatan ganda bentrok
+                cards.forEach(c => c.classList.remove('is-active'));
+                
+                // Tambahkan ke kartu terpilih untuk memicu ulang @keyframes mobile-shine di CSS
+                card.classList.add('is-active');
+            }
         } else if (i < currentIndex) {
-            // Kartu yang sudah lewat (dibuang ke atas)
+            // ---- KARTU YANG SUDAH LEWAT (DIATAS) ----
             card.style.transform = `translate(-50%, -${h}px)`;
             card.style.opacity = 0;
             card.style.zIndex = 1;
+            card.classList.remove('is-active'); // Bersihkan class pembawa kilat
         } else {
-            // Kartu antrian (berada di bawah)
+            // ---- KARTU ANTREAN (DIBAWAH) ----
             let pos = h + (drag < 0 ? drag : 0);
             card.style.transform = `translate(-50%, ${pos}px)`;
             card.style.opacity = 1;
             card.style.zIndex = 400;
             card.style.visibility = "visible";
+            card.classList.remove('is-active'); // Bersihkan class pembawa kilat
         }
     });
 }
