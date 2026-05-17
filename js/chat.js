@@ -61,10 +61,6 @@ window.addEventListener('popstate', function (event) {
     // Jika boks chat lagi mekar, gagalkan aksi keluar halaman, ganti dengan menutup popup
     if (popup && popup.classList.contains('show')) {
         popup.classList.remove('show');
-        
-    // 🎯 SUNTIKAN 4: Jika kotak surat mekar, hapus kelas show (Mingkem otomatis)
-    if (mailModal && mailModal.classList.contains('show')) {
-        mailModal.classList.remove('show');
         console.log("🛡️ Navbar Back detected: Closing Chatbox successfully.");
     }
     
@@ -261,21 +257,12 @@ function toggleMail() {
         
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
-        // 🎯 SUNTIKAN 1: Jika kotak surat dibuka, kunci tombol back Android
-        if (isOpeningMail) {
-            history.pushState({ boksTerbuka: "mailbox" }, "");
-        }
-        
         // 🎯 SMART FOCUS: Hanya panggil keyboard otomatis jika mendeteksi layar PC/Desktop
         if (window.innerWidth >= 768) {
             setTimeout(() => {
                 const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
                 if (visibleInput) visibleInput.focus();
             }, 300);
-        }else {
-        // 🎯 SUNTIKAN 2: Jika ditutup manual lewat tombol (X) atau klik luar, hapus riwayat palsu
-        if (history.state && history.state.boksTerbuka === "mailbox") {
-            history.back();
         }
     }
 }
@@ -324,10 +311,6 @@ function sendMail() {
     if (inputWA) inputWA.disabled = true;
 
     if (!isStandaloneMode) {
-        // 🎯 SUNTIKAN 3: Karena ditutup otomatis oleh sistem setelah kirim, bersihkan riwayatnya di sini
-        if (history.state && history.state.boksTerbuka === "mailbox") {
-            history.back();
-        }
         toggleMail();
     }
 
