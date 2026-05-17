@@ -82,6 +82,21 @@
         background: rgba(192, 132, 252, 0.15) !important; /* Kilatan warna saat ditekan */
         transition: 0.1s;
     }
+    
+    /* ==========================================
+       🎯 FIX BUG: ANTI-TEMBUS GULIRAN SAAT CHAT POPUP AKTIF
+       ========================================== */
+    /* Jika chatbox sedang mekar, matikan paksa interaksi klik/gosok pada kartu berita */
+    has(#chat-popup.show) .stacker-card,
+    body:has(#chat-popup.show) .stacker-card {
+        pointer-events: none !important;
+    }
+
+    /* Cadangan Logika Jika Browser HP Jadul Belum Support Selector :has() */
+    #chat-popup.show ~ .master-frame .stacker-card,
+    #chat-popup.show ~ #app-container .stacker-card {
+        pointer-events: none !important;
+    }
 
     /* ==========================================
        3. KONTEN DALAM KARTU (CARD ELEMENTS)
