@@ -1,0 +1,64 @@
+/**
+ * standalone.css - Umbrella Mailbox Pure Standalone View
+ * Mengisolasi total halaman agar hanya menampilkan kotak saran murni.
+ */
+
+/* Reset total seluruh bodi halaman */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #060608 !important; /* Gelap pekat khas Umbrella */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 🎯 LENYAPKAN TOTAL semua elemen bawaan web portal utama di background */
+body > *:not(#mail-modal):not(#mail-toast) {
+    display: none !important;
+}
+
+/* Tarik paksa modal box keluar dari mode tersembunyi/melayang */
+#mail-modal {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 480px; /* Ukuran pas untuk fokus di HP & PC */
+    padding: 15px;
+    box-sizing: border-box;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Desain ulang container form agar pas di tengah layar tunggal */
+.mail-modal-content {
+    width: 100% !important;
+    margin: 0 !important;
+    background: #0f0f14 !important;
+    border: 1px solid rgba(192, 132, 252, 0.15) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(192, 132, 252, 0.05) !important;
+    transform: scale(1) !important;
+    animation: mekarHalus 0.4s ease-out;
+}
+
+/* Hilangkan tombol silang (X) karena tidak ada halaman utama untuk kembali */
+.close-mail {
+    display: none !important;
+}
+
+/* Animasi estetik saat halaman standalone dimuat */
+@keyframes mekarHalus {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
