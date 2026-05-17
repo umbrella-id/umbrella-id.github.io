@@ -1,0 +1,202 @@
+/**
+ * mailbox.css - Umbrella Mailbox UI Component (Isolated Version)
+ * Berdiri mandiri tanpa mengganggu layout dasar portal utama.
+ */
+
+#mail-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(10px);
+    
+    /* Layer ditaruh super tinggi agar berada di atas chatbox & tombol widget */
+    z-index: 12000 !important; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 🎯 BENTENG MUTLAK ANTI-GHOST CLICK */
+    opacity: 0;
+    visibility: hidden;       /* Fisik hilang saat tertutup */
+    pointer-events: none;     /* Klik menembus ke layout utama di belakangnya */
+    
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* 🎯 SAKELAR AKTIF (Saat dipicu JavaScript) */
+#mail-modal.show {
+    opacity: 1;
+    visibility: visible;      /* Fisik muncul */
+    pointer-events: auto;     /* Sensor klik aktif kembali di dalam form */
+}
+
+/* Kotak Konten Utama Form */
+.mail-modal-content {
+    background: rgba(15, 15, 20, 0.98);
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 0 25px rgba(192, 132, 252, 0.2);
+    
+    /* Responsif fleksibel: Lebar 88% di HP, tapi tidak melar di PC */
+    width: 88vw;
+    max-width: 350px;
+    border-radius: 20px;
+    overflow: hidden;
+    
+    /* Animasi pentalan mengecil-membesar dari pusat tengah */
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#mail-modal.show .mail-modal-content {
+    transform: scale(1);
+}
+
+/* Bagian Atas / Kepala Form */
+.mail-modal-header {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mail-modal-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Tombol Silang (X) Penutup */
+.close-mail {
+    color: #666;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 5px; /* Memperluas area sensitivitas sentuhan jari di HP */
+}
+.close-mail:hover { color: #fff; }
+
+/* Ruang Isi Form Input */
+.mail-modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mail-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mail-input-group label {
+    font-size: 0.75rem;
+    color: #888;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Area Ketikan Surat */
+#mail-message {
+    width: 100%;
+    background: #0b0b0e;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 12px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    resize: none;
+    box-sizing: border-box;
+    font-family: system-ui, sans-serif;
+    transition: border-color 0.2s;
+}
+
+#mail-message:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(192, 132, 252, 0.1);
+}
+
+/* Tombol Submit Kirim Surat */
+.mail-send-btn {
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.mail-send-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* Gaya Input Nomor WA */
+#mail-wa {
+    width: 100%;
+    background: #0b0b0e;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 12px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+#mail-wa:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(192, 132, 252, 0.1);
+}
+/* Menghilangkan tanda panah up/down bawaan input type number */
+#mail-wa::-webkit-outer-spin-button,
+#mail-wa::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ==========================================
+   TOAST NOTIFICATION (ALA GAME MODERN)
+   ========================================== */
+#mail-toast {
+    position: fixed;
+    bottom: -100px; /* Sembunyi di bawah layar awal */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 15, 20, 0.95);
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 0 20px rgba(192, 132, 252, 0.3);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 50px; /* Membulat kapsul rapi */
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    z-index: 99999;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+}
+
+/* Kelas saat Toast Diaktifkan via JS */
+#mail-toast.muncul {
+    bottom: 30px; /* Meluncur naik ke atas tombol navigasi HP */
+    opacity: 1;
+}
