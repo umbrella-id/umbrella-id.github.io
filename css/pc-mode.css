@@ -1,9 +1,25 @@
-/* pc-mode.css - Full Features & Organized Version */
+/* pc-mode.css - Full Features & Organized Version (Root Unified + Dot Matrix Edition) */
 @media screen and (min-width: 768px) {
 
     /* ==========================================
-       1. LAYOUT & FRAME UTAMA
+       1. LAYOUT & FRAME UTAMA (CYBER MATRIX DESKTOP)
        ========================================== */
+    html, body {
+        background-color: var(--bg-dark) !important;
+        
+        /* 🎯 SUNTIKAN KEMBALI TEXTURE DOT-MATRIX MURNI UNTUK DESKTOP MONITOR */
+        background-image: 
+            /* Layer 1: Titik-titik matriks ungu digital yang sinkron ke root */
+            radial-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px),
+            /* Layer 2: Efek kabut awan nebula kosmos redup bawaan awal PC lu */
+            radial-gradient(circle at 50% 30%, #1e113c 0%, #0f172a 50%, var(--bg-dark) 100%) !important;
+            
+        /* Kerapatan matriks disesuaikan 6px agar terlihat super halus di layar monitor */
+        background-size: 6px 6px, 100% 100% !important;
+        background-attachment: fixed !important;
+        transition: background 0.4s ease;
+    }
+
     .master-frame {
         display: grid;
         grid-template-rows: 18dvh 60dvh 1fr;
@@ -29,7 +45,7 @@
         align-items: center;
         justify-content: center;
         padding: 20px 0;
-        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+        border-bottom: 1px solid var(--border-line);
         position: relative;
     }
 
@@ -52,8 +68,7 @@
         letter-spacing: 3px;
         color: #fff;
         text-transform: uppercase;
-        /* Efek pendaran teks */
-        text-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+        text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
         line-height: 1.1;
         text-align: center;
     }
@@ -119,9 +134,9 @@
 
     /* Styling Scrollbar Slider */
     #app-container::-webkit-scrollbar { height: 6px; }
-    #app-container::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+    #app-container::-webkit-scrollbar-track { background: var(--border-divider); border-radius: 10px; }
     #app-container::-webkit-scrollbar-thumb { 
-        background: rgba(192, 132, 252, 0.2); 
+        background: var(--color-primary-glow); 
         border-radius: 10px; 
     }
     #app-container::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
@@ -132,15 +147,19 @@
     }
 
     /* ==========================================
-       5. SLIDER CARD (GLASSMORPHISM & HOVER)
+       5. SLIDER CARD (GLASSMORPHISM & HOVER EFFECT PC PORT)
        ========================================== */
     .slider-card {
         width: 50dvh;
         height: 55dvh;
         margin-top: 15px;
-        background: rgba(15, 23, 42, 0.4);
+        
+        /* LINKED TO MENU ROOT: Kaca tipis bening orisinal milik PC */
+        background: var(--bg-pc-glass);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(192, 132, 252, 0.2);
+        -webkit-backdrop-filter: blur(12px);
+        
+        border: 1px solid var(--border-line);
         border-radius: 20px;
         padding: 25px;
         flex-shrink: 0;
@@ -149,7 +168,7 @@
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Efek Kilatan Cahaya (Glow Shine) */
+    /* EFEK KILATAN ATAP GLOW SHINE (Bawaan Ori Lu Aman Jaya!) */
     .slider-card::before {
         content: '';
         position: absolute;
@@ -163,14 +182,18 @@
         pointer-events: none;
     }
 
-    /* Hover Effect Kartu */
+    /* HOVER SAKTI: Huruf super kontras & kilatan lampu mekar lewat root */
     .slider-card:hover {
         transform: translateY(-10px) scale(1.02);
-        border-color: var(--color-primary);
-        background: rgba(192, 132, 252, 0.05);
-        box-shadow: 0 0 20px rgba(192, 132, 252, 0.3), 
-                    0 0 40px rgba(192, 132, 252, 0.1),
-                    inset 0 0 15px rgba(192, 132, 252, 0.2);
+        
+        /* Garis menyala ungu pekat dari root */
+        border-color: var(--border-line-hover);
+        
+        /* ANTI-BIAS KUNCI: Latar belakang dipaksa menggunakan bias tipis orisinal lu */
+        background: var(--color-primary-hover) !important;
+        
+        /* Mengambil limpahan tumpukan bayangan neon luar-dalam dari pusat komando */
+        box-shadow: var(--shadow-neon-glow) !important;
     }
 
     .slider-card:hover::before {
@@ -188,7 +211,7 @@
     .pc-card-body {
         font-size: 0.95rem;
         line-height: 1.6;
-        color: #cbd5e1;
+        color: var(--text-main);
         overflow: hidden;
         margin-bottom: 30px;
     }
@@ -210,26 +233,17 @@
     .headline-body-pc {
         width: 75vw;
         margin: 0 auto;
-        
-        /* MEMBUAT BOX PEMBATAS */
-        height: 10dvh;            /* Tinggi box tetap agar layout stabil */
-        
-        /* PENYELARASAN ISI */
+        height: 10dvh;            
         display: flex-shrink;
-        justify-content: center; /* Teks tetap di tengah secara vertikal */
-        align-items: center;     /* Teks tetap di tengah secara horizontal */
-        
+        justify-content: center; 
+        align-items: center;     
         text-align: center;
         color: #94a3b8;
-        
-        /* FONT FLEXIBLE */
-        /* Jika teks panjang, dia akan mengecil otomatis (hanya jika kamu pakai unit vw) */
         font-size: clamp(1.8vw, 3dvh, 4dvh); 
         line-height: 1.4;
-        
-        overflow: visible;        /* Proteksi terakhir jika limit JS bocor */
+        overflow: visible;        
         position: relative;
-        z-index: 10;             /* Di atas background, di bawah modal */
+        z-index: 10;             
     }
     
     .inline-link-text {
@@ -240,14 +254,6 @@
         cursor: pointer;
         margin-left: 5px;
         white-space: nowrap;
-    }    
-    .inline-link-text {
-        display: inline; /* Harus INLINE agar bisa masuk ke sela-sela teks baris ke-2 */
-        color: var(--color-primary);
-        cursor: pointer;
-        font-weight: bold;
-        text-decoration: underline;
-        margin-left: 5px;
         pointer-events: auto;
     }
 
@@ -316,7 +322,7 @@
     .mail-container i { font-size: 1.5rem; color: var(--color-primary); }
     .mail-container:hover { transform: translateX(10px); text-shadow: 0 0 15px var(--color-primary); }
 
-    /* identity.css */
+    /* Identity System */
     #ign-label-container {
         position: fixed;
         top: 20px;
@@ -333,7 +339,7 @@
     #ign-label-container:hover { transform: translateX(-10px); text-shadow: 0 0 15px var(--color-primary); }
 
     #ign-label-container:active {
-        transform: scale(0.9); /* Sedikit mengecil saat ditekan */
+        transform: scale(0.9);
         opacity: 0.7;
     }
 
@@ -349,7 +355,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 8px 25px rgba(192, 132, 252, 0.4);
+        box-shadow: 0 8px 25px var(--color-primary-glow);
     }
     .chat-container i { font-size: 1.8rem; }
     .chat-container:hover { transform: scale(1.1) rotate(-10deg); background: white; color: var(--color-primary); }
@@ -360,8 +366,9 @@
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0,40);
+        background: var(--bg-overlay);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         display: none;
         justify-content: center;
         align-items: center;
@@ -370,14 +377,14 @@
     }
     
     .modal-content {
-        background: #111;
+        background: var(--bg-popup);
         border: 1px solid var(--color-primary);
         width: 100%;
         max-width: 600px;
         border-radius: 20px;
         padding: 30px;
         position: relative;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        box-shadow: 0 0 30px var(--color-primary-glow);
     }
     
     .modal-header {
@@ -397,7 +404,7 @@
     .modal-body {
         max-height: 60vh;
         overflow-y: auto;
-        color: #cbd5e1;
+        color: var(--text-main);
         line-height: 1.7;
         font-size: 1rem;
         padding-right: 10px;
@@ -408,5 +415,6 @@
     .modal-body::-webkit-scrollbar-thumb { 
         background: var(--color-primary); 
         border-radius: 10px; 
+    }
 
-} /* Akhir Media Query */
+} /* 🚨 LIMIT MEDIA QUERY TERAKHIR AMAN JAYA */
