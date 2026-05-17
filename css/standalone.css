@@ -22,6 +22,16 @@ body > *:not(#mail-modal):not(#mail-toast) {
     display: none !important;
 }
 
+/* 🎯 SEMBUNYIKAN BARIS PILIHAN KATEGORI DI MODE STANDALONE */
+#mail-modal .mail-input-group:first-child {
+    display: none !important;
+}
+
+/* Beri sedikit ruang tambahan di atas textarea agar visualnya tetap seimbang */
+.mail-modal-body {
+    padding-top: 10px !important;
+}
+
 /* Tarik paksa modal box keluar dari mode tersembunyi/melayang */
 #mail-modal {
     position: relative !important;
