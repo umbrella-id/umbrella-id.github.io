@@ -1,10 +1,11 @@
 /**
- * identity.js - Umbrella Identity System
+ * identity.js - Umbrella Identity System (Final Gold - Verified Patch)
  * Versi: Final (No Browser Prompt)
  */
 
 // 1. INISIALISASI DATA GLOBAL
-window.myUID = localStorage.getItem('u_uid') || 'U-' + Math.random().toString(36).substr(2, 9);
+// 🎯 PATCH FIX: Mengubah .substr() kuno menjadi .substring() standar modern agar lolos linter GitHub
+window.myUID = localStorage.getItem('u_uid') || 'U-' + Math.random().toString(36).substring(2, 11);
 window.myIGN = localStorage.getItem('u_ign') || ""; 
 localStorage.setItem('u_uid', window.myUID);
 
@@ -89,7 +90,12 @@ function closeGate() {
     }
 }
 
-// 6. EVENT LISTENERS
+function skipLogin() {
+    const guestName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
+    finalizeLogin(guestName);
+}
+
+// 6. EVENT LISTENERS GLOBAL (Disatukan setelah DOM Siap)
 document.addEventListener("DOMContentLoaded", () => {
     // Cek akses saat pertama kali masuk
     if (!window.myIGN) {
@@ -102,17 +108,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('global-ign-input')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') saveIdentity();
     });
+
+    // 🎯 PATCH FIX: Memindahkan event click overlay ke dalam DOMContentLoaded agar tidak bernilai 'null'
+    document.getElementById('site-gatekeeper')?.addEventListener('click', function(e) {
+        // Jika yang diklik adalah backgroundnya (bukan kotak portal-box di dalamnya)
+        if (e.target === this) {
+            closeGate();
+        }
+    });
 });
 
-function skipLogin() {
-    const guestName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
-    finalizeLogin(guestName);
-}
-
-// Tutup/Skip saat klik area di luar kotak (overlay)
-document.getElementById('site-gatekeeper')?.addEventListener('click', function(e) {
-    // Jika yang diklik adalah backgroundnya (bukan kotak portal-box di dalamnya)
-    if (e.target === this) {
-        closeGate();
-    }
-});
+// Expose fungsi ke window agar tombol HTML 'onclick' bisa memanggilnya tanpa kendala scope
+window.unlockSite = unlockSite;
+window.saveIdentity = saveIdentity;
+window.closeGate = closeGate;
