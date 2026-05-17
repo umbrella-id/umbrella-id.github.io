@@ -16,7 +16,7 @@ function fastScroll() {
     if (lb) lb.scrollTop = lb.scrollHeight;
 }
 
-// 2. TOGGLE POPUP (UX Fisik: Auto-close Mailbox jika chatbox dibuka)
+// 2. TOGGLE POPUP (UX Android Native Navbar Back Button Support)
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -27,14 +27,49 @@ function toggleChat() {
         mailModal.classList.remove('show');
     }
 
+    // Cek status sebelum di-toggle
+    const isOpening = !popup.classList.contains('show');
     popup.classList.toggle('show');
     
-    if (popup.classList.contains('show')) {
+    if (isOpening) {
+        // 🎯 LOGIKA ANDROID: Jika chat dibuka, suntikkan "Halaman Palsu" ke riwayat browser
+        // Ini gunanya menipu HP Android agar saat tombol 'Back' ditekan, dia gak keluar dari web
+        history.pushState({ boksTerbuka: "chat" }, "");
+
         fastScroll();
-        setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
+        // 🎯 SMART FOCUS: Hanya auto-focus di PC (Layar >= 768px). Di HP (Mobile) dilewati murni.
+        if (window.innerWidth >= 768) {
+            setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
+        }
         syncChat(true); 
+    } else {
+        // Jika ditutup manual via klik tombol bulet, bersihkan sisa riwayat palsu tadi
+        if (history.state && history.state.boksTerbuka === "chat") {
+            history.back();
+        }
     }
 }
+
+// ==========================================
+// 🚨 SATPAM PENJAGA TOMBOL BACK NAVBAR ANDROID
+// ==========================================
+// Event ini otomatis terpicu di HP Android saat user menekan tombol "Kembali" di navbar bawah
+window.addEventListener('popstate', function (event) {
+    const popup = document.getElementById('chat-popup');
+    const mailModal = document.getElementById('mail-modal');
+
+    // Jika boks chat lagi mekar, gagalkan aksi keluar halaman, ganti dengan menutup popup
+    if (popup && popup.classList.contains('show')) {
+        popup.classList.remove('show');
+        console.log("🛡️ Navbar Back detected: Closing Chatbox successfully.");
+    }
+    
+    // Sekalian buat pengaman Kotak Surat/Mailbox kalau lu mau terapkan hal yang sama
+    if (mailModal && mailModal.classList.contains('show')) {
+        mailModal.classList.remove('show');
+        console.log("🛡️ Navbar Back detected: Closing Mailbox successfully.");
+    }
+});
 
 // ==========================================
 // [3] PENARIKAN IDENTITAS (DENGAN SKEMA ANONIM SARAN)
@@ -222,10 +257,13 @@ function toggleMail() {
         
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
-        setTimeout(() => {
-            const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
-            if (visibleInput) visibleInput.focus();
-        }, 300);
+        // 🎯 SMART FOCUS: Hanya panggil keyboard otomatis jika mendeteksi layar PC/Desktop
+        if (window.innerWidth >= 768) {
+            setTimeout(() => {
+                const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
+                if (visibleInput) visibleInput.focus();
+            }, 300);
+        }
     }
 }
 
