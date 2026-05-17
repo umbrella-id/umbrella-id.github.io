@@ -1,10 +1,12 @@
-/* identity.css */
+/* identity.css - Umbrella Identity System UI Component (Variables Integrated) */
 
 #site-gatekeeper {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.0);
+    background: var(--bg-overlay); /* 🎨 Mengikuti Pusat Overlay base.css */
+    backdrop-filter: blur(10px);    /* Efek blur background disamakan dengan Mailbox */
+    -webkit-backdrop-filter: blur(10px);
     display: none;
     justify-content: center;
     align-items: center;
@@ -15,12 +17,11 @@
     position: relative;
     width: 90%;
     max-width: 350px;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
+    background: var(--bg-popup); /* 🎨 Diubah ke Kaca Gelap Mewah base.css mengikuti Mailbox */
     border: 1px solid var(--color-primary);
+    box-shadow: 0 0 25px var(--color-primary-glow); /* 🎨 Ditambahkan efek pendaran neon premium */
     padding: 30px 20px;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    border-radius: 20px; /* Sudut kebulatan disamakan 20px seperti Mailbox */
 }
 
 #gate-title {
@@ -28,16 +29,24 @@
     font-size: 18px;
     margin-bottom: 20px;
     font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 /* Flexbox untuk menjajarkan Input & Tombol */
 .input-row {
     display: flex;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--color-primary); /* Warna ungu/primary kamu */
-    border-radius: 8px;
+    background: var(--bg-solid-form); /* 🎨 Diubah ke Hitam Pekat Form base.css */
+    border: 1px solid var(--border-glow); /* 🎨 Menggunakan border tipis elegan base.css */
+    border-radius: 12px; /* Dibuat melengkung halus senada dropdown */
     overflow: hidden;
     padding: 5px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Efek estetik tambahan saat kolom input sedang aktif diketik */
+.input-row:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary-glow);
 }
 
 #global-ign-input {
@@ -52,10 +61,10 @@
 
 #save-btn {
     background: var(--color-primary);
-    color: #000;
+    color: #fff; /* 🎨 Diubah dari #000 ke #fff agar sewarna dengan tombol Mailbox */
     border: none;
     padding: 8px 15px;
-    border-radius: 6px;
+    border-radius: 8px; /* Disesuaikan kebulatannya */
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -67,14 +76,24 @@
     filter: brightness(1.2);
 }
 
+#save-btn:active {
+    transform: scale(0.95);
+}
+
 #save-btn i {
     font-size: 18px;
 }
 
 .close-gate {
     position: absolute;
-    top: 10px; right: 15px;
+    top: 15px; right: 20px; /* Disesuaikan posisinya agar presisi */
     color: #666;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.5rem; /* Ukuran disamakan dengan tombol silang Mailbox */
+    transition: color 0.2s;
+    padding: 5px; /* Memperluas area sensitivitas sentuhan jari di HP */
+}
+
+.close-gate:hover { 
+    color: #fff; 
 }
