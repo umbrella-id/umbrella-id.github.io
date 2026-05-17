@@ -1,6 +1,7 @@
 /**
- * mailbox.css - Umbrella Mailbox UI Component (Isolated Version)
+ * mailbox.css - Umbrella Mailbox UI Component (Final Gold Edition)
  * Berdiri mandiri tanpa mengganggu layout dasar portal utama.
+ * Fitur: Kustom Dropdown Ungu Neon, Integrasi Game Toast & Input WA Dinamis.
  */
 
 #mail-modal {
@@ -103,6 +104,50 @@
     text-transform: uppercase;
 }
 
+/* ==========================================
+   🎯 DESAIN DROPDOWN KATEGORI PREMIUM THEME
+   ========================================== */
+#mail-category {
+    width: 100%;
+    background: #0b0b0e !important; /* Gelap pekat */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    padding: 12px 40px 12px 16px !important; /* Beri ruang di kanan untuk panah kustom */
+    color: #fff !important;
+    font-size: 0.85rem !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    outline: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    transition: all 0.3s ease;
+    
+    /* Hilangkan panah asli bawaan HP/Browser */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    
+    /* Suntik Ikon Panah Kustom: Menggunakan SVG warna ungu neon bawaan */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 16px !important;
+}
+
+/* Efek saat Dropdown Diklik / Fokus */
+#mail-category:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.25) !important;
+}
+
+/* Gaya Papan Pilihan Opsi saat Dropdown Mekar */
+#mail-category option {
+    background: #0f0f14 !important; /* Latar belakang opsi jadi gelap gelap */
+    color: #fff !important;
+    padding: 14px !important;
+    font-size: 0.85rem;
+}
+
 /* Area Ketikan Surat */
 #mail-message {
     width: 100%;
@@ -172,7 +217,7 @@
 }
 
 /* ==========================================
-   TOAST NOTIFICATION (ALA GAME MODERN)
+    TOAST NOTIFICATION (ALA GAME MODERN)
    ========================================== */
 #mail-toast {
     position: fixed;
