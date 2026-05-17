@@ -55,6 +55,7 @@ function toggleChat() {
 window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
+    const gate = document.getElementById('site-gatekeeper');
 
     // Jika boks chat lagi mekar, gagalkan aksi keluar halaman, ganti dengan menutup popup
     if (popup && popup.classList.contains('show')) {
