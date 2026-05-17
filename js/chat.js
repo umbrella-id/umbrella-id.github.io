@@ -1,5 +1,5 @@
 /**
- * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch)
+ * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch V2)
  * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
  * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control - No Lock Bug)
  */
@@ -33,7 +33,6 @@ function toggleChat() {
     
     if (isOpening) {
         // 🎯 LOGIKA ANDROID: Jika chat dibuka, suntikkan "Halaman Palsu" ke riwayat browser
-        // Ini gunanya menipu HP Android agar saat tombol 'Back' ditekan, dia gak keluar dari web
         history.pushState({ boksTerbuka: "chat" }, "");
 
         fastScroll();
@@ -53,7 +52,6 @@ function toggleChat() {
 // ==========================================
 // 🚨 SATPAM PENJAGA TOMBOL BACK NAVBAR ANDROID
 // ==========================================
-// Event ini otomatis terpicu di HP Android saat user menekan tombol "Kembali" di navbar bawah
 window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -64,7 +62,7 @@ window.addEventListener('popstate', function (event) {
         console.log("🛡️ Navbar Back detected: Closing Chatbox successfully.");
     }
         
-    // 🎯 SUNTIKAN 4: Jika kotak surat mekar, hapus kelas show (Mingkem otomatis)
+    // Jika kotak surat mekar, hapus kelas show (Mingkem otomatis)
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
         console.log("🛡️ Navbar Back detected: Closing Mailbox successfully.");
@@ -75,16 +73,13 @@ window.addEventListener('popstate', function (event) {
 // [3] PENARIKAN IDENTITAS (DENGAN SKEMA ANONIM SARAN)
 // ==========================================
 function dapatkanIdentitasAman() {
-    // 🎯 DETEKSI MODE STANDALONE YANG BARU: Mengecek tanda class di body web
     const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
     
     if (isStandaloneMode) {
-        // Buat UID acak unik berbasis waktu agar tidak bentrok di database
         const randomID = "ANON-" + Math.random().toString(36).substring(2, 7).toUpperCase();
         return { uid: randomID, ign: "Member" };
     }
     
-    // Jalur Normal (Untuk Chatbox atau Request Join / Umum di Halaman Utama)
     let uid = window.myUID || localStorage.getItem('UG_ID') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('UG_NAME') || "Guest";
     return { uid: uid, ign: ign };
@@ -92,7 +87,6 @@ function dapatkanIdentitasAman() {
 
 // 4. SINKRONISASI UTAMA (Dengan Penjaga Gerbang Fisik Popup)
 function syncChat(force = false) {
-    // --- [ 🔒 GEMBOK HULU: PENGHEMAT KUOTA POSISI TERTUTUP ] ---
     const popup = document.getElementById('chat-popup');
     
     if (!force && (!popup || !popup.classList.contains('show'))) {
@@ -118,7 +112,6 @@ function syncChat(force = false) {
         const arrayChat = data.logs || data.chats || [];
         if (!Array.isArray(arrayChat)) return;
 
-        // PENGHEMAT RENDERING (TEXT STAMP)
         const currentStamp = JSON.stringify(arrayChat);
         if (!force && currentStamp === lastChatStamp) {
             // Logs skip render
@@ -193,7 +186,6 @@ function sendMessage() {
     .catch(() => { isSending = false; });
 }
 
-// 🎯 PATCH FIX: Variabel disesuaikan 'uid' agar tidak memicu error compiler linter
 function getHashColor(uid) {
     if (!uid) return '#ccc';
     let h = 0;
@@ -208,7 +200,6 @@ function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 // [6] INTERFASE KOTAK SURAT (MAILBOX ENGINE)
 // ==========================================
 
-// Fungsi pengatur layout dinamis WA
 function aturFormMailbox() {
     const categoryEl = document.getElementById('mail-category');
     const waGroup = document.getElementById('wa-group');
@@ -229,7 +220,6 @@ function aturFormMailbox() {
     }
 }
 
-// Fungsi Buka-Tutup Modal Surat (UX Fisik: Auto-close chatbox)
 function toggleMail() {
     const mailModal = document.getElementById('mail-modal');
     const chatPopup = document.getElementById('chat-popup');
@@ -239,6 +229,7 @@ function toggleMail() {
         chatPopup.classList.remove('show');
     }
 
+    const isOpeningMail = !mailModal.classList.contains('show');
     mailModal.classList.toggle('show');
     
     if (mailModal.classList.contains('show')) {
@@ -257,27 +248,23 @@ function toggleMail() {
         
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
-        // 🎯 SUNTIKAN 1: Jika kotak surat dibuka, kunci tombol back Android
         if (isOpeningMail) {
             history.pushState({ boksTerbuka: "mailbox" }, "");
         }
         
-        // 🎯 SMART FOCUS: Hanya panggil keyboard otomatis jika mendeteksi layar PC/Desktop
         if (window.innerWidth >= 768) {
             setTimeout(() => {
                 const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
                 if (visibleInput) visibleInput.focus();
             }, 300);
         }
-    }else {
-        // 🎯 SUNTIKAN 2: Jika ditutup manual lewat tombol (X) atau klik luar, hapus riwayat palsu
+    } else {
         if (history.state && history.state.boksTerbuka === "mailbox") {
             history.back();
         }
     }
 }
 
-// Notifikasi Kustom ala Game
 function tampilkanToast(pesan) {
     const toast = document.getElementById('mail-toast');
     if (!toast) return;
@@ -290,7 +277,6 @@ function tampilkanToast(pesan) {
     }, 3000);
 }
 
-// Fungsi Mengirim Surat ke GAS Pipa 1
 function sendMail() {
     if (isSendingMail) return; 
     
@@ -321,7 +307,6 @@ function sendMail() {
     if (inputWA) inputWA.disabled = true;
 
     if (!isStandaloneMode) {
-        // 🎯 SUNTIKAN 3: Karena ditutup otomatis oleh sistem setelah kirim, bersihkan riwayatnya di sini
         if (history.state && history.state.boksTerbuka === "mailbox") {
             history.back();
         }
@@ -368,11 +353,14 @@ function sendMail() {
     });
 }
 
-// Tutup modal otomatis jika user klik area luar kotak hitam (Overlay)
+// ==========================================
+// 🎯 PATCH FIX OVERLAY CLIK LUAR: 
+// Dialihkan satu pintu ke toggleMail() agar tumpukan history bersih otomatis
+// ==========================================
 window.addEventListener('click', function(e) {
     const mailModal = document.getElementById('mail-modal');
     if (e.target === mailModal) {
-        mailModal.classList.remove('show');
+        toggleMail(); 
     }
 });
 
@@ -412,26 +400,19 @@ function cekLinkSaranStandalone() {
     }
 }
 
-// ==========================================
-// 🎯 KOREKSI 2: Pintu Gerbang Global Expose (Wajib)
-// ==========================================
+// 🎯 Pintu Gerbang Global Expose
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
 window.syncChat = syncChat;
-
 window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 
-
-// ==========================================
 // [9] MESIN PENGASUH INTERVAL UTAMA
-// ==========================================
 setInterval(() => {
     syncChat(false);
 }, 4500);
 
 window.addEventListener('DOMContentLoaded', cekLinkSaranStandalone);
-
 console.log("🛡️ Umbrella Chat Engine: Semua Komponen Terintegrasi Sempurna!");
