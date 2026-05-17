@@ -1,7 +1,7 @@
 /**
- * chat.js - Umbrella Chat Engine (Final Gold - Gatekeeper Sleep Edition)
+ * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch)
  * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
- * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control)
+ * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control - No Lock Bug)
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
@@ -158,10 +158,11 @@ function sendMessage() {
     .catch(() => { isSending = false; });
 }
 
-function getHashColor(u) {
-    if (!u) return '#ccc';
+// 🎯 PATCH FIX: Variabel disesuaikan 'uid' agar tidak memicu error compiler linter
+function getHashColor(uid) {
+    if (!uid) return '#ccc';
     let h = 0;
-    for (let i = 0; i < u.length; i++) h = u.charCodeAt(i) + ((h << 5) - h);
+    for (let i = 0; i < uid.length; i++) h = uid.charCodeAt(i) + ((h << 5) - h);
     return `hsl(${Math.abs(h) % 360}, 75%, 75%)`;
 }
 
@@ -172,7 +173,7 @@ function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 // [6] INTERFASE KOTAK SURAT (MAILBOX ENGINE)
 // ==========================================
 
-// 🎯 KOREKSI 1: Kembalikan fungsi pengatur layout dinamis WA yang hilang
+// Fungsi pengatur layout dinamis WA
 function aturFormMailbox() {
     const categoryEl = document.getElementById('mail-category');
     const waGroup = document.getElementById('wa-group');
@@ -219,7 +220,6 @@ function toggleMail() {
             categoryEl.value = 'Saran';
         }
         
-        // 🎯 FUNGSI UTAMA: Panggil layout dinamis (Bebas dari urusan kunci-mengunci)
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
         setTimeout(() => {
@@ -271,7 +271,6 @@ function sendMail() {
     if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...';
     if (textarea) textarea.disabled = true;
     if (inputWA) inputWA.disabled = true;
-    // 🎯 BARIS PENGUNCI DI SINI SUDAH DIHAPUS MURNI
 
     if (!isStandaloneMode) {
         toggleMail();
@@ -316,6 +315,7 @@ function sendMail() {
         console.error("Pipa GAS 1 Terputus:", err);
     });
 }
+
 // Tutup modal otomatis jika user klik area luar kotak hitam (Overlay)
 window.addEventListener('click', function(e) {
     const mailModal = document.getElementById('mail-modal');
@@ -328,8 +328,6 @@ window.addEventListener('click', function(e) {
 // ==========================================
 // [7] DETEKSI DEEP LINKING KOTAK SARAN STANDALONE
 // ==========================================
-// Deep link detektor saran internal (Dynamic CSS Injection Edition)
-// Deep link detektor saran internal (Pure Standalone + Text Customizer Edition)
 function cekLinkSaranStandalone() {
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
@@ -343,7 +341,6 @@ function cekLinkSaranStandalone() {
 
         document.body.classList.add('standalone-saran-mode');
 
-        // 🎯 KATEGORI TETAP DI-SET "Saran" TAPI GAUSAH DI-DISABLED KAN UDAH DIUMPETIN CSS
         const categoryEl = document.getElementById('mail-category');
         if (categoryEl) {
             categoryEl.value = 'Saran'; 
