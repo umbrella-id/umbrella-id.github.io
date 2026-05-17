@@ -56,6 +56,7 @@ window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
     const gate = document.getElementById('site-gatekeeper');
+    const detailModal = document.getElementById('detailModal');
 
     // Jika boks chat lagi mekar, gagalkan aksi keluar halaman, ganti dengan menutup popup
     if (popup && popup.classList.contains('show')) {
@@ -73,6 +74,15 @@ window.addEventListener('popstate', function (event) {
         // Manggil fungsi aman khusus navbar yang barusan kita buat di identity.js
         if (typeof window.closeGateFromNavbar === "function") {
             window.closeGateFromNavbar(); 
+        }
+    }
+    // 4. 🎯 URUSAN MODAL BERITA DINAMIS (Delegasi murni)
+    if (detailModal && detailModal.style.display === 'flex') {
+        if (typeof window.closeDetailFromNavbar === "function") {
+            window.closeDetailFromNavbar(); // Panggil fungsi penutup aman di file berita lu
+        } else {
+            detailModal.style.display = 'none'; // Cadangan darurat
+            isModalOpen = false;
         }
     }
 });
