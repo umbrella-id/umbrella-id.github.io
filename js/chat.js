@@ -199,7 +199,6 @@ function toggleMail() {
     const chatPopup = document.getElementById('chat-popup');
     if (!mailModal) return;
 
-    // Jika obrolan sedang mekar, paksa tutup dulu (Memicu Gembok Hulu Aktif)
     if (chatPopup && chatPopup.classList.contains('show')) {
         chatPopup.classList.remove('show');
     }
@@ -207,15 +206,22 @@ function toggleMail() {
     mailModal.classList.toggle('show');
     
     if (mailModal.classList.contains('show')) {
+        const categoryEl = document.getElementById('mail-category'); 
         const textarea = document.getElementById('mail-message');
         const inputWA = document.getElementById('mail-wa');
+        
         if (textarea) { textarea.value = ''; textarea.disabled = false; }
-        if (inputWA) { 
-            inputWA.value = ''; 
-            inputWA.disabled = false; 
-            inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; 
+        if (inputWA) { inputWA.value = ''; inputWA.disabled = false; inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; }
+        
+        const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
+
+        if (categoryEl && isStandaloneMode) {
+            categoryEl.value = 'Saran';
         }
-        aturFormMailbox();
+        
+        // 🎯 FUNGSI UTAMA: Panggil layout dinamis (Bebas dari urusan kunci-mengunci)
+        if (typeof aturFormMailbox === "function") aturFormMailbox();
+        
         setTimeout(() => {
             const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
             if (visibleInput) visibleInput.focus();
@@ -245,14 +251,11 @@ function sendMail() {
 
     const textarea = document.getElementById('mail-message');
     let msg = textarea ? textarea.value.trim() : '';
-    
     const inputWA = document.getElementById('mail-wa');
     const waValue = inputWA ? inputWA.value.trim() : '';
 
-    // Deteksi apakah sedang dalam mode standalone saran
     const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
 
-    // VALIDASI KOLOM
     if (selectedCategory === "Request Join") {
         if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!"); if (inputWA) inputWA.focus(); return; }
         if (!msg) { tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
@@ -268,9 +271,8 @@ function sendMail() {
     if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...';
     if (textarea) textarea.disabled = true;
     if (inputWA) inputWA.disabled = true;
-    if (categoryEl) categoryEl.disabled = true;
+    // 🎯 BARIS PENGUNCI DI SINI SUDAH DIHAPUS MURNI
 
-    // 🎯 KONDISI 1: JALUR NORMAL (Buka dari web) -> LANGSUNG TUTUP INSTAN BIAR RESPONSIF
     if (!isStandaloneMode) {
         toggleMail();
     }
@@ -279,13 +281,10 @@ function sendMail() {
     .then(res => res.json())
     .then(data => {
         isSendingMail = false;
-        
-        // Kembalikan teks tombol asli jika sewaktu-waktu modal dibuka lagi di jalur normal
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
 
         if (data.status === "success") {
             if (isStandaloneMode) {
-                // 🎯 KONDISI 2: JALUR STANDALONE -> SULAP JADI NOTIFIKASI SUKSES KARENA GAK BISA CLOSE
                 const modalBody = document.querySelector('.mail-modal-body');
                 if (modalBody) {
                     modalBody.innerHTML = `
@@ -299,26 +298,21 @@ function sendMail() {
                     `;
                 }
             }
-            // Toast universal tetap muncul manis di bawah layar
-            tampilkanToast("📬 Surat berhasil dikirim!");
+            tampilkanToast("✉️ Surat berhasil dikirim!");
         } else {
             tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
-            // Jika jalur normal gagal di server, buka kembali boksnya agar teks ketikan gak ilang
             if (!isStandaloneMode) toggleMail();
             if (textarea) textarea.disabled = false;
             if (inputWA) inputWA.disabled = false;
-            if (categoryEl) categoryEl.disabled = false;
         }
     })
     .catch(err => {
         isSendingMail = false;
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
         tampilkanToast("🚨 Koneksi terputus! Gagal mengirim.");
-        
         if (!isStandaloneMode) toggleMail();
         if (textarea) textarea.disabled = false;
         if (inputWA) inputWA.disabled = false;
-        if (categoryEl) categoryEl.disabled = false;
         console.error("Pipa GAS 1 Terputus:", err);
     });
 }
@@ -341,38 +335,31 @@ function cekLinkSaranStandalone() {
     const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
     
     if (mode && mode.toLowerCase() === 'saran') {
-        // Suntik CSS khusus standalone secara otomatis ke head
         const linkCSS = document.createElement('link');
+        linkCSS.id = 'standalone-css-pack';
         linkCSS.rel = 'stylesheet';
         linkCSS.href = 'css/standalone.css'; 
         document.head.appendChild(linkCSS);
 
-        // Tambahkan tanda pengenal di body
         document.body.classList.add('standalone-saran-mode');
 
-        // Kunci nilai dropdown ke kategori Saran di balik layar (Meskipun elemennya disembunyikan CSS)
+        // 🎯 KATEGORI TETAP DI-SET "Saran" TAPI GAUSAH DI-DISABLED KAN UDAH DIUMPETIN CSS
         const categoryEl = document.getElementById('mail-category');
         if (categoryEl) {
             categoryEl.value = 'Saran'; 
-            categoryEl.disabled = true; 
         }
         
-        // 🎯 KUSTOMISASI TEKS KHUSUS UNTUK KOTAK SARAN INTERNAL
         const labelPesan = document.getElementById('mail-label-pesan');
         const textarea = document.getElementById('mail-message');
+        if (labelPesan) labelPesan.innerText = "Saran / Masukan Anda :";
+        if (textarea) textarea.placeholder = "Tulis aspirasi, ide, kritik, atau saran jujur Anda untuk perkembangan guild Umbrella...";
         
-        if (labelPesan) {
-            labelPesan.innerText = "Saran / Masukan Anda :";
-        }
-        if (textarea) {
-            textarea.placeholder = "Tulis aspirasi, ide, kritik, atau saran jujur Anda untuk perkembangan guild Umbrella...";
-        }
-        
-        // Tampilkan modal secara instan
         const mailModal = document.getElementById('mail-modal');
         if (mailModal) mailModal.classList.add('show');
-        
-        console.log("🛡️ Standalone Loaded: Dropdown lenyap, teks disesuaikan murni untuk Kotak Saran.");
+    } else {
+        document.body.classList.remove('standalone-saran-mode');
+        const sisaCSS = document.getElementById('standalone-css-pack');
+        if (sisaCSS) sisaCSS.remove();
     }
 }
 
