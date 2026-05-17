@@ -1,35 +1,55 @@
 /**
  * chat.js - Umbrella Chat Engine (Final Gold - Gatekeeper Sleep Edition)
  * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
+ * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control)
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
 const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgdxG0swUoSxFI_J9okcqa8D15GjKhFYbpdFkfm8As8CaYelJ8w/exec";
+const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
 
 // State System Engine
-let isMuted = false, lastChatStamp = "", isSending = false;
+let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = false; 
 
 function fastScroll() {
     const lb = document.getElementById('chat-logs');
     if (lb) lb.scrollTop = lb.scrollHeight;
 }
 
-// 2. TOGGLE POPUP (Hanya urusan CSS & Focus saja, tidak mengutak-atik timer)
+// 2. TOGGLE POPUP (UX Fisik: Auto-close Mailbox jika chatbox dibuka)
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
+    const mailModal = document.getElementById('mail-modal');
     if (!popup) return;
     
+    // Jika kotak surat lagi mekar, paksa tutup dulu
+    if (mailModal && mailModal.classList.contains('show')) {
+        mailModal.classList.remove('show');
+    }
+
     popup.classList.toggle('show');
     
     if (popup.classList.contains('show')) {
         fastScroll();
         setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
-        // Paksa tarik data instan begitu dibuka agar chat tidak kosong/delay
         syncChat(true); 
     }
 }
 
+// ==========================================
+// [3] PENARIKAN IDENTITAS (DENGAN SKEMA ANONIM SARAN)
+// ==========================================
 function dapatkanIdentitasAman() {
+    const categoryEl = document.getElementById('mail-category');
+    
+    // 🎯 DETEKSI MODE STANDALONE: Jika kategori dikunci di 'Saran' (disabled)
+    if (categoryEl && categoryEl.value === 'Saran' && categoryEl.disabled === true) {
+        // Buat UID acak unik berbasis waktu agar tidak bentrok di database
+        const randomID = "ANON-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        return { uid: randomID, ign: "Member" };
+    }
+    
+    // Jalur Normal (Untuk Chatbox atau Request Join / Umum)
     let uid = window.myUID || localStorage.getItem('UG_ID') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('UG_NAME') || "Guest";
     return { uid: uid, ign: ign };
@@ -40,8 +60,6 @@ function syncChat(force = false) {
     // --- [ 🔒 GEMBOK HULU: PENGHEMAT KUOTA POSISI TERTUTUP ] ---
     const popup = document.getElementById('chat-popup');
     
-    // Jika popup tidak ditemukan, atau popup TIDAK memiliki class 'show', 
-    // JANGAN tembak fetch ke GAS! Langsung stop di gerbang paling depan.
     if (!force && (!popup || !popup.classList.contains('show'))) {
         console.log("💤 Chatbox tertutup. Detak interval dilewati murni (Kuota GAS Aman).");
         return; 
@@ -135,7 +153,7 @@ function sendMessage() {
     fetch(`${URL_WRITE}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}`)
     .then(() => { 
         isSending = false; 
-        setTimeout(() => { syncChat(true); }, 500); // Action Trigger (Diberi akses tembus 'force' agar langsung tampil)
+        setTimeout(() => { syncChat(true); }, 500);
     })
     .catch(() => { isSending = false; });
 }
@@ -149,19 +167,200 @@ function getHashColor(u) {
 
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
-// Global Expose
+
+// ==========================================
+// [6] INTERFASE KOTAK SURAT (MAILBOX ENGINE)
+// ==========================================
+
+// 🎯 KOREKSI 1: Kembalikan fungsi pengatur layout dinamis WA yang hilang
+function aturFormMailbox() {
+    const categoryEl = document.getElementById('mail-category');
+    const waGroup = document.getElementById('wa-group');
+    const labelPesan = document.getElementById('mail-label-pesan');
+    const textarea = document.getElementById('mail-message');
+    
+    if (!categoryEl) return;
+    const kategori = categoryEl.value;
+
+    if (kategori === "Request Join") {
+        if (waGroup) waGroup.style.display = "flex";
+        if (labelPesan) labelPesan.innerText = "Alasan / Biodata Join :";
+        if (textarea) textarea.placeholder = "Sebutkan Level, Job Utama, dan alasan kamu ingin bergabung...";
+    } else {
+        if (waGroup) waGroup.style.display = "none";
+        if (labelPesan) labelPesan.innerText = "Pesan Anda :";
+        if (textarea) textarea.placeholder = "Tulis pesan atau laporan untuk Admin Umbrella...";
+    }
+}
+
+// Fungsi Buka-Tutup Modal Surat (UX Fisik: Auto-close chatbox)
+function toggleMail() {
+    const mailModal = document.getElementById('mail-modal');
+    const chatPopup = document.getElementById('chat-popup');
+    if (!mailModal) return;
+
+    // Jika obrolan sedang mekar, paksa tutup dulu (Memicu Gembok Hulu Aktif)
+    if (chatPopup && chatPopup.classList.contains('show')) {
+        chatPopup.classList.remove('show');
+    }
+
+    mailModal.classList.toggle('show');
+    
+    if (mailModal.classList.contains('show')) {
+        const textarea = document.getElementById('mail-message');
+        const inputWA = document.getElementById('mail-wa');
+        if (textarea) { textarea.value = ''; textarea.disabled = false; }
+        if (inputWA) { 
+            inputWA.value = ''; 
+            inputWA.disabled = false; 
+            inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; 
+        }
+        aturFormMailbox();
+        setTimeout(() => {
+            const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
+            if (visibleInput) visibleInput.focus();
+        }, 300);
+    }
+}
+
+// Notifikasi Kustom ala Game
+function tampilkanToast(pesan) {
+    const toast = document.getElementById('mail-toast');
+    if (!toast) return;
+    
+    toast.innerText = pesan;
+    toast.classList.add('muncul');
+    
+    setTimeout(() => {
+        toast.classList.remove('muncul');
+    }, 3000);
+}
+
+// Fungsi Mengirim Surat ke GAS Pipa 1
+function sendMail() {
+    if (isSendingMail) return; 
+    
+    const categoryEl = document.getElementById('mail-category');
+    const selectedCategory = categoryEl ? categoryEl.value : 'Umum';
+
+    const textarea = document.getElementById('mail-message');
+    let msg = textarea ? textarea.value.trim() : '';
+    
+    const inputWA = document.getElementById('mail-wa');
+    const waValue = inputWA ? inputWA.value.trim() : '';
+
+    // VALIDASI KOLOM (Toast ala Game)
+    if (selectedCategory === "Request Join") {
+        if (!waValue) {
+            tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!");
+            if (inputWA) inputWA.focus();
+            return;
+        }
+        if (!msg) {
+            tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!");
+            if (textarea) textarea.focus();
+            return;
+        }
+        // Gabungkan data WA + Pesan ke kolom Message database
+        msg = `${waValue}\n${msg}`;
+    } else {
+        if (!msg) {
+            tampilkanToast("⚠️ Pesan surat tidak boleh kosong!");
+            if (textarea) textarea.focus();
+            return;
+        }
+    }
+    
+    const user = dapatkanIdentitasAman();
+    isSendingMail = true;
+    
+    const sendBtn = document.querySelector('.mail-send-btn');
+    if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...';
+    if (textarea) textarea.disabled = true;
+    if (inputWA) inputWA.disabled = true;
+    if (categoryEl) categoryEl.disabled = true;
+
+    // UX OPTIMISTIC: Tutup modal instan, proses berjalan sunyi di background
+    toggleMail();
+
+    fetch(`${URL_MAIL}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}&category=${encodeURIComponent(selectedCategory)}&type=mail`)
+    .then(res => res.json())
+    .then(data => {
+        isSendingMail = false;
+        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
+        
+        if (data.status === "success") {
+            tampilkanToast("📬 Surat berhasil dikirim ke Admin Umbrella!");
+        } else {
+            tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
+            toggleMail();
+            if (textarea) textarea.disabled = false;
+            if (inputWA) inputWA.disabled = false;
+        }
+    })
+    .catch(err => {
+        isSendingMail = false;
+        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
+        tampilkanToast("🚨 Koneksi terputus! Gagal mengirim surat.");
+        
+        toggleMail();
+        if (textarea) textarea.disabled = false;
+        if (inputWA) inputWA.disabled = false;
+        console.error("Pipa GAS 1 Terputus:", err);
+    });
+}
+
+// Tutup modal otomatis jika user klik area luar kotak hitam (Overlay)
+window.addEventListener('click', function(e) {
+    const mailModal = document.getElementById('mail-modal');
+    if (e.target === mailModal) {
+        mailModal.classList.remove('show');
+    }
+});
+
+
+// ==========================================
+// [7] DETEKSI DEEP LINKING KOTAK SARAN STANDALONE
+// ==========================================
+function cekLinkSaranStandalone() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
+    
+    if (mode && mode.toLowerCase() === 'saran') {
+        setTimeout(() => {
+            const categoryEl = document.getElementById('mail-category');
+            if (categoryEl) {
+                categoryEl.value = 'Saran'; 
+                categoryEl.disabled = true; 
+                aturFormMailbox(); 
+            }
+            toggleMail(); 
+            console.log("💡 Standalone Link Detected: Kotak Saran Terkunci Aktif.");
+        }, 1000);
+    }
+}
+
+
+// ==========================================
+// 🎯 KOREKSI 2: Pintu Gerbang Global Expose (Wajib)
+// ==========================================
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
 window.syncChat = syncChat;
 
+window.toggleMail = toggleMail;
+window.sendMail = sendMail;
+window.aturFormMailbox = aturFormMailbox;
+
+
 // ==========================================
-// [7] MESIN PENGASUH UTAMA (FORCE-LOOP INDEPENDEN)
+// [9] MESIN PENGASUH INTERVAL UTAMA
 // ==========================================
-// Nyalakan interval abadi 4.5 detik sejak halaman load.
-// Interval ini tidak akan pernah dibongkar pasang, jadi sangat aman dan stabil.
 setInterval(() => {
     syncChat(false);
 }, 4500);
 
-console.log("🛡️ Umbrella Chat Engine: Gembok Hulu Posisi Tertutup Berhasil Diaktifkan!");
+window.addEventListener('DOMContentLoaded', cekLinkSaranStandalone);
+
+console.log("🛡️ Umbrella Chat Engine: Semua Komponen Terintegrasi Sempurna!");
