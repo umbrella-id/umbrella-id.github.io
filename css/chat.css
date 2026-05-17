@@ -76,6 +76,13 @@
     box-shadow: 0 0 8px #00ff88;
 }
 
+#chat-header {
+    display: flex !important;
+    justify-content: center !important; /* Dorong konten ke tengah secara horizontal */
+    align-items: center !important;     /* Ratakan konten secara vertikal */
+    text-align: center !important;
+}
+
 /* ==========================================
    [2] LOGS & SCROLLBAR (ANTI-GANGGU)
    ========================================== */
