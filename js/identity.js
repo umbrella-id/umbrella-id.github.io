@@ -1,6 +1,6 @@
 /**
- * identity.js - Umbrella Identity System (Final Gold - Verified Patch)
- * Versi: Final (Android Back Navigation & No Mobile Auto-Focus)
+ * identity.js - Umbrella Identity System (Final Gold - Clean Single-Satpam)
+ * Versi: Final (Android Back Clean Architecture & No Mobile Auto-Focus)
  */
 
 // 1. INISIALISASI DATA GLOBAL
@@ -29,14 +29,13 @@ function unlockSite() {
         if (title) title.innerText = "Selamat Datang";
     }
 
-    // 🎯 SUNTIKAN NAVIGASI HP 1: Pasang jebakan riwayat palsu di browser saat panel input mekar
-    // Biar kalau user mencet tombol Back fisik, browser gak keluar dari web lu.
+    // 🎯 SUNTIKAN NAVIGASI HP: Pasang jebakan riwayat palsu di browser saat panel input mekar
     history.pushState({ boksTerbuka: "siteGatekeeper" }, "");
 
     gate.style.display = 'flex';
     gate.style.opacity = "1";
     
-    // ANTI-AUTO KEYBOARD MOBILE
+    // ANTI-AUTO KEYBOARD MOBILE (Hanya fokus otomatis di PC)
     if (input && window.innerWidth >= 768) {
         setTimeout(() => input.focus(), 300);
     }
@@ -65,7 +64,7 @@ function finalizeLogin(name) {
     
     const gate = document.getElementById('site-gatekeeper');
     if (gate) {
-        // 🎯 SUNTIKAN NAVIGASI HP 2: Bersihkan riwayat palsu jika user sukses login/simpan nama
+        // Hapus riwayat palsu jika user sukses login/simpan nama agar history browser bersih kembali
         if (history.state && history.state.boksTerbuka === "siteGatekeeper") {
             history.back();
         }
@@ -85,7 +84,7 @@ function closeGate() {
     if (!gate) return;
 
     if (window.myIGN) {
-        // 🎯 SUNTIKAN NAVIGASI HP 3: Hapus riwayat palsu jika ditutup manual lewat tombol X / klik luar
+        // Hapus riwayat palsu jika ditutup manual lewat klik tombol X atau area luar overlay
         if (history.state && history.state.boksTerbuka === "siteGatekeeper") {
             history.back();
         }
@@ -105,18 +104,18 @@ function skipLogin() {
     finalizeLogin(guestName);
 }
 
-// 🎯 SUNTIKAN NAVIGASI HP 4: SATPAM POPSTATE UTAMANYA!
-// Fungsi ini dipanggil khusus saat browser mendeteksi tombol back navigasi HP ditekan
+// 🎯 FUNGSI EKSEKUSI DI-BACK LEWAT NAVBAR HP
+// Fungsi ini akan dipanggil secara aman oleh satpam universal yang ada di file chat.js lu!
 function closeGateFromNavbar() {
     const gate = document.getElementById('site-gatekeeper');
     if (!gate) return;
 
     if (window.myIGN) {
-        // Mode Re-Identity: Langsung kuncupin murni visualnya
+        // Mode Re-Identity: Langsung kuncupin visualnya tanpa memicu history.back() lagi
         gate.style.opacity = "0";
         setTimeout(() => { gate.style.display = 'none'; }, 500);
     } else {
-        // Mode User Baru: Nekat nge-back pas disuruh isi nama, auto-jejelin ID Guest biar portal gak macet
+        // Mode User Baru: Paksa kasih nick Guest jika nekat pencet tombol back pas awal masuk
         const guestName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
         window.myIGN = guestName;
         localStorage.setItem('u_ign', window.myIGN);
@@ -127,10 +126,10 @@ function closeGateFromNavbar() {
             if (typeof window.syncChat === "function") window.syncChat();
         }, 500);
     }
-    console.log("🛡️ Identity Gate closed safely via Android/iOS Navbar.");
+    console.log("🛡️ Identity Gate closed safely via Central Satpam.");
 }
 
-// Expose fungsi baru ke window global agar bisa saling panggil antardokumen JS
+// Expose fungsi eksekutor ke window global agar bisa diculik dan dipanggil oleh chat.js
 window.closeGateFromNavbar = closeGateFromNavbar;
 
 // 6. EVENT LISTENERS GLOBAL (Disatukan setelah DOM Siap)
@@ -150,14 +149,9 @@ document.addEventListener("DOMContentLoaded", () => {
             closeGate();
         }
     });
-
-    // 🎯 SUNTIKAN NAVIGASI HP 5: Pasang detektor tombol back fisik HP universal
-    window.addEventListener('popstate', function(e) {
-        // Jika yang memicu back adalah riwayat palsu milik gatekeeper kita
-        if (e.state && e.state.boksTerbuka === "siteGatekeeper") {
-            closeGateFromNavbar();
-        }
-    });
+    
+    /* 🚨 LINGKUNGAN AMAN: Event window.addEventListener('popstate'...) 
+       DI SINI SUDAH DIHAPUS TOTAL agar tidak bentrok dengan satpam utama di chat.js lu! */
 });
 
 // Expose fungsi ke window agar tombol HTML 'onclick' bisa memanggilnya tanpa kendala scope
