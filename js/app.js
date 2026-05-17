@@ -269,20 +269,36 @@ function updateStack(drag = 0) {
  * 6. EVENT LISTENERS (INTERAKSI USER)
  */
 
-// Input Sentuh (Touch)
+// Input Sentuh (Touch Mobile)
 window.addEventListener('touchstart', e => { 
-    if(!isModalOpen) startY = e.touches[0].pageY; 
+    // Ambil elemen chatbox
+    const popup = document.getElementById('chat-popup');
+    const isChatOpen = popup ? popup.classList.contains('show') : false;
+
+    // Jika modal berita ATAU chatbox lagi kebuka, kunci koordinat awal agar stacker diam
+    if (!isModalOpen && !isChatOpen) startY = e.touches[0].pageY; 
 });
 
 window.addEventListener('touchmove', e => {
-    if (window.innerWidth >= 768 || isModalOpen) return;
+    // 🎯 AMBIL STATUS POPUP CHAT
+    const popup = document.getElementById('chat-popup');
+    const isChatOpen = popup ? popup.classList.contains('show') : false;
+
+    // 🎯 KATUP PENGAMAN MUTLAK: Jika PC (>=768px), modal berita terbuka, ATAU chatbox lagi mekar, DETAK GOSOKAN DIHENTIKAN!
+    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
+
     deltaY = e.touches[0].pageY - startY;
     if (Math.abs(deltaY) > 5) e.preventDefault();
     updateStack(deltaY);
 }, {passive: false});
 
 window.addEventListener('touchend', () => {
-    if (window.innerWidth >= 768 || isModalOpen) return;
+    const popup = document.getElementById('chat-popup');
+    const isChatOpen = popup ? popup.classList.contains('show') : false;
+
+    // Jika chatbox lagi kebuka, cuekin fungsi pelepasan swipe
+    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
+
     // Ambang batas swipe (100px)
     if (deltaY < -100 && currentIndex < cardData.length - 1) currentIndex++;
     else if (deltaY > 100 && currentIndex > 0) currentIndex--;
@@ -291,9 +307,14 @@ window.addEventListener('touchend', () => {
     updateStack(0);
 });
 
-// Input Mouse Wheel (Scroll)
+// Input Mouse Wheel (Scroll PC / Cadangan)
 window.addEventListener('wheel', e => {
-    if (window.innerWidth >= 768 || isModalOpen) return;
+    const popup = document.getElementById('chat-popup');
+    const isChatOpen = popup ? popup.classList.contains('show') : false;
+
+    // Jika chatbox mekar, jangan biarkan scroll mouse menggerakkan kartu stacker di latar belakang
+    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
+
     if (e.deltaY > 50 && currentIndex < cardData.length - 1) currentIndex++;
     else if (e.deltaY < -50 && currentIndex > 0) currentIndex--;
     updateStack(0);
