@@ -1,8 +1,8 @@
-/* mobile-mode.css - Unified & Structured Version (Refined Glow Edition) */
+/* mobile-mode.css - Full Features & Organized Version (Clean Mail Outline Edition) */
 @media screen and (max-width: 767px) {
 
     /* ==========================================
-       1. GLOBAL LOCK & RESET (TEKSTUR CYBER MATRIX EDITION)
+       1. GLOBAL LOCK & RESET (DYNAMIC CYBER AMBIENT)
        ========================================== */
     html, body, .master-frame {
         position: fixed !important; 
@@ -11,30 +11,33 @@
         width: 100vw;
         height: 100dvh;
         
-        /* 🎨 LAYER 1: Pancaran Radial Ungu ke Gelap Utama Portal Lu */
-        background-color: var(--bg-dark) !important;
+        background-color: var(--bg-dark) !important; 
         background-image: 
-            /* 🎨 LAYER 2: Pola Tekstur Titik Mikro Digital (Cyber Dot-Matrix) */
-            radial-gradient(rgba(192, 132, 252, 0.15) 1px, transparent 1px), 
-            /* LAYER 1 (Gabungan): Pancaran ungu dari sudut atas HP */
-            radial-gradient(circle at 50% -20%, #1e113c 0%, var(--bg-dark) 85%) !important;
+            /* TEXTURE SYNC: Titik matriks cyber dari root */
+            radial-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px), 
+            /* AMBIENT LIGHT SYNC: Pancaran ungu meluas di latar belakang */
+            radial-gradient(circle at 50% -10%, #1e113c 0%, #0f172a 50%, var(--bg-dark) 100%) !important;
         
-        /* Ukuran kerapatan tekstur titik-titiknya (4px x 4px biar super halus) */
-        background-size: 4px 4px, 100% 100% !important;
+        background-size: 6px 6px, 100% 100% !important;
         background-blend-mode: normal !important;
+        transition: background 0.4s ease; 
+    }
+
+    /* DYNAMIC DIMMING: Jika Chatbox/Mailbox mekar, redupkan background biar popup depan fokus */
+    body:has(#chat-popup.show),
+    body:has(#mail-modal.show) {
+        background-image: 
+            radial-gradient(rgba(168, 85, 247, 0.10) 1px, transparent 1px), 
+            radial-gradient(circle at 50% -10%, #0c071a 0%, #05030a 60%, var(--bg-dark) 100%) !important;
     }
 
     /* Pembersihan Elemen Desktop */
-    .sidebar-brand, 
-    .pc-header-text, 
-    .pc-footer-text, 
-    .slogan-text, 
-    .logo-wrapper {
+    .sidebar-brand, .pc-header-text, .pc-footer-text, .slogan-text, .logo-wrapper {
         display: none !important;
     }
 
     /* ==========================================
-       2. MOBILE STACKER (KARTU UTAMA)
+       2. MOBILE STACKER (KARTU UTAMA - PC GLOW SINKRON)
        ========================================== */
     .stacker-card {
         position: absolute !important;
@@ -44,53 +47,83 @@
         width: 92vw; 
         height: auto;
         
-        /* 🎯 FIX SINKRONISASI BORDER: Tebal 1px, menggunakan border-line standar */
         border: 1px solid var(--border-line) !important; 
         transform: translateX(-50%);
+        background: var(--bg-mobile-gradient) !important;
         
-        /* 🎯 FIX TERLALU GELAP: Menggunakan gradasi kaca transparan baru */
-        background: var(--bg-card-gradient) !important;
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-    
-        box-shadow: 
-            0 25px 60px rgba(0, 0, 0, 0.65),            /* Bayangan dasar dikurangi biar gak terlalu pekat */
-            0 0 25px rgba(192, 132, 252, 0.12),         
-            inset 0 0 20px rgba(255, 255, 255, 0.02);   
+        backdrop-filter: blur(12px) saturate(160%); 
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
         
-        border-radius: 25px;
-        padding: 20px;
+        border-radius: 20px; 
+        padding: 25px;       
         display: flex;
         flex-direction: column;
         opacity: 0;
         visibility: hidden;
         z-index: 1;
+        
+        /* Proteksi agar kilatan cahaya tidak bocor keluar dari lengkungan sudut kartu */
+        overflow: hidden; 
         transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
     }
 
-    /* KONDISI KARTU AKTIF (Paling Depan) */
+    /* LAYER KILATAN CAHAYA DI MOBILE (PINJAM RUMUS PC) */
+    .stacker-card::before {
+        content: '';
+        position: absolute;
+        top: -150%;
+        left: -150%;
+        width: 300%;
+        height: 300%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        transform: rotate(45deg);
+        pointer-events: none;
+    }
+
+    /* KONDISI KARTU AKTIF (Pindah ke Depan) */
     .stacker-card.is-active { 
         opacity: 1; 
         visibility: visible; 
         z-index: 500; 
-        border-color: var(--border-card-active) !important; /* Sengaja dibikin lebih tegas saat aktif */
+        border-color: var(--border-line-hover) !important; 
+        box-shadow: var(--shadow-neon-glow) !important; 
+        
+        /* Jalankan denyut border neon halus */
         animation: card-pulse 4s infinite ease-in-out;
     }
+
+    /* AMUKAN KILATAN OTOMATIS: Dipicu ulang saat JS nembak class 'is-active' */
+    .stacker-card.is-active::before {
+        animation: mobile-shine 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
     
+    /* KEYFRAMES SAPUAN CAHAYA MOBILE */
+    @keyframes mobile-shine {
+        0% { left: -150%; top: -150%; }
+        100% { left: 100%; top: 100%; }
+    }
+
     /* ANIMASI DENYUT KARTU UTAMA */
     @keyframes card-pulse {
-        0% { border-color: var(--border-line); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 15px rgba(192, 132, 252, 0.08); }
-        50% { 
-            border-color: var(--border-card-active); 
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 25px var(--color-primary-glow); 
+        0% { 
+            border-color: var(--border-line); 
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 15px rgba(168, 85, 247, 0.2); 
         }
-        100% { border-color: var(--border-line); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 15px rgba(192, 132, 252, 0.08); }
+        50% { 
+            border-color: var(--border-line-hover); 
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), var(--shadow-neon-glow); 
+        }
+        100% { 
+            border-color: var(--border-line); 
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 15px rgba(168, 85, 247, 0.2); 
+        }
     }
 
     /* Efek Feedback Tap Sentuhan Jari */
     .stacker-card:active {
         transform: translate(-50%, 0) scale(0.97) !important;
-        background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(8, 8, 12, 0.7)) !important;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(11, 11, 14, 0.95)) !important; 
         transition: 0.1s;
     }
     
@@ -180,7 +213,7 @@
     /* ==========================================
        4. ELEMEN ANTARMUKA (UI OVERLAYS)
        ========================================== */
-    /* 🎯 WIDGET KOTAK SURAT (TOP RIGHT) - KEMBAR IDENTIK DENGAN KARTU */
+    /* 🎯 WIDGET KOTAK SURAT (TOP RIGHT) - MASTER CLEAN OUTLINE DETAILED */
     .mail-container {
         position: fixed;
         top: 22px;
@@ -188,8 +221,8 @@
         height: 50px;
         z-index: 1100;
         
-        /* 🎯 FIX SINKRONISASI BORDER: Menggunakan ketebalan dan warna pembatas yang sama persis dengan kartu */
-        border: 1px solid var(--border-line) !important; 
+        /* SINKRONISASI OUTLINE: Tebal 1px solid menggunakan garis pembatas identik dengan kartu */
+        border: 1px solid var(--color-primary) ; 
         padding: 0 18px;
         border-radius: 30px;
         display: flex;
@@ -199,11 +232,13 @@
         font-size: 0.8rem;
         font-weight: bold;
         
-        /* 🎯 FIX SINKRONISASI BACKDROP: Disamakan dengan kenyamanan transparansi kartu baru */
-        background: var(--bg-card-gradient) !important; 
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        background: var(--bg-mobile-gradient) !important; 
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        
+        /* 🎯 FIX ANTI-BIAS: Kita suntik mati pendaran cahaya neonnya di sini. 
+           Gua ganti dengan drop-shadow murni warna hitam pekat tipis untuk efek dimensi gantung saja! */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
     }
 
     /* Running Text (Top Left) */
