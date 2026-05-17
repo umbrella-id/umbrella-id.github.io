@@ -1,9 +1,10 @@
 /**
- * identity.js - Umbrella Identity System (Final Gold - Verified Patch V2)
- * Versi: Final (No Browser Prompt + UX Android Native Navbar Back Support)
+ * identity.js - Umbrella Identity System (Final Gold - Verified Patch)
+ * Versi: Final (No Browser Prompt)
  */
 
 // 1. INISIALISASI DATA GLOBAL
+// 🎯 PATCH FIX: Mengubah .substr() kuno menjadi .substring() standar modern agar lolos linter GitHub
 window.myUID = localStorage.getItem('u_uid') || 'U-' + Math.random().toString(36).substring(2, 11);
 window.myIGN = localStorage.getItem('u_ign') || ""; 
 localStorage.setItem('u_uid', window.myUID);
@@ -29,16 +30,9 @@ function unlockSite() {
         if (title) title.innerText = "Selamat Datang";
     }
 
-    // 🎯 SUNTIKAN 1: Kunci tombol back Android saat panel Gatekeeper mekar
-    history.pushState({ boksTerbuka: "gatekeeper" }, "");
-
     gate.style.display = 'flex';
     gate.style.opacity = "1";
-    
-    // Smart Focus untuk PC (Layar lebar), abaikan di HP agar transisi mulus
-    if (input && window.innerWidth >= 768) {
-        setTimeout(() => input.focus(), 300);
-    }
+    if (input) setTimeout(() => input.focus(), 300);
 }
 
 // 4. FUNGSI SIMPAN (Tombol Initialize)
@@ -47,11 +41,15 @@ function saveIdentity() {
     const name = input ? input.value.trim() : "";
     
     if (name.length >= 2) {
+        // Jika input valid, simpan nama baru
         finalizeLogin(name);
     } else {
+        // LOGIKA BARU:
         if (window.myIGN) {
+            // Jika sudah punya nama (Mode Edit), abaikan input kosong & tutup
             closeGate();
         } else {
+            // Jika benar-benar user baru & input kosong, jadikan Guest
             skipLogin();
         }
     }
@@ -62,33 +60,24 @@ function finalizeLogin(name) {
     window.myIGN = name.substring(0, 15);
     localStorage.setItem('u_ign', window.myIGN);
     
-    // 🎯 SUNTIKAN 2: Bersihkan riwayat palsu dari memori karena login sukses disubmit
-    if (history.state && history.state.boksTerbuka === "gatekeeper") {
-        history.back();
-    }
-    
     const gate = document.getElementById('site-gatekeeper');
     if (gate) {
         gate.style.opacity = "0";
         setTimeout(() => {
             gate.style.display = 'none';
             updateIdentityUI();
+            // Beritahu portal.js untuk refresh chat dengan nama baru
             if (typeof window.syncChat === "function") window.syncChat();
         }, 500);
     }
 }
 
-// FUNGSI TUTUP / CANCEL / SKIP (Tombol X atau klik overlay luar)
+// FUNGSI TUTUP / CANCEL / SKIP (Tombol X)
 function closeGate() {
     const gate = document.getElementById('site-gatekeeper');
     if (!gate) return;
 
     if (window.myIGN) {
-        // 🎯 SUNTIKAN 3: Bersihkan riwayat palsu karena ditutup manual lewat klik X fisik / overlay luar
-        if (history.state && history.state.boksTerbuka === "gatekeeper") {
-            history.back();
-        }
-
         // MODE RE-IDENTITY: Tutup saja, biarkan nama tetap yang lama
         gate.style.opacity = "0";
         setTimeout(() => {
@@ -98,22 +87,6 @@ function closeGate() {
         // MODE USER BARU: Klik X berarti "Malas Isi", otomatis buatkan nama System
         console.log("User skipped identification. Auto-generating Guest ID...");
         skipLogin(); // Ini akan memanggil finalizeLogin dengan nama Guest-XXXX
-    }
-}
-
-// 🎯 SUNTIKAN KUSTOM UNTUK NAVBAR ANDROID ONLY: 
-// Fungsi ini dipanggil khusus oleh satpam popstate di chat.js saat user menekan tombol Back fisik HP
-function closeGateFromNavbar() {
-    const gate = document.getElementById('site-gatekeeper');
-    if (!gate) return;
-
-    if (window.myIGN) {
-        // Mode Edit Nama: Cukup tutup visual tanpa manggil history.back() lagi (karena navbarnya udah otomatis mundur)
-        gate.style.opacity = "0";
-        setTimeout(() => { gate.style.display = 'none'; }, 500);
-    } else {
-        // User Baru: Paksa bikinin nama Guest secara otomatis
-        skipLogin();
     }
 }
 
@@ -136,16 +109,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === 'Enter') saveIdentity();
     });
 
-    // Event click overlay luar (Background gatekeeper)
+    // 🎯 PATCH FIX: Memindahkan event click overlay ke dalam DOMContentLoaded agar tidak bernilai 'null'
     document.getElementById('site-gatekeeper')?.addEventListener('click', function(e) {
+        // Jika yang diklik adalah backgroundnya (bukan kotak portal-box di dalamnya)
         if (e.target === this) {
             closeGate();
         }
     });
 });
 
-// Expose fungsi ke window agar tombol HTML 'onclick' dan file chat.js bisa memanggil tanpa kendala scope
+// Expose fungsi ke window agar tombol HTML 'onclick' bisa memanggilnya tanpa kendala scope
 window.unlockSite = unlockSite;
 window.saveIdentity = saveIdentity;
 window.closeGate = closeGate;
-window.closeGateFromNavbar = closeGateFromNavbar; // 🎯 Expose fungsi navbar baru
