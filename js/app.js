@@ -175,7 +175,6 @@ function updateUIElements() {
 function createModal() {
     if (document.getElementById('detailModal')) return;
     const modal = document.createElement('div');
-    // Pastikan class ini sesuai dengan yang ada di CSS (kita pakai detail-modal)
     modal.className = 'detail-modal'; 
     modal.id = 'detailModal';
     modal.innerHTML = `
@@ -184,12 +183,10 @@ function createModal() {
                 <h2 id="modalTitle"></h2>
                 <i class="fa-solid fa-xmark" onclick="closeDetail()"></i>
             </div>
-            <!-- Gunakan class modal-body agar mudah diatur scroll-nya di CSS -->
             <div class="modal-body" id="modalBody"></div>
         </div>`;
     document.body.appendChild(modal);
     
-    // Close modal jika klik area hitam (overlay)
     modal.onclick = function(e) {
         if (e.target === modal) closeDetail();
     };
@@ -197,6 +194,11 @@ function createModal() {
 
 function showDetail(index) {
     const item = cardData[index];
+    if (!item) return;
+
+    // 🎯 SUNTIKAN 1: Pasang jebakan tumpukan riwayat untuk Android saat modal mekar
+    history.pushState({ boksTerbuka: "detailModal" }, "");
+
     document.getElementById('modalTitle').innerText = item.Header;
     document.getElementById('modalBody').innerHTML = item.Body.replace(/\n/g, '<br>');
     document.getElementById('detailModal').style.display = 'flex';
@@ -204,9 +206,29 @@ function showDetail(index) {
 }
 
 function closeDetail() {
+    // 🎯 SUNTIKAN 2: Hapus riwayat palsu dari memori browser karena ditutup manual lewat klik (X) / overlay luar
+    if (history.state && history.state.boksTerbuka === "detailModal") {
+        history.back();
+    }
+
     document.getElementById('detailModal').style.display = 'none';
     isModalOpen = false;
 }
+
+// 🎯 SUNTIKAN KUSTOM NAVBAR ANDROID ONLY:
+// Fungsi ini dipanggil khusus oleh satpam popstate di chat.js saat user menekan tombol Back fisik HP
+function closeDetailFromNavbar() {
+    const modal = document.getElementById('detailModal');
+    if (!modal) return;
+
+    // Langsung kuncupin murni visual layarnya, gak usah history.back() karena navbarnya udah otomatis mundur
+    modal.style.display = 'none';
+    isModalOpen = false;
+    console.log("🛡️ News Modal closed safely via Android Navbar.");
+}
+
+// Expose fungsi baru ke window global agar bisa dibaca oleh file chat.js
+window.closeDetailFromNavbar = closeDetailFromNavbar;
 
 /**
  * 5. FUNGSI LOGIKA STACKER (KHUSUS MOBILE)
