@@ -16,7 +16,7 @@ function fastScroll() {
     if (lb) lb.scrollTop = lb.scrollHeight;
 }
 
-// 2. TOGGLE POPUP (UX Fisik: Auto-close Mailbox + Kunci Guliran Stacker Jari HP)
+// 2. TOGGLE POPUP (UX Fisik: Auto-close Mailbox jika chatbox dibuka)
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -27,30 +27,12 @@ function toggleChat() {
         mailModal.classList.remove('show');
     }
 
-    // Picu mekar-kuncup si boks chatbox
     popup.classList.toggle('show');
     
-    // 🎯 INJEKSI LOGIKA JS: Ambil semua kartu berita di layer belakang
-    const semuaKartu = document.querySelectorAll('.stacker-card');
-    
-    // Cek apakah chatbox saat ini sukses terbuka (punya class 'show')
     if (popup.classList.contains('show')) {
-        // 🔒 KUNCI ABSOLUT: Matikan total sensor sentuhan jari pada kartu berita
-        semuaKartu.forEach(kartu => {
-            kartu.style.pointerEvents = 'none';
-            kartu.style.transform = 'none'; // Amankan dari pentalan macet
-        });
-        
         fastScroll();
         setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         syncChat(true); 
-    } else {
-        // 🔓 BUKA KUNCI: Hidupkan kembali fungsi pentalan & geser kartu saat chat ditutup
-        semuaKartu.forEach(kartu => {
-            kartu.style.pointerEvents = 'auto';
-            // Kembalikan style transform ke setelan bawaan agar kartu balik ke tengah
-            kartu.style.transform = 'translateX(-50%)'; 
-        });
     }
 }
 
