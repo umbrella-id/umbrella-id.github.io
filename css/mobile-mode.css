@@ -2,7 +2,7 @@
 @media screen and (max-width: 767px) {
 
     /* ==========================================
-       1. GLOBAL LOCK & RESET
+       1. GLOBAL LOCK & RESET (TEKSTUR CYBER MATRIX EDITION)
        ========================================== */
     html, body, .master-frame {
         position: fixed !important; 
@@ -10,7 +10,18 @@
         overflow: hidden !important;
         width: 100vw;
         height: 100dvh;
-        background: radial-gradient(circle at 50% -20%, #1e113c 0%, var(--bg-dark) 85%) !important;
+        
+        /* 🎨 LAYER 1: Pancaran Radial Ungu ke Gelap Utama Portal Lu */
+        background-color: var(--bg-dark) !important;
+        background-image: 
+            /* 🎨 LAYER 2: Pola Tekstur Titik Mikro Digital (Cyber Dot-Matrix) */
+            radial-gradient(rgba(192, 132, 252, 0.15) 1px, transparent 1px), 
+            /* LAYER 1 (Gabungan): Pancaran ungu dari sudut atas HP */
+            radial-gradient(circle at 50% -20%, #1e113c 0%, var(--bg-dark) 85%) !important;
+        
+        /* Ukuran kerapatan tekstur titik-titiknya (4px x 4px biar super halus) */
+        background-size: 4px 4px, 100% 100% !important;
+        background-blend-mode: normal !important;
     }
 
     /* Pembersihan Elemen Desktop */
