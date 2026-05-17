@@ -249,26 +249,16 @@ function sendMail() {
     const inputWA = document.getElementById('mail-wa');
     const waValue = inputWA ? inputWA.value.trim() : '';
 
-    // VALIDASI KOLOM (Toast ala Game)
+    // Deteksi apakah sedang dalam mode standalone saran
+    const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
+
+    // VALIDASI KOLOM
     if (selectedCategory === "Request Join") {
-        if (!waValue) {
-            tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!");
-            if (inputWA) inputWA.focus();
-            return;
-        }
-        if (!msg) {
-            tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!");
-            if (textarea) textarea.focus();
-            return;
-        }
-        // Gabungkan data WA + Pesan ke kolom Message database
+        if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!"); if (inputWA) inputWA.focus(); return; }
+        if (!msg) { tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
         msg = `${waValue}\n${msg}`;
     } else {
-        if (!msg) {
-            tampilkanToast("⚠️ Pesan surat tidak boleh kosong!");
-            if (textarea) textarea.focus();
-            return;
-        }
+        if (!msg) { tampilkanToast("⚠️ Pesan surat tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
     }
     
     const user = dapatkanIdentitasAman();
@@ -280,36 +270,58 @@ function sendMail() {
     if (inputWA) inputWA.disabled = true;
     if (categoryEl) categoryEl.disabled = true;
 
-    // UX OPTIMISTIC: Tutup modal instan, proses berjalan sunyi di background
-    toggleMail();
+    // 🎯 KONDISI 1: JALUR NORMAL (Buka dari web) -> LANGSUNG TUTUP INSTAN BIAR RESPONSIF
+    if (!isStandaloneMode) {
+        toggleMail();
+    }
 
     fetch(`${URL_MAIL}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}&category=${encodeURIComponent(selectedCategory)}&type=mail`)
     .then(res => res.json())
     .then(data => {
         isSendingMail = false;
-        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
         
+        // Kembalikan teks tombol asli jika sewaktu-waktu modal dibuka lagi di jalur normal
+        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
+
         if (data.status === "success") {
-            tampilkanToast("📬 Surat berhasil dikirim ke Admin Umbrella!");
+            if (isStandaloneMode) {
+                // 🎯 KONDISI 2: JALUR STANDALONE -> SULAP JADI NOTIFIKASI SUKSES KARENA GAK BISA CLOSE
+                const modalBody = document.querySelector('.mail-modal-body');
+                if (modalBody) {
+                    modalBody.innerHTML = `
+                        <div style="text-align: center; padding: 30px 10px; color: #fff; animation: mekarHalus 0.3s ease-out;">
+                            <i class="fa-solid fa-circle-check" style="font-size: 3.5rem; color: var(--color-primary); margin-bottom: 15px; text-shadow: 0 0 15px rgba(192, 132, 252, 0.4);"></i>
+                            <h4 style="margin: 0 0 10px 0; letter-spacing: 1px; font-size: 1.1rem;">SURAT TERKIRIM</h4>
+                            <p style="font-size: 0.8rem; color: #888; line-height: 1.5; margin: 0;">
+                                Terima kasih! Pesan Anda telah berhasil dienkripsi dan dicatat ke dalam database Admin Umbrella.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+            // Toast universal tetap muncul manis di bawah layar
+            tampilkanToast("📬 Surat berhasil dikirim!");
         } else {
             tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
-            toggleMail();
+            // Jika jalur normal gagal di server, buka kembali boksnya agar teks ketikan gak ilang
+            if (!isStandaloneMode) toggleMail();
             if (textarea) textarea.disabled = false;
             if (inputWA) inputWA.disabled = false;
+            if (categoryEl) categoryEl.disabled = false;
         }
     })
     .catch(err => {
         isSendingMail = false;
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
-        tampilkanToast("🚨 Koneksi terputus! Gagal mengirim surat.");
+        tampilkanToast("🚨 Koneksi terputus! Gagal mengirim.");
         
-        toggleMail();
+        if (!isStandaloneMode) toggleMail();
         if (textarea) textarea.disabled = false;
         if (inputWA) inputWA.disabled = false;
+        if (categoryEl) categoryEl.disabled = false;
         console.error("Pipa GAS 1 Terputus:", err);
     });
 }
-
 // Tutup modal otomatis jika user klik area luar kotak hitam (Overlay)
 window.addEventListener('click', function(e) {
     const mailModal = document.getElementById('mail-modal');
