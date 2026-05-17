@@ -1,4 +1,4 @@
-/* mobile-mode.css - Unified & Structured Version */
+/* mobile-mode.css - Unified & Structured Version (Refined Glow Edition) */
 @media screen and (max-width: 767px) {
 
     /* ==========================================
@@ -10,7 +10,7 @@
         overflow: hidden !important;
         width: 100vw;
         height: 100dvh;
-        background: radial-gradient(circle at 50% -20%, #2e1065 0%, #0f172a 80%) !important;
+        background: radial-gradient(circle at 50% -20%, #1e113c 0%, var(--bg-dark) 85%) !important;
     }
 
     /* Pembersihan Elemen Desktop */
@@ -32,19 +32,20 @@
         left: 50%;
         width: 92vw; 
         height: auto;
-        border: 1px solid var(--color-primary);
+        
+        /* 🎯 FIX SINKRONISASI BORDER: Tebal 1px, menggunakan border-line standar */
+        border: 1px solid var(--border-line) !important; 
         transform: translateX(-50%);
         
-        /* BACKGROUND: Efek Kaca Gelap yang Mewah */
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+        /* 🎯 FIX TERLALU GELAP: Menggunakan gradasi kaca transparan baru */
+        background: var(--bg-card-gradient) !important;
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
     
-        /* SHADOW: Kombinasi Glow Luar dan Dalam */
         box-shadow: 
-            0 20px 50px rgba(0, 0, 0, 0.8),            /* Bayangan dasar */
-            0 0 20px rgba(192, 132, 252, 0.2),         /* Glow luar halus */
-            inset 0 0 15px rgba(192, 132, 252, 0.15);  /* Glow dalam (Vibe PC) */
+            0 25px 60px rgba(0, 0, 0, 0.65),            /* Bayangan dasar dikurangi biar gak terlalu pekat */
+            0 0 25px rgba(192, 132, 252, 0.12),         
+            inset 0 0 20px rgba(255, 255, 255, 0.02);   
         
         border-radius: 25px;
         padding: 20px;
@@ -53,46 +54,43 @@
         opacity: 0;
         visibility: hidden;
         z-index: 1;
-        
-        /* Transition tetap milikmu */
         transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
     }
 
+    /* KONDISI KARTU AKTIF (Paling Depan) */
     .stacker-card.is-active { 
         opacity: 1; 
         visibility: visible; 
         z-index: 500; 
-        
+        border-color: var(--border-card-active) !important; /* Sengaja dibikin lebih tegas saat aktif */
         animation: card-pulse 4s infinite ease-in-out;
     }
     
-    /* KEYFRAMES RINGAN */
+    /* ANIMASI DENYUT KARTU UTAMA */
     @keyframes card-pulse {
-    0% { border-color: rgba(255, 255, 255, 0.15); }
-    50% { 
-        border-color: var(--color-primary); 
-        box-shadow: 0 0 5px rgba(192, 132, 252, 0.4); 
-    }
-    100% { border-color: rgba(255, 255, 255, 0.15); }
+        0% { border-color: var(--border-line); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 15px rgba(192, 132, 252, 0.08); }
+        50% { 
+            border-color: var(--border-card-active); 
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 25px var(--color-primary-glow); 
+        }
+        100% { border-color: var(--border-line); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 15px rgba(192, 132, 252, 0.08); }
     }
 
-    /* Efek Feedback Tap */
+    /* Efek Feedback Tap Sentuhan Jari */
     .stacker-card:active {
-        transform: translate(-50%, 0) scale(0.96) !important; /* Efek tertekan ke dalam */
-        background: rgba(192, 132, 252, 0.15) !important; /* Kilatan warna saat ditekan */
+        transform: translate(-50%, 0) scale(0.97) !important;
+        background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(8, 8, 12, 0.7)) !important;
         transition: 0.1s;
     }
     
     /* ==========================================
-       🎯 FIX BUG: ANTI-TEMBUS GULIRAN SAAT CHAT POPUP AKTIF
+       🎯 ANTI-TEMBUS GULIRAN SAAT CHAT POPUP AKTIF
        ========================================== */
-    /* Jika chatbox sedang mekar, matikan paksa interaksi klik/gosok pada kartu berita */
     has(#chat-popup.show) .stacker-card,
     body:has(#chat-popup.show) .stacker-card {
         pointer-events: none !important;
     }
 
-    /* Cadangan Logika Jika Browser HP Jadul Belum Support Selector :has() */
     #chat-popup.show ~ .master-frame .stacker-card,
     #chat-popup.show ~ #app-container .stacker-card {
         pointer-events: none !important;
@@ -101,13 +99,12 @@
     /* ==========================================
        3. KONTEN DALAM KARTU (CARD ELEMENTS)
        ========================================== */
-    /* Header Kartu */
     .card-header-logo {
         display: flex;
         align-items: center;
         gap: 12px;
         margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid var(--border-divider); 
         padding-bottom: 12px;
         flex-shrink: 0;
     }
@@ -127,7 +124,7 @@
         font-size: clamp(0.75rem, 5.5vw, 2.0rem);
         line-height: 1.2;
         margin: 0;
-        color: var(--color-primary);
+        color: var(--color-primary); 
         font-weight: 800;
         text-transform: uppercase;
         display: -webkit-box;
@@ -136,7 +133,7 @@
         overflow: hidden;
     }
 
-    /* Body Kartu */
+    /* Body Konten Kartu */
     .card-content-wrapper {
         flex: 1; 
         overflow: hidden;
@@ -148,18 +145,18 @@
     .card-text {
         font-size: 1.2rem;
         line-height: 1.5;
-        color: #cbd5e1;
+        color: var(--text-main); 
         overflow: hidden; 
     }
 
-    /* Indikator Footer Kartu */
+    /* Indikator Footer Kartu (Baca Selengkapnya) */
     .read-more-indicator {
         display: flex;
         justify-content: center;
         align-items: center;
         padding-top: 10px;
         margin-top: auto;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid var(--border-divider); 
     }
     
     .read-more-text {
@@ -172,14 +169,16 @@
     /* ==========================================
        4. ELEMEN ANTARMUKA (UI OVERLAYS)
        ========================================== */
-    /* Kotak Surat (Top Right) */
+    /* 🎯 WIDGET KOTAK SURAT (TOP RIGHT) - KEMBAR IDENTIK DENGAN KARTU */
     .mail-container {
         position: fixed;
         top: 22px;
         right: 22px;
         height: 50px;
         z-index: 1100;
-        border: 1px solid var(--color-primary);
+        
+        /* 🎯 FIX SINKRONISASI BORDER: Menggunakan ketebalan dan warna pembatas yang sama persis dengan kartu */
+        border: 1px solid var(--border-line) !important; 
         padding: 0 18px;
         border-radius: 30px;
         display: flex;
@@ -189,10 +188,11 @@
         font-size: 0.8rem;
         font-weight: bold;
         
-        /* BACKGROUND: Efek Kaca Gelap yang Mewah */
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+        /* 🎯 FIX SINKRONISASI BACKDROP: Disamakan dengan kenyamanan transparansi kartu baru */
+        background: var(--bg-card-gradient) !important; 
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     /* Running Text (Top Left) */
@@ -219,7 +219,7 @@
         padding-left: 20px;
     }
 
-    /* Sosmed (Bottom Left) */
+    /* Sosmed Corner (Bottom Left) */
     .sosmed-corner {
         position: fixed;
         bottom: 30px;
@@ -235,7 +235,7 @@
         transition: 0.2s;
     }
 
-    /* Tombol Chat (Bottom Right) */
+    /* Tombol Bulat Widget Chat (Bottom Right) */
     .chat-container {
         position: fixed;
         bottom: 30px;
@@ -249,15 +249,16 @@
         align-items: center;
         justify-content: center;
         color: white;
+        box-shadow: 0 0 15px var(--color-primary-glow); 
     }
 
     .chat-container:active, .mail-container:active {
-        transform: scale(0.9); /* Efek tombol mendem */
-        filter: brightness(1.2); /* Menjadi lebih terang saat ditekan */
+        transform: scale(0.9);
+        filter: brightness(1.2);
         transition: 0.1s;
     }
     
-    /* identity.css */
+    /* Label ID Player (Top Left Absolute) */
     #ign-label-container {
         position: fixed;
         top: 5px;
@@ -271,21 +272,23 @@
         color: #fff;
         z-index: 9900;
         letter-spacing: 1.2px;
+        text-shadow: 0 0 8px var(--color-primary-glow);
     }
 
     #ign-label-container:active {
-        transform: scale(0.9); /* Sedikit mengecil saat ditekan */
+        transform: scale(0.9);
         opacity: 0.7;
     }
 
     /* ==========================================
-       5. MODAL SYSTEM
+       5. MODAL DETAIL NEWS SYSTEM
        ========================================== */
     .detail-modal {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0,40);
+        background: var(--bg-overlay); 
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         display: none;
         justify-content: center;
         align-items: center;
@@ -294,14 +297,14 @@
     }
     
     .modal-content {
-        background: #111;
+        background: var(--bg-popup); 
         border: 1px solid var(--color-primary);
         width: 100%;
         max-width: 600px;
-        border-radius: 20px;
+        border-radius: 20px; 
         padding: 30px;
         position: relative;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        box-shadow: 0 0 30px var(--color-primary-glow); 
     }
     
     .modal-header {
@@ -316,21 +319,23 @@
         margin: 0;
         font-size: 1.5rem;
         font-weight: 800;
+        letter-spacing: 0.5px;
     }
     
     .modal-body {
         max-height: 60vh;
         overflow-y: auto;
-        color: #cbd5e1;
+        color: var(--text-main); 
         line-height: 1.7;
         font-size: 1rem;
         padding-right: 10px;
     }
     
-    /* Modal Scrollbar */
+    /* Modal Scrollbar Premium Minimalis */
     .modal-body::-webkit-scrollbar { width: 4px; }
+    .modal-body::-webkit-scrollbar-track { background: transparent; }
     .modal-body::-webkit-scrollbar-thumb { 
-        background: var(--color-primary); 
+        background: var(--color-primary-glow); 
         border-radius: 10px; 
     }
 
