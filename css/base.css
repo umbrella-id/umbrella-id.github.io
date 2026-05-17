@@ -1,7 +1,7 @@
 :root {
     --color-primary: #c084fc;
     --bg-dark: #020617;
-    --bg-card: rgba(15, 23, 42, 0.95);
+    --bg-card: rgba(15, 23, 42, 0.70);
     --border-line: rgba(192, 132, 252, 0.3);
     --text-main: #cbd5e1;
 }
