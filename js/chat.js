@@ -67,6 +67,13 @@ window.addEventListener('popstate', function (event) {
         mailModal.classList.remove('show');
         console.log("🛡️ Navbar Back detected: Closing Mailbox successfully.");
     }
+    // Di dalam file js/chat.js (Area Satpam Popstate)
+    if (gate && (gate.style.display === 'flex' || gate.style.opacity === '1')) {
+        // Manggil fungsi aman khusus navbar yang barusan kita buat di identity.js
+        if (typeof window.closeGateFromNavbar === "function") {
+            window.closeGateFromNavbar(); 
+        }
+    }
 });
 
 // ==========================================
