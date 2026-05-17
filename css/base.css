@@ -1,47 +1,48 @@
 /* ==========================================
-   base.css - Pusat Komando Visual & Tema Umbrella
+   base.css - Core Master Blueprint (Universal Database)
    ========================================== */
 :root {
-    /* 1. PALET WARNA INTI & NEON GLOW */
-    --color-primary: #c084fc;           /* Ungu Neon Utama (Pendar Inti) */
-    --color-primary-glow: rgba(192, 132, 252, 0.25); /* Pendaran Neon Luar */
+    /* 🎨 1. SAKLAR UTAMA UNGU NEON PAYUNG (Ubah di sini, semua berubah!) */
+    --color-primary: #a855f7;           /* Ungu Neon Violet Utama */
+    --color-primary-glow: rgba(168, 85, 247, 0.25); /* Pendaran redup universal */
+    --color-primary-hover: rgba(192, 132, 252, 0.05); /* Bias ungu tipis hover PC */
+
+    /* 🌌 2. STRUKTUR COGNITIVE COSMOS BACKDROP */
+    --bg-dark: #030208;                 /* Jagat malam pekat */
+    --bg-solid-form: #07060a;           /* Dasar hitam pekat form & input */
+    --bg-popup: rgba(10, 7, 18, 0.98);  /* Kaca gelap pekat premium untuk popup/modal */
+    --bg-overlay: rgba(0, 0, 0, 0.65);  /* Tirai pelindung saat popup aktif */
+
+    /* 🔮 3. MENU FORMULA KACA (SHARED GLASS FORMULA) */
+    /* Menu PC: Kaca Ungu-Biru Transparan Super Tipis Bening */
+    --bg-pc-glass: rgba(15, 23, 42, 0.40); 
     
-    /* 2. ENGINE LATAR BELAKANG (DARK MODE SYSTEM) */
-    --bg-dark: #020617;                 /* Hitam Kebiruan Dasar Jagat Web */
-    --bg-solid-form: #0b0b0e;           /* Hitam Pekat untuk Kolom Input/Form */
-    --bg-card: rgba(15, 23, 42, 0.70);  /* Kaca Transparan untuk Kartu Berita Stacker */
-    --bg-popup: rgba(15, 15, 20, 0.98); /* Kaca Gelap Mewah Khusus Konten Popup/Modal */
-    --bg-overlay: rgba(0, 0, 0, 0.60);  /* Penutup Layar Belakang (Blur Overlay) */
+    /* Menu Mobile: Kaca Hitam Doff Taktis Semi-Transparan */
+    --bg-mobile-gradient: linear-gradient(135deg, rgba(10, 7, 18, 0.88), rgba(15, 11, 25, 0.94)); 
+
+    /* ✨ 4. BOM LAMPU NEON LUAR (ANTI-BIAS TEXT) */
+    /* Murni menembak ke luar frame agar teks di dalam kartu tetap tajam setajam silet */
+    --shadow-neon-glow: 0 0 20px rgba(192, 132, 252, 0.3), 
+                        0 0 40px rgba(192, 132, 252, 0.1),
+                        inset 0 0 15px rgba(192, 132, 252, 0.2);
+
+    /* 📐 5. SISTEM GARIS TEPI UNIVERSAL */
+    --border-line: rgba(168, 85, 247, 0.2);    /* Garis tipis default lu (0.2) */
+    --border-line-hover: #a855f7;              /* Garis menyala solid saat disorot */
+    --border-card-active: rgba(168, 85, 247, 0.65); /* Garis tepi mobile aktif */
+    --border-glow: rgba(255, 255, 255, 0.08); 
+    --border-divider: rgba(255, 255, 255, 0.05); 
     
-    /* 3. SISTEM ARSITEKTUR GARIS TEPI */
-    --border-line: rgba(192, 132, 252, 0.3); /* Garis Neon Tebal (Kartu Utama) */
-    --border-glow: rgba(255, 255, 255, 0.08); /* Garis Tipis Elemen Dalam Form */
-    --border-divider: rgba(255, 255, 255, 0.05); /* Garis Pembatas Header/Footer */
-    
-    /* 4. KASTA STRUKTUR TEKS */
-    --text-main: #cbd5e1;               /* Abu Terang Teks Utama (Sangat Nyaman Dibaca) */
-    --text-muted: #888888;              /* Teks Keterangan/Label yang Meredup */
-    
-    /* 🎯 FIX TERLALU GELAP: Naikkan transparansi kaca (bukan hitam pekat lagi, tapi abu-hitam transparan) */
-    --bg-card-gradient: linear-gradient(135deg, rgba(15, 23, 42, 0.45), rgba(8, 8, 12, 0.60)); 
-    --border-card-active: rgba(192, 132, 252, 0.6);
+    /* 📝 6. FONTS READABILITY SYSTEM */
+    --text-main: #cbd5e1;               
+    --text-muted: #64748b;              
 }
 
 /* ==========================================
-   2. RESET DASAR & GLOBAL LAYOUT
+   2. GLOBAL ARCHITECTURE RESET
    ========================================== */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-}
-
-body { 
-    background-color: var(--bg-dark); 
-    color: var(--text-main); 
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-    overflow: hidden; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
 
 /* ==========================================
    3. GAYA VISUAL KARTU DAFTAR UTAMA (BASE FRAME)
@@ -53,7 +54,7 @@ body {
     padding: 25px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
 }
 
 .card-title { 
@@ -63,17 +64,17 @@ body {
     margin-bottom: 15px; 
 }
 
-/* Sistem Area Gulir Dalam Kartu / Chat logs */
+/* Sistem Area Gulir Teks */
 .scroll-area { 
     flex: 1; 
     overflow-y: auto; 
-    scrollbar-width: none; /* Menghilangkan scrollbar di Firefox */
+    scrollbar-width: none; 
 }
 .scroll-area::-webkit-scrollbar { 
-    display: none; /* Menghilangkan scrollbar di Chrome/Safari/HP Android */
+    display: none; 
 }
 
-/* FLOATING UI (Layer Tengah - Z-Index 1000) */
+/* FLOATING UI WIDGETS */
 .mail-container, .chat-container {
     position: fixed;
     z-index: 1000;
@@ -90,10 +91,10 @@ body {
     justify-content: center; 
     font-size: 24px;
     cursor: pointer; 
-    box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
+    box-shadow: 0 0 15px var(--color-primary-glow);
 }
 
-/* POPUP SYSTEM GLOBAL LAYER (Z-Index 2000 Bawaan Base) */
+/* POPUP SYSTEM GLOBAL LAYER */
 .popup-overlay {
     position: fixed; 
     inset: 0; 
