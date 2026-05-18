@@ -1,5 +1,5 @@
 /* mobile-mode.css - Hanya aktif di layar sempit yang posisinya tegak/tinggi */
-@media screen and (max-width: 767px) and (min-height:300px) {
+@media screen and (max-width: 767px) and (min-height:380px) {
 
     /* ==========================================
        1. GLOBAL LOCK & RESET (DYNAMIC CYBER AMBIENT)
