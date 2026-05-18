@@ -1,78 +1,94 @@
 /* ==========================================
-   blocking.css - Lock Orientation & Guard System (Anti-Bocor Patch)
+   blocking.css - Lock Orientation Perfect Solution
    ========================================== */
 
-/* Secara default di semua layar, sembunyikan tirai peringatan ini */
+/* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di mode normal */
 #rotate-device-screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #030208;
-    z-index: 999999 !important; /* Naikin kastanya satu digit lagi buat jaga-jaga */
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    padding: 30px;
-    text-align: center;
+    display: none !important;
 }
 
-/* 🎯 DETEKSOR SAKTI: HP DIMIRINGKAN (LANDSCAPE MOBILE) */
+/* 🎯 2. KONDISI EMERGENSI: HP Dimiringkan (Landscape Mobile) */
 @media screen and (max-width: 767px) and (orientation: landscape) {
-    #rotate-device-screen {
-        display: flex !important; /* Paksa tirai hitam menyembur keluar */
-    }
     
-    /* 🎯 BENTENG PERTAHANAN TOTAL: 
-       Kita kumpulin semua elemen aplikasi tanpa terkecuali, lalu kita SUNTIK MATI visualnya 
-       biar gak ada satu pun teks, widget, running text, atau label nama yang bisa lolos ke atas! */
-    .master-frame, 
-    #app-container, 
-    .mail-container, 
-    .chat-container, 
-    .sosmed-corner, 
-    #site-gatekeeper,
-    .detail-modal,
-    #ign-label-container,    /* 🚨 Sikat label ID nama player! */
-    .running-text-wrapper {  /* 🚨 Sikat running text marquee! */
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
+    #rotate-device-screen {
+        /* Paksa membuat layar hitam pekat mandiri di kasta tertinggi */
+        display: flex !important;
+        position: fixed !important;
+        inset: 0 !important;
+        background: #030208 !important; /* Hitam pekat Umbrella Core */
+        z-index: 9999999 !important; /* Angka mutlak tak tertandingi */
+        
+        /* Set posisi konten tepat di tengah-tengah layar HP */
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        
+        color: #ffffff !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 🎨 RACIKAN DESIGN TEKS INTERNAL (Memaksa tampil anti-tenggelam) */
+    #rotate-device-screen .rotate-box-content {
+        display: block !important;
+        text-align: center !important;
+        max-width: 90vw !important;
+    }
+
+    /* Modifikasi Teks Judul Utama */
+    #rotate-device-screen p {
+        font-size: 1.3rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        color: #ffffff !important;
+        margin: 15px 0 8px 0 !important;
+        display: block !important;
+    }
+
+    /* Modifikasi Teks Keterangan Sub */
+    #rotate-device-screen span {
+        font-size: 0.85rem !important;
+        color: #64748b !important; /* Abu-abu redup */
+        display: block !important;
+        max-width: 280px !important;
+        line-height: 1.5 !important;
+        margin: 0 auto !important;
+    }
+
+    /* 📱 INDIKATOR ANIMASI ROTASI (MENGGUNAKAN CSS MURNI JIKA FONT-AWESOME MOGOK) */
+    #rotate-device-screen .rotate-icon-fallback {
+        width: 40px !important;
+        height: 70px !important;
+        border: 3px solid var(--color-primary, #a855f7) !important;
+        border-radius: 6px !important;
+        position: relative !important;
+        display: block !important;
+        margin: 0 auto !important;
+        
+        /* Jalankan animasi putar hardware-accelerated */
+        animation: mobile-flip-animation 2s infinite ease-in-out !important;
+    }
+
+    /* Tombol Home Kecil di bawah bingkai HP cadangan */
+    #rotate-device-screen .rotate-icon-fallback::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 4px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        background: var(--color-primary, #a855f7) !important;
     }
 }
 
-/* 🎨 DEKORASI VISUAL KONTEN TIRAI */
-.rotate-box-content i {
-    font-size: 3.5rem;
-    color: var(--color-primary, #a855f7); 
-    margin-bottom: 15px;
-}
-
-.rotate-box-content p {
-    font-size: 1.4rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    color: #fff;
-}
-
-.rotate-box-content span {
-    font-size: 0.9rem;
-    color: #64748b;
-    display: block;
-    max-width: 300px;
-    line-height: 1.4;
-    margin: 0 auto;
-}
-
-/* 🎬 ANIMASI GOYANG HP BERPUTAR */
-.rotate-animation {
-    animation: phone-rotate 2s infinite ease-in-out;
-}
-
-@keyframes phone-rotate {
+/* 🎬 DOSIS ANIMASI BERPUTAR 90 DERAJAT MURNI */
+@keyframes mobile-flip-animation {
     0% { transform: rotate(0deg); }
-    50% { transform: rotate(-90deg); }
+    40% { transform: rotate(-90deg); }
+    60% { transform: rotate(-90deg); }
     100% { transform: rotate(0deg); }
 }
