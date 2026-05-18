@@ -240,38 +240,60 @@ function updateStack(drag = 0) {
     const h = window.innerHeight;
 
     cards.forEach((card, i) => {
-        // Animasi halus hanya saat tidak sedang di-drag
+        // Animasi halus hanya saat tidak sedang di-drag (drag === 0)
         card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
         
         if (i === currentIndex) {
-            // ---- KARTU UTAMA AKTIF ----
+            // ---- 1. KARTU UTAMA AKTIF ----
             card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
             card.style.opacity = 1;
             card.style.zIndex = 500;
             card.style.visibility = "visible";
 
-            // 🎯 TRIK SAKTI PEMICU KILATAN: Jika kartu aktif ini belum punya class 'is-active', pasang sekarang!
+            // Trigger pemicu kilatan cahaya otomatis dari CSS
             if (!card.classList.contains('is-active')) {
-                // Hapus dulu class dari seluruh kartu lain agar tidak ada kilatan ganda bentrok
                 cards.forEach(c => c.classList.remove('is-active'));
-                
-                // Tambahkan ke kartu terpilih untuk memicu ulang @keyframes mobile-shine di CSS
                 card.classList.add('is-active');
             }
-        } else if (i < currentIndex) {
-            // ---- KARTU YANG SUDAH LEWAT (DIATAS) ----
+            
+        } else if (i === currentIndex - 1) {
+            // ---- 2. KARTU TEPAT DI ATASNYA (EFEK SINKRON SWIPE DOWN) ----
+            /* 🎯 KUNCI UTAMA: Jika user sedang swipe down (drag > 0), suruh kartu tepat di atas ini 
+               untuk ikut meluncur turun dari langit-langit (-h) secara real-time mengikuti jari! */
+            if (drag > 0) {
+                let posUpper = -h + drag;
+                card.style.transform = `translate(-50%, ${posUpper}px)`;
+                // Opacity-nya ikut memudar masuk perlahan biar smooth gak ngagetin
+                card.style.opacity = Math.min(drag / (h * 0.5), 1);
+                card.style.zIndex = 600; /* Z-index taruh paling depan biar dia menimpa kartu tengah pas turun */
+                card.style.visibility = "visible";
+            } else {
+                // Jika sedang swipe up biasa, buang jauh ke atas langit
+                card.style.transform = `translate(-50%, -${h}px)`;
+                card.style.opacity = 0;
+                card.style.zIndex = 1;
+                card.style.visibility = "hidden";
+            }
+            card.classList.remove('is-active');
+
+        } else if (i < currentIndex - 1) {
+            // ---- 3. KARTU LAIN YANG SUDAH LEWAD JAUH DI ATAS ----
             card.style.transform = `translate(-50%, -${h}px)`;
             card.style.opacity = 0;
             card.style.zIndex = 1;
-            card.classList.remove('is-active'); // Bersihkan class pembawa kilat
+            card.style.visibility = "hidden";
+            card.classList.remove('is-active');
+            
         } else {
-            // ---- KARTU ANTREAN (DIBAWAH) ----
-            let pos = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translate(-50%, ${pos}px)`;
+            // ---- 4. KARTU ANTREAN DI BAWAH (EFEK SINKRON SWIPE UP) ----
+            /* 🎯 SINKRON SWIPE UP: Jika sedang swipe up (drag < 0), kartu bawah ikut merayap naik.
+               Jika sedang swipe down, dia diam manis di dasar layar nunggu giliran. */
+            let posLower = h + (drag < 0 ? drag : 0);
+            card.style.transform = `translate(-50%, ${posLower}px)`;
             card.style.opacity = 1;
             card.style.zIndex = 400;
             card.style.visibility = "visible";
-            card.classList.remove('is-active'); // Bersihkan class pembawa kilat
+            card.classList.remove('is-active');
         }
     });
 }
