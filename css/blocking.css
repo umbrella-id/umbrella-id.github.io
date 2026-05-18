@@ -12,7 +12,7 @@
    Menggunakan rumus murni dari pemikiran lu: 
    Jika posisi miring (landscape) DAN tinggi ruangan layar di bawah atau sama dengan 600px, 
    maka langsung lempar tirai hitam untuk mengunci jalannya aplikasi! */
-@media screen and (orientation: landscape) and (max-height: 600px) {
+@media screen and (orientation: landscape) and (max-height: 400px) {
     
     #rotate-device-screen {
         /* Mengubah display dari none menjadi flex agar tirai menyembur keluar */
