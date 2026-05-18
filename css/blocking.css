@@ -1,17 +1,24 @@
 /* ==========================================
-   blocking.css - Lock Orientation Perfect Solution
+   blocking.css - Lock Orientation Ultra Fixed (Anti-Jebol Laptop & HP)
    ========================================== */
-@media screen and (max-width: 767px) and (orientation: landscape) {
+
+/* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di semua jenis layar */
+#rotate-device-screen {
+    display: none !important;
+}
+
+/* 🎯 2. SAKLAR EMERGENSI (HANYA AKTIF SAAT HP/TABLET DIMIRINGKAN)
+   Rumus Sakti: Jika posisi miring (landscape) DAN tinggi ruang layar di bawah 550px.
+   Ini adalah identitas mutlak Smartphone saat rebahan/miring. Laptop lu gak akan kena bantai lagi! */
+@media screen and (orientation: landscape) and (max-height: 550px) {
     
     #rotate-device-screen {
-        /* Paksa membuat layar hitam pekat mandiri di kasta tertinggi */
         display: flex !important;
         position: fixed !important;
         inset: 0 !important;
         background: #030208 !important; /* Hitam pekat Umbrella Core */
-        z-index: 9999999 !important; /* Angka mutlak tak tertandingi */
+        z-index: 9999999 !important; /* Kasta tertinggi melibas semua elemen */
         
-        /* Set posisi konten tepat di tengah-tengah layar HP */
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
@@ -22,63 +29,61 @@
         box-sizing: border-box !important;
     }
 
-    /* 🎨 RACIKAN DESIGN TEKS INTERNAL (Memaksa tampil anti-tenggelam) */
+    /* RACIKAN DESIGN KONTEN INTERNAL (Paksa mekar di atas hitam) */
     #rotate-device-screen .rotate-box-content {
         display: block !important;
         text-align: center !important;
-        max-width: 90vw !important;
+        width: 100% !important;
     }
 
-    /* Modifikasi Teks Judul Utama */
+    /* Teks Judul Utama */
     #rotate-device-screen p {
-        font-size: 1.3rem !important;
+        font-size: 1.2rem !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
         letter-spacing: 2px !important;
         color: #ffffff !important;
-        margin: 15px 0 8px 0 !important;
+        margin: 15px 0 6px 0 !important;
         display: block !important;
     }
 
-    /* Modifikasi Teks Keterangan Sub */
+    /* Teks Keterangan Sub */
     #rotate-device-screen span {
-        font-size: 0.85rem !important;
-        color: #64748b !important; /* Abu-abu redup */
+        font-size: 0.8rem !important;
+        color: #64748b !important;
         display: block !important;
-        max-width: 280px !important;
-        line-height: 1.5 !important;
+        max-width: 320px !important;
+        line-height: 1.4 !important;
         margin: 0 auto !important;
     }
 
-    /* 📱 INDIKATOR ANIMASI ROTASI (MENGGUNAKAN CSS MURNI JIKA FONT-AWESOME MOGOK) */
+    /* 📱 INDIKATOR ANIMASI ROTASI CSS MURNI (GARANSI 100% NYALA) */
     #rotate-device-screen .rotate-icon-fallback {
-        width: 40px !important;
-        height: 70px !important;
+        width: 35px !important;
+        height: 60px !important;
         border: 3px solid var(--color-primary, #a855f7) !important;
         border-radius: 6px !important;
         position: relative !important;
         display: block !important;
         margin: 0 auto !important;
-        
-        /* Jalankan animasi putar hardware-accelerated */
         animation: mobile-flip-animation 2s infinite ease-in-out !important;
     }
 
-    /* Tombol Home Kecil di bawah bingkai HP cadangan */
+    /* Tombol Bulat Home HP Mini */
     #rotate-device-screen .rotate-icon-fallback::after {
         content: '' !important;
         position: absolute !important;
-        bottom: 4px !important;
+        bottom: 3px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: 6px !important;
-        height: 6px !important;
+        width: 5px !important;
+        height: 5px !important;
         border-radius: 50% !important;
         background: var(--color-primary, #a855f7) !important;
     }
 }
 
-/* 🎬 DOSIS ANIMASI BERPUTAR 90 DERAJAT MURNI */
+/* 🎬 KEYFRAMES ANIMASI PUTAR HP */
 @keyframes mobile-flip-animation {
     0% { transform: rotate(0deg); }
     40% { transform: rotate(-90deg); }
