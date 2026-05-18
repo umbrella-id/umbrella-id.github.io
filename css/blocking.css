@@ -1,23 +1,24 @@
 /* ==========================================
-   blocking.css - Lock Orientation Ultra Fixed (Anti-Jebol Laptop & HP)
+   blocking.css - Universal Height Guard (600px Safe Zone Edition)
    ========================================== */
 
-/* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di semua jenis layar */
+/* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di semua jenis layar normal */
 #rotate-device-screen {
     display: none !important;
 }
 
-/* 🎯 2. SAKLAR EMERGENSI (HANYA AKTIF SAAT HP/TABLET DIMIRINGKAN)
-   Rumus Sakti: Jika posisi miring (landscape) DAN tinggi ruang layar di bawah 550px.
-   Ini adalah identitas mutlak Smartphone saat rebahan/miring. Laptop lu gak akan kena bantai lagi! */
-@media screen and (orientation: landscape) and (max-height: 550px) {
+/* 🎯 2. SAKLAR BLOKIR UNIVERSAL (LANDSCAPE + RUANG KRISIS)
+   Kunci Logika Lu: Jika posisi miring (landscape) DAN tinggi bersih layar di bawah 600px.
+   Kagak peduli di device apa, kalau tinggi layar gak cukup buat nampung padding + teks kartu, 
+   langsung tutup tirai hitam demi menyelamatkan visual interface! */
+@media screen and (orientation: landscape) and (max-height: 600px) {
     
     #rotate-device-screen {
         display: flex !important;
         position: fixed !important;
         inset: 0 !important;
         background: #030208 !important; /* Hitam pekat Umbrella Core */
-        z-index: 9999999 !important; /* Kasta tertinggi melibas semua elemen */
+        z-index: 99999999 !important; /* Kasta tertinggi melibas jagat raya */
         
         flex-direction: column !important;
         justify-content: center !important;
@@ -29,7 +30,7 @@
         box-sizing: border-box !important;
     }
 
-    /* RACIKAN DESIGN KONTEN INTERNAL (Paksa mekar di atas hitam) */
+    /* RACIKAN DESIGN KONTEN INTERNAL (Memaksa mekar di atas warna hitam) */
     #rotate-device-screen .rotate-box-content {
         display: block !important;
         text-align: center !important;
@@ -57,7 +58,7 @@
         margin: 0 auto !important;
     }
 
-    /* 📱 INDIKATOR ANIMASI ROTASI CSS MURNI (GARANSI 100% NYALA) */
+    /* 📱 INDIKATOR ANIMASI ROTASI CSS MURNI */
     #rotate-device-screen .rotate-icon-fallback {
         width: 35px !important;
         height: 60px !important;
