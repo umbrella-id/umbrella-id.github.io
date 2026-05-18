@@ -1,5 +1,5 @@
 /* ==========================================
-   blocking.css - Lock Orientation & Guard System (Standalone Edition)
+   blocking.css - Lock Orientation & Guard System (Anti-Bocor Patch)
    ========================================== */
 
 /* Secara default di semua layar, sembunyikan tirai peringatan ini */
@@ -8,7 +8,7 @@
     position: fixed;
     inset: 0;
     background: #030208;
-    z-index: 99999; /* Kasta tertinggi menutupi seluruh chatbox, modal, dan kartu */
+    z-index: 999999 !important; /* Naikin kastanya satu digit lagi buat jaga-jaga */
     justify-content: center;
     align-items: center;
     color: #fff;
@@ -17,29 +17,34 @@
     text-align: center;
 }
 
-/* 🎯 SYARAT PEMICU SAKTI (HP Dimiringkan / Landscape Mobile):
-   Jika lebar layar di bawah 768px DAN posisinya miring (Landscape Mobile) */
+/* 🎯 DETEKSOR SAKTI: HP DIMIRINGKAN (LANDSCAPE MOBILE) */
 @media screen and (max-width: 767px) and (orientation: landscape) {
     #rotate-device-screen {
-        display: flex; /* Paksa tirai hitam menyembur keluar mengunci layar */
+        display: flex !important; /* Paksa tirai hitam menyembur keluar */
     }
     
-    /* Sembunyikan paksa seluruh komponen utama agar tidak bocor atau tembus di latar belakang */
+    /* 🎯 BENTENG PERTAHANAN TOTAL: 
+       Kita kumpulin semua elemen aplikasi tanpa terkecuali, lalu kita SUNTIK MATI visualnya 
+       biar gak ada satu pun teks, widget, running text, atau label nama yang bisa lolos ke atas! */
     .master-frame, 
     #app-container, 
     .mail-container, 
     .chat-container, 
     .sosmed-corner, 
     #site-gatekeeper,
-    .detail-modal {
+    .detail-modal,
+    #ign-label-container,    /* 🚨 Sikat label ID nama player! */
+    .running-text-wrapper {  /* 🚨 Sikat running text marquee! */
         display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
     }
 }
 
 /* 🎨 DEKORASI VISUAL KONTEN TIRAI */
 .rotate-box-content i {
     font-size: 3.5rem;
-    color: var(--color-primary, #a855f7); /* Mengikuti warna ungu master root */
+    color: var(--color-primary, #a855f7); 
     margin-bottom: 15px;
 }
 
