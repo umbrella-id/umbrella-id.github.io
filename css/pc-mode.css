@@ -1,5 +1,5 @@
 /* pc-mode.css - Hanya aktif di monitor lebar dengan posisi tidur */
-@media screen and (min-width: 768px) and (orientation: landscape) {
+@media screen and (orientation: landscape) and (min-width: 768px) and (min-height: 380px) {
 
     /* ==========================================
        1. LAYOUT & FRAME UTAMA (CYBER MATRIX DESKTOP)
