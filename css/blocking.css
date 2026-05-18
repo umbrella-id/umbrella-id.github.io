@@ -1,13 +1,6 @@
 /* ==========================================
    blocking.css - Lock Orientation Perfect Solution
    ========================================== */
-
-/* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di mode normal */
-#rotate-device-screen {
-    display: none !important;
-}
-
-/* 🎯 2. KONDISI EMERGENSI: HP Dimiringkan (Landscape Mobile) */
 @media screen and (max-width: 767px) and (orientation: landscape) {
     
     #rotate-device-screen {
