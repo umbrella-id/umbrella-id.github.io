@@ -8,7 +8,7 @@
     bottom: 95px;
     right: 25px;
     width: 330px;
-    height: 75vh;
+    height: 75dvh;
     max-height: 500px;
     background: var(--bg-popup); /* 🎨 Mengikuti Kaca Gelap Mewah base.css */
     backdrop-filter: blur(20px);
@@ -267,7 +267,7 @@
         
         /* RESPONSIF: Lebar 92% dari layar HP, tinggi proporsional */
         width: 92vw !important;       
-        height: 80vh !important;  
+        height: 80dvh !important;  
         
         /* Set titik pertumbuhan animasi murni dari tengah kotak */
         transform-origin: bottom right !important;
