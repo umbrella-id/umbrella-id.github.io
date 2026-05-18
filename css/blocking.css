@@ -1,5 +1,6 @@
 /* ==========================================
-   blocking.css - Universal Height Guard (600px Safe Zone Edition)
+   blocking.css - Lock Orientation & Height Guard (Pure Logic Grid System)
+   Versi: Final Pure Logic (By User Request Strategy)
    ========================================== */
 
 /* 1. KONDISI DEFAULT: Sembunyikan tirai rapat-rapat di semua jenis layar normal */
@@ -7,19 +8,25 @@
     display: none !important;
 }
 
-/* 🎯 2. SAKLAR BLOKIR UNIVERSAL (LANDSCAPE + RUANG KRISIS)
-   Kunci Logika Lu: Jika posisi miring (landscape) DAN tinggi bersih layar di bawah 600px.
-   Kagak peduli di device apa, kalau tinggi layar gak cukup buat nampung padding + teks kartu, 
-   langsung tutup tirai hitam demi menyelamatkan visual interface! */
+/* 🎯 2. SAKLAR BLOKIR UTAMANYA (LANDSCAPE + TINGGI KRISIS)
+   Menggunakan rumus murni dari pemikiran lu: 
+   Jika posisi miring (landscape) DAN tinggi ruangan layar di bawah atau sama dengan 600px, 
+   maka langsung lempar tirai hitam untuk mengunci jalannya aplikasi! */
 @media screen and (orientation: landscape) and (max-height: 600px) {
     
     #rotate-device-screen {
+        /* Mengubah display dari none menjadi flex agar tirai menyembur keluar */
         display: flex !important;
         position: fixed !important;
         inset: 0 !important;
-        background: #030208 !important; /* Hitam pekat Umbrella Core */
-        z-index: 99999999 !important; /* Kasta tertinggi melibas jagat raya */
         
+        /* Warna latar belakang hitam pekat Umbrella Core */
+        background: #030208 !important; 
+        
+        /* Tingkat kasta tertinggi mutlak di browser agar melibas running text & ID player */
+        z-index: 99999999 !important; 
+        
+        /* Memaksa konten internal tersusun rapi tegak lurus tepat di tengah-tengah layar */
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
@@ -30,14 +37,14 @@
         box-sizing: border-box !important;
     }
 
-    /* RACIKAN DESIGN KONTEN INTERNAL (Memaksa mekar di atas warna hitam) */
+    /* BENTENG PERTAHANAN: Pastikan konten di dalamnya dipaksa mekar */
     #rotate-device-screen .rotate-box-content {
         display: block !important;
         text-align: center !important;
         width: 100% !important;
     }
 
-    /* Teks Judul Utama */
+    /* Desain Teks Judul Utama */
     #rotate-device-screen p {
         font-size: 1.2rem !important;
         font-weight: 800 !important;
@@ -48,17 +55,18 @@
         display: block !important;
     }
 
-    /* Teks Keterangan Sub */
+    /* Desain Teks Keterangan Sub */
     #rotate-device-screen span {
         font-size: 0.8rem !important;
-        color: #64748b !important;
+        color: #64748b !important; /* Abu-abu taktis redup */
         display: block !important;
         max-width: 320px !important;
         line-height: 1.4 !important;
         margin: 0 auto !important;
     }
 
-    /* 📱 INDIKATOR ANIMASI ROTASI CSS MURNI */
+    /* 📱 INDIKATOR ANIMASI ROTASI CSS MURNI (ANTI-BUG FONT AWESOME)
+       Membentuk replika kerangka HP minimalis dengan border ungu neon root */
     #rotate-device-screen .rotate-icon-fallback {
         width: 35px !important;
         height: 60px !important;
@@ -67,10 +75,12 @@
         position: relative !important;
         display: block !important;
         margin: 0 auto !important;
+        
+        /* Jalankan animasi putar hardware-accelerated 90 derajat */
         animation: mobile-flip-animation 2s infinite ease-in-out !important;
     }
 
-    /* Tombol Bulat Home HP Mini */
+    /* Tombol Bulat Home Kecil di bingkai bawah HP mini */
     #rotate-device-screen .rotate-icon-fallback::after {
         content: '' !important;
         position: absolute !important;
@@ -84,7 +94,7 @@
     }
 }
 
-/* 🎬 KEYFRAMES ANIMASI PUTAR HP */
+/* 🎬 KEYFRAMES MEKANIK BERPUTAR 90 DERAJAT */
 @keyframes mobile-flip-animation {
     0% { transform: rotate(0deg); }
     40% { transform: rotate(-90deg); }
