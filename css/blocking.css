@@ -1,0 +1,73 @@
+/* ==========================================
+   blocking.css - Lock Orientation & Guard System (Standalone Edition)
+   ========================================== */
+
+/* Secara default di semua layar, sembunyikan tirai peringatan ini */
+#rotate-device-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #030208;
+    z-index: 99999; /* Kasta tertinggi menutupi seluruh chatbox, modal, dan kartu */
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 30px;
+    text-align: center;
+}
+
+/* 🎯 SYARAT PEMICU SAKTI (HP Dimiringkan / Landscape Mobile):
+   Jika lebar layar di bawah 768px DAN posisinya miring (Landscape Mobile) */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    #rotate-device-screen {
+        display: flex; /* Paksa tirai hitam menyembur keluar mengunci layar */
+    }
+    
+    /* Sembunyikan paksa seluruh komponen utama agar tidak bocor atau tembus di latar belakang */
+    .master-frame, 
+    #app-container, 
+    .mail-container, 
+    .chat-container, 
+    .sosmed-corner, 
+    #site-gatekeeper,
+    .detail-modal {
+        display: none !important;
+    }
+}
+
+/* 🎨 DEKORASI VISUAL KONTEN TIRAI */
+.rotate-box-content i {
+    font-size: 3.5rem;
+    color: var(--color-primary, #a855f7); /* Mengikuti warna ungu master root */
+    margin-bottom: 15px;
+}
+
+.rotate-box-content p {
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.rotate-box-content span {
+    font-size: 0.9rem;
+    color: #64748b;
+    display: block;
+    max-width: 300px;
+    line-height: 1.4;
+    margin: 0 auto;
+}
+
+/* 🎬 ANIMASI GOYANG HP BERPUTAR */
+.rotate-animation {
+    animation: phone-rotate 2s infinite ease-in-out;
+}
+
+@keyframes phone-rotate {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
