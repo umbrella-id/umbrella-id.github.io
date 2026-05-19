@@ -1,5 +1,5 @@
 /**
- * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch V2)
+ * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch V2.1)
  * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
  * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control - No Lock Bug)
  */
@@ -8,8 +8,9 @@ const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph9
 const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgdxG0swUoSxFI_J9okcqa8D15GjKhFYbpdFkfm8As8CaYelJ8w/exec";
 const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
 
-// State System Engine
+// 🎯 STATE SYSTEM ENGINE (Urutan Diperbaiki & Kunci Disamakan)
 let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = false; 
+let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
 function fastScroll() {
     const lb = document.getElementById('chat-logs');
@@ -22,27 +23,21 @@ function toggleChat() {
     const mailModal = document.getElementById('mail-modal');
     if (!popup) return;
     
-    // Jika kotak surat lagi mekar, paksa tutup dulu
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
     }
 
-    // Cek status sebelum di-toggle
     const isOpening = !popup.classList.contains('show');
     popup.classList.toggle('show');
     
     if (isOpening) {
-        // 🎯 LOGIKA ANDROID: Jika chat dibuka, suntikkan "Halaman Palsu" ke riwayat browser
         history.pushState({ boksTerbuka: "chat" }, "");
-
         fastScroll();
-        // 🎯 SMART FOCUS: Hanya auto-focus di PC (Layar >= 768px). Di HP (Mobile) dilewati murni.
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
         syncChat(true); 
     } else {
-        // Jika ditutup manual via klik tombol bulet, bersihkan sisa riwayat palsu tadi
         if (history.state && history.state.boksTerbuka === "chat") {
             history.back();
         }
@@ -58,30 +53,25 @@ window.addEventListener('popstate', function (event) {
     const gate = document.getElementById('site-gatekeeper');
     const detailModal = document.getElementById('detailModal');
 
-    // Jika boks chat lagi mekar, gagalkan aksi keluar halaman, ganti dengan menutup popup
     if (popup && popup.classList.contains('show')) {
         popup.classList.remove('show');
         console.log("🛡️ Navbar Back detected: Closing Chatbox successfully.");
     }
         
-    // Jika kotak surat mekar, hapus kelas show (Mingkem otomatis)
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
         console.log("🛡️ Navbar Back detected: Closing Mailbox successfully.");
     }
-    // Di dalam file js/chat.js (Area Satpam Popstate)
     if (gate && (gate.style.display === 'flex' || gate.style.opacity === '1')) {
-        // Manggil fungsi aman khusus navbar yang barusan kita buat di identity.js
         if (typeof window.closeGateFromNavbar === "function") {
             window.closeGateFromNavbar(); 
         }
     }
-    // 4. 🎯 URUSAN MODAL BERITA DINAMIS (Delegasi murni)
     if (detailModal && detailModal.style.display === 'flex') {
         if (typeof window.closeDetailFromNavbar === "function") {
-            window.closeDetailFromNavbar(); // Panggil fungsi penutup aman di file berita lu
+            window.closeDetailFromNavbar(); 
         } else {
-            detailModal.style.display = 'none'; // Cadangan darurat
+            detailModal.style.display = 'none'; 
             isModalOpen = false;
         }
     }
@@ -98,12 +88,11 @@ function dapatkanIdentitasAman() {
         return { uid: randomID, ign: "Member" };
     }
     
-    let uid = window.myUID || localStorage.getItem('UG_ID') || "GUEST_TMP";
-    let ign = window.myIGN || localStorage.getItem('UG_NAME') || "Guest";
+    let uid = window.myUID || localStorage.getItem('u_uid') || "GUEST_TMP";
+    let ign = window.myIGN || localStorage.getItem('u_ign') || "Guest";
     return { uid: uid, ign: ign };
 }
 
-// 4. SINKRONISASI UTAMA (Dengan Penjaga Gerbang Fisik Popup)
 function syncChat(force = false) {
     const popup = document.getElementById('chat-popup');
     
@@ -114,22 +103,87 @@ function syncChat(force = false) {
 
     const user = dapatkanIdentitasAman();
 
+    // --- LOGIKA UNMUTE OTOMATIS JIKA DURASI SUDAH HABIS ---
+    const input = document.getElementById('msg-input');
+    if (muteExpiryTime > 0) {
+        if (Date.now() >= muteExpiryTime) {
+            muteExpiryTime = 0;
+            localStorage.removeItem('umbrella_mute_expiry');
+            if (input) { 
+                input.disabled = false; 
+                input.placeholder = "Ketik pesan..."; 
+            }
+            console.log("🔓 Masa hukuman mute berakhir. Akses chat dipulihkan.");
+        } else {
+            if (input && !input.disabled) {
+                input.disabled = true;
+                const sisaMenit = Math.ceil((muteExpiryTime - Date.now()) / 60000);
+                input.placeholder = `MUTED (${sisaMenit}m)`;
+            }
+        }
+    }
+
     fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`)
     .then(res => res.json())
     .then(data => {
         if (!data) return;
 
-        // BONCENGAN STATUS ADMIN
+        // ==========================================
+        // 🟢 PERBAIKAN: BONCENGAN STATUS ADMIN (3 MODE: ONLINE, STANDBY, OFFLINE)
+        // ==========================================
         const statusEl = document.querySelector('#admin-status b');
         if (statusEl) {
-            const onlineStatus = (data.adminOnline !== undefined) ? data.adminOnline : (data.adminStatus === "ONLINE");
-            statusEl.className = onlineStatus ? "status-online" : "status-offline";
-            statusEl.innerText = onlineStatus ? "ONLINE" : "OFFLINE";
+            // Ambil string status murni dari server GAS Pipa 2, paksa ke huruf besar (Uppercase)
+            const adminState = (data.adminStatus || "").toUpperCase();
+        
+            if (adminState === "ONLINE") {
+                statusEl.className = "status-online";
+                statusEl.innerText = "ONLINE";
+            } else if (adminState === "STANDBY") {
+                statusEl.className = "status-standby";
+                statusEl.innerText = "STANDBY";
+            } else {
+                statusEl.className = "status-offline";
+                statusEl.innerText = "OFFLINE";
+            }
         }
 
         const arrayChat = data.logs || data.chats || [];
         if (!Array.isArray(arrayChat)) return;
 
+        // JALUR MEMBACA INSTRUKSI UTAMA (MUTE/SYSTEM COMMAND)
+        arrayChat.forEach(msg => {
+            const msgType = msg.type || '';
+            const msgText = msg.message || '';
+
+            if (msgType === 'command' && msgText.startsWith('MUTE|') && msgText.includes(user.uid)) {
+                const parts = msgText.split('|'); 
+                const durasiMenit = parseInt(parts[1]) || 5; 
+                const timestampMulai = parseInt(parts[2]) || Date.now();
+                
+                const hitungMundurTarget = timestampMulai + (durasiMenit * 60 * 1000);
+                
+                if (Date.now() < hitungMundurTarget) {
+                    muteExpiryTime = hitungMundurTarget;
+                    localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
+                    if (input) { 
+                        input.disabled = true; 
+                        input.placeholder = `ACCESS RESTRICTED (${durasiMenit}m)`; 
+                    }
+                }
+            }
+
+            if (msgType === 'command' && msgText.startsWith('UNMUTE|') && msgText.includes(user.uid)) {
+                muteExpiryTime = 0;
+                localStorage.removeItem('umbrella_mute_expiry');
+                if (input) { 
+                    input.disabled = false; 
+                    input.placeholder = "Ketik pesan..."; 
+                }
+            }
+        });
+
+        // JALUR RENDER VISUAL BUBBLE OBROLAN
         const currentStamp = JSON.stringify(arrayChat);
         if (!force && currentStamp === lastChatStamp) {
             // Logs skip render
@@ -140,25 +194,25 @@ function syncChat(force = false) {
                 lb.innerHTML = ''; 
                 arrayChat.forEach(msg => {
                     try {
+                        const msgType = msg.type || 'msg';
+
+                        // 🔴 Saring ketat! Selain tipe 'msg', dilarang mencemari chatbox publik.
+                        if (msgType !== 'msg') return; 
+
                         const msgUID  = msg.uid || msg[2] || '';
                         const msgName = msg.username || msg[3] || 'Anon';
                         const msgText = msg.message || msg[4] || '';
                         const msgRole = msg.role || msg[5] || '';
-                        const msgType = msg.type || '';
-
-                        if (msgType && msgType.startsWith('MUTE|') && msgType.includes(user.uid)) {
-                            isMuted = true;
-                            const input = document.getElementById('msg-input');
-                            if (input) { input.disabled = true; input.placeholder = "ACCESS RESTRICTED"; }
-                        }
                         
                         const d = document.createElement('div');
                         const isMe = msgUID === user.uid;
-                        const isAdmin = msgUID === 'ADMIN_CMD' || msgRole === 'Admin';
+
+                        // 🟢 Admin dideteksi fleksibel jika UID diawali dengan "ADMIN_"
+                        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
 
                         if (isAdmin) {
                             d.className = 'chat-row admin-msg';
-                            d.innerHTML = `<center><span>${msgText}</span></center>`;
+                            d.innerHTML = `<div class="admin-bubble-box"><b>⚡ [ADMIN] ${msgName}:</b> <span>${msgText}</span></div>`;
                         } else if (isMe) {
                             d.className = 'chat-row me';
                             d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
@@ -176,8 +230,29 @@ function syncChat(force = false) {
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
-// 5. KIRIM PESAN
+// Fungsi untuk menjatuhkan hukuman mute (Sinkron ke laci penyimpanan yang sama)
+function applyMute(durationMinutes) {
+    const expiry = Date.now() + (durationMinutes * 60 * 1000);
+    muteExpiryTime = expiry;
+    localStorage.setItem('umbrella_mute_expiry', expiry);
+    tampilkanToast(`Anda dibisukan selama ${durationMinutes} menit.`);
+}
+
+// Fungsi Unmute untuk membebaskan user seketika
+function applyUnmute() {
+    muteExpiryTime = 0;
+    localStorage.removeItem('umbrella_mute_expiry');
+    tampilkanToast("Akses chat Anda telah dipulihkan.");
+}
+
+// Validasi di dalam fungsi sendMessage() sebelum menembak ke URL_WRITE
 function sendMessage() {
+    if (Date.now() < muteExpiryTime) {
+        const sisaDetik = Math.ceil((muteExpiryTime - Date.now()) / 1000);
+        tampilkanToast(`Chat dikunci. Sisa waktu bisu: ${sisaDetik} detik.`);
+        return; 
+    }
+    
     if (isMuted || isSending) return;
     const input = document.getElementById('msg-input');
     const msg = input.value.trim();
@@ -359,7 +434,8 @@ function sendMail() {
             if (textarea) textarea.disabled = false;
             if (inputWA) inputWA.disabled = false;
         }
-    })
+    }
+    )
     .catch(err => {
         isSendingMail = false;
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
@@ -371,10 +447,6 @@ function sendMail() {
     });
 }
 
-// ==========================================
-// 🎯 PATCH FIX OVERLAY CLIK LUAR: 
-// Dialihkan satu pintu ke toggleMail() agar tumpukan history bersih otomatis
-// ==========================================
 window.addEventListener('click', function(e) {
     const mailModal = document.getElementById('mail-modal');
     if (e.target === mailModal) {
@@ -382,10 +454,6 @@ window.addEventListener('click', function(e) {
     }
 });
 
-
-// ==========================================
-// [7] DETEKSI DEEP LINKING KOTAK SARAN STANDALONE
-// ==========================================
 function cekLinkSaranStandalone() {
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
