@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * UMBRELLA GUILD VVIP CORE MOTOR - DASHBOARD.JS
- * ENGINE VERSION: V3.0 GOLD SYNCHRONIZED
+ * ENGINE VERSION: V3.1 GOLD REVISED & ANTI-CORS PATCHED
  * INTEGRASI: GAS PIPA 2 (READ) & PIPA 4 (CORE VVIP POST)
  * ====================================================================
  */
@@ -32,9 +32,13 @@ function eksekusiLoginAdmin() {
     btn.disabled = true;
     errorMsg.innerText = "";
 
-    // Tembak Pipa GAS 4 menggunakan POST JSON
+    // 🎯 ANTI-CORS PATCH: Mengirim JSON sebagai text/plain agar tidak diblokir Google
     fetch(URL_PIPA_4_CORE, {
         method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
         body: JSON.stringify({
             action: "loginAdmin",
             passkey: key
@@ -88,6 +92,7 @@ function nyalakanDashboardVVIP() {
 
     // Auto-load data pertama kali & hidupkan mesin penarik log (Interval 5 detik)
     muatLogChatDariPipa2();
+    if (intervalChatLog) clearInterval(intervalChatLog);
     intervalChatLog = setInterval(muatLogChatDariPipa2, 5000);
 }
 
@@ -99,9 +104,12 @@ function eksekusiLogout() {
 }
 
 // ==========================================
-// [B] MANAJEMEN NAVIGASI TAB
+// [B] MANAJEMEN NAVIGASI TAB (REVISED EVENT)
 // ==========================================
 function pindahTab(targetPanelId) {
+    // Ambil object event secara aman lintas browser
+    const e = window.event || arguments.callee.caller.arguments[0];
+
     // Matikan semua konten tab aktif
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(tab => tab.style.display = 'none');
@@ -113,11 +121,10 @@ function pindahTab(targetPanelId) {
     // Nyalakan tab yang dituju
     document.getElementById(targetPanelId).style.display = 'block';
     
-    // Cari tombol pencetusnya lalu kasih kelas aktif
-    const eventBtn = event.currentTarget;
-    if (eventBtn) eventBtn.classList.add('active');
-
-    // Jika masuk ke tab Kotak Surat / Staf, opsional bisa dipicu refresh otomatis di sini
+    // Kasih status active ke tombol yang sedang diklik
+    if (e && e.currentTarget) {
+        e.currentTarget.classList.add('active');
+    }
 }
 
 // ==========================================
@@ -126,7 +133,6 @@ function pindahTab(targetPanelId) {
 
 // Tarik data 50 chat log dari Pipa GAS 2 sekalian kirim status Online Admin!
 function muatLogChatDariPipa2() {
-    // Nembak Pipa GAS 2 dengan query role=admin agar status online terpicu di server cache
     fetch(`${URL_PIPA_2_READ}?role=admin&uid=${CURRENT_ADMIN.id}&ign=${encodeURIComponent(CURRENT_ADMIN.nama)}`)
     .then(res => res.json())
     .then(data => {
@@ -156,6 +162,9 @@ function renderTabelChat(logsArray) {
             badgeType = `<span style="color:#ef4444; font-weight:bold;">🚫 MUTE BLOCK</span>`;
         }
 
+        // Tentukan indeks asli untuk keperluan hapus data di GAS nanti
+        const realRowIndex = logsArray.length - index + 1; 
+
         tr.innerHTML = `
             <td>${waktu}</td>
             <td><code>${row.uid}</code></td>
@@ -163,7 +172,7 @@ function renderTabelChat(logsArray) {
             <td>${row.message}</td>
             <td>${badgeType}</td>
             <td>
-                <button class="btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="eksekusiHapusChatBerdasarkanBaris('${index}')">
+                <button class="btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="eksekusiHapusChatBerdasarkanBaris('${realRowIndex}')">
                     <i class="fa-solid fa-trash-can"></i> Hapus
                 </button>
             </td>
@@ -185,6 +194,7 @@ function tembakMuteAdmin() {
     if (confirm(`Yakin ingin membungkam UID: ${uidTarget}? Perintah ini akan menyuntikkan kode MUTE ke sirkulasi chat!`)) {
         fetch(URL_PIPA_4_CORE, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
                 action: "executeMuteAdmin",
                 adminId: CURRENT_ADMIN.id,
@@ -196,7 +206,7 @@ function tembakMuteAdmin() {
             if (data.success) {
                 alert(data.message);
                 targetInput.value = '';
-                muatLogChatDariPipa2(); // langsung paksa sync ulang chatbox
+                muatLogChatDariPipa2(); 
             } else {
                 alert("Gagal eksekusi: " + data.message);
             }
@@ -205,7 +215,7 @@ function tembakMuteAdmin() {
 }
 
 // ==========================================
-// [D] AUTO-RESTORE STATUS LOGIN (PENCEGAH KICK REFRESH)
+// [D] AUTO-RESTORE STATUS LOGIN
 // ==========================================
 window.addEventListener('DOMContentLoaded', () => {
     const savedId = localStorage.getItem('UA_ID');
