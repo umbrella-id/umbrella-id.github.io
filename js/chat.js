@@ -332,6 +332,8 @@ function toggleMail() {
 
     if (chatPopup && chatPopup.classList.contains('show')) {
         chatPopup.classList.remove('show');
+        // 🎯 TAMBAHKAN BARIS INI: Bersihkan history chat jika user lompat ke mail
+        if (history.state && history.state.boksTerbuka === "chat") history.back(); 
     }
 
     const isOpeningMail = !mailModal.classList.contains('show');
@@ -411,10 +413,8 @@ function sendMail() {
     if (textarea) textarea.disabled = true;
     if (inputWA) inputWA.disabled = true;
 
+    // 🎯 REVISI DI SINI: Biar toggleMail yang urus penutupannya
     if (!isStandaloneMode) {
-        if (history.state && history.state.boksTerbuka === "mailbox") {
-            history.back();
-        }
         toggleMail();
     }
 
