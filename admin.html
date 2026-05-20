@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Umbrella - Dapur Pengelola</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* =========================================
+           [1] GAYA KHUSUS ADMIN DASHBOARD (admin.css)
+           ========================================= */
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Kunci layar HP biar gak bisa ditarik/mantul */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- LAYAR LOGIN (THE VAULT) --- */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            background-image: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, var(--bg-dark) 70%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-box {
+            background: var(--bg-popup);
+            border: 1px solid var(--color-primary);
+            box-shadow: 0 0 30px var(--color-primary-glow);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 85%;
+            max-width: 350px;
+        }
+
+        .login-box h2 {
+            margin: 0 0 10px 0;
+            color: var(--color-primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .login-box p {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+
+        .passkey-input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-glow, #333);
+            color: var(--color-primary);
+            padding: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 5px;
+            border-radius: 12px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .passkey-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: inset 0 0 10px var(--color-primary-glow);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            margin-top: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .login-btn:active { transform: scale(0.95); }
+
+        /* --- LAYAR UTAMA DASHBOARD --- */
+        #dashboard-screen {
+            display: none; /* Disembunyikan sampai login sukses */
+            height: 100dvh;
+            flex-direction: column;
+        }
+
+        /* Top Bar / Header */
+        .admin-header {
+            background: rgba(10, 7, 18, 0.9);
+            border-bottom: 1px solid var(--color-primary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-role-badge {
+            background: var(--color-primary);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .admin-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Titik Detak Jantung (Heartbeat) */
+        .ping-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #555; /* Default mati (abu-abu) */
+        }
+        .ping-indicator.active {
+            background-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            animation: pulse-ping 2s infinite;
+        }
+
+        @keyframes pulse-ping {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        }
+
+        /* Area Konten Dinamis (Di tengah) */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            /* Scrollbar disembunyikan biar mulus di HP */
+            scrollbar-width: none; 
+        }
+        .content-area::-webkit-scrollbar { display: none; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            background: rgba(10, 7, 18, 0.95);
+            border-top: 1px solid var(--color-primary-glow);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 15px 0; /* Padding bawah lebih besar untuk area swipe iOS */
+            backdrop-filter: blur(15px);
+        }
+
+        .nav-item {
+            color: #666;
+            text-align: center;
+            font-size: 0.8rem;
+            display: none; /* Disembunyikan dulu, nanti JS yang munculin sesuai Role */
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: 20%;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item i { font-size: 1.3rem; }
+        .nav-item.active { color: var(--color-primary); }
+
+        /* Notifikasi Toast */
+        #admin-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 100000;
+            transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        #admin-toast.show { top: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>DAPUR PENGELOLA</h2>
+            <p>Otorisasi Keamanan Umbrella</p>
+            <input type="password" id="input-passkey" class="passkey-input" placeholder="PASSKEY" autocomplete="off">
+            <button class="login-btn" id="btn-login" onclick="prosesLogin()">
+                <i class="fa-solid fa-unlock-keyhole"></i> OTORISASI
+            </button>
+        </div>
+    </div>
+
+    <div id="dashboard-screen">
+        <div class="admin-header">
+            <div class="admin-profile">
+                <div class="admin-role-badge" id="ui-role">GUEST</div>
+                <div class="admin-name" id="ui-name">Unknown</div>
+            </div>
+            <div class="ping-indicator" id="ui-ping" title="Sistem Komunikasi: Standby"></div>
+        </div>
+
+        <div class="content-area" id="main-content">
+            <h3 style="color:var(--color-primary); text-align:center; margin-top:50px;">
+                <i class="fa-solid fa-shield-halved" style="font-size:3rem; margin-bottom:15px;"></i><br>
+                SELAMAT DATANG DI PUSAT KOMANDO
+            </h3>
+            <p style="text-align:center; color:#aaa; font-size:0.9rem;">
+                Sistem otorisasi berhasil. Pilih modul operasional pada menu di bawah.
+            </p>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" id="nav-home" style="display:flex;">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-chat">
+                <i class="fa-solid fa-message"></i>
+                <span>Chat</span>
+            </div>
+            <div class="nav-item" id="nav-mail">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <span>Mail</span>
+            </div>
+            <div class="nav-item" id="nav-kas">
+                <i class="fa-solid fa-coins"></i>
+                <span>Kas</span>
+            </div>
+            <div class="nav-item" id="nav-staff">
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Staff</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-toast">Pesan Info</div>
+
+    <script>
+        // --- KONFIGURASI URL PIPA ---
+        // Ganti dengan URL Pipa 4 lu yang bener!
+        const URL_PIPA_4 = "https://script.google.com/macros/s/AKfycbx1VqwGfC0Bz_tXNacdEe6s3Lu7USX9uRy7JbrOet4qu_bjA6PR9r780Ne7LP73UwUs/exec"; 
+        const URL_PIPA_2 = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; // Pipa 2 (Read Chat)
+
+        // --- STATE ADMIN GLOBAL ---
+        let adminData = {
+            id: "",
+            nama: "",
+            passkey: "",
+            mainRole: "",
+            secondRole: ""
+        };
+        let mesinPing = null;
+
+        // --- FUNGSI TOAST UI ---
+        function showToast(pesan, tipe = "info") {
+            const toast = document.getElementById('admin-toast');
+            toast.innerText = pesan;
+            toast.style.background = tipe === "error" ? "#ff4444" : (tipe === "success" ? "#00C851" : "#fff");
+            toast.style.color = tipe === "info" ? "#000" : "#fff";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // --- PROSES LOGIN (TEMBAK PIPA 4 - GERBANG 1) ---
+        function prosesLogin() {
+            const input = document.getElementById('input-passkey');
+            const btn = document.getElementById('btn-login');
+            const passkeyText = input.value.trim();
+
+            if (!passkeyText) {
+                showToast("Passkey tidak boleh kosong!", "error");
+                input.focus();
+                return;
+            }
+
+            // Ubah UI tombol loading
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMVERIFIKASI...';
+            btn.disabled = true;
+            input.disabled = true;
+
+            // 🎯 REVISI: Tembak langsung ke action=login (Gerbang 1) sesuai struktur asli GAS 4 lu
+            fetch(`${URL_PIPA_4}?action=login&passkey=${encodeURIComponent(passkeyText)}`)
+            .then(res => res.json())
+            .then(data => {
+                btn.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> OTORISASI';
+                btn.disabled = false;
+                input.disabled = false;
+
+                if (data.status === "success") {
+                    // 🎯 REVISI: Tarik dari object "data.data" sesuai struktur respon JSON dari Gerbang 1
+                    adminData = {
+                        id: data.data.id,
+                        nama: data.data.nama,
+                        passkey: passkeyText,
+                        mainRole: data.data.role1.toUpperCase(),
+                        secondRole: (data.data.role2 || "").toUpperCase()
+                    };
+                    
+                    showToast(`Selamat datang, ${adminData.nama}!`, "success");
+                    bukaDashboard();
+                } else {
+                    showToast("Akses Ditolak! Passkey tidak dikenali.", "error");
+                    input.value = "";
+                    input.focus();
+                }
+            })
+            .catch(err => {
+                btn.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> OTORISASI';
+                btn.disabled = false;
+                input.disabled = false;
+                showToast("Gagal terhubung ke Server Umbrella.", "error");
+                console.error("Login Error:", err);
+            });
+        }
+
+        // --- PEMBANGUNAN UI ADAPTIF ---
+        function bukaDashboard() {
+            // 1. Transisi Layar
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'flex';
+            }, 500);
+
+            // 2. Set Profil Header
+            document.getElementById('ui-name').innerText = adminData.nama;
+            document.getElementById('ui-role').innerText = adminData.mainRole;
+            
+            // 3. Render Bottom Navigation sesuai Role (RBAC Logic)
+            const role1 = adminData.mainRole;
+            const role2 = adminData.secondRole;
+            
+            // Aturan Hak Akses
+            const isLead = (role1 === "LEADER" || role2 === "LEADER");
+            const isCoLead = (role1 === "CO-LEAD" || role2 === "CO-LEAD");
+            const isBendahara = (role1 === "BENDAHARA" || role2 === "BENDAHARA");
+            const hasChatAccess = isLead || isCoLead;
+
+            // Munculkan Ikon Navigasi
+            if (hasChatAccess) {
+                document.getElementById('nav-chat').style.display = 'flex';
+                document.getElementById('nav-mail').style.display = 'flex';
+            }
+            if (isLead || isBendahara) {
+                document.getElementById('nav-kas').style.display = 'flex';
+            }
+            if (isLead) {
+                document.getElementById('nav-staff').style.display = 'flex';
+            }
+
+            // 4. Picu Detak Jantung (HANYA UNTUK CO-LEAD & LEADER)
+            if (hasChatAccess) {
+                mulaiDetakPipa2();
+            } else {
+                console.log("🤫 Mode Silent: Bendahara tidak memicu ping Pipa 2.");
+            }
+        }
+
+        // --- MESIN DETAK PIPA 2 (HEARTBEAT) ---
+        function mulaiDetakPipa2() {
+            const lampuPing = document.getElementById('ui-ping');
+            
+            // Fungsi tembak rahasia (mengirim identitas Admin agar GAS 2 tahu ada admin online)
+            const pingServer = () => {
+                fetch(`${URL_PIPA_2}?uid=ADMIN_${adminData.id}&ign=${encodeURIComponent(adminData.nama)}&role=admin`)
+                .then(res => res.json())
+                .then(data => {
+                    // Animasi lampu kedip hijau
+                    lampuPing.classList.add('active');
+                    setTimeout(() => lampuPing.classList.remove('active'), 2500);
+                    console.log("💓 Ping Pipa 2 Sukses");
+                })
+                .catch(err => console.error("💔 Ping Pipa 2 Gagal:", err));
+            };
+
+            // Tembak pertama kali, lalu ulangi tiap 60 detik
+            pingServer();
+            mesinPing = setInterval(pingServer, 60000); 
+        }
+
+        // Tambahan: Enter untuk submit passkey
+        document.getElementById('input-passkey').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') prosesLogin();
+        });
+
+    </script>
+</body>
+</html>
