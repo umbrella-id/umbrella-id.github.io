@@ -44,18 +44,20 @@ function unlockSite() {
 // 4. FUNGSI SIMPAN (Tombol Initialize)
 function saveIdentity() {
     const input = document.getElementById('global-ign-input');
-    const name = input ? input.value.trim() : "";
+    if (!input) return;
+
+    let rawValue = input.value.trim();
     
-    if (name.length >= 2) {
-        finalizeLogin(name);
-    } else {
-        if (window.myIGN) {
-            closeGate();
-        } else {
-            skipLogin();
-        }
+    // 🛡️ CEGATAN FRONTEND: Hapus karakter berbahaya (=, +, -, @) jika ditaruh di awal nama
+    rawValue = rawValue.replace(/^[=+\-@]+/, ''); 
+
+    if (rawValue === "") {
+        input.focus();
+        // Beri efek getar merah jika kosong atau hanya berisi simbol terlarang
+        input.style.border = "1px solid red";
+        setTimeout(() => input.style.border = "none", 1000);
+        return;
     }
-}
 
 // 5. FINALISASI DATA & TUTUP PANEL 
 function finalizeLogin(name) {
