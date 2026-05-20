@@ -13,8 +13,12 @@ let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = fals
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
 function fastScroll() {
-    const lb = document.getElementById('chat-logs');
-    if (lb) lb.scrollTop = lb.scrollHeight;
+    const lb = document.getElementById('chat-logs-box');
+    if (lb) {
+        setTimeout(() => {
+            lb.scrollTop = lb.scrollHeight;
+        }, 50);
+    }
 }
 
 // 2. TOGGLE POPUP (UX Android Native Navbar Back Button Support)
