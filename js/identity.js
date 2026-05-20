@@ -58,6 +58,11 @@ function saveIdentity() {
         setTimeout(() => input.style.border = "none", 1000);
         return;
     }
+    window.myIGN = rawValue;
+    localStorage.setItem('u_ign', window.myIGN);
+    updateIdentityUI();
+    closeGate();
+}
 
 // 5. FINALISASI DATA & TUTUP PANEL 
 function finalizeLogin(name) {
