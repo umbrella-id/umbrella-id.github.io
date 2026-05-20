@@ -59,12 +59,12 @@ window.addEventListener('popstate', function (event) {
 
     if (popup && popup.classList.contains('show')) {
         popup.classList.remove('show');
-        console.log("🛡️ Navbar Back detected: Closing Chatbox successfully.");
+        if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
         
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
-        console.log("🛡️ Navbar Back detected: Closing Mailbox successfully.");
+        if (history.state && history.state.boksTerbuka === "mailbox") history.back();
     }
     if (gate && (gate.style.display === 'flex' || gate.style.opacity === '1')) {
         if (typeof window.closeGateFromNavbar === "function") {
