@@ -151,34 +151,50 @@ function syncChat(force = false) {
         const arrayChat = data.logs || data.chats || [];
         if (!Array.isArray(arrayChat)) return;
 
-        // JALUR MEMBACA INSTRUKSI UTAMA (MUTE/SYSTEM COMMAND)
+        // ==========================================
+        // 🛡️ REVISI SINKRONISASI GERBANG COMMAND MUTE (GAS 4 MATCH)
+        // ==========================================
         arrayChat.forEach(msg => {
             const msgType = msg.type || '';
             const msgText = msg.message || '';
-
-            if (msgType === 'command' && msgText.startsWith('MUTE|') && msgText.includes(user.uid)) {
-                const parts = msgText.split('|'); 
-                const durasiMenit = parseInt(parts[1]) || 5; 
-                const timestampMulai = parseInt(parts[2]) || Date.now();
-                
-                const hitungMundurTarget = timestampMulai + (durasiMenit * 60 * 1000);
-                
-                if (Date.now() < hitungMundurTarget) {
-                    muteExpiryTime = hitungMundurTarget;
-                    localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
-                    if (input) { 
-                        input.disabled = true; 
-                        input.placeholder = `ACCESS RESTRICTED (${durasiMenit}m)`; 
+            const msgTimestamp = msg.timestamp ? new Date(msg.timestamp).getTime() : Date.now();
+        
+            // 1. Deteksi Sinyal Pembungkaman (Format GAS 4: MUTE_UID_DURASI)
+            if (msgType === 'command' && msgText.startsWith('MUTE_')) {
+                const parts = msgText.split('_'); // Memecah menjadi ["MUTE", "UID", "DURASI"]
+                const targetUID = parts[1];
+                const durasiMenit = parseInt(parts[2]) || 0;
+        
+                // Cocokkan apakah korbannya adalah UID user ini
+                if (targetUID === user.uid && durasiMenit > 0) {
+                    // Hitung target waktu kapan hukuman berakhir berdasarkan waktu baris disuntikkan
+                    const hitungMundurTarget = msgTimestamp + (durasiMenit * 60 * 1000);
+                    
+                    // Jika waktu sekarang masih di bawah target hitung mundur, kunci!
+                    if (Date.now() < hitungMundurTarget) {
+                        muteExpiryTime = hitungMundurTarget;
+                        localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
+                        if (input) { 
+                            input.disabled = true; 
+                            const sisaMenit = Math.ceil((hitungMundurTarget - Date.now()) / 60000);
+                            input.placeholder = `ACCESS RESTRICTED (${sisaMenit}m)`; 
+                        }
                     }
                 }
             }
-
-            if (msgType === 'command' && msgText.startsWith('UNMUTE|') && msgText.includes(user.uid)) {
-                muteExpiryTime = 0;
-                localStorage.removeItem('umbrella_mute_expiry');
-                if (input) { 
-                    input.disabled = false; 
-                    input.placeholder = "Ketik pesan..."; 
+        
+            // 2. Deteksi Sinyal Pembebasan (Format GAS 4 masa depan: UNMUTE_UID)
+            if (msgType === 'command' && msgText.startsWith('UNMUTE_')) {
+                const parts = msgText.split('_');
+                const targetUID = parts[1];
+        
+                if (targetUID === user.uid) {
+                    muteExpiryTime = 0;
+                    localStorage.removeItem('umbrella_mute_expiry');
+                    if (input) { 
+                        input.disabled = false; 
+                        input.placeholder = "Ketik pesan..."; 
+                    }
                 }
             }
         });
