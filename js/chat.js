@@ -29,6 +29,7 @@ function toggleChat() {
     
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
+        if (history.state && history.state.boksTerbuka === "mailbox") history.back(); // Hapus history mailbox
     }
 
     const isOpening = !popup.classList.contains('show');
@@ -42,9 +43,7 @@ function toggleChat() {
         }
         syncChat(true); 
     } else {
-        if (history.state && history.state.boksTerbuka === "chat") {
-            history.back();
-        }
+        if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
 }
 
@@ -57,19 +56,12 @@ window.addEventListener('popstate', function (event) {
     const gate = document.getElementById('site-gatekeeper');
     const detailModal = document.getElementById('detailModal');
 
-    if (popup && popup.classList.contains('show')) {
-        popup.classList.remove('show');
-        if (history.state && history.state.boksTerbuka === "chat") history.back();
-    }
-        
-    if (mailModal && mailModal.classList.contains('show')) {
-        mailModal.classList.remove('show');
-        if (history.state && history.state.boksTerbuka === "mailbox") history.back();
-    }
+    // Cukup hilangkan class 'show', JANGAN panggil history.back() lagi di sini!
+    if (popup && popup.classList.contains('show')) popup.classList.remove('show');
+    if (mailModal && mailModal.classList.contains('show')) mailModal.classList.remove('show');
+    
     if (gate && (gate.style.display === 'flex' || gate.style.opacity === '1')) {
-        if (typeof window.closeGateFromNavbar === "function") {
-            window.closeGateFromNavbar(); 
-        }
+        if (typeof window.closeGateFromNavbar === "function") window.closeGateFromNavbar(); 
     }
     if (detailModal && detailModal.style.display === 'flex') {
         if (typeof window.closeDetailFromNavbar === "function") {
