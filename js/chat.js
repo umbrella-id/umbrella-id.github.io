@@ -13,7 +13,7 @@ let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = fals
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
 function fastScroll() {
-    const lb = document.getElementById('chat-logs-box');
+    const lb = document.getElementById('chat-logs'); 
     if (lb) {
         setTimeout(() => {
             lb.scrollTop = lb.scrollHeight;
