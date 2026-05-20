@@ -73,7 +73,6 @@ function finalizeLogin(name) {
         setTimeout(() => {
             gate.style.display = 'none';
             updateIdentityUI();
-            if (typeof window.syncChat === "function") window.syncChat();
         }, 500);
     }
 }
@@ -123,7 +122,6 @@ function closeGateFromNavbar() {
         setTimeout(() => {
             gate.style.display = 'none';
             updateIdentityUI();
-            if (typeof window.syncChat === "function") window.syncChat();
         }, 500);
     }
     console.log("🛡️ Identity Gate closed safely via Central Satpam.");
