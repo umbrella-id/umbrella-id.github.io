@@ -119,7 +119,10 @@ function syncChat(force = false) {
         }
     }
 
-    fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`)
+    const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+    const isMuted = Date.now() < muteExpiry;
+    
+    fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&isMuted=${isMuted}&muteExpiry=${muteExpiry}`)
     .then(res => res.json())
     .then(data => {
         if (!data) return;
