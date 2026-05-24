@@ -217,9 +217,7 @@
     color: #ffaaaa;
 }
 
-/* ==========================================
-   PESAN SISTEM (MUTE/UNMUTE DARI ADMIN)
-   ========================================== */
+/* PESAN SISTEM (MUTE/UNMUTE) */
 .chat-row.system-message {
     align-self: center;
     margin: 8px auto;
