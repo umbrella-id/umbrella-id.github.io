@@ -245,6 +245,14 @@ function syncChat(force = false) {
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
+if (isDeleted) {
+    html += `<div class="chat-row ${isMe ? 'me' : 'other'} deleted">
+                <b>${username}</b>
+                <div class="msg-text">🗑️ Pesan dihapus admin</div>
+            </div>`;
+    continue;
+}
+
 // Fungsi untuk menjatuhkan hukuman mute (Sinkron ke laci penyimpanan yang sama)
 function applyMute(durationMinutes) {
     const expiry = Date.now() + (durationMinutes * 60 * 1000);
