@@ -237,32 +237,32 @@ function syncChat(force = false) {
                         
                         // 🆕 HANYA msg atau system yang boleh lewat
                         if (msgType !== 'msg' && !isSystem) return;
-                        
+                
                         const isMe = msgUID === user.uid;
                         const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
-                        const isDeleted = msgText === '[deleted by admin]';
+                        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
                         
                         const d = document.createElement('div');
                         
-                        if (isDeleted) {
-                            // Pesan yang sudah dihapus
+                        // 🆕 URUTAN PRIORITAS: system → deleted → admin → me → other
+                        if (isSystem) {
+                            d.className = 'chat-row system-message';
+                            d.innerHTML = `<div class="system-text">${msgText}</div>`;
+                        } else if (isDeleted) {
                             d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
                             d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus admin</div>`;
                         } else if (isAdmin) {
-                            // Pesan admin (bubble ungu solid)
                             d.className = 'chat-row admin-msg';
                             d.innerHTML = `<b>⚡ ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
                         } else if (isMe) {
-                            // Pesan sendiri (bubble kanan)
                             d.className = 'chat-row me';
                             d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
                         } else {
-                            // Pesan orang lain (bubble kiri)
                             d.className = 'chat-row other';
                             d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
                         }
                         
-                        lb.appendChild(d);
+                        lb.appendChild(d); 
                     } catch (e) { 
                         console.error("Error baris:", e); 
                     }
