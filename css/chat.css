@@ -210,6 +210,13 @@
     display: inline-block;
 }
 
+/* PESAN YANG DIHAPUS ADMIN (SEDERHANA TAPI MERAH)*/
+.chat-row.deleted .msg-text {
+    background: rgba(255, 68, 68, 0.2);
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    color: #ffaaaa;
+}
+
 /* ==========================================
    [4] INPUT AREA (SUPER SLEEK)
    ========================================== */
