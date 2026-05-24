@@ -180,27 +180,30 @@
 
 /* ADMIN - Ungu Solid Khas Umbrella */
 .chat-row.admin-msg {
-    align-self: flex-start; /* Mepet ke kiri seperti lawan */
-    align-items: flex-start;
+    align-self: flex-start;
     max-width: 75%;
-    width: max-content;
     margin-right: auto;
 }
 
-.admin-msg center {
-    background: var(--color-primary); /* Menggunakan warna utama portal */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.admin-msg .admin-bubble-box {
+    background: var(--color-primary); /* Ungu solid khas Umbrella */
+    border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 10px 14px;
-    border-radius: 15px 15px 15px 2px; /* Lengkungan bubble kiri bawah khas lawan */
-    text-align: left; /* Kembalikan text ke kiri */
+    border-radius: 15px 15px 15px 2px; /* Sama seperti other */
     box-shadow: 0 0 10px var(--color-primary-glow);
 }
 
+.admin-msg b {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
 .admin-msg span {
-    color: #ffffff !important; /* Teks putih polos agar kontras di atas warna primary */
-    font-size: 13.5px; /* Samakan ukuran font-nya dengan teks chat biasa */
-    font-weight: normal;
-    text-transform: none; /* Matikan fitur huruf besar semua */
+    color: #ffffff;
+    font-size: 13.5px;
     line-height: 1.5;
     word-break: break-word;
     white-space: pre-wrap;
