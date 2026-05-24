@@ -8,7 +8,7 @@ const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph9
 const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgdxG0swUoSxFI_J9okcqa8D15GjKhFYbpdFkfm8As8CaYelJ8w/exec";
 const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
 
-// 🎯 STATE SYSTEM ENGINE (Urutan Diperbaiki & Kunci Disamakan)
+// 🎯 STATE SYSTEM ENGINE
 let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = false; 
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
@@ -29,7 +29,7 @@ function toggleChat() {
     
     if (mailModal && mailModal.classList.contains('show')) {
         mailModal.classList.remove('show');
-        if (history.state && history.state.boksTerbuka === "mailbox") history.back(); // Hapus history mailbox
+        if (history.state && history.state.boksTerbuka === "mailbox") history.back();
     }
 
     const isOpening = !popup.classList.contains('show');
@@ -56,7 +56,6 @@ window.addEventListener('popstate', function (event) {
     const gate = document.getElementById('site-gatekeeper');
     const detailModal = document.getElementById('detailModal');
 
-    // Cukup hilangkan class 'show', JANGAN panggil history.back() lagi di sini!
     if (popup && popup.classList.contains('show')) popup.classList.remove('show');
     if (mailModal && mailModal.classList.contains('show')) mailModal.classList.remove('show');
     
@@ -74,16 +73,9 @@ window.addEventListener('popstate', function (event) {
 });
 
 // ==========================================
-// [3] PENARIKAN IDENTITAS (DENGAN SKEMA ANONIM SARAN)
+// [3] PENARIKAN IDENTITAS
 // ==========================================
 function dapatkanIdentitasAman() {
-    const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
-    
-    if (isStandaloneMode) {
-        const randomID = "ANON-" + Math.random().toString(36).substring(2, 7).toUpperCase();
-        return { uid: randomID, ign: "Member" };
-    }
-    
     let uid = window.myUID || localStorage.getItem('u_uid') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('u_ign') || "Guest";
     return { uid: uid, ign: ign };
@@ -128,11 +120,10 @@ function syncChat(force = false) {
         if (!data) return;
 
         // ==========================================
-        // 🟢 PERBAIKAN: BONCENGAN STATUS ADMIN (3 MODE: ONLINE, STANDBY, OFFLINE)
+        // STATUS ADMIN (ONLINE, STANDBY, OFFLINE)
         // ==========================================
         const statusEl = document.querySelector('#admin-status b');
         if (statusEl) {
-            // Ambil string status murni dari server GAS Pipa 2, paksa ke huruf besar (Uppercase)
             const adminState = (data.adminStatus || "").toUpperCase();
         
             if (adminState === "ONLINE") {
@@ -151,25 +142,21 @@ function syncChat(force = false) {
         if (!Array.isArray(arrayChat)) return;
 
         // ==========================================
-        // 🛡️ REVISI SINKRONISASI GERBANG COMMAND MUTE (GAS 4 MATCH)
+        // PROSES COMMAND MUTE/UNMUTE
         // ==========================================
         arrayChat.forEach(msg => {
             const msgType = msg.type || '';
             const msgText = msg.message || '';
             const msgTimestamp = msg.timestamp ? new Date(msg.timestamp).getTime() : Date.now();
         
-            // 1. Deteksi Sinyal Pembungkaman (Format GAS 4: MUTE_UID_DURASI)
             if (msgType === 'command' && msgText.startsWith('MUTE_')) {
-                const parts = msgText.split('_'); // Memecah menjadi ["MUTE", "UID", "DURASI"]
+                const parts = msgText.split('_');
                 const targetUID = parts[1];
                 const durasiMenit = parseInt(parts[2]) || 0;
         
-                // Cocokkan apakah korbannya adalah UID user ini
                 if (targetUID === user.uid && durasiMenit > 0) {
-                    // Hitung target waktu kapan hukuman berakhir berdasarkan waktu baris disuntikkan
                     const hitungMundurTarget = msgTimestamp + (durasiMenit * 60 * 1000);
                     
-                    // Jika waktu sekarang masih di bawah target hitung mundur, kunci!
                     if (Date.now() < hitungMundurTarget) {
                         muteExpiryTime = hitungMundurTarget;
                         localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
@@ -182,7 +169,6 @@ function syncChat(force = false) {
                 }
             }
         
-            // 2. Deteksi Sinyal Pembebasan (Format GAS 4 masa depan: UNMUTE_UID)
             if (msgType === 'command' && msgText.startsWith('UNMUTE_')) {
                 const parts = msgText.split('_');
                 const targetUID = parts[1];
@@ -215,7 +201,7 @@ function syncChat(force = false) {
                         let msgText = msg.message || msg[4] || '';
                         let msgRole = msg.role || msg[5] || '';
                         
-                        // 🆕 KONVERSI COMMAND MUTE/UNMUTE MENJADI PESAN SISTEM
+                        // KONVERSI COMMAND MUTE/UNMUTE MENJADI PESAN SISTEM
                         let isSystem = false;
                         
                         if (msgType === 'command') {
@@ -231,11 +217,10 @@ function syncChat(force = false) {
                                 msgText = `🔊 ${targetIGN} telah dibuka bisuannya.`;
                                 isSystem = true;
                             } else {
-                                return; // command lain (tidak dikenal) diabaikan
+                                return;
                             }
                         }
                         
-                        // 🆕 HANYA msg atau system yang boleh lewat
                         if (msgType !== 'msg' && !isSystem) return;
                 
                         const isMe = msgUID === user.uid;
@@ -244,7 +229,6 @@ function syncChat(force = false) {
                         
                         const d = document.createElement('div');
                         
-                        // 🆕 URUTAN PRIORITAS: system → deleted → admin → me → other
                         if (isSystem) {
                             d.className = 'chat-row system-message';
                             d.innerHTML = `<div class="system-text">${msgText}</div>`;
@@ -274,22 +258,6 @@ function syncChat(force = false) {
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
-// Fungsi untuk menjatuhkan hukuman mute (Sinkron ke laci penyimpanan yang sama)
-function applyMute(durationMinutes) {
-    const expiry = Date.now() + (durationMinutes * 60 * 1000);
-    muteExpiryTime = expiry;
-    localStorage.setItem('umbrella_mute_expiry', expiry);
-    tampilkanToast(`Anda dibisukan selama ${durationMinutes} menit.`);
-}
-
-// Fungsi Unmute untuk membebaskan user seketika
-function applyUnmute() {
-    muteExpiryTime = 0;
-    localStorage.removeItem('umbrella_mute_expiry');
-    tampilkanToast("Akses chat Anda telah dipulihkan.");
-}
-
-// Validasi di dalam fungsi sendMessage() sebelum menembak ke URL_WRITE
 function sendMessage() {
     if (Date.now() < muteExpiryTime) {
         const sisaDetik = Math.ceil((muteExpiryTime - Date.now()) / 1000);
@@ -332,9 +300,8 @@ function getHashColor(uid) {
 
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
-
 // ==========================================
-// [6] INTERFASE KOTAK SURAT (MAILBOX ENGINE)
+// INTERFASE KOTAK SURAT (MAILBOX ENGINE)
 // ==========================================
 
 function aturFormMailbox() {
@@ -364,7 +331,6 @@ function toggleMail() {
 
     if (chatPopup && chatPopup.classList.contains('show')) {
         chatPopup.classList.remove('show');
-        // 🎯 TAMBAHKAN BARIS INI: Bersihkan history chat jika user lompat ke mail
         if (history.state && history.state.boksTerbuka === "chat") history.back(); 
     }
 
@@ -378,12 +344,6 @@ function toggleMail() {
         
         if (textarea) { textarea.value = ''; textarea.disabled = false; }
         if (inputWA) { inputWA.value = ''; inputWA.disabled = false; inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; }
-        
-        const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
-
-        if (categoryEl && isStandaloneMode) {
-            categoryEl.value = 'Saran';
-        }
         
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
@@ -427,8 +387,6 @@ function sendMail() {
     const inputWA = document.getElementById('mail-wa');
     const waValue = inputWA ? inputWA.value.trim() : '';
 
-    const isStandaloneMode = document.body.classList.contains('standalone-saran-mode');
-
     if (selectedCategory === "Request Join") {
         if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!"); if (inputWA) inputWA.focus(); return; }
         if (!msg) { tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
@@ -445,10 +403,7 @@ function sendMail() {
     if (textarea) textarea.disabled = true;
     if (inputWA) inputWA.disabled = true;
 
-    // 🎯 REVISI DI SINI: Biar toggleMail yang urus penutupannya
-    if (!isStandaloneMode) {
-        toggleMail();
-    }
+    toggleMail();
 
     fetch(`${URL_MAIL}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}&category=${encodeURIComponent(selectedCategory)}&type=mail`)
     .then(res => res.json())
@@ -457,34 +412,19 @@ function sendMail() {
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
 
         if (data.status === "success") {
-            if (isStandaloneMode) {
-                const modalBody = document.querySelector('.mail-modal-body');
-                if (modalBody) {
-                    modalBody.innerHTML = `
-                        <div style="text-align: center; padding: 30px 10px; color: #fff; animation: mekarHalus 0.3s ease-out;">
-                            <i class="fa-solid fa-circle-check" style="font-size: 3.5rem; color: var(--color-primary); margin-bottom: 15px; text-shadow: 0 0 15px rgba(192, 132, 252, 0.4);"></i>
-                            <h4 style="margin: 0 0 10px 0; letter-spacing: 1px; font-size: 1.1rem;">SURAT TERKIRIM</h4>
-                            <p style="font-size: 0.8rem; color: #888; line-height: 1.5; margin: 0;">
-                                Terima kasih! Pesan Anda telah berhasil dienkripsi dan dicatat ke dalam database Admin Umbrella.
-                            </p>
-                        </div>
-                    `;
-                }
-            }
             tampilkanToast("✉️ Surat berhasil dikirim!");
         } else {
             tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
-            if (!isStandaloneMode) toggleMail();
+            toggleMail();
             if (textarea) textarea.disabled = false;
             if (inputWA) inputWA.disabled = false;
         }
-    }
-    )
+    })
     .catch(err => {
         isSendingMail = false;
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
         tampilkanToast("🚨 Koneksi terputus! Gagal mengirim.");
-        if (!isStandaloneMode) toggleMail();
+        toggleMail();
         if (textarea) textarea.disabled = false;
         if (inputWA) inputWA.disabled = false;
         console.error("Pipa GAS 1 Terputus:", err);
@@ -498,38 +438,6 @@ window.addEventListener('click', function(e) {
     }
 });
 
-function cekLinkSaranStandalone() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('page') || urlParams.get('mode') || urlParams.get('kategori');
-    
-    if (mode && mode.toLowerCase() === 'saran') {
-        const linkCSS = document.createElement('link');
-        linkCSS.id = 'standalone-css-pack';
-        linkCSS.rel = 'stylesheet';
-        linkCSS.href = 'css/standalone.css'; 
-        document.head.appendChild(linkCSS);
-
-        document.body.classList.add('standalone-saran-mode');
-
-        const categoryEl = document.getElementById('mail-category');
-        if (categoryEl) {
-            categoryEl.value = 'Saran'; 
-        }
-        
-        const labelPesan = document.getElementById('mail-label-pesan');
-        const textarea = document.getElementById('mail-message');
-        if (labelPesan) labelPesan.innerText = "Saran / Masukan Anda :";
-        if (textarea) textarea.placeholder = "Tulis aspirasi, ide, kritik, atau saran jujur Anda untuk perkembangan guild Umbrella...";
-        
-        const mailModal = document.getElementById('mail-modal');
-        if (mailModal) mailModal.classList.add('show');
-    } else {
-        document.body.classList.remove('standalone-saran-mode');
-        const sisaCSS = document.getElementById('standalone-css-pack');
-        if (sisaCSS) sisaCSS.remove();
-    }
-}
-
 // 🎯 Pintu Gerbang Global Expose
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
@@ -539,10 +447,9 @@ window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 
-// [9] MESIN PENGASUH INTERVAL UTAMA
+// MESIN PENGASUH INTERVAL UTAMA
 setInterval(() => {
     syncChat(false);
 }, 4500);
 
-window.addEventListener('DOMContentLoaded', cekLinkSaranStandalone);
 console.log("🛡️ Umbrella Chat Engine: Semua Komponen Terintegrasi Sempurna!");
