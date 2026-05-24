@@ -227,7 +227,7 @@ function syncChat(force = false) {
 
                         if (isAdmin) {
                             d.className = 'chat-row admin-msg';
-                            d.innerHTML = `<div class="admin-bubble-box"><b>⚡ [ADMIN] ${msgName}:</b> <span>${msgText}</span></div>`;
+                            d.innerHTML = `<b>⚡ ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
                         } else if (isMe) {
                             d.className = 'chat-row me';
                             d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
@@ -236,6 +236,14 @@ function syncChat(force = false) {
                             d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
                         }
                         lb.appendChild(d);
+
+                        if (isDeleted) {
+                            html += `<div class="chat-row ${isMe ? 'me' : 'other'} deleted">
+                                        <b>${username}</b>
+                                        <div class="msg-text">🗑️ Pesan dihapus admin</div>
+                                    </div>`;
+                            continue;
+                        }
                     } catch (e) { console.error("Error baris:", e); }
                 });
                 fastScroll();
@@ -243,14 +251,6 @@ function syncChat(force = false) {
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
-}
-
-if (isDeleted) {
-    html += `<div class="chat-row ${isMe ? 'me' : 'other'} deleted">
-                <b>${username}</b>
-                <div class="msg-text">🗑️ Pesan dihapus admin</div>
-            </div>`;
-    continue;
 }
 
 // Fungsi untuk menjatuhkan hukuman mute (Sinkron ke laci penyimpanan yang sama)
