@@ -218,6 +218,25 @@
 }
 
 /* ==========================================
+   PESAN SISTEM (MUTE/UNMUTE DARI ADMIN)
+   ========================================== */
+.chat-row.system-message {
+    align-self: center;
+    margin: 8px auto;
+    max-width: 85%;
+}
+
+.system-text {
+    background: rgba(100, 116, 139, 0.2);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 10px;
+    color: #94a3b8;
+    text-align: center;
+    font-style: italic;
+}
+
+/* ==========================================
    [4] INPUT AREA (SUPER SLEEK)
    ========================================== */
 .chat-input-area {
