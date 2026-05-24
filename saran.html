@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Umbrella - Kirim Saran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #030208;
+            background-image: radial-gradient(rgba(168, 85, 247, 0.08) 1px, transparent 1px);
+            background-size: 6px 6px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Container Utama */
+        .saran-container {
+            max-width: 450px;
+            width: 100%;
+            background: rgba(10, 7, 18, 0.98);
+            border: 1px solid #a855f7;
+            border-radius: 24px;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Header */
+        .saran-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.25);
+        }
+        
+        .saran-header h2 {
+            color: #a855f7;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .saran-header p {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+        
+        /* Body Form */
+        .saran-body {
+            padding: 24px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 0.7rem;
+            color: #64748b;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            background: #07060a;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* Tombol Kirim */
+        .send-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .send-btn:active {
+            transform: scale(0.97);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+        }
+        
+        /* Toast */
+        .toast-message {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 7, 18, 0.98);
+            border: 1px solid #a855f7;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 0.75rem;
+            z-index: 1000;
+            transition: bottom 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .toast-message.show {
+            bottom: 30px;
+        }
+        
+        /* Footer */
+        .saran-footer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid rgba(168, 85, 247, 0.15);
+        }
+        
+        .saran-footer a {
+            color: #64748b;
+            font-size: 0.7rem;
+            text-decoration: none;
+        }
+        
+        .saran-footer a:hover {
+            color: #a855f7;
+        }
+        
+        /* Loading */
+        .fa-spinner {
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* WA Group (hidden by default) */
+        .wa-group {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="saran-container">
+    <div class="saran-header">
+        <h2><i class="fas fa-envelope"></i> KIRIM SARAN</h2>
+        <p>Kritik, saran, atau aspirasi Anda sangat berharga</p>
+    </div>
+    
+    <div class="saran-body">
+        <div class="input-group">
+            <label><i class="fas fa-tag"></i> KATEGORI</label>
+            <select id="saran-category" style="width:100%; background:#07060a; border:1px solid rgba(168,85,247,0.25); border-radius:12px; padding:12px 16px; color:#fff; outline:none;">
+                <option value="Saran">💡 SARAN / MASUKAN</option>
+                <option value="Request Join">🛡️ REQUEST JOIN (buka form WA)</option>
+                <option value="Umum">📝 UMUM / GENERAL</option>
+            </select>
+        </div>
+        
+        <div class="input-group wa-group" id="wa-group">
+            <label><i class="fab fa-whatsapp"></i> NOMOR WHATSAPP</label>
+            <input type="text" id="saran-wa" placeholder="Contoh: 08xxxxxxxxxx">
+        </div>
+        
+        <div class="input-group">
+            <label><i class="fas fa-pen"></i> PESAN ANDA</label>
+            <textarea id="saran-message" placeholder="Tulis saran, kritik, atau aspirasi Anda untuk perkembangan guild Umbrella..."></textarea>
+        </div>
+        
+        <button class="send-btn" id="send-btn">
+            <i class="fas fa-paper-plane"></i> KIRIM SEKARANG
+        </button>
+    </div>
+    
+    <div class="saran-footer">
+        <a href="#" onclick="window.location.reload(); return false;">🔄 Kirim saran lain</a>
+    </div>
+</div>
+
+<div id="toast" class="toast-message"></div>
+
+<script>
+    // Konfigurasi GAS
+    const GAS_MAIL_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec";
+    
+    let isSending = false;
+    
+    // Ambil identitas (UID dari localStorage atau baru)
+    let myUID = localStorage.getItem('u_uid_saran');
+    if (!myUID) {
+        myUID = 'SARAN-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('u_uid_saran', myUID);
+    }
+    
+    // Element references
+    const categoryEl = document.getElementById('saran-category');
+    const waGroup = document.getElementById('wa-group');
+    const waInput = document.getElementById('saran-wa');
+    const messageEl = document.getElementById('saran-message');
+    const sendBtn = document.getElementById('send-btn');
+    const toast = document.getElementById('toast');
+    
+    // Fungsi toast
+    function showToast(msg, isError = false) {
+        toast.innerText = msg;
+        toast.style.borderColor = isError ? '#ff4444' : '#a855f7';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    // Atur form berdasarkan kategori
+    function aturForm() {
+        const kategori = categoryEl.value;
+        if (kategori === 'Request Join') {
+            waGroup.style.display = 'block';
+            messageEl.placeholder = 'Sebutkan Level, Job Utama, dan alasan Anda ingin bergabung...';
+        } else {
+            waGroup.style.display = 'none';
+            messageEl.placeholder = 'Tulis saran, kritik, atau aspirasi Anda...';
+        }
+    }
+    
+    // Kirim pesan
+    async function sendMessage() {
+        if (isSending) return;
+        
+        const kategori = categoryEl.value;
+        let pesan = messageEl.value.trim();
+        const wa = waInput.value.trim();
+        
+        // Validasi
+        if (kategori === 'Request Join') {
+            if (!wa) {
+                showToast('⚠️ Nomor WhatsApp wajib diisi!', true);
+                waInput.focus();
+                return;
+            }
+            if (!pesan) {
+                showToast('⚠️ Alasan/Biodata Join tidak boleh kosong!', true);
+                messageEl.focus();
+                return;
+            }
+            pesan = `${wa}\n${pesan}`;
+        } else {
+            if (!pesan) {
+                showToast('⚠️ Pesan tidak boleh kosong!', true);
+                messageEl.focus();
+                return;
+            }
+        }
+        
+        isSending = true;
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MENGIRIM...';
+        
+        try {
+            const url = `${GAS_MAIL_URL}?uid=${encodeURIComponent(myUID)}&ign=Member&msg=${encodeURIComponent(pesan)}&category=${encodeURIComponent(kategori)}&type=mail`;
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                showToast('✅ Surat berhasil dikirim! Terima kasih.');
+                messageEl.value = '';
+                if (waInput) waInput.value = '';
+                
+                // Ubah tombol jadi pesan sukses sebentar
+                sendBtn.innerHTML = '<i class="fas fa-check"></i> TERKIRIM!';
+                setTimeout(() => {
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> KIRIM SEKARANG';
+                    sendBtn.disabled = false;
+                    isSending = false;
+                }, 2000);
+            } else {
+                showToast('⚠️ Gagal: ' + (data.message || 'Sistem error'), true);
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> KIRIM SEKARANG';
+                sendBtn.disabled = false;
+                isSending = false;
+            }
+        } catch(e) {
+            showToast('🚨 Koneksi gagal! Coba lagi.', true);
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> KIRIM SEKARANG';
+            sendBtn.disabled = false;
+            isSending = false;
+            console.error(e);
+        }
+    }
+    
+    // Event listeners
+    categoryEl.addEventListener('change', aturForm);
+    sendBtn.addEventListener('click', sendMessage);
+    
+    // Enter di textarea
+    messageEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    
+    // Inisialisasi
+    aturForm();
+    
+    console.log("✅ Halaman saran standalone siap");
+</script>
+</body>
+</html>
