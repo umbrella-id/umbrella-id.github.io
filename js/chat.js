@@ -210,41 +210,43 @@ function syncChat(force = false) {
                 arrayChat.forEach(msg => {
                     try {
                         const msgType = msg.type || 'msg';
-
+                
                         // 🔴 Saring ketat! Selain tipe 'msg', dilarang mencemari chatbox publik.
                         if (msgType !== 'msg') return; 
-
+                
                         const msgUID  = msg.uid || msg[2] || '';
                         const msgName = msg.username || msg[3] || 'Anon';
                         const msgText = msg.message || msg[4] || '';
                         const msgRole = msg.role || msg[5] || '';
                         
-                        const d = document.createElement('div');
                         const isMe = msgUID === user.uid;
-
-                        // 🟢 Admin dideteksi fleksibel jika UID diawali dengan "ADMIN_"
                         const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
-
-                        if (isAdmin) {
+                        const isDeleted = msgText === '[deleted by admin]';
+                        
+                        const d = document.createElement('div');
+                        
+                        if (isDeleted) {
+                            // Pesan yang sudah dihapus
+                            d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus admin</div>`;
+                        } else if (isAdmin) {
+                            // Pesan admin (bubble ungu solid)
                             d.className = 'chat-row admin-msg';
                             d.innerHTML = `<b>⚡ ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
                         } else if (isMe) {
+                            // Pesan sendiri (bubble kanan)
                             d.className = 'chat-row me';
                             d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
                         } else {
+                            // Pesan orang lain (bubble kiri)
                             d.className = 'chat-row other';
                             d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
                         }
+                        
                         lb.appendChild(d);
-
-                        if (isDeleted) {
-                            html += `<div class="chat-row ${isMe ? 'me' : 'other'} deleted">
-                                        <b>${username}</b>
-                                        <div class="msg-text">🗑️ Pesan dihapus admin</div>
-                                    </div>`;
-                            continue;
-                        }
-                    } catch (e) { console.error("Error baris:", e); }
+                    } catch (e) { 
+                        console.error("Error baris:", e); 
+                    }
                 });
                 fastScroll();
             }
