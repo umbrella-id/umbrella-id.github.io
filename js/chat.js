@@ -160,16 +160,14 @@ function syncChat(force = false) {
         
             // 1. Deteksi Sinyal Pembungkaman (Format GAS 4: MUTE_UID_DURASI)
             if (msgType === 'command' && msgText.startsWith('MUTE_')) {
-                const parts = msgText.split('_'); // Memecah menjadi ["MUTE", "UID", "DURASI"]
+                const parts = msgText.split('_');
                 const targetUID = parts[1];
                 const durasiMenit = parseInt(parts[2]) || 0;
-        
-                // Cocokkan apakah korbannya adalah UID user ini
+                const targetIGN = parts[3] || 'Seseorang';  // ← TAMBAH BARIS INI
+            
                 if (targetUID === user.uid && durasiMenit > 0) {
-                    // Hitung target waktu kapan hukuman berakhir berdasarkan waktu baris disuntikkan
                     const hitungMundurTarget = msgTimestamp + (durasiMenit * 60 * 1000);
                     
-                    // Jika waktu sekarang masih di bawah target hitung mundur, kunci!
                     if (Date.now() < hitungMundurTarget) {
                         muteExpiryTime = hitungMundurTarget;
                         localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
@@ -178,15 +176,16 @@ function syncChat(force = false) {
                             const sisaMenit = Math.ceil((hitungMundurTarget - Date.now()) / 60000);
                             input.placeholder = `ACCESS RESTRICTED (${sisaMenit}m)`; 
                         }
+                        tampilkanPesanSistem(` ${targetIGN} dibisukan selama ${durasiMenit} menit oleh admin.`); // ← TAMBAH BARIS INI
                     }
                 }
-            }
-        
+            }        
             // 2. Deteksi Sinyal Pembebasan (Format GAS 4 masa depan: UNMUTE_UID)
             if (msgType === 'command' && msgText.startsWith('UNMUTE_')) {
                 const parts = msgText.split('_');
                 const targetUID = parts[1];
-        
+                const targetIGN = parts[2] || 'Seseorang';  // ← TAMBAH BARIS INI
+            
                 if (targetUID === user.uid) {
                     muteExpiryTime = 0;
                     localStorage.removeItem('umbrella_mute_expiry');
@@ -194,6 +193,7 @@ function syncChat(force = false) {
                         input.disabled = false; 
                         input.placeholder = "Ketik pesan..."; 
                     }
+                    tampilkanPesanSistem(` ${targetIGN} telah dibuka bisuannya oleh admin.`); // ← TAMBAH BARIS INI
                 }
             }
         });
@@ -232,7 +232,7 @@ function syncChat(force = false) {
                         } else if (isAdmin) {
                             // Pesan admin (bubble ungu solid)
                             d.className = 'chat-row admin-msg';
-                            d.innerHTML = `<b>⚡ ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+                            d.innerHTML = `<b> ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
                         } else if (isMe) {
                             // Pesan sendiri (bubble kanan)
                             d.className = 'chat-row me';
@@ -253,6 +253,17 @@ function syncChat(force = false) {
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
+}
+
+function tampilkanPesanSistem(pesan) {
+    const lb = document.getElementById('chat-logs');
+    if (!lb) return;
+    
+    const d = document.createElement('div');
+    d.className = 'chat-row system-message';
+    d.innerHTML = `<div class="system-text">${pesan}</div>`;
+    lb.appendChild(d);
+    fastScroll();
 }
 
 // Fungsi untuk menjatuhkan hukuman mute (Sinkron ke laci penyimpanan yang sama)
