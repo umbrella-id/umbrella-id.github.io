@@ -418,3 +418,81 @@
     }
 
 } /* 🚨 LIMIT MEDIA QUERY TERAKHIR AMAN JAYA */
+
+/* ==========================================
+   PC PORTRAIT MODE (LAYAR LEBAR & TEGAK)
+   ========================================== */
+@media screen and (orientation: portrait) and (min-width: 768px) {
+    
+    /* Ubah struktur master frame */
+    .master-frame {
+        grid-template-rows: auto auto 1fr auto;
+        height: auto;
+        min-height: 95dvh;
+        margin-top: 2dvh;
+    }
+    
+    /* Sidebar jadi horizontal (logo kiri, slogan kanan) */
+    .sidebar-brand {
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 15px 40px;
+        gap: 20px;
+    }
+    
+    .logo-wrapper {
+        flex-shrink: 0;
+    }
+    
+    .logo-wrapper img {
+        width: 15dvh;
+    }
+    
+    .brand-container {
+        text-align: right;
+        margin-top: 0;
+    }
+    
+    .brand-main {
+        font-size: 0.9rem;
+    }
+    
+    .brand-sub {
+        font-size: 0.75rem;
+    }
+    
+    /* Area slider tetap horizontal scroll */
+    #app-container {
+        padding: 20px 40px;
+        overflow-x: auto;
+    }
+    
+    #main-slider {
+        display: flex;
+        gap: 30px;
+    }
+    
+    .slider-card {
+        width: 40dvh;
+        height: 50dvh;
+        flex-shrink: 0;
+    }
+    
+    /* Header dan footer tetap */
+    .top-bar {
+        width: 90vw;
+        padding: 15px 0;
+    }
+    
+    .bottom-bar {
+        padding: 15px 0;
+    }
+    
+    .headline-body-pc {
+        width: 85vw;
+        font-size: clamp(1rem, 2.5dvh, 1.5rem);
+    }
+}
