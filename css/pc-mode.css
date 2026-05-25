@@ -472,7 +472,7 @@
     
     /* Kartu lebih pendek agar proporsional dengan logo */
     .slider-card {
-        width: 20dvh;
+        width: 25dvh;
         height: 30dvh;  /* mendekati tinggi logo (20-25dvh) + sedikit */
         flex-shrink: 0;
     }
@@ -504,7 +504,7 @@
     /* Header & footer */
     .top-bar {
         width: 90vw;
-        height: auto;
+        height: 18dvh;
         padding: 8px 0;
     }
     
