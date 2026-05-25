@@ -422,7 +422,7 @@
 @media screen and (orientation: portrait) and (min-width: 768px) {
     
     .master-frame {
-        grid-template-rows: 20dvh 25dvh 30dvh 1fr;
+        grid-template-rows: 20dvh 25dvh 35dvh 1fr;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
@@ -473,7 +473,7 @@
     /* Kartu lebih pendek agar proporsional dengan logo */
     .slider-card {
         width: 20dvh;
-        height: 25dvh;  /* mendekati tinggi logo (20-25dvh) + sedikit */
+        height: 30dvh;  /* mendekati tinggi logo (20-25dvh) + sedikit */
         flex-shrink: 0;
     }
     
@@ -504,6 +504,7 @@
     /* Header & footer */
     .top-bar {
         width: 90vw;
+        height: auto;
         padding: 8px 0;
     }
     
