@@ -21,7 +21,6 @@ function fastScroll() {
     }
 }
 
-// 2. TOGGLE POPUP (UX Android Native Navbar Back Button Support)
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -47,9 +46,6 @@ function toggleChat() {
     }
 }
 
-// ==========================================
-// 🚨 SATPAM PENJAGA TOMBOL BACK NAVBAR ANDROID
-// ==========================================
 window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -72,9 +68,6 @@ window.addEventListener('popstate', function (event) {
     }
 });
 
-// ==========================================
-// [3] PENARIKAN IDENTITAS
-// ==========================================
 function dapatkanIdentitasAman() {
     let uid = window.myUID || localStorage.getItem('u_uid') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('u_ign') || "Guest";
@@ -91,7 +84,6 @@ function syncChat(force = false) {
 
     const user = dapatkanIdentitasAman();
 
-    // --- LOGIKA UNMUTE OTOMATIS JIKA DURASI SUDAH HABIS ---
     const input = document.getElementById('msg-input');
     if (muteExpiryTime > 0) {
         if (Date.now() >= muteExpiryTime) {
@@ -119,13 +111,9 @@ function syncChat(force = false) {
     .then(data => {
         if (!data) return;
 
-        // ==========================================
-        // STATUS ADMIN (ONLINE, STANDBY, OFFLINE)
-        // ==========================================
         const statusEl = document.querySelector('#admin-status b');
         if (statusEl) {
             const adminState = (data.adminStatus || "").toUpperCase();
-        
             if (adminState === "ONLINE") {
                 statusEl.className = "status-online";
                 statusEl.innerText = "ONLINE";
@@ -141,53 +129,9 @@ function syncChat(force = false) {
         const arrayChat = data.logs || data.chats || [];
         if (!Array.isArray(arrayChat)) return;
 
-        // ==========================================
-        // PROSES COMMAND MUTE/UNMUTE
-        // ==========================================
-        arrayChat.forEach(msg => {
-            const msgType = msg.type || '';
-            const msgText = msg.message || '';
-            const msgTimestamp = msg.timestamp ? new Date(msg.timestamp).getTime() : Date.now();
-        
-            if (msgType === 'command' && msgText.startsWith('MUTE_')) {
-                const parts = msgText.split('_');
-                const targetUID = parts[1];
-                const durasiMenit = parseInt(parts[2]) || 0;
-        
-                if (targetUID === user.uid && durasiMenit > 0) {
-                    const hitungMundurTarget = msgTimestamp + (durasiMenit * 60 * 1000);
-                    
-                    if (Date.now() < hitungMundurTarget) {
-                        muteExpiryTime = hitungMundurTarget;
-                        localStorage.setItem('umbrella_mute_expiry', hitungMundurTarget);
-                        if (input) { 
-                            input.disabled = true; 
-                            const sisaMenit = Math.ceil((hitungMundurTarget - Date.now()) / 60000);
-                            input.placeholder = `ACCESS RESTRICTED (${sisaMenit}m)`; 
-                        }
-                    }
-                }
-            }
-        
-            if (msgType === 'command' && msgText.startsWith('UNMUTE_')) {
-                const parts = msgText.split('_');
-                const targetUID = parts[1];
-        
-                if (targetUID === user.uid) {
-                    muteExpiryTime = 0;
-                    localStorage.removeItem('umbrella_mute_expiry');
-                    if (input) { 
-                        input.disabled = false; 
-                        input.placeholder = "Ketik pesan..."; 
-                    }
-                }
-            }
-        });
-
-        // JALUR RENDER VISUAL BUBBLE OBROLAN
         const currentStamp = JSON.stringify(arrayChat);
         if (!force && currentStamp === lastChatStamp) {
-            // Logs skip render
+            // skip render
         } else {
             lastChatStamp = currentStamp;
             const lb = document.getElementById('chat-logs');
@@ -201,21 +145,30 @@ function syncChat(force = false) {
                         let msgText = msg.message || msg[4] || '';
                         let msgRole = msg.role || msg[5] || '';
                         
-                        // KONVERSI COMMAND MUTE/UNMUTE MENJADI PESAN SISTEM
+                        // ==========================================
+                        // KONVERSI COMMAND JADI PESAN SISTEM
+                        // ==========================================
                         let isSystem = false;
+                        let isMuteCommand = false;
+                        let muteTargetUID = null;
+                        let muteDurasi = null;
                         
                         if (msgType === 'command') {
                             if (msgText.startsWith('MUTE_')) {
                                 const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
+                                muteDurasi = parts[2] || '?';
                                 const targetIGN = parts[3] || 'Seseorang';
-                                const durasi = parts[2] || '?';
-                                msgText = `🔇 ${targetIGN} dibisukan selama ${durasi} menit.`;
+                                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
                                 isSystem = true;
+                                isMuteCommand = true;
                             } else if (msgText.startsWith('UNMUTE_')) {
                                 const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
                                 const targetIGN = parts[2] || 'Seseorang';
                                 msgText = `🔊 ${targetIGN} telah dibuka bisuannya.`;
                                 isSystem = true;
+                                isMuteCommand = true;
                             } else {
                                 return;
                             }
@@ -246,7 +199,30 @@ function syncChat(force = false) {
                             d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
                         }
                         
-                        lb.appendChild(d); 
+                        lb.appendChild(d);
+                        
+                        // ==========================================
+                        // EKSEKUSI UNTUK TARGET (setelah render)
+                        // ==========================================
+                        if (isMuteCommand && muteTargetUID === user.uid) {
+                            if (msgText.startsWith('🔇')) {
+                                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
+                                muteExpiryTime = expiry;
+                                localStorage.setItem('umbrella_mute_expiry', expiry);
+                                if (input) {
+                                    input.disabled = true;
+                                    input.placeholder = `MUTED (${muteDurasi}m)`;
+                                }
+                            } else if (msgText.startsWith('🔊')) {
+                                muteExpiryTime = 0;
+                                localStorage.removeItem('umbrella_mute_expiry');
+                                if (input) {
+                                    input.disabled = false;
+                                    input.placeholder = "Ketik pesan...";
+                                }
+                            }
+                        }
+                        
                     } catch (e) { 
                         console.error("Error baris:", e); 
                     }
@@ -301,7 +277,7 @@ function getHashColor(uid) {
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
 // ==========================================
-// INTERFASE KOTAK SURAT (MAILBOX ENGINE)
+// MAILBOX ENGINE
 // ==========================================
 
 function aturFormMailbox() {
@@ -438,7 +414,7 @@ window.addEventListener('click', function(e) {
     }
 });
 
-// 🎯 Pintu Gerbang Global Expose
+// Expose
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
@@ -447,7 +423,7 @@ window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 
-// MESIN PENGASUH INTERVAL UTAMA
+// Interval
 setInterval(() => {
     syncChat(false);
 }, 4500);
