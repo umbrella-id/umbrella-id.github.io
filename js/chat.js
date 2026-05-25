@@ -93,12 +93,12 @@ function syncChat(force = false) {
                 input.disabled = false; 
                 input.placeholder = "Ketik pesan..."; 
             }
-            console.log("🔓 Masa hukuman mute berakhir. Akses chat dipulihkan.");
+            console.log("🔓 Masa pembisuan berakhir. Chat telah aktif kembali.");
         } else {
             if (input && !input.disabled) {
                 input.disabled = true;
                 const sisaMenit = Math.ceil((muteExpiryTime - Date.now()) / 60000);
-                input.placeholder = `MUTED (${sisaMenit}m)`;
+                input.placeholder = `Bisu (${sisaMenit}m)`;
             }
         }
     }
@@ -166,7 +166,7 @@ function syncChat(force = false) {
                                 const parts = msgText.split('_');
                                 muteTargetUID = parts[1];
                                 const targetIGN = parts[2] || 'Seseorang';
-                                msgText = `🔊 ${targetIGN} telah dibuka bisuannya.`;
+                                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
                                 isSystem = true;
                                 isMuteCommand = true;
                             } else {
@@ -187,7 +187,7 @@ function syncChat(force = false) {
                             d.innerHTML = `<div class="system-text">${msgText}</div>`;
                         } else if (isDeleted) {
                             d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
-                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus admin</div>`;
+                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
                         } else if (isAdmin) {
                             d.className = 'chat-row admin-msg';
                             d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
@@ -237,7 +237,7 @@ function syncChat(force = false) {
 function sendMessage() {
     if (Date.now() < muteExpiryTime) {
         const sisaDetik = Math.ceil((muteExpiryTime - Date.now()) / 1000);
-        tampilkanToast(`Chat dikunci. Sisa waktu bisu: ${sisaDetik} detik.`);
+        tampilkanToast(`Chat terkunci. Sisa waktu bisu: ${sisaDetik} detik.`);
         return; 
     }
     
@@ -364,11 +364,11 @@ function sendMail() {
     const waValue = inputWA ? inputWA.value.trim() : '';
 
     if (selectedCategory === "Request Join") {
-        if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi!"); if (inputWA) inputWA.focus(); return; }
-        if (!msg) { tampilkanToast("⚠️ Alasan/Biodata Join tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
+        if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi"); if (inputWA) inputWA.focus(); return; }
+        if (!msg) { tampilkanToast("⚠️ Alasan atau biodata join tidak boleh kosong"); if (textarea) textarea.focus(); return; }
         msg = `${waValue}\n${msg}`;
     } else {
-        if (!msg) { tampilkanToast("⚠️ Pesan surat tidak boleh kosong!"); if (textarea) textarea.focus(); return; }
+        if (!msg) { tampilkanToast("⚠️ Pesan surat tidak boleh kosong"); if (textarea) textarea.focus(); return; }
     }
     
     const user = dapatkanIdentitasAman();
@@ -388,7 +388,7 @@ function sendMail() {
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
 
         if (data.status === "success") {
-            tampilkanToast("✉️ Surat berhasil dikirim!");
+            tampilkanToast("✉️ Surat berhasil dikirim");
         } else {
             tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
             toggleMail();
@@ -399,7 +399,7 @@ function sendMail() {
     .catch(err => {
         isSendingMail = false;
         if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
-        tampilkanToast("🚨 Koneksi terputus! Gagal mengirim.");
+        tampilkanToast("🚨 Koneksi terputus. Gagal mengirim.");
         toggleMail();
         if (textarea) textarea.disabled = false;
         if (inputWA) inputWA.disabled = false;
