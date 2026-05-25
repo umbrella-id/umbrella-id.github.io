@@ -419,12 +419,8 @@
 
 } /* 🚨 LIMIT MEDIA QUERY TERAKHIR AMAN JAYA */
 
-/* ==========================================
-   PC PORTRAIT MODE (LAYAR LEBAR & TEGAK)
-   ========================================== */
 @media screen and (orientation: portrait) and (min-width: 768px) {
     
-    /* Ubah struktur master frame */
     .master-frame {
         grid-template-rows: auto auto 1fr auto;
         height: auto;
@@ -432,23 +428,22 @@
         margin-top: 2dvh;
     }
     
-    /* Sidebar jadi horizontal (logo kiri, slogan kanan) */
+    /* Sidebar horizontal */
     .sidebar-brand {
         display: flex !important;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: 15px 40px;
-        gap: 20px;
+        padding: 10px 30px;
+        gap: 15px;
     }
     
-    .logo-wrapper {
-        flex-shrink: 0;
-    }
-    
+    /* Logo ukuran menyesuaikan (20-25dvh) */
     .logo-wrapper img {
-        width: 15dvh;
+        width: 20dvh;
+        height: auto;
+        max-height: 25dvh;
     }
     
     .brand-container {
@@ -461,38 +456,68 @@
     }
     
     .brand-sub {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
     
-    /* Area slider tetap horizontal scroll */
+    /* Area slider */
     #app-container {
-        padding: 20px 40px;
+        padding: 15px 30px;
         overflow-x: auto;
     }
     
     #main-slider {
         display: flex;
-        gap: 30px;
+        gap: 20px;
+        align-items: center; /* vertikal tengah */
     }
     
+    /* Kartu lebih pendek agar proporsional dengan logo */
     .slider-card {
-        width: 40dvh;
-        height: 50dvh;
+        width: 30dvh;
+        height: 32dvh;  /* mendekati tinggi logo (20-25dvh) + sedikit */
         flex-shrink: 0;
     }
     
-    /* Header dan footer tetap */
+    .slider-card-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .pc-card-title {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    
+    .pc-card-body {
+        font-size: 0.75rem;
+        line-height: 1.4;
+        overflow-y: auto;
+        flex: 1;
+        margin-bottom: 8px;
+    }
+    
+    .pc-read-more-hint {
+        font-size: 0.7rem;
+        text-align: right;
+    }
+    
+    /* Header & footer */
     .top-bar {
         width: 90vw;
-        padding: 15px 0;
+        padding: 8px 0;
+    }
+    
+    .pc-header-text {
+        font-size: clamp(1.2rem, 4dvh, 2rem);
     }
     
     .bottom-bar {
-        padding: 15px 0;
+        padding: 8px 0;
     }
     
     .headline-body-pc {
         width: 85vw;
-        font-size: clamp(1rem, 2.5dvh, 1.5rem);
+        font-size: clamp(0.8rem, 2dvh, 1.1rem);
     }
 }
