@@ -419,16 +419,22 @@
 
 } /* 🚨 LIMIT MEDIA QUERY TERAKHIR AMAN JAYA */
 
+/* ==========================================
+   PC PORTRAIT MODE (LAYAR LEBAR & TEGAK)
+   ========================================== */
 @media screen and (orientation: portrait) and (min-width: 768px) {
     
+    /* MASTER FRAME - 4 baris */
     .master-frame {
-        grid-template-rows: 18dvh 28dvh 35dvh 1fr;
+        display: grid;
+        grid-template-rows: 15dvh 28dvh 35dvh 1fr;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
+        overflow: hidden;
     }
     
-    /* Sidebar horizontal */
+    /* SIDEBAR - HORIZONTAL (logo kiri, brand kanan) */
     .sidebar-brand {
         display: flex !important;
         flex-direction: row;
@@ -439,16 +445,19 @@
         gap: 15px;
     }
     
-    /* Logo ukuran menyesuaikan (20-25dvh) */
-    .logo-wrapper img {
-        max-width: 45vw;
-        height: 30dvh;        
-        align-items: center;
+    /* LOGO */
+    .logo-wrapper {
+        flex-shrink: 0;
     }
     
+    .logo-wrapper img {
+        max-width: 45vw;
+        height: 30dvh;
+    }
+    
+    /* BRAND TEXT (slogan) */
     .brand-container {
-        text-align: center ;
-        justify-content: center;
+        text-align: center;
         margin-top: 0;
     }
     
@@ -457,10 +466,10 @@
     }
     
     .brand-sub {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
     }
     
-    /* Area slider */
+    /* AREA SLIDER */
     #app-container {
         padding: 15px 30px;
         overflow-x: auto;
@@ -469,13 +478,13 @@
     #main-slider {
         display: flex;
         gap: 20px;
-        align-items: center; /* vertikal tengah */
+        align-items: center;
     }
     
-    /* Kartu lebih pendek agar proporsional dengan logo */
+    /* SLIDER CARD */
     .slider-card {
         width: 25dvh;
-        height: 30dvh;  /* mendekati tinggi logo (20-25dvh) + sedikit */
+        height: 30dvh;
         flex-shrink: 0;
     }
     
@@ -503,25 +512,33 @@
         text-align: right;
     }
     
-    /* Header & footer */
+    /* HEADER */
     .top-bar {
         width: 90vw;
-        height: 18dvh;
-        padding: 8px 0;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .pc-header-text {
         font-size: clamp(2rem, 4dvh, 4rem);
-        text-align: center ;
-        justify-content: center;
+        text-align: center;
     }
     
+    /* FOOTER */
     .bottom-bar {
+        width: 90vw;
+        margin: 0 auto;
         padding: 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .headline-body-pc {
         width: 85vw;
         font-size: clamp(0.8rem, 2dvh, 1.1rem);
+        text-align: center;
     }
 }
