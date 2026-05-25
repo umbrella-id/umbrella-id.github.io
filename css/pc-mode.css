@@ -441,8 +441,8 @@
     
     /* Logo ukuran menyesuaikan (20-25dvh) */
     .logo-wrapper img {
-        width: 20dvh;
-        height: auto;
+        width: 30vw;
+        height: 20dvh;
     }
     
     .brand-container {
