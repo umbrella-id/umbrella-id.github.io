@@ -425,7 +425,7 @@
 @media screen and (orientation: portrait) and (min-width: 768px) {
     
     .master-frame {
-        grid-template-rows: 15dvh 28dvh 35dvh 1fr;
+        grid-template-rows: auto 28dvh 35dvh auto;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
