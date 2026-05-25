@@ -190,7 +190,7 @@ function syncChat(force = false) {
                             d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus admin</div>`;
                         } else if (isAdmin) {
                             d.className = 'chat-row admin-msg';
-                            d.innerHTML = `<b>⚡ ADMIN ${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+                            d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
                         } else if (isMe) {
                             d.className = 'chat-row me';
                             d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
