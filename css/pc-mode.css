@@ -422,7 +422,7 @@
 @media screen and (orientation: portrait) and (min-width: 768px) {
     
     .master-frame {
-        grid-template-rows: 20dvh 25dvh 35dvh 1fr;
+        grid-template-rows: 15dvh 30dvh 35dvh 1fr;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
@@ -441,8 +441,8 @@
     
     /* Logo ukuran menyesuaikan (20-25dvh) */
     .logo-wrapper img {
-        width: 30vw;
-        height: 20dvh;
+        max-width: 45vw;
+        height: 30dvh;
     }
     
     .brand-container {
@@ -504,7 +504,7 @@
     /* Header & footer */
     .top-bar {
         width: 90vw;
-        height: 18dvh;
+        height: 15dvh;
         padding: 8px 0;
     }
     
