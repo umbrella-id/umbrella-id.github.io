@@ -442,11 +442,12 @@
     /* Logo ukuran menyesuaikan (20-25dvh) */
     .logo-wrapper img {
         max-width: 45vw;
-        height: 30dvh;
+        height: 30dvh;        
+        align-items: center;
     }
     
     .brand-container {
-        text-align: right;
+        text-align: center ;
         margin-top: 0;
     }
     
@@ -484,12 +485,12 @@
     }
     
     .pc-card-title {
-        font-size: 1rem;
+        font-size: 2rem;
         margin-bottom: 8px;
     }
     
     .pc-card-body {
-        font-size: 0.75rem;
+        font-size: 1.5rem;
         line-height: 1.4;
         overflow-y: auto;
         flex: 1;
