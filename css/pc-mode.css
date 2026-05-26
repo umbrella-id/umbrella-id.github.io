@@ -432,7 +432,7 @@
 
     .content-wrapper {
         display: grid;
-        grid-template-row: 1fr 35dvh ;
+        grid-template-rows: 30dvh 1fr ;
         width: 100%;
     }
 
@@ -447,7 +447,6 @@
     }
    
     .brand-container {
-        width: 50vw;
     }
 
     .slider-card {
