@@ -400,19 +400,6 @@
         width: 30dvh;
     }
 
-    .brand-container {
-        text-align: center;
-        margin-top: 0;
-    }
-
-    .brand-main {
-        font-size: 2.5rem;
-    }
-
-    .brand-sub {
-        font-size: 1.5rem;
-    }
-
     .slider-card {
         width: 50dvh;
         height: 55dvh;
@@ -455,7 +442,20 @@
     }
 
     .logo-wrapper img {
-        height: 30dvh;
+        height: 30vw ;
+    }
+   
+    .brand-container {
+        text-align: center;
+        margin-top: 0;
+    }
+   
+    .brand-main {
+        font-size: 2.5rem;
+    }
+
+    .brand-sub {
+        font-size: 1.5rem;
     }
 
     .slider-card {
