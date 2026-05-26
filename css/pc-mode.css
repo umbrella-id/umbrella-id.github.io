@@ -192,19 +192,22 @@
     /* ==========================================
        6. FOOTER (BOTTOM BAR)
        ========================================== */
-    .headline-body-pc {
-        width: 75vw;
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: #94a3b8;
-        font-size: clamp(1.8vw, 3dvh, 4dvh);
-        line-height: 1.4;
-        position: relative;
-        z-index: 10;
-    }
+   .headline-body-pc {
+       width: 75vw;
+       margin: 0 auto;
+       height: 10dvh;
+       display: flex;
+       flex-shrink: 0;
+       justify-content: center;
+       align-items: center;
+       text-align: center;
+       color: #94a3b8;
+       font-size: clamp(1.8vw, 3dvh, 4dvh);
+       line-height: 1.4;
+       overflow: visible;
+       position: relative;
+       z-index: 10;
+   }
     
     .inline-link-text {
         display: inline;
@@ -419,8 +422,6 @@
    ========================================== */
 @media screen and (orientation: portrait) and (min-width: 768px) and (min-height: 380px) {
 
-    /* Di sini nanti Anda bisa tambahkan layout portrait Anda */
-    /* Contoh: */
     .master-frame {
         display: grid;
         grid-template-rows: auto 28dvh 35dvh auto;
@@ -429,6 +430,7 @@
         margin-top: 2dvh;
     }
 
+    /* Sidebar horizontal */
     .sidebar-brand {
         display: flex !important;
         flex-direction: row;
@@ -439,24 +441,50 @@
         gap: 15px;
     }
 
+    /* Logo */
     .logo-wrapper img {
         max-width: 45vw;
         height: 30dvh;
     }
 
+    /* Brand Container - posisi kanan */
     .brand-container {
-        text-align: center;
+        text-align: right;
+        margin-left: auto;
         margin-top: 0;
     }
 
+    /* Sembunyikan brand-main asli */
     .brand-main {
-        font-size: 2.5rem;
+        display: none;
     }
 
+    /* Tambahkan UMBRELLA via pseudo-element */
+    .brand-container::before {
+        content: "UMBRELLA";
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: #fff;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    /* Slogan (brand-sub) tetap tampil */
     .brand-sub {
-        font-size: 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: var(--color-primary);
+        letter-spacing: 1px;
+        text-transform: lowercase;
+        opacity: 0.9;
+        text-align: right;
+        margin-top: 0;
     }
 
+    /* Area slider */
     #app-container {
         padding: 15px 30px;
         overflow-x: auto;
@@ -468,6 +496,7 @@
         align-items: center;
     }
 
+    /* Kartu */
     .slider-card {
         width: 25dvh;
         height: 30dvh;
@@ -488,6 +517,7 @@
         font-size: 0.7rem;
     }
 
+    /* Header */
     .top-bar {
         width: 90vw;
         margin: 0 auto;
@@ -498,6 +528,7 @@
         text-align: center;
     }
 
+    /* Footer */
     .bottom-bar {
         width: 90vw;
         margin: 0 auto;
