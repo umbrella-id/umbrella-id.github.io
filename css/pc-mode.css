@@ -58,8 +58,6 @@
        3. SIDEBAR (LOGO & BRANDING)
        ========================================== */
     .sidebar-brand {
-        display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
     }
@@ -393,6 +391,8 @@
     }
 
     .sidebar-brand {
+        display: flex;
+        flex-direction: column;
         width: 350px;
     }
 
