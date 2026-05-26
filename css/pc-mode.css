@@ -442,12 +442,12 @@
     }
 
     .logo-wrapper img {
-        width: 30vw ;
+        height: 20dvh ;
     }
    
     .brand-container {
         height: 60vw ;
-        text-align: left ;
+        text-align: center ;
         margin-top: 0;
     }
    
