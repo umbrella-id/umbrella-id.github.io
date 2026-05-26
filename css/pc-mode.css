@@ -436,27 +436,29 @@
     }
 
     .sidebar-brand {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;      /* ← tambah */
+    justify-content: center;  /* ← tambah */
+    gap: 20px;                /* ← tambah (jarak logo & brand) */
+    width: 100%;
     }
-
+   
     .logo-wrapper img {
         height: 20dvh ;
     }
    
     .brand-container {
-        height: 60vw ;
         text-align: center ;
         margin-top: 0;
     }
    
     .brand-main {
-        font-size: 1,8rem;
+        font-size: 1,2rem;
     }
 
     .brand-sub {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
 
     .slider-card {
