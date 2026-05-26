@@ -430,26 +430,20 @@
     }
 
     .content-wrapper {
-        display: flex;
-        flex-direction: column;
-        height: 30dvh;
-    }
-
-    .sidebar-brand {
-        display: flex ;
-        grid-template-columns: 40vw 1fr;
+        display: grid;
+        grid-template-rows: 25dvh 1fr;
         height: 100%;
     }
 
+    .sidebar-brand {
+        display: flex;
+        flex-direction: row;
+        width: 350px;
+    }
+
     .logo-wrapper img {
-        widtht: 40vw;
+        width: 30dvh;
     }
-
-    .brand-container {
-        text-align: center;
-        margin-top: 0;
-    }
-
 
     .slider-card {
         width: 50dvh;
@@ -465,4 +459,3 @@
         /* gaya khusus landscape jika ada */
     }
 }
-
