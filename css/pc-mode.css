@@ -443,11 +443,11 @@
     }
 
     .logo-wrapper img {
-        height: 25dvh;
+        width: 40vw;
     }
    
-    .brand-sub {
-        font-size: 1.5rem;
+    .brand-container {
+        width: 50vw;
     }
 
     .slider-card {
