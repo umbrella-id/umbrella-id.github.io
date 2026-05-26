@@ -420,42 +420,49 @@
    PC PORTRAIT (LAYOUT KHUSUS PORTRAIT)
    ========================================== */
 @media screen and (orientation: portrait) and (min-width: 768px) and (min-height: 380px) {
-   
+
     .master-frame {
-        grid-template-rows: auto 28dvh auto auto;
+        display: grid;
+        grid-template-rows: 18dvh 60dvh 1fr;
+        height: 95dvh;
+        margin-top: 5dvh;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 30dvh;
     }
 
     .sidebar-brand {
-        flex-direction: row;
-        justify-content: space-between;
-        width: 100%;
-        padding: 10px 30px;
+        display: flex ;
+        grid-template-columns: 40vw 1fr;
+        height: 100%;
     }
 
     .logo-wrapper img {
-        width: 22dvh;
+        widtht: 40vw;
     }
 
-    .brand-main {
-        display: none;
+    .brand-container {
+        text-align: center;
+        margin-top: 0;
     }
 
-    .brand-container::before {
-        content: "UMBRELLA";
-        display: block;
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: #fff;
-        text-align: right;
-    }
 
     .slider-card {
-        width: 28dvh;
-        height: 32dvh;
+        width: 50dvh;
+        height: 55dvh;
+        margin-top: 15px;
     }
 
-    .top-bar, .bottom-bar {
-        width: 90vw;
-        margin: 0 auto;
+    .headline-body-pc {
+        height: 10dvh;
+    }
+
+    .bottom-bar {
+        /* gaya khusus landscape jika ada */
     }
 }
+
