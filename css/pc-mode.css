@@ -438,7 +438,7 @@
     .sidebar-brand {
         display: flex;
         flex-direction: row;
-        width: 350px;
+        width: 100%;
     }
 
     .logo-wrapper img {
