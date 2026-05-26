@@ -442,20 +442,22 @@
     }
 
     .logo-wrapper img {
-        height: 30vw ;
+        width: 30vw ;
+        text-align: right ;
     }
    
     .brand-container {
-        text-align: center;
+        height: 60vw ;
+        text-align: left ;
         margin-top: 0;
     }
    
     .brand-main {
-        font-size: 2.5rem;
+        font-size: 1,8rem;
     }
 
     .brand-sub {
-        font-size: 1.5rem;
+        font-size: 1.1rem;
     }
 
     .slider-card {
