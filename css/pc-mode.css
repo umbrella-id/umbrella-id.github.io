@@ -423,7 +423,7 @@
 
     .master-frame {
         display: grid;
-        grid-template-rows: 18dvh 60dvh 1fr;
+        grid-template-rows: 18dvh 65dvh 1fr;
         height: 95dvh;
         margin-top: 5dvh;
         overflow: hidden;
@@ -431,7 +431,7 @@
 
     .content-wrapper {
         display: grid;
-        grid-template-rows: 25dvh 1fr;
+        grid-template-rows: 30dvh 1fr;
         height: 100%;
     }
 
@@ -442,12 +442,12 @@
     }
 
     .logo-wrapper img {
-        width: 30dvh;
+        height: 30dvh;
     }
 
     .slider-card {
-        width: 50dvh;
-        height: 55dvh;
+        width: 25dvh;
+        height: 30dvh;
         margin-top: 15px;
     }
 
