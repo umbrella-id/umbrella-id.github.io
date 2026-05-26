@@ -58,7 +58,7 @@
        3. SIDEBAR (LOGO & BRANDING)
        ========================================== */
     .sidebar-brand {
-        display: flex !important;
+        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -432,13 +432,13 @@
 
     .content-wrapper {
         display: flex ;
-        flex-direction: row;
+        flex-direction: column;
         width: 100%;
     }
 
     .sidebar-brand {
         display: flex ;
-        flex-direction: column ;
+        flex-direction: row ;
         width: 100% ;
         height: 50% ;
         padding: 10px 30px;
@@ -453,24 +453,6 @@
     .brand-container {
         text-align: center;
         margin-top: 15px;
-    }
-
-    .brand-main {
-        font-size: 0.8rem;
-        font-weight: 900;
-        letter-spacing: 1px;
-        color: #fff;
-        text-transform: uppercase;
-    }
-
-    .brand-sub {
-        font-size: 0.8rem;
-        font-weight: 400;
-        color: var(--color-primary);
-        letter-spacing: 2px;
-        text-transform: lowercase;
-        margin-top: 5px;
-        opacity: 0.8;
     }
 
     .slider-card {
