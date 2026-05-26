@@ -1,37 +1,19 @@
-/* pc-mode.css - Hanya aktif di monitor lebar dengan posisi tidur */
-@media screen and (orientation: landscape) and (min-width: 768px) and (min-height: 380px) {
+/* ==========================================
+   PC-MODE.CSS - GAYA UMUM (SEMUA ORIENTASI)
+   ========================================== */
+@media screen and (min-width: 768px) and (min-height: 380px) {
 
     /* ==========================================
-       1. LAYOUT & FRAME UTAMA (CYBER MATRIX DESKTOP)
+       1. BACKGROUND & VISUAL EFFECTS
        ========================================== */
     html, body {
         background-color: var(--bg-dark) !important;
-        
-        /* 🎯 SUNTIKAN KEMBALI TEXTURE DOT-MATRIX MURNI UNTUK DESKTOP MONITOR */
         background-image: 
-            /* Layer 1: Titik-titik matriks ungu digital yang sinkron ke root */
             radial-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px),
-            /* Layer 2: Efek kabut awan nebula kosmos redup bawaan awal PC lu */
             radial-gradient(circle at 50% 30%, #1e113c 0%, #0f172a 50%, var(--bg-dark) 100%) !important;
-            
-        /* Kerapatan matriks disesuaikan 6px agar terlihat super halus di layar monitor */
         background-size: 6px 6px, 100% 100% !important;
         background-attachment: fixed !important;
         transition: background 0.4s ease;
-    }
-
-    .master-frame {
-        display: grid;
-        grid-template-rows: 18dvh 60dvh 1fr;
-        height: 95dvh;
-        margin-top: 5dvh;
-        overflow: hidden;
-    }
-
-    .content-wrapper {
-        display: grid;
-        grid-template-columns: 350px 1fr; /* Sidebar & Slider */
-        height: 100%;
     }
 
     /* ==========================================
@@ -49,7 +31,6 @@
         position: relative;
     }
 
-    /* Aksen Neon di Header */
     .top-bar::before, .top-bar::after {
         content: '';
         position: absolute;
@@ -81,7 +62,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 350px;
     }
 
     .logo-wrapper {
@@ -91,8 +71,6 @@
     }
 
     .logo-wrapper img {
-        width: 30dvh;
-        height: auto;
         filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
@@ -132,7 +110,6 @@
         scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.2);
     }
 
-    /* Styling Scrollbar Slider */
     #app-container::-webkit-scrollbar { height: 6px; }
     #app-container::-webkit-scrollbar-track { background: var(--border-divider); border-radius: 10px; }
     #app-container::-webkit-scrollbar-thumb { 
@@ -147,18 +124,12 @@
     }
 
     /* ==========================================
-       5. SLIDER CARD (GLASSMORPHISM & HOVER EFFECT PC PORT)
+       5. SLIDER CARD (GLASSMORPHISM & HOVER)
        ========================================== */
     .slider-card {
-        width: 50dvh;
-        height: 55dvh;
-        margin-top: 15px;
-        
-        /* LINKED TO MENU ROOT: Kaca tipis bening orisinal milik PC */
         background: var(--bg-pc-glass);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        
         border: 1px solid var(--border-line);
         border-radius: 20px;
         padding: 25px;
@@ -168,7 +139,6 @@
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* EFEK KILATAN ATAP GLOW SHINE (Bawaan Ori Lu Aman Jaya!) */
     .slider-card::before {
         content: '';
         position: absolute;
@@ -182,17 +152,10 @@
         pointer-events: none;
     }
 
-    /* HOVER SAKTI: Huruf super kontras & kilatan lampu mekar lewat root */
     .slider-card:hover {
         transform: translateY(-10px) scale(1.02);
-        
-        /* Garis menyala ungu pekat dari root */
         border-color: var(--border-line-hover);
-        
-        /* ANTI-BIAS KUNCI: Latar belakang dipaksa menggunakan bias tipis orisinal lu */
         background: var(--color-primary-hover) !important;
-        
-        /* Mengambil limpahan tumpukan bayangan neon luar-dalam dari pusat komando */
         box-shadow: var(--shadow-neon-glow) !important;
     }
 
@@ -201,7 +164,6 @@
         top: 100%;
     }
 
-    /* Konten di dalam Kartu */
     .slider-card-content {
         display: flex;
         flex-direction: column;
@@ -228,22 +190,20 @@
     }
 
     /* ==========================================
-       6. FOOTER (BOTTOM BAR & SELENGKAPNYA)
+       6. FOOTER (BOTTOM BAR)
        ========================================== */
     .headline-body-pc {
         width: 75vw;
         margin: 0 auto;
-        height: 10dvh;            
-        display: flex-shrink;
-        justify-content: center; 
-        align-items: center;     
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
         color: #94a3b8;
-        font-size: clamp(1.8vw, 3dvh, 4dvh); 
+        font-size: clamp(1.8vw, 3dvh, 4dvh);
         line-height: 1.4;
-        overflow: visible;        
         position: relative;
-        z-index: 10;             
+        z-index: 10;
     }
     
     .inline-link-text {
@@ -264,7 +224,7 @@
     }
 
     /* ==========================================
-       7. RUNNING TEXT (MARQUEE & MASKING)
+       7. RUNNING TEXT (MARQUEE)
        ========================================== */
     .running-text-wrapper {
         position: fixed;
@@ -306,7 +266,6 @@
         transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Kotak Surat */
     .mail-container {
         top: 20px;
         left: 40px;
@@ -322,7 +281,6 @@
     .mail-container i { font-size: 1.5rem; color: var(--color-primary); }
     .mail-container:hover { transform: translateX(10px); text-shadow: 0 0 15px var(--color-primary); }
 
-    /* Identity System */
     #ign-label-container {
         position: fixed;
         top: 20px;
@@ -337,13 +295,8 @@
         letter-spacing: 1.2px;
     }
     #ign-label-container:hover { transform: translateX(-10px); text-shadow: 0 0 15px var(--color-primary); }
+    #ign-label-container:active { transform: scale(0.9); opacity: 0.7; }
 
-    #ign-label-container:active {
-        transform: scale(0.9);
-        opacity: 0.7;
-    }
-
-    /* Tombol Chat */
     .chat-container {
         bottom: 30px;
         right: 40px;
@@ -410,27 +363,72 @@
         padding-right: 10px;
     }
     
-    /* Modal Scrollbar */
     .modal-body::-webkit-scrollbar { width: 4px; }
     .modal-body::-webkit-scrollbar-thumb { 
         background: var(--color-primary); 
         border-radius: 10px; 
     }
+}
 
-} /* 🚨 LIMIT MEDIA QUERY TERAKHIR AMAN JAYA */
 
 /* ==========================================
-   PC PORTRAIT MODE (LAYAR LEBAR & TEGAK)
+   PC LANDSCAPE (LAYOUT KHUSUS LANDSCAPE)
    ========================================== */
-@media screen and (orientation: portrait) and (min-width: 768px) {
-    
+@media screen and (orientation: landscape) and (min-width: 768px) and (min-height: 380px) {
+
     .master-frame {
+        display: grid;
+        grid-template-rows: 18dvh 60dvh 1fr;
+        height: 95dvh;
+        margin-top: 5dvh;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        height: 100%;
+    }
+
+    .sidebar-brand {
+        width: 350px;
+    }
+
+    .logo-wrapper img {
+        width: 30dvh;
+    }
+
+    .slider-card {
+        width: 50dvh;
+        height: 55dvh;
+        margin-top: 15px;
+    }
+
+    .headline-body-pc {
+        height: 10dvh;
+    }
+
+    .bottom-bar {
+        /* gaya khusus landscape jika ada */
+    }
+}
+
+
+/* ==========================================
+   PC PORTRAIT (LAYOUT KHUSUS PORTRAIT)
+   ========================================== */
+@media screen and (orientation: portrait) and (min-width: 768px) and (min-height: 380px) {
+
+    /* Di sini nanti Anda bisa tambahkan layout portrait Anda */
+    /* Contoh: */
+    .master-frame {
+        display: grid;
         grid-template-rows: auto 28dvh 35dvh auto;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
     }
-    
+
     .sidebar-brand {
         display: flex !important;
         flex-direction: row;
@@ -440,172 +438,75 @@
         padding: 10px 30px;
         gap: 15px;
     }
-    
+
     .logo-wrapper img {
         max-width: 45vw;
         height: 30dvh;
     }
-    
+
     .brand-container {
         text-align: center;
         margin-top: 0;
     }
-    
+
     .brand-main {
         font-size: 2.5rem;
     }
-    
+
     .brand-sub {
         font-size: 1.5rem;
     }
-    
+
     #app-container {
         padding: 15px 30px;
         overflow-x: auto;
     }
-    
+
     #main-slider {
         display: flex;
         gap: 20px;
         align-items: center;
     }
-    
+
     .slider-card {
         width: 25dvh;
         height: 30dvh;
-        flex-shrink: 0;
     }
-    
-    .slider-card-content {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    
+
     .pc-card-title {
         font-size: 1.8rem;
         margin-bottom: 8px;
     }
-    
+
     .pc-card-body {
         font-size: 1.2rem;
         line-height: 1.4;
-        overflow-y: auto;
-        flex: 1;
         margin-bottom: 8px;
     }
-    
+
     .pc-read-more-hint {
         font-size: 0.7rem;
-        text-align: right;
     }
-    
+
     .top-bar {
         width: 90vw;
         margin: 0 auto;
     }
-    
+
     .pc-header-text {
         font-size: clamp(2rem, 4dvh, 4rem);
         text-align: center;
     }
-    
+
     .bottom-bar {
         width: 90vw;
         margin: 0 auto;
         padding: 8px 0;
     }
-    
+
     .headline-body-pc {
         width: 85vw;
         font-size: clamp(0.8rem, 2dvh, 1.1rem);
         text-align: center;
     }
-}
-
-/* WARNA & EFEK VISUAL (sama seperti landscape) */
-html, body {
-    background-color: var(--bg-dark);
-    background-image: radial-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px),
-                      radial-gradient(circle at 50% 30%, #1e113c 0%, #0f172a 50%, var(--bg-dark) 100%);
-    background-size: 6px 6px, 100% 100%;
-    background-attachment: fixed;
-}
-
-.slider-card {
-    background: var(--bg-pc-glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-line);
-    border-radius: 20px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-}
-
-.slider-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-    transform: rotate(45deg);
-    transition: 0.5s;
-    pointer-events: none;
-}
-
-.slider-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    border-color: var(--border-line-hover);
-    background: var(--color-primary-hover) !important;
-    box-shadow: var(--shadow-neon-glow) !important;
-}
-
-.slider-card:hover::before {
-    left: 100%;
-    top: 100%;
-}
-
-.pc-card-title {
-    color: var(--color-primary);
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.pc-card-body {
-    color: var(--text-main);
-}
-
-.pc-read-more-hint {
-    color: var(--color-primary);
-}
-
-.top-bar::before,
-.top-bar::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    width: 20px;
-    height: 3px;
-    background: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary);
-}
-
-.top-bar::before { left: 0; }
-.top-bar::after { right: 0; }
-
-.headline-body-pc {
-    color: #94a3b8;
-}
-
-.inline-link-text {
-    color: var(--color-primary);
-    font-weight: bold;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.inline-link-text:hover {
-    color: #fff;
-    text-shadow: 0 0 10px var(--color-primary);
 }
