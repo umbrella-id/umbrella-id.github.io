@@ -439,14 +439,16 @@
     .sidebar-brand {
        display: grid;
        grid-template-columns: 40vw 1fr ;
-       height: 25dvh;       
+       height: 25dvh;  
+       width: 100%;
     }
 
     .logo-wrapper img {
-        width: 40vw;
+        height: 25dvh; 
     }
    
-    .brand-container {
+    .brand-sub {
+        font-size: 1.5rem;
     }
 
     .slider-card {
