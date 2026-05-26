@@ -3,9 +3,7 @@
    ========================================== */
 @media screen and (min-width: 768px) and (min-height: 380px) {
 
-    /* ==========================================
-       1. BACKGROUND & VISUAL EFFECTS
-       ========================================== */
+    /* ---------- BACKGROUND & EFEK VISUAL ---------- */
     html, body {
         background-color: var(--bg-dark) !important;
         background-image: 
@@ -16,17 +14,8 @@
         transition: background 0.4s ease;
     }
 
-    /* ==========================================
-       2. HEADER (TOP BAR)
-       ========================================== */
+    /* ---------- HEADER (EFEK VISUAL) ---------- */
     .top-bar {
-        width: 70vw;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 0;
         border-bottom: 1px solid var(--border-line);
         position: relative;
     }
@@ -44,43 +33,20 @@
     .top-bar::after { right: 0; }
 
     .pc-header-text {
-        font-size: clamp(2.5vw, 3.0vw, 3.5vw);
         font-weight: 900;
         letter-spacing: 3px;
         color: #fff;
         text-transform: uppercase;
         text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
         line-height: 1.1;
-        text-align: center;
     }
 
-    /* ==========================================
-       3. SIDEBAR (LOGO & BRANDING)
-       ========================================== */
-    .sidebar-brand {
-        display: flex !important;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .logo-wrapper {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
+    /* ---------- SIDEBAR (EFEK VISUAL) ---------- */
     .logo-wrapper img {
         filter: drop-shadow(0 0 15px var(--color-primary));
     }
 
-    .brand-container {
-        text-align: center;
-        margin-top: 15px;
-    }
-
     .brand-main {
-        font-size: 0.8rem;
         font-weight: 900;
         letter-spacing: 1px;
         color: #fff;
@@ -88,23 +54,15 @@
     }
 
     .brand-sub {
-        font-size: 0.8rem;
         font-weight: 400;
         color: var(--color-primary);
         letter-spacing: 2px;
         text-transform: lowercase;
-        margin-top: 5px;
         opacity: 0.8;
     }
 
-    /* ==========================================
-       4. AREA SLIDER & SCROLLBAR
-       ========================================== */
+    /* ---------- SLIDER & SCROLLBAR (EFEK VISUAL) ---------- */
     #app-container {
-        display: flex;
-        align-items: center;
-        overflow-x: auto;
-        padding: 0 40px;
         scroll-behavior: smooth;
         scrollbar-width: thin;
         scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.2);
@@ -118,14 +76,7 @@
     }
     #app-container::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
-    #main-slider {
-        display: flex;
-        gap: 30px;
-    }
-
-    /* ==========================================
-       5. SLIDER CARD (GLASSMORPHISM & HOVER)
-       ========================================== */
+    /* ---------- SLIDER CARD (GLASSMORPHISM & HOVER) ---------- */
     .slider-card {
         background: var(--bg-pc-glass);
         backdrop-filter: blur(12px);
@@ -171,16 +122,12 @@
     }
 
     .pc-card-body {
-        font-size: 0.95rem;
-        line-height: 1.6;
         color: var(--text-main);
+        line-height: 1.6;
         overflow: hidden;
-        margin-bottom: 30px;
     }
 
     .pc-read-more-hint {
-        margin-top: auto;
-        font-size: 0.8rem;
         color: var(--color-primary);
         font-weight: bold;
         text-transform: lowercase;
@@ -189,23 +136,12 @@
         text-align: right;
     }
 
-    /* ==========================================
-       6. FOOTER (BOTTOM BAR)
-       ========================================== */
-      .headline-body-pc {
-        width: 75vw;
-        margin: 0 auto;
-        height: 10dvh;            
-        display: flex-shrink;
-        justify-content: center; 
-        align-items: center;     
-        text-align: center;
+    /* ---------- FOOTER (EFEK VISUAL) ---------- */
+    .headline-body-pc {
         color: #94a3b8;
-        font-size: clamp(1.8vw, 3dvh, 4dvh); 
         line-height: 1.4;
-        overflow: visible;        
         position: relative;
-        z-index: 10;             
+        z-index: 10;
     }
     
     .inline-link-text {
@@ -214,7 +150,6 @@
         font-weight: bold;
         text-decoration: underline;
         cursor: pointer;
-        margin-left: 5px;
         white-space: nowrap;
         pointer-events: auto;
     }
@@ -225,15 +160,9 @@
         transform: scale(1.05);
     }
 
-    /* ==========================================
-       7. RUNNING TEXT (MARQUEE)
-       ========================================== */
+    /* ---------- RUNNING TEXT (MARQUEE) ---------- */
     .running-text-wrapper {
         position: fixed;
-        bottom: 1dvh;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70vw;
         background: transparent;
         overflow: hidden;
         z-index: 2000;
@@ -245,11 +174,7 @@
     .running-text-content {
         display: inline-block;
         white-space: nowrap;
-        font-size: 1.1rem;
-        font-weight: 500;
-        letter-spacing: 2px;
         color: rgba(255, 255, 255, 0.8);
-        padding-left: 100%;
         animation: marquee-pc 25s linear infinite;
     }
 
@@ -258,9 +183,7 @@
         100% { transform: translateX(-100%); }
     }
 
-    /* ==========================================
-       8. FLOATING WIDGETS (MAIL & CHAT)
-       ========================================== */
+    /* ---------- FLOATING WIDGETS (EFEK VISUAL) ---------- */
     .mail-container, .chat-container {
         position: fixed;
         z-index: 1500;
@@ -269,41 +192,30 @@
     }
 
     .mail-container {
-        top: 20px;
-        left: 40px;
         background: transparent;
         color: white;
         font-weight: 800;
-        font-size: 0.9rem;
         letter-spacing: 2px;
         display: flex;
         align-items: center;
         gap: 15px;
     }
-    .mail-container i { font-size: 1.5rem; color: var(--color-primary); }
-    .mail-container:hover { transform: translateX(10px); text-shadow: 0 0 15px var(--color-primary); }
+    .mail-container i { color: var(--color-primary); }
+    .mail-container:hover { text-shadow: 0 0 15px var(--color-primary); }
 
     #ign-label-container {
-        position: fixed;
-        top: 20px;
-        right: 40px;
         display: flex;
         align-items: center;
         gap: 5px;
-        font-size: 1.2rem;
         font-weight: 800;
         color: #fff;
         z-index: 9900;
         letter-spacing: 1.2px;
     }
-    #ign-label-container:hover { transform: translateX(-10px); text-shadow: 0 0 15px var(--color-primary); }
+    #ign-label-container:hover { text-shadow: 0 0 15px var(--color-primary); }
     #ign-label-container:active { transform: scale(0.9); opacity: 0.7; }
 
     .chat-container {
-        bottom: 30px;
-        right: 40px;
-        width: 65px;
-        height: 65px;
         background: var(--color-primary);
         color: white;
         border-radius: 50%;
@@ -312,12 +224,9 @@
         justify-content: center;
         box-shadow: 0 8px 25px var(--color-primary-glow);
     }
-    .chat-container i { font-size: 1.8rem; }
-    .chat-container:hover { transform: scale(1.1) rotate(-10deg); background: white; color: var(--color-primary); }
+    .chat-container:hover { background: white; color: var(--color-primary); }
 
-    /* ==========================================
-       9. DETAIL MODAL (OVERLAY)
-       ========================================== */
+    /* ---------- DETAIL MODAL (EFEK VISUAL) ---------- */
     .detail-modal {
         position: fixed;
         inset: 0;
@@ -351,17 +260,13 @@
     
     #modalTitle {
         color: var(--color-primary);
-        margin: 0;
-        font-size: 1.5rem;
         font-weight: 800;
     }
     
     .modal-body {
-        max-height: 60vh;
-        overflow-y: auto;
         color: var(--text-main);
         line-height: 1.7;
-        font-size: 1rem;
+        overflow-y: auto;
         padding-right: 10px;
     }
     
@@ -392,12 +297,60 @@
         height: 100%;
     }
 
+    .top-bar {
+        width: 70vw;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .pc-header-text {
+        font-size: clamp(2.5vw, 3.0vw, 3.5vw);
+        text-align: center;
+    }
+
     .sidebar-brand {
         width: 350px;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logo-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     .logo-wrapper img {
         width: 30dvh;
+    }
+
+    .brand-container {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .brand-main {
+        font-size: 0.8rem;
+    }
+
+    .brand-sub {
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    #app-container {
+        padding: 0 40px;
+    }
+
+    #main-slider {
+        display: flex;
+        gap: 30px;
     }
 
     .slider-card {
@@ -406,12 +359,81 @@
         margin-top: 15px;
     }
 
-    .headline-body-pc {
-        height: 10dvh;
+    .pc-card-body {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
     }
 
-    .bottom-bar {
-        /* gaya khusus landscape jika ada */
+    .pc-read-more-hint {
+        font-size: 0.8rem;
+        margin-top: auto;
+    }
+
+    .headline-body-pc {
+        width: 75vw;
+        margin: 0 auto;
+        height: 10dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: clamp(1.8vw, 3dvh, 4dvh);
+        overflow: visible;
+    }
+
+    .inline-link-text {
+        margin-left: 5px;
+    }
+
+    .running-text-wrapper {
+        bottom: 1dvh;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70vw;
+    }
+
+    .running-text-content {
+        padding-left: 100%;
+        font-size: 1.1rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+    }
+
+    .mail-container {
+        top: 20px;
+        left: 40px;
+        font-size: 0.9rem;
+    }
+    .mail-container i { font-size: 1.5rem; }
+    .mail-container:hover { transform: translateX(10px); }
+
+    #ign-label-container {
+        top: 20px;
+        right: 40px;
+        font-size: 1.2rem;
+    }
+    #ign-label-container:hover { transform: translateX(-10px); }
+
+    .chat-container {
+        bottom: 30px;
+        right: 40px;
+        width: 65px;
+        height: 65px;
+    }
+    .chat-container i { font-size: 1.8rem; }
+    .chat-container:hover { transform: scale(1.1) rotate(-10deg); }
+
+    .detail-modal .modal-content {
+        max-width: 600px;
+    }
+    
+    #modalTitle {
+        font-size: 1.5rem;
+    }
+    
+    .modal-body {
+        max-height: 60vh;
+        font-size: 1rem;
     }
 }
 
@@ -421,14 +443,27 @@
    ========================================== */
 @media screen and (orientation: portrait) and (min-width: 768px) and (min-height: 380px) {
 
-    /* Di sini nanti Anda bisa tambahkan layout portrait Anda */
-    /* Contoh: */
     .master-frame {
         display: grid;
         grid-template-rows: auto 28dvh 35dvh auto;
         height: auto;
         min-height: 95dvh;
         margin-top: 2dvh;
+        overflow: hidden;
+    }
+
+    .top-bar {
+        width: 90vw;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 0;
+    }
+
+    .pc-header-text {
+        font-size: clamp(2rem, 4dvh, 4rem);
+        text-align: center;
     }
 
     .sidebar-brand {
@@ -441,22 +476,43 @@
         gap: 15px;
     }
 
+    .logo-wrapper {
+        flex-shrink: 0;
+    }
+
     .logo-wrapper img {
         max-width: 45vw;
         height: 30dvh;
     }
 
     .brand-container {
-        text-align: center;
+        text-align: right;
+        margin-left: auto;
         margin-top: 0;
     }
 
+    /* Sembunyikan brand-main asli */
     .brand-main {
-        font-size: 2.5rem;
+        display: none;
+    }
+
+    /* Tambahkan UMBRELLA via pseudo-element */
+    .brand-container::before {
+        content: "UMBRELLA";
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: #fff;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        text-align: right;
     }
 
     .brand-sub {
-        font-size: 1.5rem;
+        font-size: 0.9rem;
+        margin-top: 0;
+        text-align: right;
     }
 
     #app-container {
@@ -473,6 +529,7 @@
     .slider-card {
         width: 25dvh;
         height: 30dvh;
+        margin-top: 0;
     }
 
     .pc-card-title {
@@ -482,22 +539,26 @@
 
     .pc-card-body {
         font-size: 1.2rem;
-        line-height: 1.4;
         margin-bottom: 8px;
     }
 
     .pc-read-more-hint {
         font-size: 0.7rem;
+        margin-top: auto;
     }
 
-    .top-bar {
-        width: 90vw;
+    .headline-body-pc {
+        width: 85vw;
         margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: clamp(0.8rem, 2dvh, 1.1rem);
     }
 
-    .pc-header-text {
-        font-size: clamp(2rem, 4dvh, 4rem);
-        text-align: center;
+    .inline-link-text {
+        margin-left: 5px;
     }
 
     .bottom-bar {
@@ -506,9 +567,52 @@
         padding: 8px 0;
     }
 
-    .headline-body-pc {
+    .running-text-wrapper {
+        bottom: 1dvh;
+        left: 50%;
+        transform: translateX(-50%);
         width: 85vw;
-        font-size: clamp(0.8rem, 2dvh, 1.1rem);
-        text-align: center;
+    }
+
+    .running-text-content {
+        padding-left: 100%;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+    }
+
+    .mail-container {
+        top: 15px;
+        left: 20px;
+        font-size: 0.8rem;
+    }
+    .mail-container i { font-size: 1.2rem; }
+
+    #ign-label-container {
+        top: 15px;
+        right: 20px;
+        font-size: 1rem;
+    }
+
+    .chat-container {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+    }
+    .chat-container i { font-size: 1.4rem; }
+
+    .detail-modal .modal-content {
+        max-width: 90vw;
+        padding: 20px;
+    }
+    
+    #modalTitle {
+        font-size: 1.2rem;
+    }
+    
+    .modal-body {
+        max-height: 50vh;
+        font-size: 0.9rem;
     }
 }
