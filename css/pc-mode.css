@@ -485,7 +485,7 @@
     }
 
     .headline-body-pc {
-        font-size: clamp(2dvh, 2.5dvh, 3dvh);           
+        font-size: clamp(1.5dvh, 2dvh, 2.5dvh);           
     }
 
     .bottom-bar {
