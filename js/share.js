@@ -85,7 +85,9 @@ function createBrochureElement() {
     // 2. BRAND AREA (logo + UMBRELLA + slogan)
     const brandHtml = `
         <div class="brosur-brand">
-            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
+            <div class="brosur-logo">
+                ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
+            </div>
             <div class="brosur-brand-text">
                 <div class="brand-name">UMBRELLA</div>
                 <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
