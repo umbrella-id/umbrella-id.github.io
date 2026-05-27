@@ -8,14 +8,18 @@
     left: -9999px;
     width: 1280px;
     height: 720px;
-    background: #030208;
-    background-image: radial-gradient(rgba(168, 85, 247, 0.08) 1px, transparent 1px);
-    background-size: 6px 6px;
     font-family: 'Segoe UI', system-ui, sans-serif;
     color: #cbd5e1;
     padding: 40px;
     box-sizing: border-box;
-    
+    background-color: var(--bg-dark) !important;
+    background-image: 
+      radial-gradient(rgba(168, 85, 247, 0.15) 1px, transparent 1px),
+      radial-gradient(circle at 50% 30%, #1e113c 0%, #0f172a 50%, var(--bg-dark) 100%) !important;
+    background-size: 6px 6px, 100% 100% !important;
+    background-attachment: fixed !important;
+    transition: background 0.4s ease;
+
     display: grid;
     grid-template-columns: 30% 60%;
     grid-template-rows: 15% 60% 15%;
@@ -92,7 +96,6 @@
     padding: 20px;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
     gap: 15px;
 }
 
