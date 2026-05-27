@@ -1,103 +1,212 @@
-/* brosur.css - Layout untuk share (ukuran 1080×1350) */
+/* ==========================================
+   BROSUR.CSS - Layout untuk Share (1080×1350)
+   Gaya mirip PC mode (gelap, neon, glassmorphism)
+   ========================================== */
+
 .brosur-container {
     position: fixed;
     top: -9999px;
     left: -9999px;
     width: 1080px;
     height: 1350px;
-    background: linear-gradient(135deg, #030208 0%, #0f172a 100%);
+    background: #030208;
+    background-image: radial-gradient(rgba(168, 85, 247, 0.08) 1px, transparent 1px);
+    background-size: 6px 6px;
     font-family: 'Segoe UI', system-ui, sans-serif;
     color: #cbd5e1;
-    padding: 50px;
+    padding: 5%;  /* padding 5% semua sisi */
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    
+    /* Grid layout */
+    display: grid;
+    grid-template-rows: 15% 30% 30% 15%;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
 }
 
-/* Logo & Brand */
+/* ==========================================
+   HEADER (Baris 1, semua kolom) 
+   ========================================== */
 .brosur-header {
+    grid-row: 1 / 2;
+    grid-column: 1 / 4;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 30px;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.brosur-header h1 {
+    color: #a855f7;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+/* ==========================================
+   BRAND AREA (Baris 2-3, Kolom 1)
+   ========================================== */
+.brosur-brand {
+    grid-row: 2 / 4;
+    grid-column: 1 / 2;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .brosur-logo {
-    width: 100px;
+    width: 120px;
     height: auto;
     filter: drop-shadow(0 0 15px #a855f7);
+    margin-bottom: 20px;
 }
 
-.brosur-brand h1 {
-    color: #a855f7;
-    font-size: 48px;
-    margin: 0;
+.brosur-brand h2 {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 800;
     letter-spacing: 2px;
+    margin: 0 0 10px;
+    text-transform: uppercase;
 }
 
 .brosur-brand p {
-    color: #94a3b8;
-    font-size: 16px;
-    margin: 5px 0 0;
-}
-
-/* Konten utama (scroll tidak muncul) */
-.brosur-content {
-    flex: 1;
-    overflow: visible;
-}
-
-/* Card profil */
-.brosur-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 25px;
-    backdrop-filter: blur(10px);
-}
-
-.brosur-card h2 {
     color: #a855f7;
-    font-size: 28px;
-    margin: 0 0 15px;
-    border-left: 4px solid #a855f7;
-    padding-left: 15px;
-}
-
-.brosur-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.brosur-card li {
-    margin-bottom: 8px;
-    font-size: 18px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
     line-height: 1.5;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
+    opacity: 0.9;
 }
 
-.brosur-card li::before {
+/* ==========================================
+   PROFIL CARD (Baris 2-3, Kolom 2-3)
+   ========================================== */
+.brosur-card {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    transition: all 0.3s;
+}
+
+.brosur-card h3 {
+    color: #a855f7;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+    border-left: 3px solid #a855f7;
+    padding-left: 10px;
+    text-transform: uppercase;
+}
+
+.brosur-card-body {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+}
+
+/* Bullet points styling */
+.brosur-card-body ul {
+    margin: 8px 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.brosur-card-body li {
+    margin-bottom: 6px;
+    position: relative;
+    padding-left: 16px;
+}
+
+.brosur-card-body li::before {
     content: "•";
     color: #a855f7;
-    font-size: 20px;
+    position: absolute;
+    left: 0;
 }
 
-/* Footer */
+.brosur-card-body p {
+    margin: 8px 0;
+}
+
+/* Posisi kartu profil */
+.profil-1 {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+}
+
+.profil-2 {
+    grid-row: 2 / 3;
+    grid-column: 3 / 4;
+}
+
+.profil-3 {
+    grid-row: 3 / 4;
+    grid-column: 2 / 3;
+}
+
+/* Jika ada profil ke-4, bisa di baris 3 kolom 3 */
+.profil-4 {
+    grid-row: 3 / 4;
+    grid-column: 3 / 4;
+}
+
+/* ==========================================
+   FOOTER (Baris 4, semua kolom)
+   ========================================== */
 .brosur-footer {
+    grid-row: 4 / 5;
+    grid-column: 1 / 4;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid rgba(168, 85, 247, 0.3);
-    margin-top: 20px;
-    font-size: 14px;
-    color: #64748b;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    word-break: break-word;
 }
 
 .brosur-footer a {
     color: #a855f7;
     text-decoration: none;
+}
+
+.brosur-footer a:hover {
+    text-shadow: 0 0 10px #a855f7;
+}
+
+/* Scrollbar untuk card yang kelebihan konten */
+.brosur-card::-webkit-scrollbar {
+    width: 4px;
+}
+
+.brosur-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.brosur-card::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 4px;
 }
