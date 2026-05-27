@@ -75,11 +75,13 @@ function createBrochureElement() {
     // Header HTML
     let headerHtml = `
         <div class="brosur-header">
-            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
-            <div class="brosur-brand">
-                <h1>UMBRELLA</h1>
-                <p>Tempat Kita Berteduh dan Bertumbuh</p>
-            </div>
+            <h2>${escapeHtml(openmember.Header || 'Open Member')}</h2>
+        </div>
+        <div class="brosur-brand">
+              ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
+              <div class="brand-name">UMBRELLA</div>
+              <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
+              <div class="brand-sub">dari pertemuan jadi kebersamaan<br>dari serikat jadi keluarga</div>
         </div>
     `;
     
@@ -95,31 +97,12 @@ function createBrochureElement() {
             </div>
         `;
     }
-    
-    // Konten openmember
-    let openmemberHtml = '';
-    if (openmember) {
-        openmemberHtml = `
-            <div class="brosur-card brosur-card-openmember">
-                <h2>${escapeHtml(openmember.Header || 'Open Member')}</h2>
-                <div class="brosur-card-body">
-                    ${formatContentToHtml(openmember.Body)}
-                </div>
-            </div>
-        `;
-    } else {
-        openmemberHtml = `
-            <div class="brosur-card brosur-card-openmember">
-                <h2>Open Member</h2>
-                <p>Informasi open member belum tersedia</p>
-            </div>
-        `;
-    }
+     
     
     // Footer
     const footerHtml = `
         <div class="brosur-footer">
-            https://umbrella-id.github.io
+            ${formatContentToHtml(openmember.Body)}
         </div>
     `;
     
