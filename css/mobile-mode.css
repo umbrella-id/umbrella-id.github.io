@@ -269,8 +269,7 @@
     .sosmed-corner {
         position: fixed;
         bottom: 30px;
-        left: auto;
-        right: auto;
+        left: 130px;
         display: flex;
         gap: 15px;
         z-index: 1100;
