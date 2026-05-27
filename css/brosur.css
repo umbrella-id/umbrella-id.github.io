@@ -171,12 +171,12 @@
       width: 75vw;
       margin: 0 auto;
       height: 10dvh;            
-      display: flex-shrink;
+      display: inline-flex;
       justify-content: center; 
       align-items: center;     
       text-align: center;
       color: #94a3b8;
-      font-size: clamp(1.8vw, 3dvh, 4dvh); 
+      font-size: clamp(1dvh, 1.5dvh, 2dvh); 
       line-height: 1.4;
       overflow: visible;        
       position: relative;
