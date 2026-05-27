@@ -102,6 +102,7 @@
 /* Card profil di dalam area profil */
 .brosur-card {
     background: rgba(0, 0, 0, 0.3);
+    width: 25%;
     border-radius: 16px;
     padding: 15px;
 }
