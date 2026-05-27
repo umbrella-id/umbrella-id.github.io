@@ -115,9 +115,11 @@ function createBrochureElement() {
     // 4. FOOTER
     let footerHtml = '';
     if (openmember && openmember.Body) {
+        // Hilangkan <br> dan \n, ubah jadi spasi
+        let cleanBody = openmember.Body.replace(/<br\s*\/?>|\r?\n/g, ' ');
         footerHtml = `
             <div class="brosur-footer">
-                ${formatContentToHtml(openmember.Body)}
+                ${formatContentToHtml(cleanBody)}
                 <p class="brosur-link">https://umbrella-id.github.io</p>
             </div>
         `;
@@ -128,8 +130,7 @@ function createBrochureElement() {
                 <p class="brosur-link">https://umbrella-id.github.io</p>
             </div>
         `;
-    }
-    
+    }    
     container.innerHTML = headerHtml + brandHtml + profilHtml + footerHtml;
     
     return container;
