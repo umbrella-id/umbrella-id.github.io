@@ -418,7 +418,7 @@
     }
 
     .headline-body-pc {
-        font-size: clamp(3dvh, 3.5dvh, 4dvh);           
+        font-size: clamp(2.5dvh, 3dvh, 3.5dvh);           
     }
 
     .bottom-bar {
