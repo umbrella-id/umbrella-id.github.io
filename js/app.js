@@ -16,10 +16,13 @@ async function init() {
         const res = await fetch(GAS_URL);
         const rawData = await res.json();
         
-        // Filter Data berdasarkan kolom ID di Google Sheets
+        // Untuk tampilan web
         cardData = rawData.filter(item => ["headline", "profil", "galery"].includes(item.ID.toLowerCase()));
         runningTexts = rawData.filter(item => item.ID.toLowerCase() === "running_text").map(item => item.Body);
         sosmedData = rawData.filter(item => item.ID.toLowerCase() === "sosmed");
+
+        // Data untuk keperluan share (profil + openmember)
+        window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID.toLowerCase()));
 
         renderApp();
         createModal();
