@@ -1,0 +1,103 @@
+/* brosur.css - Layout untuk share (ukuran 1080×1350) */
+.brosur-container {
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 1080px;
+    height: 1350px;
+    background: linear-gradient(135deg, #030208 0%, #0f172a 100%);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #cbd5e1;
+    padding: 50px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Logo & Brand */
+.brosur-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.brosur-logo {
+    width: 100px;
+    height: auto;
+    filter: drop-shadow(0 0 15px #a855f7);
+}
+
+.brosur-brand h1 {
+    color: #a855f7;
+    font-size: 48px;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.brosur-brand p {
+    color: #94a3b8;
+    font-size: 16px;
+    margin: 5px 0 0;
+}
+
+/* Konten utama (scroll tidak muncul) */
+.brosur-content {
+    flex: 1;
+    overflow: visible;
+}
+
+/* Card profil */
+.brosur-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.brosur-card h2 {
+    color: #a855f7;
+    font-size: 28px;
+    margin: 0 0 15px;
+    border-left: 4px solid #a855f7;
+    padding-left: 15px;
+}
+
+.brosur-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.brosur-card li {
+    margin-bottom: 8px;
+    font-size: 18px;
+    line-height: 1.5;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.brosur-card li::before {
+    content: "•";
+    color: #a855f7;
+    font-size: 20px;
+}
+
+/* Footer */
+.brosur-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(168, 85, 247, 0.3);
+    margin-top: 20px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.brosur-footer a {
+    color: #a855f7;
+    text-decoration: none;
+}
