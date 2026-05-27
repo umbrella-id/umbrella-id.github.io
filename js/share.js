@@ -1,5 +1,6 @@
 /**
- * share.js - Brosur dengan html2canvas (Grid 3 kolom)
+ * share.js - Brosur dengan html2canvas
+ * Menampilkan semua item profil + openmember dari database
  */
 
 const SHARE_TEXT = "Ayo gabung dengan guild Umbrella! Kunjungi web kami di https://umbrella-id.github.io";
@@ -41,13 +42,12 @@ function formatContentToHtml(text) {
         line = line.trim();
         if (line === '') continue;
         
-        if (line.startsWith('-') || line.startsWith('•')) {
+        if (line.startsWith('-')) {
             if (!inList) {
                 html += '<ul>';
                 inList = true;
             }
-            let content = line.substring(1).trim();
-            html += `<li>${escapeHtml(content)}</li>`;
+            html += `<li>${escapeHtml(line.substring(1).trim())}</li>`;
         } else {
             if (inList) {
                 html += '</ul>';
@@ -58,13 +58,6 @@ function formatContentToHtml(text) {
     }
     if (inList) html += '</ul>';
     return html;
-}
-
-// Batasi panjang teks
-function truncateText(text, maxLength) {
-    if (!text) return '';
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
 }
 
 // Buat elemen brosur (HTML)
@@ -79,81 +72,69 @@ function createBrochureElement() {
     const logoImg = document.querySelector('.logo-wrapper img');
     const logoUrl = logoImg ? logoImg.src : '';
     
-    // 1. HEADER (dari openmember.Header)
-    let headerHtml = '';
-    if (openmember && openmember.Header) {
-        headerHtml = `
-            <div class="brosur-header">
-                <h1>${escapeHtml(openmember.Header)}</h1>
-            </div>
-        `;
-    }
-    
-    // 2. BRAND AREA (logo + UMBRELLA + slogan)
-    const brandHtml = `
-        <div class="brosur-brand">
-            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo">` : ''}
-            <div class="brosur-brand-text">
-                <h2>UMBRELLA</h2>
-                <p>Tempat Kita Berteduh dan Bertumbuh<br>dari pertemuan jadi kebersamaan, dari serikat jadi keluarga</p>
+    // Header HTML
+    let headerHtml = `
+        <div class="brosur-header">
+            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
+            <div class="brosur-brand">
+                <h1>UMBRELLA</h1>
+                <p>Tempat Kita Berteduh dan Bertumbuh</p>
             </div>
         </div>
     `;
     
-    // 3. GRID 3 KOLOM UNTUK PROFIL
-    let profilGridHtml = '<div class="brosur-profil-grid">';
-    
-    for (let i = 0; i < profilList.length; i++) {
-        const profil = profilList[i];
-        profilGridHtml += `
+    // Konten profil (semua item)
+    let profilHtml = '';
+    for (const profil of profilList) {
+        profilHtml += `
             <div class="brosur-card">
-                <h3>${escapeHtml(profil.Header || 'Profil')}</h3>
+                <h2>${escapeHtml(profil.Header || 'Profil Guild')}</h2>
                 <div class="brosur-card-body">
-                    ${formatContentToHtml(truncateText(profil.Body || '', 800))}
+                    ${formatContentToHtml(profil.Body)}
                 </div>
             </div>
         `;
     }
     
-    // Jika profil kurang dari 3, tambahkan card kosong
-    for (let i = profilList.length; i < 3; i++) {
-        profilGridHtml += `<div class="brosur-card brosur-card-empty">−</div>`;
-    }
-    
-    profilGridHtml += '</div>';
-    
-    // 4. FOOTER (dari openmember.Body, dipotong)
-    let footerHtml = '';
-    if (openmember && openmember.Body) {
-        footerHtml = `
-            <div class="brosur-footer">
-                ${escapeHtml(truncateText(openmember.Body, 400))}
-                <br><br>
-                https://umbrella-id.github.io
+    // Konten openmember
+    let openmemberHtml = '';
+    if (openmember) {
+        openmemberHtml = `
+            <div class="brosur-card brosur-card-openmember">
+                <h2>${escapeHtml(openmember.Header || 'Open Member')}</h2>
+                <div class="brosur-card-body">
+                    ${formatContentToHtml(openmember.Body)}
+                </div>
             </div>
         `;
     } else {
-        footerHtml = `
-            <div class="brosur-footer">
-                Ayo bergabung dengan Umbrella!<br>
-                https://umbrella-id.github.io
+        openmemberHtml = `
+            <div class="brosur-card brosur-card-openmember">
+                <h2>Open Member</h2>
+                <p>Informasi open member belum tersedia</p>
             </div>
         `;
     }
     
-    // Susun semua
-    container.innerHTML = headerHtml + brandHtml + profilGridHtml + footerHtml;
+    // Footer
+    const footerHtml = `
+        <div class="brosur-footer">
+            https://umbrella-id.github.io
+        </div>
+    `;
+    
+    container.innerHTML = headerHtml + `
+        <div class="brosur-content">
+            ${profilHtml}
+            ${openmemberHtml}
+        </div>
+    ` + footerHtml;
     
     return container;
 }
 
 // Screenshot elemen ke blob
 async function elementToBlob(element) {
-    if (typeof html2canvas === 'undefined') {
-        console.error("html2canvas tidak ditemukan");
-        return null;
-    }
-    
     try {
         const canvas = await html2canvas(element, {
             scale: 2,
@@ -173,6 +154,7 @@ async function elementToBlob(element) {
 
 // Fungsi utama share
 async function triggerShare() {
+    // Cek dukungan Web Share API
     if (!navigator.share) {
         alert("Browser Anda tidak mendukung fitur share. Silakan screenshot manual.");
         return;
@@ -183,18 +165,24 @@ async function triggerShare() {
     if (shareBtn) shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMBUAT...';
     
     try {
+        // Buat elemen brosur
         const brosur = createBrochureElement();
         document.body.appendChild(brosur);
         
+        // Tunggu sebentar agar CSS teraplikasi dan gambar logo termuat
         await new Promise(r => setTimeout(r, 200));
         
+        // Screenshot
         const blob = await elementToBlob(brosur);
         if (!blob) throw new Error("Gagal membuat gambar brosur");
         
+        // Hapus elemen brosur
         brosur.remove();
         
+        // Siapkan file untuk share
         const imageFile = new File([blob], "umbrella-brosur.png", { type: "image/png" });
         
+        // Share
         if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
             await navigator.share({
                 title: "Umbrella Guild",
@@ -202,6 +190,7 @@ async function triggerShare() {
                 files: [imageFile]
             });
         } else {
+            // Fallback: share teks saja
             await navigator.share({
                 title: "Umbrella Guild",
                 text: SHARE_TEXT
@@ -217,11 +206,13 @@ async function triggerShare() {
         }
     } finally {
         if (shareBtn) shareBtn.innerHTML = originalText;
+        // Bersihkan elemen brosur jika masih ada
         const leftover = document.getElementById('brosur-temp');
         if (leftover) leftover.remove();
     }
 }
 
+// Ekspos ke global
 window.triggerShare = triggerShare;
 
-console.log("✅ share.js loaded (Grid 3 kolom)");
+console.log("✅ share.js loaded (html2canvas version)");
