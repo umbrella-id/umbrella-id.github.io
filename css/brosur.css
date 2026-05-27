@@ -9,7 +9,7 @@
     width: 1280px;
     height: 720px;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    padding: 30px 40px;
+    padding: 5% ;
     box-sizing: border-box;
     
     /* BACKGROUND dengan texture */
@@ -65,7 +65,7 @@
 
 /* ===== BRAND AREA ===== */
 .brosur-brand {
-    display: flex-start;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -177,7 +177,7 @@
       align-items: center;     
       text-align: center;
       color: #94a3b8;
-      font-size: clamp(1dvh, 1.5dvh, 2dvh); 
+      font-size: clamp(3dvh, 4dvh, 5dvh); 
       line-height: 1.4;
       overflow: visible;        
       position: relative;
