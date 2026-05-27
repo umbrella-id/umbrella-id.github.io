@@ -189,7 +189,7 @@
         width: 75vw;
         margin: 0 auto;
         height: 10dvh;            
-        display: flex-shrink;
+        display: inline-block;
         justify-content: center; 
         align-items: center;     
         text-align: center;
@@ -418,15 +418,11 @@
     }
 
     .headline-body-pc {
-        height: 10dvh;
+        font-size: clamp(4dvh, 6dvh, 8dvh);           
     }
 
     .bottom-bar {
         /* gaya khusus landscape jika ada */
-    }
-
-    .headline-body-pc {
-        font-size: clamp(2dvh, 3dvh, 4dvh);           
     }
    
 }
@@ -489,14 +485,11 @@
     }
 
     .headline-body-pc {
-        height: 8dvh;
+        font-size: clamp(6dvh, 8dvh, 10dvh);           
     }
 
     .bottom-bar {
         /* gaya khusus landscape jika ada */
     }
 
-    .headline-body-pc {
-        font-size: clamp(1.0dvh, 1,5dvh, 2dvh);           
-    }
 }
