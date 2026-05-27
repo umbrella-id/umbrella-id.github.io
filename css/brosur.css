@@ -171,7 +171,7 @@
       width: 75vw;
       margin: 0 auto;
       height: 10dvh;            
-      display: inline-flex;
+      display: none;
       justify-content: center; 
       align-items: center;     
       text-align: center;
