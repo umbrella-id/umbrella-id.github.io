@@ -84,7 +84,7 @@
 }
 
 /* ==========================================
-   PROFIL AREA (hanya ini yang punya background kaca)
+   PROFIL AREA (dengan grid otomatis)
    ========================================== */
 .brosur-profil {
     grid-row: 2 / 3;
@@ -95,55 +95,20 @@
     border-radius: 20px;
     padding: 20px;
     overflow-y: auto;
-    display: flex;
+    
+    /* GRID OTOMATIS: minimal 200px, maksimal 1fr */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
+    align-content: flex-start;
 }
 
-/* Card profil di dalam area profil */
+/* Card profil */
 .brosur-card {
     background: rgba(0, 0, 0, 0.3);
-    width: 25%;
     border-radius: 16px;
     padding: 15px;
-}
-
-.brosur-card h2 {
-    color: #a855f7;
-    font-size: 1rem;
-    font-weight: 800;
-    margin: 0 0 10px;
-    border-left: 3px solid #a855f7;
-    padding-left: 10px;
-}
-
-.brosur-card-body {
-    font-size: 0.7rem;
-    line-height: 1.5;
-    color: #cbd5e1;
-}
-
-/* Bullet points */
-.brosur-card-body ul {
-    margin: 5px 0;
-    padding-left: 18px;
-    list-style: none;
-}
-
-.brosur-card-body li {
-    margin-bottom: 3px;
-    position: relative;
-    padding-left: 12px;
-}
-
-.brosur-card-body li::before {
-    content: "•";
-    color: #a855f7;
-    position: absolute;
-    left: 0;
-}
-
-.brosur-card-body p {
-    margin: 5px 0;
+    /* Tidak perlu flex atau width manual, karena grid yang mengatur */
 }
 
 /* ==========================================
