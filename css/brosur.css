@@ -172,7 +172,9 @@
       margin: 0 auto;
       height: 10dvh;            
       display: inline-flex;
-      white-space: nowrap;
+      white-space: normal;
+      word-wrap: break-word;
+      word-break: break-word;
       justify-content: center; 
       align-items: center;     
       text-align: center;
