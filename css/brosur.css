@@ -101,13 +101,6 @@
 
 /* ===== PROFIL AREA ===== */
 .brosur-profil {
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
-    border-radius: 20px;
-    padding: 20px;
-    overflow-y: auto;
-    
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
@@ -116,7 +109,7 @@
 
 /* Kartu profil */
 .brosur-card {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     padding: 15px;
 }
@@ -178,14 +171,14 @@
       align-items: center;     
       text-align: center;
       color: #94a3b8;
-      font-size: 0.8rem; 
+      font-size: 0.9rem; 
       line-height: 1.4;
       overflow: visible;        
       position: relative;
 }
 
 .brosur-link {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #a855f7;
     text-decoration: none;
     font-weight: bold;
