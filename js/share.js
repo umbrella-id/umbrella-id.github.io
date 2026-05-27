@@ -68,26 +68,19 @@ function createBrochureElement() {
     container.className = 'brosur-container';
     container.id = 'brosur-temp';
     
-    // Ambil logo dari halaman
     const logoImg = document.querySelector('.logo-wrapper img');
     const logoUrl = logoImg ? logoImg.src : '';
     
-    // 1. HEADER (dari openmember.Header)
+    // 1. HEADER
     let headerHtml = '';
     if (openmember && openmember.Header) {
-        headerHtml = `
-            <div class="brosur-header">
-                <h1>${escapeHtml(openmember.Header)}</h1>
-            </div>
-        `;
+        headerHtml = `<div class="brosur-header"><h1>${escapeHtml(openmember.Header)}</h1></div>`;
     }
     
-    // 2. BRAND AREA (logo + UMBRELLA + slogan)
+    // 2. BRAND AREA
     const brandHtml = `
         <div class="brosur-brand">
-            <div class="brosur-logo">
-                ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
-            </div>
+            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo">` : ''}
             <div class="brosur-brand-text">
                 <div class="brand-name">UMBRELLA</div>
                 <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
@@ -96,8 +89,8 @@ function createBrochureElement() {
         </div>
     `;
     
-    // 3. KONTEN PROFIL (semua item)
-    let profilHtml = '';
+    // 3. PROFIL (langsung, tanpa div pembungkus tambahan)
+    let profilHtml = '<div class="brosur-profil">';
     for (const profil of profilList) {
         profilHtml += `
             <div class="brosur-card">
@@ -108,8 +101,18 @@ function createBrochureElement() {
             </div>
         `;
     }
+    // Tambahkan kartu kosong jika perlu (biar grid rapi)
+    const totalCards = profilList.length;
+    if (totalCards === 1) {
+        profilHtml += `<div class="brosur-card-empty"></div><div class="brosur-card-empty"></div>`;
+    } else if (totalCards === 2) {
+        profilHtml += `<div class="brosur-card-empty"></div><div class="brosur-card-empty"></div>`;
+    } else if (totalCards === 3) {
+        profilHtml += `<div class="brosur-card-empty"></div>`;
+    }
+    profilHtml += '</div>';
     
-    // 4. FOOTER (dari openmember.Body)
+    // 4. FOOTER
     let footerHtml = '';
     if (openmember && openmember.Body) {
         footerHtml = `
@@ -127,19 +130,10 @@ function createBrochureElement() {
         `;
     }
     
-    // SUSUN SEMUA
-    container.innerHTML = `
-        ${headerHtml}
-        ${brandHtml}
-        <div class="brosur-content">
-            ${profilHtml}
-        </div>
-        ${footerHtml}
-    `;
+    container.innerHTML = headerHtml + brandHtml + profilHtml + footerHtml;
     
     return container;
 }
-
 // Screenshot elemen ke blob
 async function elementToBlob(element) {
     try {
