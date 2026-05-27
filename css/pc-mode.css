@@ -194,7 +194,6 @@
         align-items: center;     
         text-align: center;
         color: #94a3b8;
-        font-size: clamp(1.8vw, 3dvh, 4dvh); 
         line-height: 1.4;
         overflow: visible;        
         position: relative;
@@ -425,6 +424,11 @@
     .bottom-bar {
         /* gaya khusus landscape jika ada */
     }
+
+    .headline-body-pc {
+        font-size: clamp(2dvh, 3dvh, 4dvh);           
+    }
+   
 }
 
 
@@ -435,7 +439,7 @@
 
     .master-frame {
         display: grid;
-        grid-template-rows: 15dvh 60dvh 1fr;
+        grid-template-rows: 12dvh 60dvh 1fr;
         height: 95dvh;
         padding: 5vw ;
         margin-top: 5dvh;
@@ -490,5 +494,9 @@
 
     .bottom-bar {
         /* gaya khusus landscape jika ada */
+    }
+
+    .headline-body-pc {
+        font-size: clamp(1.0dvh, 1,5dvh, 2dvh);           
     }
 }
