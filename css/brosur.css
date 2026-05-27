@@ -14,31 +14,24 @@
     background-size: 6px 6px;
     font-family: 'Segoe UI', system-ui, sans-serif;
     color: #cbd5e1;
-    padding: 5%;  /* padding 5% semua sisi */
+    padding: 40px;
     box-sizing: border-box;
-    
-    /* Grid layout */
-    display: grid;
-    grid-template-rows: 15% 30% 30% 15%;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
+    overflow: hidden;
 }
 
 /* ==========================================
-   HEADER (Baris 1, semua kolom) 
+   HEADER (dari openmember.Header)
    ========================================== */
 .brosur-header {
-    grid-row: 1 / 2;
-    grid-column: 1 / 4;
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
     padding: 20px;
+    text-align: center;
 }
 
 .brosur-header h1 {
@@ -52,63 +45,70 @@
 }
 
 /* ==========================================
-   BRAND AREA (Baris 2-3, Kolom 1)
+   BRAND AREA (logo + UMBRELLA + slogan)
    ========================================== */
 .brosur-brand {
-    grid-row: 2 / 4;
-    grid-column: 1 / 2;
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
-    padding: 25px;
+    padding: 20px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    gap: 25px;
 }
 
 .brosur-logo {
-    width: 120px;
+    width: 80px;
     height: auto;
-    filter: drop-shadow(0 0 15px #a855f7);
-    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px #a855f7);
 }
 
-.brosur-brand h2 {
+.brosur-brand-text {
+    flex: 1;
+}
+
+.brosur-brand-text h2 {
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
+    margin: 0;
     letter-spacing: 2px;
-    margin: 0 0 10px;
-    text-transform: uppercase;
 }
 
-.brosur-brand p {
+.brosur-brand-text p {
     color: #a855f7;
     font-size: 0.85rem;
-    letter-spacing: 1px;
-    line-height: 1.5;
+    margin: 5px 0 0;
     opacity: 0.9;
 }
 
 /* ==========================================
-   PROFIL CARD (Baris 2-3, Kolom 2-3)
+   GRID 3 KOLOM UNTUK PROFIL
    ========================================== */
+.brosur-profil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Kartu profil */
 .brosur-card {
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
-    transition: all 0.3s;
 }
 
 .brosur-card h3 {
     color: #a855f7;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 800;
     margin: 0 0 12px;
     border-left: 3px solid #a855f7;
@@ -117,22 +117,23 @@
 }
 
 .brosur-card-body {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: #cbd5e1;
+    flex: 1;
 }
 
 /* Bullet points styling */
 .brosur-card-body ul {
-    margin: 8px 0;
-    padding-left: 20px;
+    margin: 6px 0;
+    padding-left: 18px;
     list-style: none;
 }
 
 .brosur-card-body li {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     position: relative;
-    padding-left: 16px;
+    padding-left: 14px;
 }
 
 .brosur-card-body li::before {
@@ -143,49 +144,35 @@
 }
 
 .brosur-card-body p {
-    margin: 8px 0;
+    margin: 6px 0;
 }
 
-/* Posisi kartu profil */
-.profil-1 {
-    grid-row: 2 / 3;
-    grid-column: 2 / 3;
-}
-
-.profil-2 {
-    grid-row: 2 / 3;
-    grid-column: 3 / 4;
-}
-
-.profil-3 {
-    grid-row: 3 / 4;
-    grid-column: 2 / 3;
-}
-
-/* Jika ada profil ke-4, bisa di baris 3 kolom 3 */
-.profil-4 {
-    grid-row: 3 / 4;
-    grid-column: 3 / 4;
-}
-
-/* ==========================================
-   FOOTER (Baris 4, semua kolom)
-   ========================================== */
-.brosur-footer {
-    grid-row: 4 / 5;
-    grid-column: 1 / 4;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
-    border-radius: 20px;
-    padding: 20px;
+/* Kartu kosong (jika profil kurang dari 3) */
+.brosur-card-empty {
+    background: rgba(15, 23, 42, 0.2);
+    border: 1px dashed rgba(168, 85, 247, 0.2);
+    backdrop-filter: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* ==========================================
+   FOOTER (dari openmember.Body)
+   ========================================== */
+.brosur-footer {
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 15px 20px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #94a3b8;
-    word-break: break-word;
+    max-height: 120px;
+    overflow-y: auto;
 }
 
 .brosur-footer a {
@@ -193,20 +180,19 @@
     text-decoration: none;
 }
 
-.brosur-footer a:hover {
-    text-shadow: 0 0 10px #a855f7;
-}
-
-/* Scrollbar untuk card yang kelebihan konten */
-.brosur-card::-webkit-scrollbar {
+/* Scrollbar */
+.brosur-card::-webkit-scrollbar,
+.brosur-footer::-webkit-scrollbar {
     width: 4px;
 }
 
-.brosur-card::-webkit-scrollbar-track {
+.brosur-card::-webkit-scrollbar-track,
+.brosur-footer::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.brosur-card::-webkit-scrollbar-thumb {
+.brosur-card::-webkit-scrollbar-thumb,
+.brosur-footer::-webkit-scrollbar-thumb {
     background: rgba(168, 85, 247, 0.3);
     border-radius: 4px;
 }
