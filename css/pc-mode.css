@@ -44,7 +44,6 @@
     .top-bar::after { right: 0; }
 
     .pc-header-text {
-        font-size: clamp(3.5dvh, 4.5dvh, 5.5dvh) ;
         font-weight: 900;
         letter-spacing: 3px;
         color: #fff;
@@ -385,7 +384,11 @@
         grid-template-columns: 350px 1fr;
         height: 100%;
     }
-
+   
+    .pc-header-text {
+        font-size: clamp(6dvh, 8dvh, 10dvh) ;
+    }
+   
     .sidebar-brand {
         display: flex;
         flex-direction: column;
@@ -432,11 +435,15 @@
 
     .master-frame {
         display: grid;
-        grid-template-rows: 18dvh 60dvh 1fr;
+        grid-template-rows: 15dvh 60dvh 1fr;
         height: 95dvh;
         padding: 5vw ;
         margin-top: 5dvh;
         overflow: hidden;
+    }
+
+    .pc-header-text {
+        font-size: clamp(3.5dvh, 4.5dvh, 5.5dvh) ;
     }
 
     .content-wrapper {
