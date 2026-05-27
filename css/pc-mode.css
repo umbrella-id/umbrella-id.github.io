@@ -44,7 +44,7 @@
     .top-bar::after { right: 0; }
 
     .pc-header-text {
-        font-size: clamp(2.5vw, 3.0vw, 3.5vw);
+        font-size: 5dvh ;
         font-weight: 900;
         letter-spacing: 3px;
         color: #fff;
@@ -72,12 +72,10 @@
     }
 
     .brand-container {
-        text-align: center;
         margin-top: 15px;
     }
 
     .brand-main {
-        font-size: 0.8rem;
         font-weight: 900;
         letter-spacing: 1px;
         color: #fff;
@@ -85,7 +83,6 @@
     }
 
     .brand-sub {
-        font-size: 0.8rem;
         font-weight: 400;
         color: var(--color-primary);
         letter-spacing: 2px;
@@ -399,6 +396,19 @@
         width: 30dvh;
     }
 
+    .brand-container {
+        text-align: center ;
+        margin-top: 15px ;
+    }
+   
+    .brand-main {
+        font-size: 0.8rem;
+    }
+
+    .brand-sub {
+        font-size: 0.8rem;
+    }
+
     .slider-card {
         width: 50dvh;
         height: 55dvh;
@@ -422,24 +432,25 @@
 
     .master-frame {
         display: grid;
-        grid-template-rows: 18dvh 65dvh 1fr;
+        grid-template-rows: 18dvh 60dvh 1fr;
         height: 95dvh;
+        padding: 5vw ;
         margin-top: 5dvh;
         overflow: hidden;
     }
 
     .content-wrapper {
         display: grid;
-        grid-template-rows: 30dvh 1fr;
+        grid-template-rows: 25dvh 1fr;
         height: 100%;
     }
 
     .sidebar-brand {
     display: flex;
     flex-direction: row;
-    align-items: center;      /* ← tambah */
-    justify-content: center;  /* ← tambah */
-    gap: 20px;                /* ← tambah (jarak logo & brand) */
+    align-items: center; 
+    justify-content: center;
+    gap: 20px;
     width: 100%;
     }
    
@@ -467,7 +478,7 @@
     }
 
     .headline-body-pc {
-        height: 10dvh;
+        height: 8dvh;
     }
 
     .bottom-bar {
