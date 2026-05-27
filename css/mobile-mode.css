@@ -269,7 +269,7 @@
     .sosmed-corner {
         position: fixed;
         bottom: 30px;
-        left: 25px;
+        left: 60px;
         display: flex;
         gap: 15px;
         z-index: 1100;
@@ -392,6 +392,7 @@
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
     }
+    
    /* ==========================================
        6. SHARE
     ========================================== */ 
@@ -417,7 +418,7 @@
        color: var(--color-primary);
    }
     .share-container {
-        bottom: 20px;
+        bottom: 25px;
         left: 20px;
         padding: 6px 12px;
         font-size: 0.7rem;
