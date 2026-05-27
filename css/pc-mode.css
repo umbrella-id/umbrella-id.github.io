@@ -189,7 +189,7 @@
         width: 75vw;
         margin: 0 auto;
         height: 10dvh;            
-        display: inline-block;
+        display: block;
         justify-content: center; 
         align-items: center;     
         text-align: center;
@@ -418,7 +418,7 @@
     }
 
     .headline-body-pc {
-        font-size: clamp(4dvh, 6dvh, 8dvh);           
+        font-size: clamp(3dvh, 3.5dvh, 4dvh);           
     }
 
     .bottom-bar {
@@ -485,7 +485,7 @@
     }
 
     .headline-body-pc {
-        font-size: clamp(6dvh, 8dvh, 10dvh);           
+        font-size: clamp(2dvh, 2.5dvh, 3dvh);           
     }
 
     .bottom-bar {
