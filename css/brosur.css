@@ -183,12 +183,10 @@
       position: relative;
 }
 
-.brosur-footer p {
-    margin: 4px 0;
-}
-
 .brosur-link {
+    font-size: 0.7rem;
     color: #a855f7;
     text-decoration: none;
     font-weight: bold;
+    display: block;
 }
