@@ -269,7 +269,7 @@
     .sosmed-corner {
         position: fixed;
         bottom: 30px;
-        left: 60px;
+        left: 150px;
         display: flex;
         gap: 15px;
         z-index: 1100;
@@ -284,7 +284,7 @@
     /* Tombol Bulat Widget Chat (Bottom Right) */
     .chat-container {
         position: fixed;
-        bottom: 30px;
+        bottom: 20px;
         right: 25px;
         z-index: 1100;
         width: 55px;
@@ -418,7 +418,7 @@
        color: var(--color-primary);
    }
     .share-container {
-        bottom: 25px;
+        bottom: 30px;
         left: 20px;
         padding: 6px 12px;
         font-size: 0.7rem;
