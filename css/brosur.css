@@ -9,6 +9,8 @@
     width: 1280px;
     height: 720px;
     font-family: 'Segoe UI', system-ui, sans-serif;
+    align-items: center;
+    justify-content: center;
     padding: 5% ;
     box-sizing: border-box;
     
@@ -176,14 +178,14 @@
       align-items: center;     
       text-align: center;
       color: #94a3b8;
-      font-size: 0.7rem; 
+      font-size: 0.8rem; 
       line-height: 1.4;
       overflow: visible;        
       position: relative;
 }
 
 .brosur-link {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #a855f7;
     text-decoration: none;
     font-weight: bold;
