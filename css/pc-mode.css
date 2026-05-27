@@ -25,7 +25,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: end ;
         padding: 20px 0;
         border-bottom: 1px solid var(--border-line);
         position: relative;
@@ -44,7 +44,7 @@
     .top-bar::after { right: 0; }
 
     .pc-header-text {
-        font-size: 5dvh ;
+        font-size: clamp(3.5dvh, 4.5dvh, 5.5dvh) ;
         font-weight: 900;
         letter-spacing: 3px;
         color: #fff;
