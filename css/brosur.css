@@ -171,8 +171,8 @@
       width: 75vw;
       margin: 0 auto;
       height: 10dvh;            
-      display: flex;
-      white-space: normal;
+      display: inline-flex;
+      white-space: nowrap;
       justify-content: center; 
       align-items: center;     
       text-align: center;
