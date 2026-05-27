@@ -268,8 +268,8 @@
     /* Sosmed Corner (Bottom Left) */
     .sosmed-corner {
         position: fixed;
+        align-items: center;
         bottom: 30px;
-        left: 120px;
         display: flex;
         gap: 15px;
         z-index: 1100;
