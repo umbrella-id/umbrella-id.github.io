@@ -1,56 +1,34 @@
 /**
  * share.js - Brosur dengan html2canvas
+ * Menampilkan semua item profil + openmember dari database
  */
 
 const SHARE_TEXT = "Ayo gabung dengan guild Umbrella! Kunjungi web kami di https://umbrella-id.github.io";
 
 // Ambil data dari window.allCardData
 function getShareData() {
-    if (!window.allCardData) return { profil: null, openmember: null };
-    const profil = window.allCardData.find(item => item.ID?.toLowerCase() === 'profil');
+    if (!window.allCardData || !Array.isArray(window.allCardData)) {
+        console.warn("allCardData belum tersedia");
+        return { profilList: [], openmember: null };
+    }
+    
+    const profilList = window.allCardData.filter(item => item.ID?.toLowerCase() === 'profil');
     const openmember = window.allCardData.find(item => item.ID?.toLowerCase() === 'openmember');
-    return { profil, openmember };
+    
+    console.log(`📦 Share data: ${profilList.length} profil, openmember: ${openmember ? 'ada' : 'tidak ada'}`);
+    
+    return { profilList, openmember };
 }
 
-// Buat elemen brosur (HTML)
-function createBrochureElement() {
-    const { profil, openmember } = getShareData();
-    
-    const container = document.createElement('div');
-    container.className = 'brosur-container';
-    container.id = 'brosur-temp';
-    
-    // Header (logo + brand)
-    const logoUrl = document.querySelector('.logo-wrapper img')?.src || '';
-    
-    container.innerHTML = `
-        <div class="brosur-header">
-            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo">` : ''}
-            <div class="brosur-brand">
-                <h1>UMBRELLA</h1>
-                <p>Tempat Kita Berteduh dan Bertumbuh</p>
-            </div>
-        </div>
-        <div class="brosur-content">
-            ${profil ? `
-            <div class="brosur-card">
-                <h2>${escapeHtml(profil.Header || 'Profil Guild')}</h2>
-                <div>${formatContentToHtml(profil.Body || '')}</div>
-            </div>
-            ` : ''}
-            ${openmember ? `
-            <div class="brosur-card">
-                <h2>${escapeHtml(openmember.Header || 'Open Member')}</h2>
-                <div>${formatContentToHtml(openmember.Body || '')}</div>
-            </div>
-            ` : '<div class="brosur-card"><p>Informasi open member belum tersedia</p></div>'}
-        </div>
-        <div class="brosur-footer">
-            https://umbrella-id.github.io
-        </div>
-    `;
-    
-    return container;
+// Escape HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
 
 // Format teks ke HTML (bullet points jadi <ul><li>)
@@ -62,6 +40,8 @@ function formatContentToHtml(text) {
     
     for (let line of lines) {
         line = line.trim();
+        if (line === '') continue;
+        
         if (line.startsWith('-')) {
             if (!inList) {
                 html += '<ul>';
@@ -73,22 +53,84 @@ function formatContentToHtml(text) {
                 html += '</ul>';
                 inList = false;
             }
-            if (line) {
-                html += `<p>${escapeHtml(line)}</p>`;
-            }
+            html += `<p>${escapeHtml(line)}</p>`;
         }
     }
     if (inList) html += '</ul>';
     return html;
 }
 
-function escapeHtml(str) {
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+// Buat elemen brosur (HTML)
+function createBrochureElement() {
+    const { profilList, openmember } = getShareData();
+    
+    const container = document.createElement('div');
+    container.className = 'brosur-container';
+    container.id = 'brosur-temp';
+    
+    // Ambil logo dari halaman
+    const logoImg = document.querySelector('.logo-wrapper img');
+    const logoUrl = logoImg ? logoImg.src : '';
+    
+    // Header HTML
+    let headerHtml = `
+        <div class="brosur-header">
+            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo Umbrella">` : ''}
+            <div class="brosur-brand">
+                <h1>UMBRELLA</h1>
+                <p>Tempat Kita Berteduh dan Bertumbuh</p>
+            </div>
+        </div>
+    `;
+    
+    // Konten profil (semua item)
+    let profilHtml = '';
+    for (const profil of profilList) {
+        profilHtml += `
+            <div class="brosur-card">
+                <h2>${escapeHtml(profil.Header || 'Profil Guild')}</h2>
+                <div class="brosur-card-body">
+                    ${formatContentToHtml(profil.Body)}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Konten openmember
+    let openmemberHtml = '';
+    if (openmember) {
+        openmemberHtml = `
+            <div class="brosur-card brosur-card-openmember">
+                <h2>${escapeHtml(openmember.Header || 'Open Member')}</h2>
+                <div class="brosur-card-body">
+                    ${formatContentToHtml(openmember.Body)}
+                </div>
+            </div>
+        `;
+    } else {
+        openmemberHtml = `
+            <div class="brosur-card brosur-card-openmember">
+                <h2>Open Member</h2>
+                <p>Informasi open member belum tersedia</p>
+            </div>
+        `;
+    }
+    
+    // Footer
+    const footerHtml = `
+        <div class="brosur-footer">
+            https://umbrella-id.github.io
+        </div>
+    `;
+    
+    container.innerHTML = headerHtml + `
+        <div class="brosur-content">
+            ${profilHtml}
+            ${openmemberHtml}
+        </div>
+    ` + footerHtml;
+    
+    return container;
 }
 
 // Screenshot elemen ke blob
@@ -98,7 +140,8 @@ async function elementToBlob(element) {
             scale: 2,
             backgroundColor: null,
             useCORS: true,
-            logging: false
+            logging: false,
+            allowTaint: false
         });
         return new Promise((resolve) => {
             canvas.toBlob(blob => resolve(blob), 'image/png');
@@ -111,8 +154,9 @@ async function elementToBlob(element) {
 
 // Fungsi utama share
 async function triggerShare() {
+    // Cek dukungan Web Share API
     if (!navigator.share) {
-        alert("Browser Anda tidak mendukung fitur share.");
+        alert("Browser Anda tidak mendukung fitur share. Silakan screenshot manual.");
         return;
     }
     
@@ -125,18 +169,20 @@ async function triggerShare() {
         const brosur = createBrochureElement();
         document.body.appendChild(brosur);
         
-        // Tunggu sebentar agar CSS teraplikasi
-        await new Promise(r => setTimeout(r, 100));
+        // Tunggu sebentar agar CSS teraplikasi dan gambar logo termuat
+        await new Promise(r => setTimeout(r, 200));
         
         // Screenshot
         const blob = await elementToBlob(brosur);
-        if (!blob) throw new Error("Gagal membuat gambar");
+        if (!blob) throw new Error("Gagal membuat gambar brosur");
         
         // Hapus elemen brosur
         brosur.remove();
         
+        // Siapkan file untuk share
         const imageFile = new File([blob], "umbrella-brosur.png", { type: "image/png" });
         
+        // Share
         if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
             await navigator.share({
                 title: "Umbrella Guild",
@@ -144,24 +190,29 @@ async function triggerShare() {
                 files: [imageFile]
             });
         } else {
+            // Fallback: share teks saja
             await navigator.share({
                 title: "Umbrella Guild",
                 text: SHARE_TEXT
             });
         }
+        
+        console.log("✅ Share berhasil");
+        
     } catch (err) {
         console.error("Share error:", err);
         if (err.name !== 'AbortError') {
-            alert("Gagal share: " + (err.message || "Unknown error"));
+            alert("Gagal share: " + (err.message || "Terjadi kesalahan"));
         }
     } finally {
         if (shareBtn) shareBtn.innerHTML = originalText;
-        // Pastikan elemen brosur terhapus jika terjadi error
+        // Bersihkan elemen brosur jika masih ada
         const leftover = document.getElementById('brosur-temp');
         if (leftover) leftover.remove();
     }
 }
 
+// Ekspos ke global
 window.triggerShare = triggerShare;
 
 console.log("✅ share.js loaded (html2canvas version)");
