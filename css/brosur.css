@@ -6,8 +6,8 @@
     position: fixed;
     top: -9999px;
     left: -9999px;
-    width: 1080px;
-    height: 1350px;
+    width: 1280px;
+    height: 720px;
     background: #030208;
     background-image: radial-gradient(rgba(168, 85, 247, 0.08) 1px, transparent 1px);
     background-size: 6px 6px;
