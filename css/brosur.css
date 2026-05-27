@@ -91,70 +91,30 @@
    PROFIL AREA (PAKSA 2 KOLOM)
    ========================================== */
 .brosur-profil {
-    grid-row: 2 / 3;
-    grid-column: 2 / 3;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 20px;
-    padding: 20px;
-    overflow-y: auto;
-    
-    /* PAKSA 2 KOLOM - jangan pakai auto-fill */
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     align-content: flex-start;
 }
 
-/* Card profil - HAPUS width:40% */
+/* Kartu biasa */
 .brosur-card {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 16px;
     padding: 15px;
-    overflow: hidden;
-    word-break: break-word;
 }
 
-.brosur-card h2 {
-    color: #a855f7;
-    font-size: 0.9rem;
-    font-weight: 800;
-    margin: 0 0 10px;
-    border-left: 3px solid #a855f7;
-    padding-left: 10px;
+/* Kartu kosong (placeholder) */
+.brosur-card-empty {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px dashed rgba(168, 85, 247, 0.3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.8rem;
 }
-
-.brosur-card-body {
-    font-size: 0.7rem;
-    line-height: 1.5;
-    color: #cbd5e1;
-}
-
-/* Bullet points */
-.brosur-card-body ul {
-    margin: 5px 0;
-    padding-left: 18px;
-    list-style: none;
-}
-
-.brosur-card-body li {
-    margin-bottom: 3px;
-    position: relative;
-    padding-left: 12px;
-}
-
-.brosur-card-body li::before {
-    content: "•";
-    color: #a855f7;
-    position: absolute;
-    left: 0;
-}
-
-.brosur-card-body p {
-    margin: 5px 0;
-}
-
 /* ==========================================
    FOOTER
    ========================================== */
