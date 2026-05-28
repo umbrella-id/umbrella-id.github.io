@@ -426,6 +426,7 @@
     }
 
     .brand-container {
+        display: block;
         width: 60dvh;
         text-align: center ;
         margin-top: 15px ;
