@@ -412,7 +412,7 @@
     }
    
     .pc-header-text {
-        font-size: clamp(6dvh, 8dvh, 10dvh) ;
+        font-size: clamp(6dvh, 5dvh, 6dvh) ;
     }
    
     .sidebar-brand {
