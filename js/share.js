@@ -65,8 +65,25 @@ function createBrochureElement() {
     const { profilList, openmember } = getShareData();
     
     const container = document.createElement('div');
-    container.className = 'brosur-container';
     container.id = 'brosur-temp';
+    
+    // INLINE STYLE (pasti dibaca html2canvas)
+    container.style.cssText = `
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 1280px;
+        height: 720px;
+        padding: 40px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        box-sizing: border-box;
+        background: linear-gradient(135deg, #0d0a1a 0%, #0a0618 50%, #030208 100%);
+        color: #cbd5e1;
+        display: grid;
+        grid-template-columns: 30% 60%;
+        grid-template-rows: auto 1fr auto;
+        gap: 20px;
+    `;
     
     const logoImg = document.querySelector('.logo-wrapper img');
     const logoUrl = logoImg ? logoImg.src : '';
