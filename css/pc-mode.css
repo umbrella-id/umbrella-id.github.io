@@ -164,7 +164,6 @@
     }
 
     .pc-card-body {
-        font-size: 2dvh;
         line-height: 1.6;
         color: var(--text-main);
         overflow: hidden;
@@ -444,6 +443,10 @@
         height: 55dvh;
         margin-top: 15px;
     }
+   
+    .pc-card-body {
+        font-size: 2.5dvh;
+    }
 
     .headline-body-pc {
         font-size: clamp(2.5dvh, 3dvh, 3.5dvh);           
@@ -510,6 +513,10 @@
         width: 25dvh;
         height: 30dvh;
         margin-top: 15px;
+    }
+   
+    .pc-card-body {
+        font-size: 1.5dvh;
     }
 
     .headline-body-pc {
