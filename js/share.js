@@ -1,209 +1,184 @@
-/**
- * share.js - Brosur dengan html2canvas
- * Menampilkan semua item profil + openmember dari database
- */
+/* ==========================================
+   BROSUR.CSS - Share Layout (Landscape 1280×720)
+   ========================================== */
 
-const SHARE_TEXT = "Ayo gabung dengan guild Umbrella! Kunjungi web kami di https://umbrella-id.github.io";
-
-// Ambil data dari window.allCardData
-function getShareData() {
-    if (!window.allCardData || !Array.isArray(window.allCardData)) {
-        console.warn("allCardData belum tersedia");
-        return { profilList: [], openmember: null };
-    }
+.brosur-container {
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 1280px;
+    height: 720px;
+    padding: 50px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     
-    const profilList = window.allCardData.filter(item => item.ID?.toLowerCase() === 'profil');
-    const openmember = window.allCardData.find(item => item.ID?.toLowerCase() === 'openmember');
+    /* BACKGROUND dengan texture */
+    background-color: #030208;
+    background-image: 
+        radial-gradient(rgba(168, 85, 247, 0.2) 1px, transparent 1px),
+        radial-gradient(circle at 50% 30%, #1e113c 0%, #0f172a 50%, #030208 100%);
+    background-size: 6px 6px, 100% 100%;
     
-    console.log(`📦 Share data: ${profilList.length} profil, openmember: ${openmember ? 'ada' : 'tidak ada'}`);
-    
-    return { profilList, openmember };
+    display: grid;
+    grid-template-columns: 30% 60%;
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
 }
 
-// Escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+/* ===== HEADER ===== */
+.brosur-header {
+    grid-column: 1 / 3;
+     width: 80%;
+     margin: 0 auto;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     padding: 20px 0;
+     border-bottom: 1px solid var(--border-line);
+     position: relative;
 }
 
-// Format teks ke HTML (bullet points jadi <ul><li>)
-function formatContentToHtml(text) {
-    if (!text) return '';
-    const lines = text.split('\n');
-    let inList = false;
-    let html = '';
-    
-    for (let line of lines) {
-        line = line.trim();
-        if (line === '') continue;
-        
-        if (line.startsWith('-')) {
-            if (!inList) {
-                html += '<ul>';
-                inList = true;
-            }
-            html += `<li>${escapeHtml(line.substring(1).trim())}</li>`;
-        } else {
-            if (inList) {
-                html += '</ul>';
-                inList = false;
-            }
-            html += `<p>${escapeHtml(line)}</p>`;
-        }
-    }
-    if (inList) html += '</ul>';
-    return html;
+.brosur-header h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+  line-height: 1.1;
+  text-align: flex-end;
 }
 
-// Buat elemen brosur (HTML)
-function createBrochureElement() {
-    const { profilList, openmember } = getShareData();
-    
-    const container = document.createElement('div');
-    container.className = 'brosur-container';
-    container.id = 'brosur-temp';
-    
-    const logoImg = document.querySelector('.logo-wrapper img');
-    const logoUrl = logoImg ? logoImg.src : '';
-    
-    // 1. HEADER
-    let headerHtml = '';
-    if (openmember && openmember.Header) {
-        headerHtml = `<div class="brosur-header"><h1>${escapeHtml(openmember.Header)}</h1></div>`;
-    }
-    
-    // 2. BRAND AREA
-    const brandHtml = `
-        <div class="brosur-brand">
-            ${logoUrl ? `<img src="${logoUrl}" class="brosur-logo" alt="Logo">` : ''}
-            <div class="brosur-brand-text">
-                <div class="brand-name">UMBRELLA</div>
-                <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
-                <div class="brand-sub">dari pertemuan jadi kebersamaan<br>dari serikat jadi keluarga</div>
-            </div>
-        </div>
-    `;
-    
-    // 3. PROFIL (langsung, tanpa div pembungkus tambahan)
-    let profilHtml = '<div class="brosur-profil">';
-    for (const profil of profilList) {
-        profilHtml += `
-            <div class="brosur-card">
-                <h2>${escapeHtml(profil.Header || 'Profil Guild')}</h2>
-                <div class="brosur-card-body">
-                    ${formatContentToHtml(profil.Body)}
-                </div>
-            </div>
-        `;
-    }
-    // Tambahkan kartu kosong jika perlu (biar grid rapi)
-    const totalCards = profilList.length;
-    if (totalCards === 1) {
-        profilHtml += `<div class="brosur-card-empty"></div><div class="brosur-card-empty"></div>`;
-    } else if (totalCards === 2) {
-        profilHtml += `<div class="brosur-card-empty"></div><div class="brosur-card-empty"></div>`;
-    } else if (totalCards === 3) {
-        profilHtml += `<div class="brosur-card-empty"></div>`;
-    }
-    profilHtml += '</div>';
-    
-    // 4. FOOTER
-    let footerHtml = '';
-    if (openmember && openmember.Body) {
-        let cleanBody = openmember.Body.replace(/<br\s*\/?>|\r?\n/g, ' ');
-        footerHtml = `
-            <div class="brosur-footer">
-                <div class="brosur-footer-text">${formatContentToHtml(cleanBody)}</div>
-                <div class="brosur-link">https://umbrella-id.github.io</div>
-            </div>
-        `;
-    } else {
-        footerHtml = `
-            <div class="brosur-footer">
-                <div class="brosur-footer-text">Ayo bergabung dengan Umbrella!</div>
-                <div class="brosur-link">https://umbrella-id.github.io</div>
-            </div>
-        `;
-    }  
-    container.innerHTML = headerHtml + brandHtml + profilHtml + footerHtml;
-    
-    return container;
+/* Aksen Neon di Header */
+.brosur-header::before, .brosur-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  width: 20px;
+  height: 3px;
+  background: var(--color-primary);
+  box-shadow: 0 0 10px #a855f7;
 }
-// Screenshot elemen ke blob
-async function elementToBlob(element) {
-    try {
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            backgroundColor: null,
-            useCORS: true,
-            logging: false,
-            allowTaint: false
-        });
-        return new Promise((resolve) => {
-            canvas.toBlob(blob => resolve(blob), 'image/png');
-        });
-    } catch (err) {
-        console.error("html2canvas error:", err);
-        return null;
-    }
+.brosur-header::before { left: 0; }
+.brosur-header::after { right: 0; }
+
+/* ===== BRAND AREA ===== */
+.brosur-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
 }
 
-// Fungsi utama share
-async function triggerShare() {
-    if (!navigator.share) {
-        alert("Browser Anda tidak mendukung fitur share. Silakan screenshot manual.");
-        return;
-    }
-    
-    const shareBtn = document.getElementById('share-trigger');
-    const originalText = shareBtn?.innerHTML;
-    if (shareBtn) shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMBUAT...';
-    
-    try {
-        const brosur = createBrochureElement();
-        document.body.appendChild(brosur);
-        
-        await new Promise(r => setTimeout(r, 200));
-        
-        const blob = await elementToBlob(brosur);
-        if (!blob) throw new Error("Gagal membuat gambar brosur");
-        
-        brosur.remove();
-        
-        const imageFile = new File([blob], "umbrella-brosur.png", { type: "image/png" });
-        
-        if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-            await navigator.share({
-                title: "Umbrella Guild",
-                text: SHARE_TEXT,
-                files: [imageFile]
-            });
-        } else {
-            await navigator.share({
-                title: "Umbrella Guild",
-                text: SHARE_TEXT
-            });
-        }
-        
-        console.log("✅ Share berhasil");
-        
-    } catch (err) {
-        console.error("Share error:", err);
-        if (err.name !== 'AbortError') {
-            alert("Gagal share: " + (err.message || "Terjadi kesalahan"));
-        }
-    } finally {
-        if (shareBtn) shareBtn.innerHTML = originalText;
-        const leftover = document.getElementById('brosur-temp');
-        if (leftover) leftover.remove();
-    }
+/* LOGO LEBIH BESAR */
+.brosur-logo {
+    width: 160px;
+    height: auto;
+    filter: box-shadow(0 0 12px #a855f7);
 }
 
-window.triggerShare = triggerShare;
+.brand-name {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+}
 
-console.log("✅ share.js loaded (html2canvas version)");
+.brand-main {
+    font-size: 0.85rem;
+    color: #a855f7;
+}
+
+.brand-sub {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+/* ===== PROFIL AREA ===== */
+.brosur-profil {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-content: flex-start;
+}
+
+/* Kartu profil */
+.brosur-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 15px;
+}
+
+.brosur-card h2 {
+    color: #a855f7;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 10px;
+    border-left: 3px solid #a855f7;
+    padding-left: 10px;
+}
+
+.brosur-card-body {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+}
+
+/* Bullet points */
+.brosur-card-body ul {
+    margin: 5px 0;
+    padding-left: 18px;
+    list-style: none;
+}
+
+.brosur-card-body li {
+    margin-bottom: 3px;
+    position: relative;
+    padding-left: 12px;
+}
+
+.brosur-card-body li::before {
+    content: "•";
+    color: #a855f7;
+    position: absolute;
+    left: 0;
+}
+
+.brosur-card-body p {
+    margin: 5px 0;
+}
+
+/* Kartu kosong (transparan) */
+.brosur-card-empty {
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+}
+
+/* ===== FOOTER ===== */
+.brosur-footer {
+    grid-column: 1 / 3;
+      width: 75%;
+      margin: 0 auto;
+      white-space: normal;
+      align-items: center;     
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.9rem; 
+      line-height: 1.4;
+      overflow: visible;        
+      position: relative;
+}
+
+.brosur-link {
+    font-size: 0.9rem;
+    color: #a855f7;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+}
