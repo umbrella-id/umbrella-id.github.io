@@ -164,7 +164,7 @@
     }
 
     .pc-card-body {
-        font-size: 0.95rem;
+        font-size: 2dvh;
         line-height: 1.6;
         color: var(--text-main);
         overflow: hidden;
