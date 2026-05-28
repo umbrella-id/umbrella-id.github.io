@@ -431,11 +431,11 @@
     }
    
     .brand-main {
-        font-size: 2dvh;
+        font-size: 1.8dvh;
     }
 
     .brand-sub {
-        font-size: 1.5dvh;
+        font-size: 1.2dvh;
     }
 
     .slider-card {
@@ -506,15 +506,15 @@
     }
    
     .brand-main {
-        font-size: 2dvh;
+        font-size: 8dvh;
     }
 
     .brand-sub {
-        font-size: 1.5dvh;
+        font-size: 4dvh;
     }
 
     .slider-card {
-        width: 25dvh;
+        width: 26dvh;
         height: 30dvh;
         margin-top: 15px;
     }
