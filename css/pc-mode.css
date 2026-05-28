@@ -445,9 +445,8 @@
     }
    
     .pc-card-title {
-        font-size: 3dvh;
+        font-size: 3.7dvh;
     }
-
    
     .pc-card-body {
         font-size: 2.5dvh;
@@ -479,7 +478,7 @@
     }
 
     .pc-header-text {
-        font-size: clamp(3.5dvh, 4.5dvh, 5.5dvh) ;
+        font-size: clamp(3.5dvh, 4.0dvh, 4.5dvh) ;
     }
 
     .content-wrapper {
@@ -521,7 +520,7 @@
     }
    
     .pc-card-title {
-        font-size: 1.6dvh;
+        font-size: 1.9dvh;
     }
    
     .pc-card-body {
