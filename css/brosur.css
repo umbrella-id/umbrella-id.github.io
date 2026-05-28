@@ -11,7 +11,6 @@
     font-family: 'Segoe UI', system-ui, sans-serif;
     align-items: center;
     justify-content: center;
-    padding: 5% ;
     box-sizing: border-box;
     
     /* BACKGROUND dengan texture */
@@ -49,7 +48,7 @@
   text-transform: uppercase;
   text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
   line-height: 1.1;
-  text-align: center;
+  text-align: flex-end;
 }
 
 /* Aksen Neon di Header */
@@ -116,7 +115,7 @@
 
 .brosur-card h2 {
     color: #a855f7;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     font-weight: 800;
     margin: 0 0 10px;
     border-left: 3px solid #a855f7;
@@ -124,7 +123,7 @@
 }
 
 .brosur-card-body {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     line-height: 1.5;
     color: #cbd5e1;
 }
@@ -167,8 +166,7 @@
       margin: 0 auto;
       height: 10%;
       white-space: normal;
-      justify-content: center; 
-      align-items: center;     
+      align-items: flex-start;     
       text-align: center;
       color: #94a3b8;
       font-size: 0.9rem; 
