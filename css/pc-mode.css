@@ -407,7 +407,7 @@
 
     .content-wrapper {
         display: grid;
-        grid-template-columns: 350px 1fr;
+        grid-template-columns: 60dvh 1fr;
         height: 100%;
     }
    
@@ -418,7 +418,7 @@
     .sidebar-brand {
         display: flex;
         flex-direction: column;
-        width: 350px;
+        width: 60dvh;
     }
 
     .logo-wrapper img {
@@ -431,11 +431,11 @@
     }
    
     .brand-main {
-        font-size: 0.8rem;
+        font-size: 2dvh;
     }
 
     .brand-sub {
-        font-size: 0.8rem;
+        font-size: 1.5dvh;
     }
 
     .slider-card {
@@ -506,11 +506,11 @@
     }
    
     .brand-main {
-        font-size: 1,2rem;
+        font-size: 2dvh;
     }
 
     .brand-sub {
-        font-size: 0.9rem;
+        font-size: 1.5dvh;
     }
 
     .slider-card {
