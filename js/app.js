@@ -13,8 +13,8 @@ let startY = 0, deltaY = 0;
  */
 async function init() {
     try {
-        const res = await fetch(GAS_URL);
-        const rawData = await res.json();
+        // Data sudah direquest sejak HTML loading
+        const rawData = await window.contentPromise;
         
         // Untuk tampilan web
         cardData = rawData.filter(item => ["headline", "profil", "galery"].includes(item.ID.toLowerCase()));
