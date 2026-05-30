@@ -15,7 +15,6 @@ async function init() {
     try {
         // Data sudah direquest sejak HTML loading
         const rawData = await window.contentPromise;
-        window.rawData = rawData;
         
         // Ambil data mentah
         const headline = rawData.find(item => item.ID?.toLowerCase() === 'headline');
@@ -25,17 +24,20 @@ async function init() {
         
         // Bangun urutan kartu sesuai logika
         let orderedCards = [];
+        const hasHeadline = (headline && headline.Header && headline.Header.trim() !== "");
         
-        if (headline && headline.Header && headline.Header.trim() !== "") {
+        if (hasHeadline) {
             // Headline ada: urutan normal, openmember di akhir (jika ada isi)
             orderedCards = [headline, ...profilList, ...galeryList];
             if (openmember && openmember.Body && openmember.Body.trim() !== "") {
                 orderedCards.push(openmember);
             }
         } else {
-            // Headline kosong: openmember jadi pertama (jika ada isi)
+            // Headline kosong: cek openmember
             if (openmember && openmember.Body && openmember.Body.trim() !== "") {
-                orderedCards = [openmember, ...profilList, ...galeryList];
+                // Openmember dipakai sebagai pengganti headline
+                // TIDAK dimasukkan ke orderedCards (karena sudah jadi headline)
+                orderedCards = [...profilList, ...galeryList];
             } else {
                 orderedCards = [...profilList, ...galeryList];
             }
@@ -48,6 +50,9 @@ async function init() {
 
         // Data untuk keperluan share (profil + openmember)
         window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID?.toLowerCase()));
+
+        // Simpan rawData untuk keperluan renderApp (header & footer)
+        window.rawData = rawData;
 
         renderApp();
         createModal();
