@@ -292,14 +292,17 @@
 @media screen and (max-width: 767px) {
     #chat-popup {
         /* 🎯 PINDAH KE TENGAH LAYAR HP */
-        top: 44% !important;
+        top: 50% !important;
         left: 50% !important;
         right: auto !important;
         bottom: auto !important;
         
         /* RESPONSIF: Lebar 92% dari layar HP, tinggi proporsional */
-        width: 92vw !important;       
-        height: 80dvh !important;  
+        top: 47px;
+        bottom: 57px;
+        left: 50%;
+        width: 92vw; 
+        height: auto; 
         
         /* Set titik pertumbuhan animasi murni dari tengah kotak */
         transform-origin: bottom right !important;
