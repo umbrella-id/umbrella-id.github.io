@@ -11,11 +11,6 @@ let startY = 0, deltaY = 0;
  * 1. FUNGSI INISIALISASI (DATA FETCHING)
  */
 async function init() {
-    // Tampilkan spinner
-    const container = document.getElementById('app-container');
-    if (container) {
-        container.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>`;
-    }
     try {
         const rawData = await window.contentPromise;
         
