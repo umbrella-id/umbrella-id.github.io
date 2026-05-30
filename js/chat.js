@@ -36,13 +36,10 @@ function toggleChat() {
     
     if (isOpening) {
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        console.log("📦 Cache di toggleChat (saat buka):", cached ? "ADA" : "KOSONG", cached ? `(${JSON.parse(cached).length} pesan)` : "");
-        
-        history.pushState({ boksTerbuka: "chat" }, "");
-        
-        // ✅ RENDER DARI CACHE DULU (INSTAN)
         const container = document.getElementById('admin-chat-logs');
+        
         if (cached && container) {
+            // ✅ RENDER DARI CACHE (INSTAN)
             renderChatLogs(JSON.parse(cached), container);
             fastScroll();
             console.log("⚡ Chat rendered from cache (instan)");
@@ -51,14 +48,10 @@ function toggleChat() {
             syncChat(true);
         }
         
-        // ✅ JANGAN PANGGIL syncChat(true) LAGI JIKA CACHE ADA
-        // Hanya panggil syncChat di background untuk update (opsional)
-        setTimeout(() => {
-            if (cached) {
-                // Update di background tanpa mengganggu UI
-                syncChat(true);
-            }
-        }, 500);
+        // ❌ HAPUS PANGGILAN syncChat(true) DI SINI
+        // Biarkan interval polling (4.5 detik) yang update cache
+        
+        history.pushState({ boksTerbuka: "chat" }, "");
         
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
