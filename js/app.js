@@ -16,13 +16,37 @@ async function init() {
         // Data sudah direquest sejak HTML loading
         const rawData = await window.contentPromise;
         
+        // Ambil data mentah
+        const headline = rawData.find(item => item.ID?.toLowerCase() === 'headline');
+        const openmember = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
+        const profilList = rawData.filter(item => item.ID?.toLowerCase() === 'profil');
+        const galeryList = rawData.filter(item => item.ID?.toLowerCase() === 'galery');
+        
+        // Bangun urutan kartu sesuai logika
+        let orderedCards = [];
+        
+        if (headline && headline.Header && headline.Header.trim() !== "") {
+            // Headline ada: urutan normal, openmember di akhir (jika ada isi)
+            orderedCards = [headline, ...profilList, ...galeryList];
+            if (openmember && openmember.Body && openmember.Body.trim() !== "") {
+                orderedCards.push(openmember);
+            }
+        } else {
+            // Headline kosong: openmember jadi pertama (jika ada isi)
+            if (openmember && openmember.Body && openmember.Body.trim() !== "") {
+                orderedCards = [openmember, ...profilList, ...galeryList];
+            } else {
+                orderedCards = [...profilList, ...galeryList];
+            }
+        }
+        
         // Untuk tampilan web
-        cardData = rawData.filter(item => ["headline", "profil", "galery"].includes(item.ID.toLowerCase()));
-        runningTexts = rawData.filter(item => item.ID.toLowerCase() === "running_text").map(item => item.Body);
-        sosmedData = rawData.filter(item => item.ID.toLowerCase() === "sosmed");
+        cardData = orderedCards;
+        runningTexts = rawData.filter(item => item.ID?.toLowerCase() === "running_text").map(item => item.Body);
+        sosmedData = rawData.filter(item => item.ID?.toLowerCase() === "sosmed");
 
         // Data untuk keperluan share (profil + openmember)
-        window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID.toLowerCase()));
+        window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID?.toLowerCase()));
 
         renderApp();
         createModal();
@@ -75,32 +99,45 @@ function renderApp() {
             
     } else {
         // --- KAMAR PC (GRID SLIDER) ---
-        if (headline) {
-            // 1. Update Judul Atas PC
-            const headerElement = document.querySelector('.pc-header-text');
-            if (headerElement) headerElement.innerText = headline.Header;
+        // Tentukan header text (prioritas: headline → openmember → default)
+        const headlineItem = cardData.find(item => item.ID?.toLowerCase() === 'headline');
+        const openmemberItem = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
+        let headerText = "SELAMAT DATANG";
         
-            // 2. Update Footer PC (Gunakan Logika Potong Teks Kamu)
-            const footerContainer = document.querySelector('.bottom-bar');
-            if (footerContainer) {
-                const headlineIndex = cardData.indexOf(headline);
-                const limit = 160; 
-                const fullText = headline.Body;
-                
-                // Eksekusi Logika Potong
-                const truncatedText = fullText.length > limit 
-                    ? fullText.substring(0, limit) + "... " 
-                    : fullText;
-
-                footerContainer.innerHTML = `
-                    <div class="headline-body-pc">
-                        ${truncatedText}
-                        <span class="inline-link-text" onclick="showDetail(${headlineIndex})">
-                            selengkapnya
-                        </span>
-                    </div>
-                `;
-            }
+        if (headlineItem && headlineItem.Header && headlineItem.Header.trim() !== "") {
+            headerText = headlineItem.Header;
+        } else if (openmemberItem && openmemberItem.Header && openmemberItem.Header.trim() !== "") {
+            headerText = openmemberItem.Header;
+        }
+        
+        const headerElement = document.querySelector('.pc-header-text');
+        if (headerElement) headerElement.innerText = headerText;
+        
+        // Footer tetap pakai headline jika ada, atau openmember, atau kosong
+        let footerContent = null;
+        if (headlineItem && headlineItem.Body && headlineItem.Body.trim() !== "") {
+            footerContent = headlineItem;
+        } else if (openmemberItem && openmemberItem.Body && openmemberItem.Body.trim() !== "") {
+            footerContent = openmemberItem;
+        }
+        
+        const footerContainer = document.querySelector('.bottom-bar');
+        if (footerContainer && footerContent) {
+            const footerIndex = cardData.findIndex(c => c === footerContent);
+            const limit = 160;
+            const fullText = footerContent.Body;
+            const truncatedText = fullText.length > limit ? fullText.substring(0, limit) + "... " : fullText;
+            
+            footerContainer.innerHTML = `
+                <div class="headline-body-pc">
+                    ${truncatedText}
+                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">
+                        selengkapnya
+                    </span>
+                </div>
+            `;
+        } else if (footerContainer) {
+            footerContainer.innerHTML = '';
         }
     
         container.innerHTML = `
