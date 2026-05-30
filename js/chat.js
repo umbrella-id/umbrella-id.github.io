@@ -9,8 +9,9 @@ const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgd
 const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
 
 // 🎯 STATE SYSTEM ENGINE
-let isMuted = false, lastChatStamp = "", isSending = false, isSendingMail = false; 
+let isMuted = false, isSending = false, isSendingMail = false; 
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+let lastChatStamp = sessionStorage.getItem('umbrella_last_chat_stamp') || '';
 
 function fastScroll() {
     const lb = document.getElementById('chat-logs'); 
@@ -146,13 +147,12 @@ function syncChat(force = false) {
         if (!Array.isArray(arrayChat)) return;
 
         const currentStamp = JSON.stringify(arrayChat);
-        
-        // UPDATE CACHE JIKA BERUBAH
+
         if (currentStamp !== lastChatStamp) {
             lastChatStamp = currentStamp;
-            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(arrayChat));
-            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
-            
+            sessionStorage.setItem('umbrella_last_chat_stamp', currentStamp);
+            // update cache dan render ulang...
+
             // RENDER ULANG HANYA JIKA CHAT TERBUKA
             const lb = document.getElementById('chat-logs');
             if (lb && popup && popup.classList.contains('show')) {
@@ -245,7 +245,7 @@ function syncChat(force = false) {
                 fastScroll();
             }
         } else {
-            console.log("✅ Stamp sama, tidak perlu render atau update apapun");
+            console.log("✅ Stamp sama, tidak perlu render");
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
