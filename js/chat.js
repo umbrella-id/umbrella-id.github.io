@@ -35,16 +35,35 @@ function toggleChat() {
     popup.classList.toggle('show');
     
     if (isOpening) {
-        // ✅ LOG DI SINI (saat chat dibuka)
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
         console.log("📦 Cache di toggleChat (saat buka):", cached ? "ADA" : "KOSONG", cached ? `(${JSON.parse(cached).length} pesan)` : "");
         
         history.pushState({ boksTerbuka: "chat" }, "");
-        fastScroll();
+        
+        // ✅ RENDER DARI CACHE DULU (INSTAN)
+        const container = document.getElementById('admin-chat-logs');
+        if (cached && container) {
+            renderChatLogs(JSON.parse(cached), container);
+            fastScroll();
+            console.log("⚡ Chat rendered from cache (instan)");
+        } else if (container) {
+            container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
+            syncChat(true);
+        }
+        
+        // ✅ JANGAN PANGGIL syncChat(true) LAGI JIKA CACHE ADA
+        // Hanya panggil syncChat di background untuk update (opsional)
+        setTimeout(() => {
+            if (cached) {
+                // Update di background tanpa mengganggu UI
+                syncChat(true);
+            }
+        }, 500);
+        
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
-        syncChat(true); 
+        
     } else {
         if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
