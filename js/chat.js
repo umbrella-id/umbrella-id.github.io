@@ -40,7 +40,7 @@ function toggleChat() {
     if (isOpening) {
         history.pushState({ boksTerbuka: "chat" }, "");
 
-        const container = document.getElementById('admin-chat-logs');
+        const container = document.getElementById('chat-logs');
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
         console.log("🔍 Container:", container);
         console.log("🔍 Cached:", cached ? `ADA (${cached.length} chars)` : "KOSONG");
