@@ -57,30 +57,27 @@ function toggleChat() {
     if (isOpening) {
         history.pushState({ boksTerbuka: "chat" }, "");
         
-        // ✅ 1. RENDER DARI CACHE DULU (INSTAN)
+        // ✅ RENDER DARI CACHE (PASTI ADA KARENA PRELOAD)
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        if (cached) {
-            try {
-                const container = document.getElementById('admin-chat-logs');
-                if (container) {
-                    renderChatLogs(JSON.parse(cached), container);
-                    fastScroll();
-                    console.log("⚡ Chat rendered from cache");
-                }
-            } catch(e) {
-                console.error("Cache render error:", e);
-            }
+        const container = document.getElementById('admin-chat-logs');
+        
+        if (cached && container) {
+            renderChatLogs(JSON.parse(cached), container);
+            fastScroll();
+            console.log("⚡ Chat rendered from cache (instan)");
+        } else if (container) {
+            // Fallback jika cache kosong (hampir tidak pernah terjadi setelah preload)
+            container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
+            syncChat(true);
         }
         
-        // ✅ 2. FOCUS INPUT (jika PC)
+        // Focus input (jika PC)
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
         
-        // ✅ 3. FETCH UPDATE DI BACKGROUND (tanpa mengganggu UI)
-        setTimeout(() => {
-            syncChat(true);
-        }, 100);
+        // ✅ JANGAN PANGGIL syncChat LANGSUNG
+        // Biarkan interval polling (4.5 detik) atau preload berikutnya yang update
         
     } else {
         if (history.state && history.state.boksTerbuka === "chat") history.back();
