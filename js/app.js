@@ -9,51 +9,21 @@ let startY = 0, deltaY = 0;
 
 /**
  * 1. FUNGSI INISIALISASI (DATA FETCHING)
- * Mengambil data dari Google Sheets dan membaginya ke variabel yang sesuai.
  */
 async function init() {
     try {
-        // Data sudah direquest sejak HTML loading
         const rawData = await window.contentPromise;
         
-        // Ambil data mentah
-        const headline = rawData.find(item => item.ID?.toLowerCase() === 'headline');
-        const openmember = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
-        const profilList = rawData.filter(item => item.ID?.toLowerCase() === 'profil');
-        const galeryList = rawData.filter(item => item.ID?.toLowerCase() === 'galery');
+        // Simpan rawData global untuk akses di renderApp
+        window.rawData = rawData;
         
-        // Bangun urutan kartu sesuai logika
-        let orderedCards = [];
-        const hasHeadline = (headline && headline.Header && headline.Header.trim() !== "");
+        // Data untuk keperluan share
+        window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID?.toLowerCase()));
         
-        if (hasHeadline) {
-            // Headline ada: urutan normal, openmember di akhir (jika ada isi)
-            orderedCards = [headline, ...profilList, ...galeryList];
-            if (openmember && openmember.Body && openmember.Body.trim() !== "") {
-                orderedCards.push(openmember);
-            }
-        } else {
-            // Headline kosong: cek openmember
-            if (openmember && openmember.Body && openmember.Body.trim() !== "") {
-                // Openmember dipakai sebagai pengganti headline
-                // TIDAK dimasukkan ke orderedCards (karena sudah jadi headline)
-                orderedCards = [...profilList, ...galeryList];
-            } else {
-                orderedCards = [...profilList, ...galeryList];
-            }
-        }
-        
-        // Untuk tampilan web
-        cardData = orderedCards;
+        // Data pendukung
         runningTexts = rawData.filter(item => item.ID?.toLowerCase() === "running_text").map(item => item.Body);
         sosmedData = rawData.filter(item => item.ID?.toLowerCase() === "sosmed");
-
-        // Data untuk keperluan share (profil + openmember)
-        window.allCardData = rawData.filter(item => ["profil", "openmember"].includes(item.ID?.toLowerCase()));
-
-        // Simpan rawData untuk keperluan renderApp (header & footer)
-        window.rawData = rawData;
-
+        
         renderApp();
         createModal();
     } catch (e) { 
@@ -63,22 +33,53 @@ async function init() {
 
 /**
  * 2. FUNGSI RENDER UTAMA
- * Menentukan apakah membangun "Kamar Mobile" atau "Kamar PC".
  */
 function renderApp() {
     const container = document.getElementById('app-container'); 
     if (!container) return;
 
     const isMobile = window.innerWidth < 768;
+    const rawData = window.rawData;
+    if (!rawData) return;
     
-    // Ambil data headline di awal agar bisa dipakai di Mobile maupun PC jika perlu
-    const headline = cardData.find(item => item.ID.toLowerCase() === 'headline');
-    const displayCards = cardData.filter(item => item.ID.toLowerCase() !== 'headline');
+    const headlineItem = rawData.find(item => item.ID?.toLowerCase() === 'headline');
+    const openmemberItem = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
+    const profilList = rawData.filter(item => item.ID?.toLowerCase() === 'profil');
+    const galeryList = rawData.filter(item => item.ID?.toLowerCase() === 'galery');
+    
+    const hasHeadline = (headlineItem && headlineItem.Header && headlineItem.Header.trim() !== "");
+    const hasOpenmember = (openmemberItem && openmemberItem.Body && openmemberItem.Body.trim() !== "");
+    
+    // ========== BANGUN cardData SESUAI LOGIKA ==========
+    let newCardData = [];
+    
+    if (isMobile) {
+        // MOBILE MODE
+        if (hasHeadline) {
+            newCardData = [headlineItem, ...profilList, ...galeryList];
+            if (hasOpenmember) newCardData.push(openmemberItem);
+        } else if (hasOpenmember) {
+            newCardData = [openmemberItem, ...profilList, ...galeryList];
+        } else {
+            newCardData = [...profilList, ...galeryList];
+        }
+    } else {
+        // PC MODE
+        newCardData = [...profilList, ...galeryList];
+        if (hasHeadline && hasOpenmember) {
+            newCardData.push(openmemberItem);
+        }
+    }
+    
+    // Update cardData GLOBAL
+    cardData = newCardData;
+    
+    // Untuk keperluan render (headline tidak ada di cardData di PC mode)
+    const headlineInCard = cardData.find(item => item.ID?.toLowerCase() === 'headline');
+    const displayCards = cardData.filter(item => item.ID?.toLowerCase() !== 'headline');
 
     if (isMobile) {
         // --- KAMAR MOBILE (STACKER) ---
-        
-        // 1. Bersihkan footer PC saat di mode mobile
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer) footerContainer.innerHTML = '';
 
@@ -89,47 +90,45 @@ function renderApp() {
                         <div class="card-header-logo">
                             <img src="logo-umbrella.svg" class="inner-card-logo">
                             <div class="header-text-group">
-                                <h2 class="card-title">${item.Header}</h2>
+                                <h2 class="card-title">${escapeHtml(item.Header)}</h2>
                             </div>
                         </div>
-                        
                         <div class="card-content-wrapper">
                             <div class="card-text">
-                                ${item.Body.replace(/\n/g, '<br>')}
+                                ${(item.Body || '').replace(/\n/g, '<br>')}
                             </div>
                         </div>
-
                         <div class="mobile-read-more">baca selengkapnya</div>
                     </div>`).join('')}
             </div>`;
             
     } else {
         // --- KAMAR PC (GRID SLIDER) ---
-        // Tentukan header text (prioritas: headline → openmember → default)
-        const headlineItem = cardData.find(item => item.ID?.toLowerCase() === 'headline');
-        const openmemberItem = window.rawData?.find(item => item.ID?.toLowerCase() === 'openmember');
+        // Header PC (prioritas: headline → openmember → default)
         let headerText = "SELAMAT DATANG";
-        
-        if (headlineItem && headlineItem.Header && headlineItem.Header.trim() !== "") {
+        if (hasHeadline && headlineItem.Header) {
             headerText = headlineItem.Header;
-        } else if (openmemberItem && openmemberItem.Header && openmemberItem.Header.trim() !== "") {
+        } else if (hasOpenmember && openmemberItem.Header) {
             headerText = openmemberItem.Header;
         }
         
         const headerElement = document.querySelector('.pc-header-text');
         if (headerElement) headerElement.innerText = headerText;
         
-        // Footer tetap pakai headline jika ada, atau openmember, atau kosong
+        // Footer PC (prioritas: headline → openmember → kosong)
         let footerContent = null;
-        if (headlineItem && headlineItem.Body && headlineItem.Body.trim() !== "") {
+        let footerIndex = -1;
+        
+        if (hasHeadline && headlineItem.Body && headlineItem.Body.trim() !== "") {
             footerContent = headlineItem;
-        } else if (openmemberItem && openmemberItem.Body && openmemberItem.Body.trim() !== "") {
+            footerIndex = cardData.findIndex(c => c.ID === headlineItem.ID);
+        } else if (hasOpenmember && openmemberItem.Body && openmemberItem.Body.trim() !== "") {
             footerContent = openmemberItem;
+            footerIndex = cardData.findIndex(c => c.ID === openmemberItem.ID);
         }
         
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
-            const footerIndex = cardData.findIndex(c => c === footerContent);
             const limit = 160;
             const fullText = footerContent.Body;
             const truncatedText = fullText.length > limit ? fullText.substring(0, limit) + "... " : fullText;
@@ -153,9 +152,9 @@ function renderApp() {
                     return `
                     <div class="slider-card" onclick="showDetail(${originalIndex})" style="cursor:pointer">
                         <div class="slider-card-content">
-                            <h2 class="pc-card-title">${item.Header}</h2>
+                            <h2 class="pc-card-title">${escapeHtml(item.Header)}</h2>
                             <div class="pc-card-body">
-                                ${item.Body.replace(/\n/g, '<br>')}
+                                ${(item.Body || '').replace(/\n/g, '<br>')}
                             </div>
                             <div class="pc-read-more-hint">baca selengkapnya</div>
                         </div>
@@ -164,7 +163,6 @@ function renderApp() {
             </div>`;
     }
 
-    // Render komponen pendukung (Global)
     renderRunningText();
     renderSosmed();
     updateUIElements();
