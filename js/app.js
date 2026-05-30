@@ -236,6 +236,13 @@ function createModal() {
     };
 }
 
+// Di akhir init() atau setelah renderApp
+setTimeout(() => {
+    if (typeof preloadChatData === 'function') {
+        preloadChatData();
+    }
+}, 2000); // Tunggu 2 detik setelah halaman siap
+
 function showDetail(index) {
     const item = cardData[index];
     if (!item) return;
@@ -410,3 +417,4 @@ window.addEventListener("orientationchange", () => {
 
 // Jalankan aplikasi saat HTML selesai dimuat
 document.addEventListener('DOMContentLoaded', init);
+
