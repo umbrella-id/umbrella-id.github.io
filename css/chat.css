@@ -290,13 +290,7 @@
    [5] RESPONSIVE MOBILE MODE (CENTER MODAL)
    ========================================== */
 @media screen and (max-width: 767px) {
-    #chat-popup {
-        /* 🎯 PINDAH KE TENGAH LAYAR HP */
-        top: 50% !important;
-        left: 50% !important;
-        right: auto !important;
-        bottom: auto !important;
-        
+    #chat-popup {        
         /* RESPONSIF: Lebar 92% dari layar HP, tinggi proporsional */
         top: 47px;
         bottom: 57px;
@@ -306,15 +300,5 @@
         
         /* Set titik pertumbuhan animasi murni dari tengah kotak */
         transform-origin: bottom right !important;
-        
-        /* 🎯 KONDISI TERSEDUT (HIDDEN): Diturunkan sedikit dan dikecilkan ke pusat tengah */
-        transform: translate(-50%, -40%) scale(0) !important;
-        border-radius: 20px; /* Kebulatan sudut di HP disamakan */
-    }
-
-    /* 🎯 KONDISI MEKAR (SHOW): Kembali tegak lurus sempurna di tengah layar HP */
-    #chat-popup.show {
-        /* -50% -50% adalah rumus mutlak centering fixed element */
-        transform: translate(-50%, -50%) scale(1) !important;
     }
 }
