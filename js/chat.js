@@ -168,12 +168,17 @@ function syncChat(force = false) {
         if (!Array.isArray(arrayChat)) return;
 
         const currentStamp = JSON.stringify(arrayChat);
-        if (!force && currentStamp === lastChatStamp) {
-            // skip render
-        } else {
+        
+        // Update cache (SELALU update, terlepas dari force)
+        if (currentStamp !== lastChatStamp) {
             lastChatStamp = currentStamp;
+            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(arrayChat));
+            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
+            
+            // ✅ RENDER ULANG HANYA JIKA CHAT SEDANG TERBUKA
             const lb = document.getElementById('chat-logs');
-            if (lb) {
+            if (lb && popup && popup.classList.contains('show')) {
+                // Hapus konten lama dan render ulang dengan data baru
                 lb.innerHTML = ''; 
                 arrayChat.forEach(msg => {
                     try {
@@ -183,9 +188,6 @@ function syncChat(force = false) {
                         let msgText = msg.message || msg[4] || '';
                         let msgRole = msg.role || msg[5] || '';
                         
-                        // ==========================================
-                        // KONVERSI COMMAND JADI PESAN SISTEM
-                        // ==========================================
                         let isSystem = false;
                         let isMuteCommand = false;
                         let muteTargetUID = null;
@@ -239,9 +241,6 @@ function syncChat(force = false) {
                         
                         lb.appendChild(d);
                         
-                        // ==========================================
-                        // EKSEKUSI UNTUK TARGET (setelah render)
-                        // ==========================================
                         if (isMuteCommand && muteTargetUID === user.uid) {
                             if (msgText.startsWith('🔇')) {
                                 const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
