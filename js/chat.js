@@ -40,19 +40,16 @@ function toggleChat() {
     if (isOpening) {
         history.pushState({ boksTerbuka: "chat" }, "");
 
-        const container = document.getElementById('chat-logs');
-        const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        console.log("🔍 Container:", container);
-        console.log("🔍 Cached:", cached ? `ADA (${cached.length} chars)` : "KOSONG");
+        // ✅ RENDER DARI CACHE (pakai fungsi yang sudah dibuat)
+        const rendered = renderFromCache();
         
-        if (cached && container) {
-            console.log("⚡ Memulai render dari cache...");
-            renderChatLogs(JSON.parse(cached), container);
-            fastScroll();
-            console.log("⚡ Chat rendered from cache (instan)");
-        } else if (container) {
-            container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
-            syncChat(true);
+        if (!rendered) {
+            // Jika cache gagal (kosong atau error), fallback ke fetch
+            const container = document.getElementById('chat-logs');
+            if (container) {
+                container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
+                syncChat(true);
+            }
         }
         
         if (window.innerWidth >= 768) {
@@ -455,6 +452,89 @@ async function preloadChatData() {
     }
 }
 
+function renderFromCache() {
+    const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
+    const container = document.getElementById('chat-logs');
+    
+    if (!cached || !container) return false;
+    
+    try {
+        const arrayChat = JSON.parse(cached);
+        container.innerHTML = '';
+        
+        for (const msg of arrayChat) {
+            // Copy-paste logika render dari syncChat (dari let msgType sampai lb.appendChild(d))
+            // Gunakan user dari dapatkanIdentitasAman()
+            const user = dapatkanIdentitasAman();
+            
+            let msgType = msg.type || 'msg';
+            let msgUID = msg.uid || msg[2] || '';
+            let msgName = msg.username || msg[3] || 'Anon';
+            let msgText = msg.message || msg[4] || '';
+            let msgRole = msg.role || msg[5] || '';
+            
+            let isSystem = false;
+            let isMuteCommand = false;
+            let muteTargetUID = null;
+            let muteDurasi = null;
+            
+            if (msgType === 'command') {
+                if (msgText.startsWith('MUTE_')) {
+                    const parts = msgText.split('_');
+                    muteTargetUID = parts[1];
+                    muteDurasi = parts[2] || '?';
+                    const targetIGN = parts[3] || 'Seseorang';
+                    msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
+                    isSystem = true;
+                    isMuteCommand = true;
+                } else if (msgText.startsWith('UNMUTE_')) {
+                    const parts = msgText.split('_');
+                    muteTargetUID = parts[1];
+                    const targetIGN = parts[2] || 'Seseorang';
+                    msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
+                    isSystem = true;
+                    isMuteCommand = true;
+                } else {
+                    continue;
+                }
+            }
+            
+            if (msgType !== 'msg' && !isSystem) continue;
+            
+            const isMe = msgUID === user.uid;
+            const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
+            const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
+            
+            const d = document.createElement('div');
+            
+            if (isSystem) {
+                d.className = 'chat-row system-message';
+                d.innerHTML = `<div class="system-text">${msgText}</div>`;
+            } else if (isDeleted) {
+                d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+                d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
+            } else if (isAdmin) {
+                d.className = 'chat-row admin-msg';
+                d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+            } else if (isMe) {
+                d.className = 'chat-row me';
+                d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
+            } else {
+                d.className = 'chat-row other';
+                d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
+            }
+            
+            container.appendChild(d);
+        }
+        
+        fastScroll();
+        return true;
+    } catch(e) {
+        console.error("Render cache error:", e);
+        return false;
+    }
+}
+
 // Expose
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
@@ -464,6 +544,7 @@ window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 window.preloadChatData = preloadChatData;
+window.renderFromCache = renderFromCache;
 
 // Interval
 setInterval(() => {
