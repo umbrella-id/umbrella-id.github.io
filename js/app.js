@@ -15,6 +15,7 @@ async function init() {
     try {
         // Data sudah direquest sejak HTML loading
         const rawData = await window.contentPromise;
+        window.rawData = rawData;
         
         // Ambil data mentah
         const headline = rawData.find(item => item.ID?.toLowerCase() === 'headline');
@@ -101,7 +102,7 @@ function renderApp() {
         // --- KAMAR PC (GRID SLIDER) ---
         // Tentukan header text (prioritas: headline → openmember → default)
         const headlineItem = cardData.find(item => item.ID?.toLowerCase() === 'headline');
-        const openmemberItem = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
+        const openmemberItem = window.rawData?.find(item => item.ID?.toLowerCase() === 'openmember');
         let headerText = "SELAMAT DATANG";
         
         if (headlineItem && headlineItem.Header && headlineItem.Header.trim() !== "") {
