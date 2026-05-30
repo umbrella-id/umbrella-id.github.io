@@ -286,22 +286,33 @@
     transform: scale(0.92);
 }
 
-/* ==========================================
-   [5] RESPONSIVE MOBILE MODE (CENTER MODAL)
-   ========================================== */
 @media screen and (max-width: 767px) {
     #chat-popup {
-        /* PUSATKAN HORIZONTAL */
         left: 50%;
         transform: translateX(-50%);
-       
-        /* mengikuti ukuran kartu */
+        
         top: 47px;
         bottom: 57px;
-        width: 92vw; 
-        height: auto; 
+        width: 92vw;
+        height: auto;
+        max-height: calc(100dvh - 120px);
         
-        /* Set titik pertumbuhan animasi */
-        transform-origin: bottom right !important;
+        /* Animasi popup dari pojok */
+        transform-origin: bottom right;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    
+    /* Saat chatbox tersembunyi */
+    #chat-popup:not(.show) {
+        transform: translateX(-50%) scale(0);
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    /* Saat chatbox muncul */
+    #chat-popup.show {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+        visibility: visible;
     }
 }
