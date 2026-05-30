@@ -32,7 +32,7 @@ async function init() {
             if (typeof preloadChatData === 'function') {
                 preloadChatData();
             }
-        }, 2000); // Tunggu 2 detik setelah halaman siap
+        }, 0); // Tunggu 0 detik setelah halaman siap
         
     } catch (e) { 
         console.error("Gagal memuat data:", e); 
