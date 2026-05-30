@@ -442,6 +442,7 @@ window.syncChat = syncChat;
 window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
+window.preloadChatData = preloadChatData;
 
 // Interval
 setInterval(() => {
