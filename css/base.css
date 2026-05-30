@@ -104,3 +104,18 @@ body { background-color: var(--bg-dark); color: var(--text-main); font-family: '
     display: none; 
     z-index: 2000;
 }
+
+/* LOADING SPINER */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    gap: 10px;
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+}
