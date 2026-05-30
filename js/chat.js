@@ -21,31 +21,6 @@ function fastScroll() {
     }
 }
 
-// ==========================================
-// PRELOAD CHAT DATA (dipanggil dari app.js)
-// ==========================================
-async function preloadChatData() {
-    const user = dapatkanIdentitasAman();
-    if (!user) return;
-    
-    const url = `${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`;
-    
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.logs) {
-            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(data.logs));
-            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
-            console.log("✅ Chat data preloaded successfully");
-        }
-    } catch(e) {
-        console.error("Preload chat error:", e);
-    }
-}
-
-// ==========================================
-// TOGGLE CHAT (dengan render dari cache)
-// ==========================================
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -61,40 +36,16 @@ function toggleChat() {
     
     if (isOpening) {
         history.pushState({ boksTerbuka: "chat" }, "");
-        
-        // ✅ RENDER DARI CACHE DULU (INSTAN)
-        const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        const container = document.getElementById('admin-chat-logs');
-        
-        if (cached && container) {
-            try {
-                renderChatLogs(JSON.parse(cached), container);
-                fastScroll();
-                console.log("⚡ Chat rendered from cache (instan)");
-            } catch(e) {
-                console.error("Cache render error:", e);
-                container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
-                syncChat(true);
-            }
-        } else if (container) {
-            // Fallback jika cache kosong
-            container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
-            syncChat(true);
-        }
-        
-        // Focus input (jika PC)
+        fastScroll();
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
-        
+        syncChat(true); 
     } else {
         if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
 }
 
-// ==========================================
-// SATPAM BACK BUTTON
-// ==========================================
 window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -186,99 +137,108 @@ function syncChat(force = false) {
             sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(arrayChat));
             sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
             
-            // ✅ RENDER ULANG HANYA JIKA CHAT TERBUKA
+            // ✅ RENDER ULANG HANYA JIKA CHAT SEDANG TERBUKA
             const lb = document.getElementById('chat-logs');
             if (lb && popup && popup.classList.contains('show')) {
-                renderChatLogs(arrayChat, lb);
+                console.log("📝 Chat terbuka, render ulang dengan data baru");
+                lb.innerHTML = ''; 
+                arrayChat.forEach(msg => {
+                    try {
+                        let msgType = msg.type || 'msg';
+                        let msgUID = msg.uid || msg[2] || '';
+                        let msgName = msg.username || msg[3] || 'Anon';
+                        let msgText = msg.message || msg[4] || '';
+                        let msgRole = msg.role || msg[5] || '';
+                        
+                        // ==========================================
+                        // KONVERSI COMMAND JADI PESAN SISTEM
+                        // ==========================================
+                        let isSystem = false;
+                        let isMuteCommand = false;
+                        let muteTargetUID = null;
+                        let muteDurasi = null;
+                        
+                        if (msgType === 'command') {
+                            if (msgText.startsWith('MUTE_')) {
+                                const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
+                                muteDurasi = parts[2] || '?';
+                                const targetIGN = parts[3] || 'Seseorang';
+                                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
+                                isSystem = true;
+                                isMuteCommand = true;
+                            } else if (msgText.startsWith('UNMUTE_')) {
+                                const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
+                                const targetIGN = parts[2] || 'Seseorang';
+                                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
+                                isSystem = true;
+                                isMuteCommand = true;
+                            } else {
+                                return;
+                            }
+                        }
+                        
+                        if (msgType !== 'msg' && !isSystem) return;
+                
+                        const isMe = msgUID === user.uid;
+                        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
+                        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
+                        
+                        const d = document.createElement('div');
+                        
+                        if (isSystem) {
+                            d.className = 'chat-row system-message';
+                            d.innerHTML = `<div class="system-text">${msgText}</div>`;
+                        } else if (isDeleted) {
+                            d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
+                        } else if (isAdmin) {
+                            d.className = 'chat-row admin-msg';
+                            d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+                        } else if (isMe) {
+                            d.className = 'chat-row me';
+                            d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
+                        } else {
+                            d.className = 'chat-row other';
+                            d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
+                        }
+                        
+                        lb.appendChild(d);
+                        
+                        // ==========================================
+                        // EKSEKUSI UNTUK TARGET (setelah render)
+                        // ==========================================
+                        if (isMuteCommand && muteTargetUID === user.uid) {
+                            if (msgText.startsWith('🔇')) {
+                                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
+                                muteExpiryTime = expiry;
+                                localStorage.setItem('umbrella_mute_expiry', expiry);
+                                if (input) {
+                                    input.disabled = true;
+                                    input.placeholder = `MUTED (${muteDurasi}m)`;
+                                }
+                            } else if (msgText.startsWith('🔊')) {
+                                muteExpiryTime = 0;
+                                localStorage.removeItem('umbrella_mute_expiry');
+                                if (input) {
+                                    input.disabled = false;
+                                    input.placeholder = "Ketik pesan...";
+                                }
+                            }
+                        }
+                        
+                    } catch (e) { 
+                        console.error("Error baris:", e); 
+                    }
+                });
                 fastScroll();
+            } else {
+                console.log("📦 Chat tertutup, hanya update cache (tidak render ulang)");
             }
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
-}
-
-function renderChatLogs(logs, container) {
-    if (!container) return;
-    
-    if (!logs.length) {
-        container.innerHTML = '<div style="text-align:center;padding:20px;">📭 Belum ada pesan</div>';
-        return;
-    }
-    
-    let html = '';
-    for (const msg of logs) {
-        let msgType = msg.type || 'msg';
-        let msgUID = msg.uid || msg[2] || '';
-        let msgName = msg.username || msg[3] || 'Anon';
-        let msgText = msg.message || msg[4] || '';
-        let msgRole = msg.role || msg[5] || '';
-        
-        let isSystem = false;
-        let isMuteCommand = false;
-        let muteTargetUID = null;
-        let muteDurasi = null;
-        
-        if (msgType === 'command') {
-            if (msgText.startsWith('MUTE_')) {
-                const parts = msgText.split('_');
-                muteTargetUID = parts[1];
-                muteDurasi = parts[2] || '?';
-                const targetIGN = parts[3] || 'Seseorang';
-                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
-                isSystem = true;
-                isMuteCommand = true;
-            } else if (msgText.startsWith('UNMUTE_')) {
-                const parts = msgText.split('_');
-                muteTargetUID = parts[1];
-                const targetIGN = parts[2] || 'Seseorang';
-                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
-                isSystem = true;
-                isMuteCommand = true;
-            } else {
-                continue;
-            }
-        }
-        
-        if (msgType !== 'msg' && !isSystem) continue;
-
-        const isMe = msgUID === adminData?.id || msgUID === user?.uid;
-        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
-        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
-        
-        if (isSystem) {
-            html += `<div class="chat-row system-message"><div class="system-text">${msgText}</div></div>`;
-        } else if (isDeleted) {
-            html += `<div class="chat-row ${isMe ? 'me' : 'other'} deleted"><div class="msg-text">🗑️ Pesan dihapus oleh admin</div></div>`;
-        } else if (isAdmin) {
-            html += `<div class="chat-row admin-msg"><div class="admin-bubble-box"><b>ADMIN-${msgName}</b><span>${msgText}</span></div></div>`;
-        } else if (isMe) {
-            html += `<div class="chat-row me"><b>${msgName}</b><span class="msg-text">${msgText}</span></div>`;
-        } else {
-            html += `<div class="chat-row other"><b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span></div>`;
-        }
-        
-        // Eksekusi mute untuk target
-        if (isMuteCommand && muteTargetUID === user?.uid) {
-            if (msgText.startsWith('🔇')) {
-                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
-                muteExpiryTime = expiry;
-                localStorage.setItem('umbrella_mute_expiry', expiry);
-                if (input) {
-                    input.disabled = true;
-                    input.placeholder = `MUTED (${muteDurasi}m)`;
-                }
-            } else if (msgText.startsWith('🔊')) {
-                muteExpiryTime = 0;
-                localStorage.removeItem('umbrella_mute_expiry');
-                if (input) {
-                    input.disabled = false;
-                    input.placeholder = "Ketik pesan...";
-                }
-            }
-        }
-    }
-    
-    container.innerHTML = html;
 }
 
 function sendMessage() {
@@ -462,8 +422,28 @@ window.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// EXPOSE GLOBAL FUNCTIONS
+// PRELOAD CHAT DATA (TAMBAHKAN DI AKHIR, SEBELUM EXPOSE)
 // ==========================================
+async function preloadChatData() {
+    const user = dapatkanIdentitasAman();
+    if (!user) return;
+    
+    const url = `${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`;
+    
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.logs) {
+            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(data.logs));
+            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
+            console.log("✅ Chat data preloaded successfully");
+        }
+    } catch(e) {
+        console.error("Preload chat error:", e);
+    }
+}
+
+// Expose
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
@@ -473,9 +453,7 @@ window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 window.preloadChatData = preloadChatData;
 
-// ==========================================
-// INTERVAL POLLING (tetap jalan di background)
-// ==========================================
+// Interval
 setInterval(() => {
     syncChat(false);
 }, 4500);
