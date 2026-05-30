@@ -41,47 +41,33 @@ async function preloadChatData() {
     }
 }
 
-function toggleChat() {
-    const popup = document.getElementById('chat-popup');
-    const mailModal = document.getElementById('mail-modal');
-    if (!popup) return;
+function renderChatLogs(logs, container) {
+    console.log("🎨 renderChatLogs dipanggil", new Date().toISOString());
+    console.time("⏱️ renderChatLogs total");
     
-    if (mailModal && mailModal.classList.contains('show')) {
-        mailModal.classList.remove('show');
-        if (history.state && history.state.boksTerbuka === "mailbox") history.back();
+    if (!container) {
+        console.warn("❌ Container tidak ditemukan!");
+        return;
     }
-
-    const isOpening = !popup.classList.contains('show');
-    popup.classList.toggle('show');
     
-    if (isOpening) {
-        history.pushState({ boksTerbuka: "chat" }, "");
-        
-        // ✅ RENDER DARI CACHE (PASTI ADA KARENA PRELOAD)
-        const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        const container = document.getElementById('admin-chat-logs');
-        
-        if (cached && container) {
-            renderChatLogs(JSON.parse(cached), container);
-            fastScroll();
-            console.log("⚡ Chat rendered from cache (instan)");
-        } else if (container) {
-            // Fallback jika cache kosong (hampir tidak pernah terjadi setelah preload)
-            container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
-            syncChat(true);
-        }
-        
-        // Focus input (jika PC)
-        if (window.innerWidth >= 768) {
-            setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
-        }
-        
-        // ✅ JANGAN PANGGIL syncChat LANGSUNG
-        // Biarkan interval polling (4.5 detik) atau preload berikutnya yang update
-        
-    } else {
-        if (history.state && history.state.boksTerbuka === "chat") history.back();
+    if (!logs.length) {
+        console.log("📭 Tidak ada log, tampilkan empty state");
+        container.innerHTML = '<div style="text-align:center;padding:20px;">📭 Belum ada pesan</div>';
+        console.timeEnd("⏱️ renderChatLogs total");
+        return;
     }
+    
+    console.log(`📊 Merender ${logs.length} pesan...`);
+    let html = '';
+    
+    for (const msg of logs) {
+        // ... kode render Anda yang sudah ada (tidak diubah)
+    }
+    
+    container.innerHTML = html;
+    console.log("✅ innerHTML di-set");
+    
+    console.timeEnd("⏱️ renderChatLogs total");
 }
 
 window.addEventListener('popstate', function (event) {
@@ -113,6 +99,7 @@ function dapatkanIdentitasAman() {
 }
 
 function syncChat(force = false) {
+    console.log("syncChat dipanggil", new Date().toISOString());
     const popup = document.getElementById('chat-popup');
     
     if (!force && (!popup || !popup.classList.contains('show'))) {
