@@ -290,14 +290,18 @@
    [5] RESPONSIVE MOBILE MODE (CENTER MODAL)
    ========================================== */
 @media screen and (max-width: 767px) {
-    #chat-popup {        
-        /* RESPONSIF: Lebar 92% dari layar HP, tinggi proporsional */
+    #chat-popup {
+        /* PUSATKAN HORIZONTAL */
+        left: 50%;
+        transform: translateX(-50%);
+       
+        /* mengikuti ukuran kartu */
         top: 47px;
         bottom: 57px;
         width: 92vw; 
         height: auto; 
         
-        /* Set titik pertumbuhan animasi murni dari tengah kotak */
+        /* Set titik pertumbuhan animasi */
         transform-origin: bottom right !important;
     }
 }
