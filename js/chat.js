@@ -24,6 +24,7 @@ function fastScroll() {
 }
 
 function toggleChat() {
+    console.log("🔵 toggleChat DIPANGGIL", new Date().toISOString());
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
     if (!popup) return;
@@ -41,9 +42,11 @@ function toggleChat() {
 
         const container = document.getElementById('admin-chat-logs');
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
+        console.log("🔍 Container:", container);
+        console.log("🔍 Cached:", cached ? `ADA (${cached.length} chars)` : "KOSONG");
         
         if (cached && container) {
-            // ✅ RENDER DARI CACHE (INSTAN)
+            console.log("⚡ Memulai render dari cache...");
             renderChatLogs(JSON.parse(cached), container);
             fastScroll();
             console.log("⚡ Chat rendered from cache (instan)");
