@@ -37,24 +37,27 @@ function toggleChat() {
     popup.classList.toggle('show');
     
     if (isOpening) {
+        history.pushState({ boksTerbuka: "chat" }, "");
+
+        const container = document.getElementById('admin-chat-logs');  // ← DEKLARASI DULU
         const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-        const container = document.getElementById('admin-chat-logs');
+        
+        if (cached && container) {
+            renderChatLogs(JSON.parse(cached), container);
+            fastScroll();
+            console.log("⚡ Chat rendered from cache (instan)");
         
         if (cached && container) {
             // ✅ RENDER DARI CACHE (INSTAN)
             renderChatLogs(JSON.parse(cached), container);
             fastScroll();
             console.log("⚡ Chat rendered from cache (instan)");
+            
         } else if (container) {
             container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
             syncChat(true);
         }
-        
-        // ❌ HAPUS PANGGILAN syncChat(true) DI SINI
-        // Biarkan interval polling (4.5 detik) yang update cache
-        
-        history.pushState({ boksTerbuka: "chat" }, "");
-        
+                
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
