@@ -35,6 +35,10 @@ function toggleChat() {
     popup.classList.toggle('show');
     
     if (isOpening) {
+        // ✅ LOG DI SINI (saat chat dibuka)
+        const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
+        console.log("📦 Cache di toggleChat (saat buka):", cached ? "ADA" : "KOSONG", cached ? `(${JSON.parse(cached).length} pesan)` : "");
+        
         history.pushState({ boksTerbuka: "chat" }, "");
         fastScroll();
         if (window.innerWidth >= 768) {
