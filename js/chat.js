@@ -13,6 +13,7 @@ let isMuted = false, isSending = false, isSendingMail = false;
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 let lastChatStamp = sessionStorage.getItem('umbrella_last_chat_stamp') || '';
 
+
 function fastScroll() {
     const lb = document.getElementById('chat-logs'); 
     if (lb) {
@@ -151,7 +152,6 @@ function syncChat(force = false) {
         if (currentStamp !== lastChatStamp) {
             lastChatStamp = currentStamp;
             sessionStorage.setItem('umbrella_last_chat_stamp', currentStamp);
-            // update cache dan render ulang...
 
             // RENDER ULANG HANYA JIKA CHAT TERBUKA
             const lb = document.getElementById('chat-logs');
@@ -444,8 +444,10 @@ async function preloadChatData() {
         const res = await fetch(url);
         const data = await res.json();
         if (data.logs) {
-            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(data.logs));
+            const stamp = JSON.stringify(data.logs);
+            sessionStorage.setItem('umbrella_cached_chat_logs', stamp);
             sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
+            sessionStorage.setItem('umbrella_last_chat_stamp', stamp);  // ← TAMBAHKAN
             console.log("✅ Chat data preloaded successfully");
         }
     } catch(e) {
