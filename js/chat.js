@@ -21,6 +21,26 @@ function fastScroll() {
     }
 }
 
+async function preloadChatData() {
+    const user = dapatkanIdentitasAman();
+    if (!user) return;
+    
+    // Cek apakah cache sudah ada? Boleh tetap fetch untuk update
+    const url = `${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`;
+    
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.logs) {
+            sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(data.logs));
+            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
+            console.log("✅ Chat data preloaded successfully");
+        }
+    } catch(e) {
+        console.error("Preload chat error:", e);
+    }
+}
+
 function toggleChat() {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
