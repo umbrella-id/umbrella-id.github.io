@@ -147,16 +147,16 @@ function syncChat(force = false) {
 
         const currentStamp = JSON.stringify(arrayChat);
         
-        // ✅ UPDATE CACHE (SELALU)
+        // UPDATE CACHE JIKA BERUBAH
         if (currentStamp !== lastChatStamp) {
             lastChatStamp = currentStamp;
             sessionStorage.setItem('umbrella_cached_chat_logs', JSON.stringify(arrayChat));
             sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
             
-            // ✅ RENDER ULANG HANYA JIKA CHAT SEDANG TERBUKA
+            // RENDER ULANG HANYA JIKA CHAT TERBUKA
             const lb = document.getElementById('chat-logs');
             if (lb && popup && popup.classList.contains('show')) {
-                console.log("📝 Chat terbuka, render ulang dengan data baru");
+                console.log("📝 Ada perubahan data, render ulang");
                 lb.innerHTML = ''; 
                 arrayChat.forEach(msg => {
                     try {
@@ -166,9 +166,6 @@ function syncChat(force = false) {
                         let msgText = msg.message || msg[4] || '';
                         let msgRole = msg.role || msg[5] || '';
                         
-                        // ==========================================
-                        // KONVERSI COMMAND JADI PESAN SISTEM
-                        // ==========================================
                         let isSystem = false;
                         let isMuteCommand = false;
                         let muteTargetUID = null;
@@ -222,9 +219,6 @@ function syncChat(force = false) {
                         
                         lb.appendChild(d);
                         
-                        // ==========================================
-                        // EKSEKUSI UNTUK TARGET (setelah render)
-                        // ==========================================
                         if (isMuteCommand && muteTargetUID === user.uid) {
                             if (msgText.startsWith('🔇')) {
                                 const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
@@ -249,9 +243,9 @@ function syncChat(force = false) {
                     }
                 });
                 fastScroll();
-            } else {
-                console.log("📦 Chat tertutup, hanya update cache (tidak render ulang)");
             }
+        } else {
+            console.log("✅ Stamp sama, tidak perlu render atau update apapun");
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
