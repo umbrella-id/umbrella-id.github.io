@@ -26,6 +26,14 @@ async function init() {
         
         renderApp();
         createModal();
+   
+        // Di akhir init() atau setelah renderApp
+        setTimeout(() => {
+            if (typeof preloadChatData === 'function') {
+                preloadChatData();
+            }
+        }, 2000); // Tunggu 2 detik setelah halaman siap
+        
     } catch (e) { 
         console.error("Gagal memuat data:", e); 
     }
@@ -235,13 +243,6 @@ function createModal() {
         if (e.target === modal) closeDetail();
     };
 }
-
-// Di akhir init() atau setelah renderApp
-setTimeout(() => {
-    if (typeof preloadChatData === 'function') {
-        preloadChatData();
-    }
-}, 2000); // Tunggu 2 detik setelah halaman siap
 
 function showDetail(index) {
     const item = cardData[index];
