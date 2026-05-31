@@ -165,7 +165,7 @@
     }
 
     .card-title {
-        font-size: clamp(4dvh, 4.5dvh, 5dvh);
+        font-size: clamp(3.5dvh, 4dvh, 4.5dvh);
         line-height: 1.2;
         margin: 0;
         color: var(--color-primary); 
