@@ -193,6 +193,36 @@
         overflow: hidden; 
     }
 
+    /* arrow up and down */
+    .nav-arrows {
+        position: fixed;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1001;
+    }
+    
+    .nav-arrows button {
+        width: 45px;
+        height: 45px;
+        background: var(--bg-solid-form);
+        border: 1px solid var(--color-primary);
+        border-radius: 50%;
+        color: var(--color-primary);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .nav-arrows button:active {
+        transform: scale(0.9);
+        background: var(--color-primary);
+        color: white;
+    }
+
     /* Indikator Footer Kartu (Baca Selengkapnya) */
     .read-more-indicator {
         display: flex;
