@@ -409,6 +409,20 @@ window.addEventListener('touchend', () => {
     updateStack(0);
 });
 
+// Navigasi dengan keyboard (panah atas/bawah)
+window.addEventListener('keydown', function(e) {
+    // Hanya aktif di mode mobile (lebar < 768px)
+    if (window.innerWidth >= 768) return;
+    
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        navigateCard(-1);
+    } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        navigateCard(1);
+    }
+});
+
 // Pantau Perubahan Ukuran Layar (Auto-Switch Mode)
 let resizeTimer;
 window.addEventListener('resize', () => {
