@@ -194,71 +194,66 @@
     }
 
     /* ==========================================
-       NAVIGASI STACKER CARD (DI LUAR KARTU)
+       NAVIGASI STACKER CARD (BILAH TRANSPARAN)
        ========================================== */
     .stacker-nav {
         position: fixed;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 92vw;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         pointer-events: none;
         z-index: 1000;
+        height: 100%;
+        top: 0;
+        bottom: 0;
+    }
+    
+    .stacker-nav-up,
+    .stacker-nav-down {
+        background: rgba(168, 85, 247, 0.15);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 12px;
+        padding: 12px;
+        margin: 20px;
+        text-align: center;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: all 0.2s;
+        color: var(--color-primary);
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 1px;
     }
     
     .stacker-nav-up {
-        position: absolute;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 45px;
-        height: 45px;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        border: 1px solid var(--color-primary);
-        border-radius: 50%;
-        color: var(--color-primary);
-        font-size: 1.2rem;
-        cursor: pointer;
-        pointer-events: auto;
-        transition: all 0.2s;
-        animation: bounceUp 1.5s infinite;
+        margin-top: 20px;
+        animation: pulseUp 2s infinite;
     }
     
     .stacker-nav-down {
-        position: absolute;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 45px;
-        height: 45px;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        border: 1px solid var(--color-primary);
-        border-radius: 50%;
-        color: var(--color-primary);
-        font-size: 1.2rem;
-        cursor: pointer;
-        pointer-events: auto;
-        transition: all 0.2s;
-        animation: bounceDown 1.5s infinite;
+        margin-bottom: 20px;
+        animation: pulseDown 2s infinite;
     }
     
     .stacker-nav-up:active,
     .stacker-nav-down:active {
-        transform: translateX(-50%) scale(0.9);
         background: var(--color-primary);
         color: white;
+        transform: scale(0.98);
     }
     
-    @keyframes bounceUp {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(-5px); }
+    /* Efek animasi kedip (bukan geser) */
+    @keyframes pulseUp {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
     
-    @keyframes bounceDown {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(5px); }
+    @keyframes pulseDown {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
     
     /* ==========================================
