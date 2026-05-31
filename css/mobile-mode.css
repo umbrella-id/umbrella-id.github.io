@@ -194,27 +194,28 @@
     }
 
     /* ==========================================
-       NAVIGATOR STACKER (PANAH TRANSPARAN)
+       NAVIGATOR STACKER (PANAH TRANSPARAN, ANIMASI GERAK)
        ========================================== */
     .stacker-nav-up,
     .stacker-nav-down {
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(4px);
+        background: transparent;  /* ← background transparan */
         border: none;
-        border-radius: 30px;
-        width: auto;
-        padding: 8px 16px;
-        color: var(--color-primary);
-        font-size: 1.2rem;
+        padding: 12px 20px;  /* ← area klik luas */
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
         z-index: 1000;
+    }
+    
+    /* Ikon panah */
+    .stacker-nav-up i,
+    .stacker-nav-down i {
+        font-size: 1.8rem;
+        color: var(--color-primary);
+        opacity: 0.5;
         transition: all 0.2s;
+        display: block;
     }
     
     .stacker-nav-up {
@@ -227,11 +228,21 @@
         animation: moveDown 2s infinite ease-in-out;
     }
     
-    .stacker-nav-up:active,
-    .stacker-nav-down:active {
-        background: var(--color-primary);
+    /* Efek hover pada IKON (bukan background) */
+    .stacker-nav-up:hover i,
+    .stacker-nav-down:hover i {
+        opacity: 1;
+        transform: scale(1.2);
+        color: var(--color-primary);
+        text-shadow: 0 0 8px var(--color-primary);
+    }
+    
+    /* Efek klik pada IKON */
+    .stacker-nav-up:active i,
+    .stacker-nav-down:active i {
+        transform: scale(0.9);
         color: white;
-        transform: translateX(-50%) scale(0.95);
+        text-shadow: none;
     }
     
     @keyframes moveUp {
