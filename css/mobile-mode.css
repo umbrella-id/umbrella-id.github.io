@@ -194,47 +194,54 @@
     }
 
     /* ==========================================
-       NAVIGATOR STACKER (BILAH TIPIS BISA DIKLIK)
+       NAVIGATOR STACKER (PANAH TRANSPARAN)
        ========================================== */
     .stacker-nav-up,
     .stacker-nav-down {
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
-        width: 80px;
-        height: 6px;
-        background: rgba(168, 85, 247, 0.4);
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
         border: none;
-        border-radius: 6px;
+        border-radius: 30px;
+        width: auto;
+        padding: 8px 16px;
+        color: var(--color-primary);
+        font-size: 1.2rem;
         cursor: pointer;
-        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
         z-index: 1000;
+        transition: all 0.2s;
     }
     
     .stacker-nav-up {
         top: 15px;
-        animation: hintMoveUp 2s infinite ease-in-out;
+        animation: moveUp 2s infinite ease-in-out;
     }
     
     .stacker-nav-down {
         bottom: 15px;
-        animation: hintMoveDown 2s infinite ease-in-out;
+        animation: moveDown 2s infinite ease-in-out;
     }
     
     .stacker-nav-up:active,
     .stacker-nav-down:active {
         background: var(--color-primary);
+        color: white;
         transform: translateX(-50%) scale(0.95);
     }
     
-    @keyframes hintMoveUp {
-        0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
-        50% { transform: translateX(-50%) translateY(-5px); opacity: 0.8; }
+    @keyframes moveUp {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-6px); }
     }
     
-    @keyframes hintMoveDown {
-        0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
-        50% { transform: translateX(-50%) translateY(5px); opacity: 0.8; }
+    @keyframes moveDown {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(6px); }
     }
     
     /* ==========================================
