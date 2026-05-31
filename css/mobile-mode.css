@@ -194,42 +194,47 @@
     }
 
     /* ==========================================
-       NAVIGASI STACKER CARD (BILAH TRANSPARAN)
+       NAVIGATOR STACKER (BILAH TIPIS BISA DIKLIK)
        ========================================== */
-    .stacker-nav {
-        position: fixed;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        pointer-events: none;
-        z-index: 500;
-    }
-    
-    /* Area atas (1/3 layar) */
-    .stacker-nav-up {
-        flex: 1;
-        min-height: 80px;
-        cursor: pointer;
-        pointer-events: auto;
-        transition: background 0.2s;
-    }
-    
-    /* Area bawah (1/3 layar) */
+    .stacker-nav-up,
     .stacker-nav-down {
-        flex: 1;
-        min-height: 80px;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 6px;
+        background: rgba(168, 85, 247, 0.4);
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
-        pointer-events: auto;
-        transition: background 0.2s;
+        transition: all 0.2s;
+        z-index: 1000;
     }
     
-    /* Efek hover/aktif (opsional, tidak mengganggu) */
+    .stacker-nav-up {
+        top: 15px;
+        animation: hintMoveUp 2s infinite ease-in-out;
+    }
+    
+    .stacker-nav-down {
+        bottom: 15px;
+        animation: hintMoveDown 2s infinite ease-in-out;
+    }
+    
     .stacker-nav-up:active,
     .stacker-nav-down:active {
-        background: rgba(168, 85, 247, 0.1);
+        background: var(--color-primary);
+        transform: translateX(-50%) scale(0.95);
+    }
+    
+    @keyframes hintMoveUp {
+        0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
+        50% { transform: translateX(-50%) translateY(-5px); opacity: 0.8; }
+    }
+    
+    @keyframes hintMoveDown {
+        0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
+        50% { transform: translateX(-50%) translateY(5px); opacity: 0.8; }
     }
     
     /* ==========================================
