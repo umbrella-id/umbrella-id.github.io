@@ -108,7 +108,14 @@ function renderApp() {
                         </div>
                         <div class="mobile-read-more">baca selengkapnya</div>
                     </div>`).join('')}
-            </div>`;
+            </div>
+            <button class="stacker-nav-up" onclick="navigateCard(-1)">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+            <button class="stacker-nav-down" onclick="navigateCard(1)">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            `;
             
     } else {
         // --- KAMAR PC (GRID SLIDER) ---
