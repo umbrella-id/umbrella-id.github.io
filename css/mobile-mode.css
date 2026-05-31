@@ -194,21 +194,21 @@
     }
 
     /* ==========================================
-       NAVIGASI STACKER CARD (ATAS & BAWAH KARTU)
+       NAVIGASI STACKER CARD (DI LUAR KARTU)
        ========================================== */
     .stacker-nav {
-        position: absolute;
+        position: fixed;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
         max-width: 92vw;
         pointer-events: none;
-        z-index: 600;
+        z-index: 1000;
     }
     
     .stacker-nav-up {
         position: absolute;
-        top: -35px;
+        top: 100px;
         left: 50%;
         transform: translateX(-50%);
         width: 45px;
@@ -227,7 +227,7 @@
     
     .stacker-nav-down {
         position: absolute;
-        bottom: -35px;
+        bottom: 100px;
         left: 50%;
         transform: translateX(-50%);
         width: 45px;
@@ -259,10 +259,6 @@
     @keyframes bounceDown {
         0%, 100% { transform: translateX(-50%) translateY(0); }
         50% { transform: translateX(-50%) translateY(5px); }
-    }
-
-    #app-container {
-        position: relative;
     }
     
     /* ==========================================
