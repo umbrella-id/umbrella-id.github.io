@@ -194,102 +194,76 @@
     }
 
     /* ==========================================
-       INDIKATOR SWIPE (MOBILE STACKER)
+       NAVIGASI STACKER CARD (ATAS & BAWAH KARTU)
        ========================================== */
-    .swipe-indicator {
-        position: fixed;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        z-index: 1000;
-        opacity: 0;
-        animation: fadeInOut 3s ease-in-out forwards;
+    .stacker-nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 92vw;
         pointer-events: none;
+        z-index: 600;
     }
     
-    .swipe-arrow {
-        width: 40px;
-        height: 40px;
-        background: rgba(168, 85, 247, 0.3);
-        backdrop-filter: blur(8px);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        color: var(--color-primary);
-        border: 1px solid var(--color-primary);
-    }
-    
-    .swipe-arrow.up {
-        animation: bounceUp 1.5s infinite;
-    }
-    
-    .swipe-arrow.down {
-        animation: bounceDown 1.5s infinite;
-    }
-    
-    .swipe-text {
-        font-size: 0.6rem;
-        color: var(--text-muted);
-        background: rgba(0,0,0,0.5);
-        padding: 4px 8px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-    
-    /* Tombol navigasi manual */
-    .nav-arrows {
-        position: fixed;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        z-index: 1001;
-    }
-    
-    .nav-arrows button {
+    .stacker-nav-up {
+        position: absolute;
+        top: -35px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 45px;
         height: 45px;
-        background: var(--bg-solid-form);
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
         border: 1px solid var(--color-primary);
         border-radius: 50%;
         color: var(--color-primary);
         font-size: 1.2rem;
         cursor: pointer;
+        pointer-events: auto;
         transition: all 0.2s;
+        animation: bounceUp 1.5s infinite;
     }
     
-    .nav-arrows button:active {
-        transform: scale(0.9);
+    .stacker-nav-down {
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 45px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--color-primary);
+        border-radius: 50%;
+        color: var(--color-primary);
+        font-size: 1.2rem;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: all 0.2s;
+        animation: bounceDown 1.5s infinite;
+    }
+    
+    .stacker-nav-up:active,
+    .stacker-nav-down:active {
+        transform: translateX(-50%) scale(0.9);
         background: var(--color-primary);
         color: white;
     }
     
     @keyframes bounceUp {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-5px); }
     }
     
     @keyframes bounceDown {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(8px); }
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(5px); }
     }
     
-    @keyframes fadeInOut {
-        0% { opacity: 0; }
-        20% { opacity: 1; }
-        80% { opacity: 1; }
-        100% { opacity: 0; visibility: hidden; }
-    }
-
-    /* Indikator Footer Kartu (Baca Selengkapnya) */
+    /* ==========================================
+        Indikator Footer Kartu (Baca Selengkapnya)
+       ========================================== */
     .read-more-indicator {
         display: flex;
         justify-content: center;
