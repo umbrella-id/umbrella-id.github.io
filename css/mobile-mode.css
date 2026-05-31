@@ -165,7 +165,7 @@
     }
 
     .card-title {
-        font-size: clamp(8dvh, 10dvh, 12dvh);
+        font-size: clamp(4dvh, 5dvh, 6dvh);
         line-height: 1.2;
         margin: 0;
         color: var(--color-primary); 
@@ -187,7 +187,7 @@
     }
     
     .card-text {
-        font-size: 2.5dvh;
+        font-size: 3.5dvh;
         line-height: 1.5;
         color: var(--text-main); 
         overflow: hidden; 
