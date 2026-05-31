@@ -5,7 +5,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2E
 let cardData = [], runningTexts = [], sosmedData = [];
 let currentIndex = 0;
 let isModalOpen = false;
-let startY = 0, deltaY = 0;
+let startY = 0, currentY = 0, isDragging = false;
 
 /**
  * 1. FUNGSI INISIALISASI (DATA FETCHING)
@@ -288,63 +288,69 @@ window.closeDetailFromNavbar = closeDetailFromNavbar;
  */
 function updateStack(drag = 0) {
     if (window.innerWidth >= 768) return;
+    
     const cards = document.querySelectorAll('.stacker-card');
     const h = window.innerHeight;
-
+    const activeIndex = currentIndex;
+    
     cards.forEach((card, i) => {
-        // Animasi halus hanya saat tidak sedang di-drag (drag === 0)
-        card.style.transition = drag === 0 ? "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s" : "none";
+        // Animasi halus hanya saat tidak di-drag
+        card.style.transition = drag === 0 ? "transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1), opacity 0.3s" : "none";
         
-        if (i === currentIndex) {
-            // ---- 1. KARTU UTAMA AKTIF ----
+        if (i === activeIndex) {
+            // KARTU AKTIF (tengah)
             card.style.transform = `translate(-50%, ${drag}px) scale(1)`;
-            card.style.opacity = 1;
-            card.style.zIndex = 500;
+            card.style.opacity = "1";
+            card.style.zIndex = "500";
             card.style.visibility = "visible";
-
-            // Trigger pemicu kilatan cahaya otomatis dari CSS
+            
             if (!card.classList.contains('is-active')) {
                 cards.forEach(c => c.classList.remove('is-active'));
                 card.classList.add('is-active');
             }
             
-        } else if (i === currentIndex - 1) {
-            // ---- 2. KARTU TEPAT DI ATASNYA (EFEK SINKRON SWIPE DOWN) ----
-            /* 🎯 KUNCI UTAMA: Jika user sedang swipe down (drag > 0), suruh kartu tepat di atas ini 
-               untuk ikut meluncur turun dari langit-langit (-h) secara real-time mengikuti jari! */
+        } else if (i === activeIndex - 1) {
+            // KARTU DI ATAS (hanya terlihat saat swipe down)
             if (drag > 0) {
-                let posUpper = -h + drag;
-                card.style.transform = `translate(-50%, ${posUpper}px)`;
-                // Opacity-nya ikut memudar masuk perlahan biar smooth gak ngagetin
-                card.style.opacity = Math.min(drag / (h * 0.5), 1);
-                card.style.zIndex = 600; /* Z-index taruh paling depan biar dia menimpa kartu tengah pas turun */
+                let posY = -h + drag;
+                card.style.transform = `translate(-50%, ${posY}px)`;
+                card.style.opacity = Math.min(1, drag / (h * 0.4));
                 card.style.visibility = "visible";
+                card.style.zIndex = "400";
             } else {
-                // Jika sedang swipe up biasa, buang jauh ke atas langit
                 card.style.transform = `translate(-50%, -${h}px)`;
-                card.style.opacity = 0;
-                card.style.zIndex = 1;
+                card.style.opacity = "0";
                 card.style.visibility = "hidden";
             }
             card.classList.remove('is-active');
-
-        } else if (i < currentIndex - 1) {
-            // ---- 3. KARTU LAIN YANG SUDAH LEWAD JAUH DI ATAS ----
+            
+        } else if (i === activeIndex + 1) {
+            // KARTU DI BAWAH (terlihat saat swipe up)
+            if (drag < 0) {
+                let posY = h + drag;
+                card.style.transform = `translate(-50%, ${posY}px)`;
+                card.style.opacity = Math.min(1, Math.abs(drag) / (h * 0.4));
+                card.style.visibility = "visible";
+                card.style.zIndex = "400";
+            } else {
+                card.style.transform = `translate(-50%, ${h}px)`;
+                card.style.opacity = "0";
+                card.style.visibility = "hidden";
+            }
+            card.classList.remove('is-active');
+            
+        } else if (i < activeIndex - 1) {
+            // KARTU LAIN DI ATAS (sembunyi total)
             card.style.transform = `translate(-50%, -${h}px)`;
-            card.style.opacity = 0;
-            card.style.zIndex = 1;
+            card.style.opacity = "0";
             card.style.visibility = "hidden";
             card.classList.remove('is-active');
             
         } else {
-            // ---- 4. KARTU ANTREAN DI BAWAH (EFEK SINKRON SWIPE UP) ----
-            /* 🎯 SINKRON SWIPE UP: Jika sedang swipe up (drag < 0), kartu bawah ikut merayap naik.
-               Jika sedang swipe down, dia diam manis di dasar layar nunggu giliran. */
-            let posLower = h + (drag < 0 ? drag : 0);
-            card.style.transform = `translate(-50%, ${posLower}px)`;
-            card.style.opacity = 1;
-            card.style.zIndex = 400;
-            card.style.visibility = "visible";
+            // KARTU LAIN DI BAWAH (sembunyi total)
+            card.style.transform = `translate(-50%, ${h}px)`;
+            card.style.opacity = "0";
+            card.style.visibility = "hidden";
             card.classList.remove('is-active');
         }
     });
@@ -354,56 +360,46 @@ function updateStack(drag = 0) {
  * 6. EVENT LISTENERS (INTERAKSI USER)
  */
 
-// Input Sentuh (Touch Mobile)
-window.addEventListener('touchstart', e => { 
-    // Ambil elemen chatbox
+window.addEventListener('touchstart', e => {
     const popup = document.getElementById('chat-popup');
     const isChatOpen = popup ? popup.classList.contains('show') : false;
-
-    // Jika modal berita ATAU chatbox lagi kebuka, kunci koordinat awal agar stacker diam
-    if (!isModalOpen && !isChatOpen) startY = e.touches[0].pageY; 
+    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
+    
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    currentY = 0;
 });
 
 window.addEventListener('touchmove', e => {
-    // 🎯 AMBIL STATUS POPUP CHAT
+    if (!isDragging) return;
     const popup = document.getElementById('chat-popup');
     const isChatOpen = popup ? popup.classList.contains('show') : false;
-
-    // 🎯 KATUP PENGAMAN MUTLAK: Jika PC (>=768px), modal berita terbuka, ATAU chatbox lagi mekar, DETAK GOSOKAN DIHENTIKAN!
     if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
-
-    deltaY = e.touches[0].pageY - startY;
-    if (Math.abs(deltaY) > 5) e.preventDefault();
-    updateStack(deltaY);
-}, {passive: false});
+    
+    currentY = e.touches[0].clientY - startY;
+    updateStack(currentY);
+}, { passive: false });
 
 window.addEventListener('touchend', () => {
+    if (!isDragging) return;
     const popup = document.getElementById('chat-popup');
     const isChatOpen = popup ? popup.classList.contains('show') : false;
-
-    // Jika chatbox lagi kebuka, cuekin fungsi pelepasan swipe
-    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
-
-    // Ambang batas swipe (100px)
-    if (deltaY < -100 && currentIndex < cardData.length - 1) currentIndex++;
-    else if (deltaY > 100 && currentIndex > 0) currentIndex--;
+    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) {
+        isDragging = false;
+        return;
+    }
     
-    deltaY = 0;
+    // Ambang batas 80px (lebih kecil dari sebelumnya)
+    if (currentY < -80 && currentIndex < cardData.length - 1) {
+        currentIndex++;
+    } else if (currentY > 80 && currentIndex > 0) {
+        currentIndex--;
+    }
+    
+    currentY = 0;
+    isDragging = false;
     updateStack(0);
 });
-
-// Input Mouse Wheel (Scroll PC / Cadangan)
-window.addEventListener('wheel', e => {
-    const popup = document.getElementById('chat-popup');
-    const isChatOpen = popup ? popup.classList.contains('show') : false;
-
-    // Jika chatbox mekar, jangan biarkan scroll mouse menggerakkan kartu stacker di latar belakang
-    if (window.innerWidth >= 768 || isModalOpen || isChatOpen) return;
-
-    if (e.deltaY > 50 && currentIndex < cardData.length - 1) currentIndex++;
-    else if (e.deltaY < -50 && currentIndex > 0) currentIndex--;
-    updateStack(0);
-}, {passive: true});
 
 // Pantau Perubahan Ukuran Layar (Auto-Switch Mode)
 let resizeTimer;
