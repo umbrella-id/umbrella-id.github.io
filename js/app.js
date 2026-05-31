@@ -356,6 +356,14 @@ function updateStack(drag = 0) {
     });
 }
 
+function navigateCard(direction) {
+    let newIndex = currentIndex + direction;
+    if (newIndex >= 0 && newIndex < cardData.length) {
+        currentIndex = newIndex;
+        updateStack(0);
+    }
+}
+
 /**
  * 6. EVENT LISTENERS (INTERAKSI USER)
  */
