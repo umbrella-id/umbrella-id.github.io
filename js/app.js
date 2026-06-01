@@ -144,11 +144,12 @@ function renderApp() {
             footerIndex = cardData.findIndex(c => c.ID === openmemberItem.ID);
             footerText = stripHtmlButKeepText(openmemberItem.Body);
         }
-        
+
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
             const limit = 160;
-            const truncatedText = footerText.length > limit ? footerText.substring(0, limit) + "... " : footerText;
+            const fullText = footerContent.Body;
+            const truncatedText = fullText.length > limit ? fullText.substring(0, limit) + "... " : fullText;
             
             footerContainer.innerHTML = `
                 <div class="headline-body-pc">
