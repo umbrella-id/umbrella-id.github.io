@@ -1,19 +1,118 @@
 /**
- * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch V2.1)
- * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
- * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control - No Lock Bug)
+ * chat.js - Umbrella Chat Engine (Optimized - No Duplicate Render)
+ * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match
+ * Optimasi: Reusable render function, dead code removed
  */
 
 const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
 const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgdxG0swUoSxFI_J9okcqa8D15GjKhFYbpdFkfm8As8CaYelJ8w/exec";
 const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
 
-// 🎯 STATE SYSTEM ENGINE
+// STATE
 let isMuted = false, isSending = false, isSendingMail = false; 
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 let lastChatStamp = sessionStorage.getItem('umbrella_last_chat_stamp') || '';
 
+// ==========================================
+// FUNGSI RENDER REUSABLE (CORE)
+// ==========================================
+function renderChatMessages(container, messages, currentUserUid, currentUserIgn) {
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    for (const msg of messages) {
+        let msgType = msg.type || 'msg';
+        let msgUID = msg.uid || msg[2] || '';
+        let msgName = msg.username || msg[3] || 'Anon';
+        let msgText = msg.message || msg[4] || '';
+        let msgRole = msg.role || msg[5] || '';
+        
+        let isSystem = false;
+        let isMuteCommand = false;
+        let muteTargetUID = null;
+        let muteDurasi = null;
+        
+        // Proses command MUTE/UNMUTE
+        if (msgType === 'command') {
+            if (msgText.startsWith('MUTE_')) {
+                const parts = msgText.split('_');
+                muteTargetUID = parts[1];
+                muteDurasi = parts[2] || '?';
+                const targetIGN = parts[3] || 'Seseorang';
+                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
+                isSystem = true;
+                isMuteCommand = true;
+            } else if (msgText.startsWith('UNMUTE_')) {
+                const parts = msgText.split('_');
+                muteTargetUID = parts[1];
+                const targetIGN = parts[2] || 'Seseorang';
+                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
+                isSystem = true;
+                isMuteCommand = true;
+            } else {
+                continue;
+            }
+        }
+        
+        if (msgType !== 'msg' && !isSystem) continue;
+        
+        const isMe = msgUID === currentUserUid;
+        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
+        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
+        
+        const d = document.createElement('div');
+        
+        if (isSystem) {
+            d.className = 'chat-row system-message';
+            d.innerHTML = `<div class="system-text">${msgText}</div>`;
+        } else if (isDeleted) {
+            d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
+        } else if (isAdmin) {
+            d.className = 'chat-row admin-msg';
+            d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+        } else if (isMe) {
+            d.className = 'chat-row me';
+            d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
+        } else {
+            d.className = 'chat-row other';
+            d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
+        }
+        
+        container.appendChild(d);
+        
+        // Update mute status jika command mengenai user ini
+        if (isMuteCommand && muteTargetUID === currentUserUid) {
+            const input = document.getElementById('msg-input');
+            if (msgText.startsWith('🔇')) {
+                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
+                muteExpiryTime = expiry;
+                localStorage.setItem('umbrella_mute_expiry', expiry);
+                if (input) {
+                    input.disabled = true;
+                    input.placeholder = `MUTED (${muteDurasi}m)`;
+                }
+            } else if (msgText.startsWith('🔊')) {
+                muteExpiryTime = 0;
+                localStorage.removeItem('umbrella_mute_expiry');
+                if (input) {
+                    input.disabled = false;
+                    input.placeholder = "Ketik pesan...";
+                }
+            }
+        }
+    }
+    
+    // Auto scroll ke bawah
+    setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+    }, 50);
+}
 
+// ==========================================
+// FAST SCROLL
+// ==========================================
 function fastScroll() {
     const lb = document.getElementById('chat-logs'); 
     if (lb) {
@@ -23,8 +122,10 @@ function fastScroll() {
     }
 }
 
+// ==========================================
+// TOGGLE CHAT
+// ==========================================
 function toggleChat() {
-    console.log("🔵 toggleChat DIPANGGIL", new Date().toISOString());
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
     if (!popup) return;
@@ -40,27 +141,34 @@ function toggleChat() {
     if (isOpening) {
         history.pushState({ boksTerbuka: "chat" }, "");
 
-        // ✅ RENDER DARI CACHE (pakai fungsi yang sudah dibuat)
-        const rendered = renderFromCache();
-        
-        if (!rendered) {
-            // Jika cache gagal (kosong atau error), fallback ke fetch
-            const container = document.getElementById('chat-logs');
-            if (container) {
-                container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
-                syncChat(true);
-            }
+        // Render dari cache dulu (cepat)
+        const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
+        if (cached && document.getElementById('chat-logs')) {
+            try {
+                const user = dapatkanIdentitasAman();
+                renderChatMessages(
+                    document.getElementById('chat-logs'), 
+                    JSON.parse(cached), 
+                    user.uid, 
+                    user.ign
+                );
+            } catch(e) { console.error("Cache render error:", e); }
         }
         
         if (window.innerWidth >= 768) {
             setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
         }
         
+        // Fetch data terbaru
+        syncChat(true);
     } else {
         if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
 }
 
+// ==========================================
+// POPSTATE HANDLER (SATU-SATUNYA)
+// ==========================================
 window.addEventListener('popstate', function (event) {
     const popup = document.getElementById('chat-popup');
     const mailModal = document.getElementById('mail-modal');
@@ -78,28 +186,33 @@ window.addEventListener('popstate', function (event) {
             window.closeDetailFromNavbar(); 
         } else {
             detailModal.style.display = 'none'; 
-            isModalOpen = false;
         }
     }
 });
 
+// ==========================================
+// IDENTITAS
+// ==========================================
 function dapatkanIdentitasAman() {
     let uid = window.myUID || localStorage.getItem('u_uid') || "GUEST_TMP";
     let ign = window.myIGN || localStorage.getItem('u_ign') || "Guest";
     return { uid: uid, ign: ign };
 }
 
+// ==========================================
+// SYNC CHAT (CORE POLLING)
+// ==========================================
 function syncChat(force = false) {
     const popup = document.getElementById('chat-popup');
     
     if (!force && (!popup || !popup.classList.contains('show'))) {
-        console.log("💤 Chatbox tertutup. Detak interval dilewati murni (Kuota GAS Aman).");
         return; 
     }
 
     const user = dapatkanIdentitasAman();
-
     const input = document.getElementById('msg-input');
+    
+    // Cek masa mute
     if (muteExpiryTime > 0) {
         if (Date.now() >= muteExpiryTime) {
             muteExpiryTime = 0;
@@ -108,7 +221,6 @@ function syncChat(force = false) {
                 input.disabled = false; 
                 input.placeholder = "Ketik pesan..."; 
             }
-            console.log("🔓 Masa pembisuan berakhir. Chat telah aktif kembali.");
         } else {
             if (input && !input.disabled) {
                 input.disabled = true;
@@ -119,13 +231,14 @@ function syncChat(force = false) {
     }
 
     const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
-    const isMuted = Date.now() < muteExpiry;
+    const isMutedFlag = Date.now() < muteExpiry;
     
-    fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&isMuted=${isMuted}&muteExpiry=${muteExpiry}`)
+    fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&isMuted=${isMutedFlag}&muteExpiry=${muteExpiry}`)
     .then(res => res.json())
     .then(data => {
         if (!data) return;
 
+        // Update status admin di header chat
         const statusEl = document.querySelector('#admin-status b');
         if (statusEl) {
             const adminState = (data.adminStatus || "").toUpperCase();
@@ -149,105 +262,21 @@ function syncChat(force = false) {
         if (currentStamp !== lastChatStamp) {
             lastChatStamp = currentStamp;
             sessionStorage.setItem('umbrella_last_chat_stamp', currentStamp);
+            sessionStorage.setItem('umbrella_cached_chat_logs', currentStamp);
 
-            // RENDER ULANG HANYA JIKA CHAT TERBUKA
+            // Render jika chatbox terbuka
             const lb = document.getElementById('chat-logs');
             if (lb && popup && popup.classList.contains('show')) {
-                console.log("📝 Ada perubahan data, render ulang");
-                lb.innerHTML = ''; 
-                arrayChat.forEach(msg => {
-                    try {
-                        let msgType = msg.type || 'msg';
-                        let msgUID = msg.uid || msg[2] || '';
-                        let msgName = msg.username || msg[3] || 'Anon';
-                        let msgText = msg.message || msg[4] || '';
-                        let msgRole = msg.role || msg[5] || '';
-                        
-                        let isSystem = false;
-                        let isMuteCommand = false;
-                        let muteTargetUID = null;
-                        let muteDurasi = null;
-                        
-                        if (msgType === 'command') {
-                            if (msgText.startsWith('MUTE_')) {
-                                const parts = msgText.split('_');
-                                muteTargetUID = parts[1];
-                                muteDurasi = parts[2] || '?';
-                                const targetIGN = parts[3] || 'Seseorang';
-                                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
-                                isSystem = true;
-                                isMuteCommand = true;
-                            } else if (msgText.startsWith('UNMUTE_')) {
-                                const parts = msgText.split('_');
-                                muteTargetUID = parts[1];
-                                const targetIGN = parts[2] || 'Seseorang';
-                                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
-                                isSystem = true;
-                                isMuteCommand = true;
-                            } else {
-                                return;
-                            }
-                        }
-                        
-                        if (msgType !== 'msg' && !isSystem) return;
-                
-                        const isMe = msgUID === user.uid;
-                        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
-                        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
-                        
-                        const d = document.createElement('div');
-                        
-                        if (isSystem) {
-                            d.className = 'chat-row system-message';
-                            d.innerHTML = `<div class="system-text">${msgText}</div>`;
-                        } else if (isDeleted) {
-                            d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
-                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
-                        } else if (isAdmin) {
-                            d.className = 'chat-row admin-msg';
-                            d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
-                        } else if (isMe) {
-                            d.className = 'chat-row me';
-                            d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
-                        } else {
-                            d.className = 'chat-row other';
-                            d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
-                        }
-                        
-                        lb.appendChild(d);
-                        
-                        if (isMuteCommand && muteTargetUID === user.uid) {
-                            if (msgText.startsWith('🔇')) {
-                                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
-                                muteExpiryTime = expiry;
-                                localStorage.setItem('umbrella_mute_expiry', expiry);
-                                if (input) {
-                                    input.disabled = true;
-                                    input.placeholder = `MUTED (${muteDurasi}m)`;
-                                }
-                            } else if (msgText.startsWith('🔊')) {
-                                muteExpiryTime = 0;
-                                localStorage.removeItem('umbrella_mute_expiry');
-                                if (input) {
-                                    input.disabled = false;
-                                    input.placeholder = "Ketik pesan...";
-                                }
-                            }
-                        }
-                        
-                    } catch (e) { 
-                        console.error("Error baris:", e); 
-                    }
-                });
-                fastScroll();
+                renderChatMessages(lb, arrayChat, user.uid, user.ign);
             }
-        } else {
-            console.log("✅ Stamp sama, tidak perlu render");
         }
     })
     .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
 }
 
+// ==========================================
+// SEND MESSAGE
+// ==========================================
 function sendMessage() {
     if (Date.now() < muteExpiryTime) {
         const sisaDetik = Math.ceil((muteExpiryTime - Date.now()) / 1000);
@@ -255,7 +284,7 @@ function sendMessage() {
         return; 
     }
     
-    if (isMuted || isSending) return;
+    if (isSending) return;
     const input = document.getElementById('msg-input');
     const msg = input.value.trim();
     if (!msg) return;
@@ -264,6 +293,7 @@ function sendMessage() {
     isSending = true;
     const lb = document.getElementById('chat-logs');
     
+    // Optimistic UI: tampilkan pesan dulu
     const t = document.createElement('div');
     t.className = 'chat-row me';
     t.style.opacity = "0.9";
@@ -281,6 +311,9 @@ function sendMessage() {
     .catch(() => { isSending = false; });
 }
 
+// ==========================================
+// UTILITY
+// ==========================================
 function getHashColor(uid) {
     if (!uid) return '#ccc';
     let h = 0;
@@ -293,7 +326,6 @@ function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 // ==========================================
 // MAILBOX ENGINE
 // ==========================================
-
 function aturFormMailbox() {
     const categoryEl = document.getElementById('mail-category');
     const waGroup = document.getElementById('wa-group');
@@ -328,12 +360,11 @@ function toggleMail() {
     mailModal.classList.toggle('show');
     
     if (mailModal.classList.contains('show')) {
-        const categoryEl = document.getElementById('mail-category'); 
         const textarea = document.getElementById('mail-message');
         const inputWA = document.getElementById('mail-wa');
         
         if (textarea) { textarea.value = ''; textarea.disabled = false; }
-        if (inputWA) { inputWA.value = ''; inputWA.disabled = false; inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; }
+        if (inputWA) { inputWA.value = ''; inputWA.disabled = false; }
         
         if (typeof aturFormMailbox === "function") aturFormMailbox();
         
@@ -421,15 +452,8 @@ function sendMail() {
     });
 }
 
-window.addEventListener('click', function(e) {
-    const mailModal = document.getElementById('mail-modal');
-    if (e.target === mailModal) {
-        toggleMail(); 
-    }
-});
-
 // ==========================================
-// PRELOAD CHAT DATA (TAMBAHKAN DI AKHIR, SEBELUM EXPOSE)
+// PRELOAD CHAT DATA
 // ==========================================
 async function preloadChatData() {
     const user = dapatkanIdentitasAman();
@@ -443,99 +467,26 @@ async function preloadChatData() {
         if (data.logs) {
             const stamp = JSON.stringify(data.logs);
             sessionStorage.setItem('umbrella_cached_chat_logs', stamp);
-            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
-            sessionStorage.setItem('umbrella_last_chat_stamp', stamp);  // ← TAMBAHKAN
-            console.log("✅ Chat data preloaded successfully");
+            sessionStorage.setItem('umbrella_last_chat_stamp', stamp);
         }
     } catch(e) {
         console.error("Preload chat error:", e);
     }
 }
 
-function renderFromCache() {
-    const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
-    const container = document.getElementById('chat-logs');
-    
-    if (!cached || !container) return false;
-    
-    try {
-        const arrayChat = JSON.parse(cached);
-        container.innerHTML = '';
-        
-        for (const msg of arrayChat) {
-            // Copy-paste logika render dari syncChat (dari let msgType sampai lb.appendChild(d))
-            // Gunakan user dari dapatkanIdentitasAman()
-            const user = dapatkanIdentitasAman();
-            
-            let msgType = msg.type || 'msg';
-            let msgUID = msg.uid || msg[2] || '';
-            let msgName = msg.username || msg[3] || 'Anon';
-            let msgText = msg.message || msg[4] || '';
-            let msgRole = msg.role || msg[5] || '';
-            
-            let isSystem = false;
-            let isMuteCommand = false;
-            let muteTargetUID = null;
-            let muteDurasi = null;
-            
-            if (msgType === 'command') {
-                if (msgText.startsWith('MUTE_')) {
-                    const parts = msgText.split('_');
-                    muteTargetUID = parts[1];
-                    muteDurasi = parts[2] || '?';
-                    const targetIGN = parts[3] || 'Seseorang';
-                    msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
-                    isSystem = true;
-                    isMuteCommand = true;
-                } else if (msgText.startsWith('UNMUTE_')) {
-                    const parts = msgText.split('_');
-                    muteTargetUID = parts[1];
-                    const targetIGN = parts[2] || 'Seseorang';
-                    msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
-                    isSystem = true;
-                    isMuteCommand = true;
-                } else {
-                    continue;
-                }
-            }
-            
-            if (msgType !== 'msg' && !isSystem) continue;
-            
-            const isMe = msgUID === user.uid;
-            const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
-            const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
-            
-            const d = document.createElement('div');
-            
-            if (isSystem) {
-                d.className = 'chat-row system-message';
-                d.innerHTML = `<div class="system-text">${msgText}</div>`;
-            } else if (isDeleted) {
-                d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
-                d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
-            } else if (isAdmin) {
-                d.className = 'chat-row admin-msg';
-                d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
-            } else if (isMe) {
-                d.className = 'chat-row me';
-                d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
-            } else {
-                d.className = 'chat-row other';
-                d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
-            }
-            
-            container.appendChild(d);
-        }
-        
-        fastScroll();
-        return true;
-    } catch(e) {
-        console.error("Render cache error:", e);
-        return false;
+// ==========================================
+// CLICK OUTSIDE MAIL MODAL
+// ==========================================
+window.addEventListener('click', function(e) {
+    const mailModal = document.getElementById('mail-modal');
+    if (e.target === mailModal) {
+        toggleMail(); 
     }
-}
+});
 
-// Expose
+// ==========================================
+// EXPOSE GLOBAL FUNCTIONS
+// ==========================================
 window.toggleChat = toggleChat;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
@@ -544,11 +495,8 @@ window.toggleMail = toggleMail;
 window.sendMail = sendMail;
 window.aturFormMailbox = aturFormMailbox;
 window.preloadChatData = preloadChatData;
-window.renderFromCache = renderFromCache;
 
-// Interval
+// Start polling interval
 setInterval(() => {
     syncChat(false);
 }, 4500);
-
-console.log("🛡️ Umbrella Chat Engine: Semua Komponen Terintegrasi Sempurna!");
