@@ -186,7 +186,6 @@ function renderApp() {
 
     renderRunningText();
     renderSosmed();
-    updateUIElements();
     
     if (isMobile) updateStack(0);
 }
@@ -225,13 +224,6 @@ function renderSosmed() {
         return `<a href="${s.Body}" class="sosmed-link" target="_blank"><i class="${iconClass}"></i></a>`;
     }).join('');
     document.body.appendChild(sosmedDock);
-}
-
-function updateUIElements() {
-    const mailBtn = document.querySelector('.mail-container');
-    const chatBtn = document.querySelector('.chat-container');
-    if (mailBtn) mailBtn.innerHTML = '<i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT';
-    if (chatBtn) chatBtn.innerHTML = '<i class="fa-solid fa-comments"></i>';
 }
 
 /**
