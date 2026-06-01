@@ -145,6 +145,7 @@ function renderApp() {
             footerText = stripHtmlButKeepText(openmemberItem.Body);
         }
         
+        const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
             const limit = 160;
             const truncatedText = footerText.length > limit ? footerText.substring(0, limit) + "... " : footerText;
@@ -152,7 +153,9 @@ function renderApp() {
             footerContainer.innerHTML = `
                 <div class="headline-body-pc">
                     ${truncatedText}
-                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">selengkapnya</span>
+                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">
+                        selengkapnya
+                    </span>
                 </div>
             `;
         } else if (footerContainer) {
@@ -429,16 +432,6 @@ window.addEventListener('keydown', function(e) {
     }
 });
 
-function stripHtmlButKeepText(html) {
-    if (!html) return '';
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    // Hapus semua tag img
-    const images = temp.querySelectorAll('img');
-    images.forEach(img => img.remove());
-    return temp.textContent || temp.innerText || '';
-}
-
 // Pantau Perubahan Ukuran Layar (Auto-Switch Mode)
 let resizeTimer;
 window.addEventListener('resize', () => {
@@ -452,4 +445,3 @@ window.addEventListener("orientationchange", () => {
 
 // Jalankan aplikasi saat HTML selesai dimuat
 document.addEventListener('DOMContentLoaded', init);
-
