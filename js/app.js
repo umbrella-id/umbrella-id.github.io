@@ -137,13 +137,11 @@ function renderApp() {
         if (hasHeadline && headlineItem.Body && headlineItem.Body.trim() !== "") {
             footerContent = headlineItem;
             footerIndex = cardData.findIndex(c => c.ID === headlineItem.ID);
-            footerText = stripHtmlButKeepText(headlineItem.Body);
         } else if (hasOpenmember && openmemberItem.Body && openmemberItem.Body.trim() !== "") {
             footerContent = openmemberItem;
             footerIndex = cardData.findIndex(c => c.ID === openmemberItem.ID);
-            footerText = stripHtmlButKeepText(openmemberItem.Body);
         }
-
+        
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
             const limit = 160;
