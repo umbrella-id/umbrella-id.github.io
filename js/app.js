@@ -133,7 +133,6 @@ function renderApp() {
         // Footer PC (prioritas: headline → openmember → kosong)
         let footerContent = null;
         let footerIndex = -1;
-        let footerText = "";
         
         if (hasHeadline && headlineItem.Body && headlineItem.Body.trim() !== "") {
             footerContent = headlineItem;
