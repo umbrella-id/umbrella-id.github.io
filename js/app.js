@@ -144,14 +144,11 @@ function renderApp() {
 
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
-            // 🎯 FILTER GAMBAR UNTUK FOOTER (tapi teks tetap utuh)
+            // 🎯 FILTER GAMBAR UNTUK FOOTER SAJA (KARENA SEMPIT)
             let cleanBody = footerContent.Body || "";
-            // Hapus semua tag <img> dan isinya
-            cleanBody = cleanBody.replace(/<img[^>]*>/gi, '');
-            // Hapus tag <figure> yang membungkus gambar (jika ada)
-            cleanBody = cleanBody.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
-            // Bersihkan spasi/enter berlebih hasil dari penghapusan
-            cleanBody = cleanBody.replace(/\n{3,}/g, '\n\n');
+            cleanBody = cleanBody.replace(/<img[^>]*>/gi, '');           // Hapus semua tag img
+            cleanBody = cleanBody.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, ''); // Hapus figure wrapper
+            cleanBody = cleanBody.replace(/\n{3,}/g, '\n\n');            // Rapikan spasi berlebih
             
             const limit = 160;
             const fullText = cleanBody;
@@ -160,7 +157,7 @@ function renderApp() {
             footerContainer.innerHTML = `
                 <div class="headline-body-pc">
                     ${truncatedText}
-                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">
+                    <span class="inline-link-text" onclick="showFooterDetail()">
                         selengkapnya
                     </span>
                 </div>
@@ -235,6 +232,41 @@ function updateUIElements() {
     const chatBtn = document.querySelector('.chat-container');
     if (mailBtn) mailBtn.innerHTML = '<i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT';
     if (chatBtn) chatBtn.innerHTML = '<i class="fa-solid fa-comments"></i>';
+}
+
+/**
+ * FUNGSI KHUSUS UNTUK FOOTER MODAL
+ * Otomatis mengikuti hierarki: Headline → Openmember
+ * Juga memfilter gambar untuk tampilan footer (tapi modal tetap utuh)
+ */
+function showFooterDetail() {
+    const rawData = window.rawData;
+    if (!rawData) return;
+    
+    // Cari data berdasarkan hierarki
+    const headlineItem = rawData.find(item => item.ID?.toLowerCase() === 'headline');
+    const openmemberItem = rawData.find(item => item.ID?.toLowerCase() === 'openmember');
+    
+    const hasHeadlineBody = headlineItem && headlineItem.Body && headlineItem.Body.trim() !== "";
+    const hasOpenmemberBody = openmemberItem && openmemberItem.Body && openmemberItem.Body.trim() !== "";
+    
+    let activeItem = null;
+    
+    // 🎯 HIERARKI SAMA DENGAN LOGIKA FOOTER
+    if (hasHeadlineBody) {
+        activeItem = headlineItem;
+    } else if (hasOpenmemberBody) {
+        activeItem = openmemberItem;
+    }
+    
+    if (!activeItem) return;
+    
+    // Buka modal dengan konten UTUH (gambar tetap muncul)
+    history.pushState({ boksTerbuka: "detailModal" }, "");
+    document.getElementById('modalTitle').innerText = activeItem.Header || "Informasi";
+    document.getElementById('modalBody').innerHTML = (activeItem.Body || '').replace(/\n/g, '<br>');
+    document.getElementById('detailModal').style.display = 'flex';
+    isModalOpen = true;
 }
 
 /**
@@ -438,6 +470,9 @@ window.addEventListener('keydown', function(e) {
         navigateCard(1);
     }
 });
+
+// Expose fungsi footer modal ke global
+window.showFooterDetail = showFooterDetail;
 
 // Pantau Perubahan Ukuran Layar (Auto-Switch Mode)
 let resizeTimer;
