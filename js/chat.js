@@ -1,318 +1,554 @@
-/* chat.css - Umbrella Chat Engine UI Component (Final Gold Theme) */
+/**
+ * chat.js - Umbrella Chat Engine (Final Gold - Verified Patch V2.1)
+ * Fitur: Polling 4.5s Mandiri, Text-Stamp, Presence Admin, Mute Logic, UID-Match, Absolute Gatekeeper Sleep.
+ * Integrasi: Mailbox Unified System (Optimistic UI & Game Toast Control - No Lock Bug)
+ */
 
-/* ==========================================
-   [1] CONTAINER UTAMA (MODERN PREMIUM GLASS)
-   ========================================== */
-#chat-popup {
-    position: fixed;
-    bottom: 95px;
-    right: 25px;
-    width: 330px;
-    height: 75dvh;
-    max-height: 500px;
-    background: var(--bg-popup); /* 🎨 Mengikuti Kaca Gelap Mewah base.css */
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--color-primary);
-    border-radius: 20px; /* Kebulatan sudut disamakan dengan Mailbox */
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 25px var(--color-primary-glow); /* 🎨 Efek pendaran neon diselaraskan */
-    overflow: hidden;
-    z-index: 9999;
+const URL_READ  = "https://script.google.com/macros/s/AKfycbwqsSUeVxPg4V5hMc9ph92eMQ2cFqTQI7SJZOG9f-FDlPii4IaXGEfOZ7zdRG35zbIhnw/exec"; 
+const URL_WRITE = "https://script.google.com/macros/s/AKfycbxe0DmHOend34kDDFxsgdxG0swUoSxFI_J9okcqa8D15GjKhFYbpdFkfm8As8CaYelJ8w/exec";
+const URL_MAIL  = "https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec"; 
+
+// 🎯 STATE SYSTEM ENGINE
+let isMuted = false, isSending = false, isSendingMail = false; 
+let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+let lastChatStamp = sessionStorage.getItem('umbrella_last_chat_stamp') || '';
+
+
+function fastScroll() {
+    const lb = document.getElementById('chat-logs'); 
+    if (lb) {
+        setTimeout(() => {
+            lb.scrollTop = lb.scrollHeight;
+        }, 50);
+    }
+}
+
+function toggleChat() {
+    console.log("🔵 toggleChat DIPANGGIL", new Date().toISOString());
+    const popup = document.getElementById('chat-popup');
+    const mailModal = document.getElementById('mail-modal');
+    if (!popup) return;
     
-    /* 🎯 BENTENG ANTI-GHOST CLICK */
-    opacity: 0;
-    visibility: hidden;       /* 1. Melenyapkan elemen dari pohon render browser */
-    pointer-events: none;     /* 2. Membuat klik/tap tembus ke elemen di belakangnya */
+    if (mailModal && mailModal.classList.contains('show')) {
+        mailModal.classList.remove('show');
+        if (history.state && history.state.boksTerbuka === "mailbox") history.back();
+    }
+
+    const isOpening = !popup.classList.contains('show');
+    popup.classList.toggle('show');
     
-    transform: translateY(20px);
-    /* Transisi visibility agar selaras dengan opacity saat memudar */
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-}
+    if (isOpening) {
+        history.pushState({ boksTerbuka: "chat" }, "");
 
-#chat-popup.show {
-    opacity: 1;
-    visibility: visible;      /* 1. Memunculkan kembali fisiknya */
-    pointer-events: auto;     /* 2. Mengaktifkan kembali sensor kliknya */
-    transform: translateY(0);
-}
-
-/* --- INDIKATOR STATUS ADMIN DI CHATBOX --- */
-.status-online {
-    color: #22c55e; /* Hijau terang */
-    text-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
-}
-
-.status-standby {
-    color: #f59e0b; /* Oranye / Kuning Amber khas Mode Siaga */
-    text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
-}
-
-.status-offline {
-    color: #ff4444 !important; /* Merah Redup */
-    text-shadow: 0 0 10px rgba(255, 68, 68, 0.4);
-}
-
-/* Header Minimalis */
-.chat-header {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 15px 40px;
-    border-bottom: 1px solid var(--border-divider); /* 🎨 Mengikuti pembatas base.css */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.chat-header span {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Dot Status ala Gaming */
-.chat-header span::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    background: #00ff88;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #00ff88;
-}
-
-#chat-header {
-    display: flex !important;
-    justify-content: center !important; /* Dorong konten ke tengah secara horizontal */
-    align-items: center !important;     /* Ratakan konten secara vertikal */
-    text-align: center !important;
-}
-
-/* ==========================================
-   [2] LOGS & SCROLLBAR (PREMIUM MINIMALIS)
-   ========================================== */
-#chat-logs {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-#chat-logs::-webkit-scrollbar {
-    width: 4px;
-}
-#chat-logs::-webkit-scrollbar-track {
-    background: transparent;
-}
-#chat-logs::-webkit-scrollbar-thumb {
-    background: var(--color-primary-glow); /* Scrollbar tipis berwarna ungu redup */
-    border-radius: 10px;
-}
-
-/* ==========================================
-   [3] BUBBLE CHAT DESIGN (FIXED PARAGRAF)
-   ========================================== */
-.chat-row {
-    display: flex;
-    flex-direction: column;
-    /* 🎯 BATASI LEBAR MAKSIMAL: Kontainer baris chat maksimal 75% dari lebar box */
-    max-width: 75%; 
-    /* Memastikan kontainer mengkerut pas sesuai panjang teks pendek */
-    width: max-content; 
-}
-
-.msg-text {
-    padding: 10px 14px;
-    font-size: 13.5px;
-    line-height: 1.5; /* Jeda antar baris sedikit renggang agar enak dibaca */
-    
-    /* 🎯 RUMUS UTAMA PARAGRAF (ANTI-BABLAS): */
-    word-break: break-word;   /* Memotong kata yang terlalu panjang agar tidak jebol keluar */
-    white-space: pre-wrap;    /* Menjaga enter/spasi manual dari user tetap rapi sebagai paragraf */
-    display: inline-block;    /* Memaksa gelembung membungkus teks dengan pas */
-}
-
-/* SAYA (ANDA) - Ungu Transparan Premium */
-.chat-row.me {
-    align-self: flex-end;
-    align-items: flex-end;
-    margin-left: auto; /* Memastikan chat kita mepet ke kanan */
-}
-.me .msg-text {
-    /* Gradasi ungu neon transparan mewah senada dengan tema portal */
-    background: linear-gradient(135deg, rgba(147, 51, 234, 0.45), rgba(192, 132, 252, 0.35));
-    border: 1px solid rgba(192, 132, 252, 0.3);
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.1);
-    color: #fff; /* Teks putih bersih */
-    border-radius: 15px 15px 2px 15px;
-}
-
-/* LAWAN - Kaca Gelap Pekat Bergaris Ungu Primary 1px */
-.chat-row.other {
-    align-self: flex-start;
-    align-items: flex-start;
-    margin-right: auto; /* Memastikan chat orang lain mepet ke kiri */
-}
-.other .msg-text {
-    background: var(--bg-solid-form); /* Hitam Pekat Form base.css */
-    color: var(--text-main);
-    border: 1px solid var(--color-primary-glow); /* Garis tipis elemen base.css */
-    border-radius: 15px 15px 15px 2px;
-    
-    /* 🎯 1px solid warna primary dicolok langsung dari pusat komando base.css */
-    outline: 1px solid var(--color-primary-glow); 
-}
-
-/* Identitas kecil di atas bubble */
-.chat-row b {
-    font-size: 9px;
-    color: var(--text-muted); /* Mengikuti teks keterangan base.css */
-    margin-bottom: 4px;
-    padding: 0 5px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
-/* ADMIN - Ungu Solid Khas Umbrella */
-.chat-row.admin-msg {
-    align-self: flex-start;
-    max-width: 75%;
-    margin-right: auto;
-}
-
-.admin-msg .admin-bubble-box {
-    background: var(--color-primary); /* Ungu solid khas Umbrella */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 10px 14px;
-    border-radius: 15px 15px 15px 2px; /* Sama seperti other */
-    box-shadow: 0 0 10px var(--color-primary-glow);
-}
-
-.admin-msg b {
-    font-size: 9px;
-    color: rgba(255, 255, 255, 0.7);
-    display: block;
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-}
-
-.admin-msg span {
-    color: #ffffff;
-    font-size: 13.5px;
-    line-height: 1.5;
-    word-break: break-word;
-    white-space: pre-wrap;
-    display: inline-block;
-}
-
-/* PESAN YANG DIHAPUS ADMIN (SEDERHANA TAPI MERAH)*/
-.chat-row.deleted .msg-text {
-    background: rgba(255, 68, 68, 0.2);
-    border: 1px solid rgba(255, 68, 68, 0.4);
-    color: #ffaaaa;
-}
-
-/* PESAN SISTEM (MUTE/UNMUTE) */
-.chat-row.system-message {
-    align-self: center;
-    margin: 8px auto;
-    max-width: 85%;
-}
-
-.system-text {
-    background: rgba(100, 116, 139, 0.2);
-    border-radius: 20px;
-    padding: 5px 12px;
-    font-size: 10px;
-    color: #94a3b8;
-    text-align: center;
-    font-style: italic;
-}
-
-/* ==========================================
-   [4] INPUT AREA (SUPER SLEEK)
-   ========================================== */
-.chat-input-area {
-    padding: 15px;
-    background: transparent;
-}
-
-.chat-input-area .input-row {
-    display: flex;
-    background: var(--bg-solid-form); /* Sinkron dengan Hitam Pekat Form base.css */
-    border-radius: 12px;
-    padding: 5px;
-    align-items: center;
-    border: 1px solid var(--border-glow); /* Menggunakan border tipis mewah */
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-/* Efek menyala saat kolom ketik chat sedang disentuh/aktif */
-.chat-input-area .input-row:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary-glow);
-}
-
-#msg-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #fff;
-    padding: 8px 12px;
-    outline: none;
-    font-size: 14px;
-}
-
-.send-btn {
-    background: var(--color-primary);
-    color: #fff;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.1s;
-}
-
-.send-btn:active {
-    transform: scale(0.92);
-}
-
-@media screen and (max-width: 767px) {
-    #chat-popup {
-        left: 50%;
-        transform: translateX(-50%);
+        // ✅ RENDER DARI CACHE (pakai fungsi yang sudah dibuat)
+        const rendered = renderFromCache();
         
-        top: 47px;
-        bottom: 57px;
-        width: 92vw;
-        height: auto;
-        max-height: calc(100dvh - 120px);
+        if (!rendered) {
+            // Jika cache gagal (kosong atau error), fallback ke fetch
+            const container = document.getElementById('chat-logs');
+            if (container) {
+                container.innerHTML = '<div class="loading-chat"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
+                syncChat(true);
+            }
+        }
         
-        /* Animasi popup dari pojok */
-        transform-origin: bottom right;
-        transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    
-    /* Saat chatbox tersembunyi */
-    #chat-popup:not(.show) {
-        transform: translateX(-50%) scale(0);
-        opacity: 0;
-        visibility: hidden;
-    }
-    
-    /* Saat chatbox muncul */
-    #chat-popup.show {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-        visibility: visible;
+        if (window.innerWidth >= 768) {
+            setTimeout(() => document.getElementById('msg-input')?.focus(), 300);
+        }
+        
+    } else {
+        if (history.state && history.state.boksTerbuka === "chat") history.back();
     }
 }
+
+window.addEventListener('popstate', function (event) {
+    const popup = document.getElementById('chat-popup');
+    const mailModal = document.getElementById('mail-modal');
+    const gate = document.getElementById('site-gatekeeper');
+    const detailModal = document.getElementById('detailModal');
+
+    if (popup && popup.classList.contains('show')) popup.classList.remove('show');
+    if (mailModal && mailModal.classList.contains('show')) mailModal.classList.remove('show');
+    
+    if (gate && (gate.style.display === 'flex' || gate.style.opacity === '1')) {
+        if (typeof window.closeGateFromNavbar === "function") window.closeGateFromNavbar(); 
+    }
+    if (detailModal && detailModal.style.display === 'flex') {
+        if (typeof window.closeDetailFromNavbar === "function") {
+            window.closeDetailFromNavbar(); 
+        } else {
+            detailModal.style.display = 'none'; 
+            isModalOpen = false;
+        }
+    }
+});
+
+function dapatkanIdentitasAman() {
+    let uid = window.myUID || localStorage.getItem('u_uid') || "GUEST_TMP";
+    let ign = window.myIGN || localStorage.getItem('u_ign') || "Guest";
+    return { uid: uid, ign: ign };
+}
+
+function syncChat(force = false) {
+    const popup = document.getElementById('chat-popup');
+    
+    if (!force && (!popup || !popup.classList.contains('show'))) {
+        console.log("💤 Chatbox tertutup. Detak interval dilewati murni (Kuota GAS Aman).");
+        return; 
+    }
+
+    const user = dapatkanIdentitasAman();
+
+    const input = document.getElementById('msg-input');
+    if (muteExpiryTime > 0) {
+        if (Date.now() >= muteExpiryTime) {
+            muteExpiryTime = 0;
+            localStorage.removeItem('umbrella_mute_expiry');
+            if (input) { 
+                input.disabled = false; 
+                input.placeholder = "Ketik pesan..."; 
+            }
+            console.log("🔓 Masa pembisuan berakhir. Chat telah aktif kembali.");
+        } else {
+            if (input && !input.disabled) {
+                input.disabled = true;
+                const sisaMenit = Math.ceil((muteExpiryTime - Date.now()) / 60000);
+                input.placeholder = `Bisu (${sisaMenit}m)`;
+            }
+        }
+    }
+
+    const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+    const isMuted = Date.now() < muteExpiry;
+    
+    fetch(`${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&isMuted=${isMuted}&muteExpiry=${muteExpiry}`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data) return;
+
+        const statusEl = document.querySelector('#admin-status b');
+        if (statusEl) {
+            const adminState = (data.adminStatus || "").toUpperCase();
+            if (adminState === "ONLINE") {
+                statusEl.className = "status-online";
+                statusEl.innerText = "ONLINE";
+            } else if (adminState === "STANDBY") {
+                statusEl.className = "status-standby";
+                statusEl.innerText = "STANDBY";
+            } else {
+                statusEl.className = "status-offline";
+                statusEl.innerText = "OFFLINE";
+            }
+        }
+
+        const arrayChat = data.logs || data.chats || [];
+        if (!Array.isArray(arrayChat)) return;
+
+        const currentStamp = JSON.stringify(arrayChat);
+
+        if (currentStamp !== lastChatStamp) {
+            lastChatStamp = currentStamp;
+            sessionStorage.setItem('umbrella_last_chat_stamp', currentStamp);
+
+            // RENDER ULANG HANYA JIKA CHAT TERBUKA
+            const lb = document.getElementById('chat-logs');
+            if (lb && popup && popup.classList.contains('show')) {
+                console.log("📝 Ada perubahan data, render ulang");
+                lb.innerHTML = ''; 
+                arrayChat.forEach(msg => {
+                    try {
+                        let msgType = msg.type || 'msg';
+                        let msgUID = msg.uid || msg[2] || '';
+                        let msgName = msg.username || msg[3] || 'Anon';
+                        let msgText = msg.message || msg[4] || '';
+                        let msgRole = msg.role || msg[5] || '';
+                        
+                        let isSystem = false;
+                        let isMuteCommand = false;
+                        let muteTargetUID = null;
+                        let muteDurasi = null;
+                        
+                        if (msgType === 'command') {
+                            if (msgText.startsWith('MUTE_')) {
+                                const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
+                                muteDurasi = parts[2] || '?';
+                                const targetIGN = parts[3] || 'Seseorang';
+                                msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
+                                isSystem = true;
+                                isMuteCommand = true;
+                            } else if (msgText.startsWith('UNMUTE_')) {
+                                const parts = msgText.split('_');
+                                muteTargetUID = parts[1];
+                                const targetIGN = parts[2] || 'Seseorang';
+                                msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
+                                isSystem = true;
+                                isMuteCommand = true;
+                            } else {
+                                return;
+                            }
+                        }
+                        
+                        if (msgType !== 'msg' && !isSystem) return;
+                
+                        const isMe = msgUID === user.uid;
+                        const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
+                        const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
+                        
+                        const d = document.createElement('div');
+                        
+                        if (isSystem) {
+                            d.className = 'chat-row system-message';
+                            d.innerHTML = `<div class="system-text">${msgText}</div>`;
+                        } else if (isDeleted) {
+                            d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+                            d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
+                        } else if (isAdmin) {
+                            d.className = 'chat-row admin-msg';
+                            d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+                        } else if (isMe) {
+                            d.className = 'chat-row me';
+                            d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
+                        } else {
+                            d.className = 'chat-row other';
+                            d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
+                        }
+                        
+                        lb.appendChild(d);
+                        
+                        if (isMuteCommand && muteTargetUID === user.uid) {
+                            if (msgText.startsWith('🔇')) {
+                                const expiry = Date.now() + (parseInt(muteDurasi) * 60 * 1000);
+                                muteExpiryTime = expiry;
+                                localStorage.setItem('umbrella_mute_expiry', expiry);
+                                if (input) {
+                                    input.disabled = true;
+                                    input.placeholder = `MUTED (${muteDurasi}m)`;
+                                }
+                            } else if (msgText.startsWith('🔊')) {
+                                muteExpiryTime = 0;
+                                localStorage.removeItem('umbrella_mute_expiry');
+                                if (input) {
+                                    input.disabled = false;
+                                    input.placeholder = "Ketik pesan...";
+                                }
+                            }
+                        }
+                        
+                    } catch (e) { 
+                        console.error("Error baris:", e); 
+                    }
+                });
+                fastScroll();
+            }
+        } else {
+            console.log("✅ Stamp sama, tidak perlu render");
+        }
+    })
+    .catch(err => console.error("Koneksi Pipa GAS 2 Terputus:", err));
+}
+
+function sendMessage() {
+    if (Date.now() < muteExpiryTime) {
+        const sisaDetik = Math.ceil((muteExpiryTime - Date.now()) / 1000);
+        tampilkanToast(`Chat terkunci. Sisa waktu bisu: ${sisaDetik} detik.`);
+        return; 
+    }
+    
+    if (isMuted || isSending) return;
+    const input = document.getElementById('msg-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const user = dapatkanIdentitasAman();
+    isSending = true;
+    const lb = document.getElementById('chat-logs');
+    
+    const t = document.createElement('div');
+    t.className = 'chat-row me';
+    t.style.opacity = "0.9";
+    t.innerHTML = `<b>${user.ign}</b><span class="msg-text">${msg}</span>`;
+    if (lb) lb.appendChild(t);
+    fastScroll();
+
+    input.value = '';
+
+    fetch(`${URL_WRITE}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}`)
+    .then(() => { 
+        isSending = false; 
+        setTimeout(() => { syncChat(true); }, 500);
+    })
+    .catch(() => { isSending = false; });
+}
+
+function getHashColor(uid) {
+    if (!uid) return '#ccc';
+    let h = 0;
+    for (let i = 0; i < uid.length; i++) h = uid.charCodeAt(i) + ((h << 5) - h);
+    return `hsl(${Math.abs(h) % 360}, 75%, 75%)`;
+}
+
+function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+
+// ==========================================
+// MAILBOX ENGINE
+// ==========================================
+
+function aturFormMailbox() {
+    const categoryEl = document.getElementById('mail-category');
+    const waGroup = document.getElementById('wa-group');
+    const labelPesan = document.getElementById('mail-label-pesan');
+    const textarea = document.getElementById('mail-message');
+    
+    if (!categoryEl) return;
+    const kategori = categoryEl.value;
+
+    if (kategori === "Request Join") {
+        if (waGroup) waGroup.style.display = "flex";
+        if (labelPesan) labelPesan.innerText = "Alasan / Biodata Join :";
+        if (textarea) textarea.placeholder = "Sebutkan Level, Job Utama, dan alasan kamu ingin bergabung...";
+    } else {
+        if (waGroup) waGroup.style.display = "none";
+        if (labelPesan) labelPesan.innerText = "Pesan Anda :";
+        if (textarea) textarea.placeholder = "Tulis pesan atau laporan untuk Admin Umbrella...";
+    }
+}
+
+function toggleMail() {
+    const mailModal = document.getElementById('mail-modal');
+    const chatPopup = document.getElementById('chat-popup');
+    if (!mailModal) return;
+
+    if (chatPopup && chatPopup.classList.contains('show')) {
+        chatPopup.classList.remove('show');
+        if (history.state && history.state.boksTerbuka === "chat") history.back(); 
+    }
+
+    const isOpeningMail = !mailModal.classList.contains('show');
+    mailModal.classList.toggle('show');
+    
+    if (mailModal.classList.contains('show')) {
+        const categoryEl = document.getElementById('mail-category'); 
+        const textarea = document.getElementById('mail-message');
+        const inputWA = document.getElementById('mail-wa');
+        
+        if (textarea) { textarea.value = ''; textarea.disabled = false; }
+        if (inputWA) { inputWA.value = ''; inputWA.disabled = false; inputWA.placeholder = "Contoh: 08xxxxxxxxxx"; }
+        
+        if (typeof aturFormMailbox === "function") aturFormMailbox();
+        
+        if (isOpeningMail) {
+            history.pushState({ boksTerbuka: "mailbox" }, "");
+        }
+        
+        if (window.innerWidth >= 768) {
+            setTimeout(() => {
+                const visibleInput = inputWA && document.getElementById('wa-group').style.display !== "none" ? inputWA : textarea;
+                if (visibleInput) visibleInput.focus();
+            }, 300);
+        }
+    } else {
+        if (history.state && history.state.boksTerbuka === "mailbox") {
+            history.back();
+        }
+    }
+}
+
+function tampilkanToast(pesan) {
+    const toast = document.getElementById('mail-toast');
+    if (!toast) return;
+    
+    toast.innerText = pesan;
+    toast.classList.add('muncul');
+    
+    setTimeout(() => {
+        toast.classList.remove('muncul');
+    }, 3000);
+}
+
+function sendMail() {
+    if (isSendingMail) return; 
+    
+    const categoryEl = document.getElementById('mail-category');
+    const selectedCategory = categoryEl ? categoryEl.value : 'Umum';
+
+    const textarea = document.getElementById('mail-message');
+    let msg = textarea ? textarea.value.trim() : '';
+    const inputWA = document.getElementById('mail-wa');
+    const waValue = inputWA ? inputWA.value.trim() : '';
+
+    if (selectedCategory === "Request Join") {
+        if (!waValue) { tampilkanToast("⚠️ Nomor WhatsApp wajib diisi"); if (inputWA) inputWA.focus(); return; }
+        if (!msg) { tampilkanToast("⚠️ Alasan atau biodata join tidak boleh kosong"); if (textarea) textarea.focus(); return; }
+        msg = `${waValue}\n${msg}`;
+    } else {
+        if (!msg) { tampilkanToast("⚠️ Pesan surat tidak boleh kosong"); if (textarea) textarea.focus(); return; }
+    }
+    
+    const user = dapatkanIdentitasAman();
+    isSendingMail = true;
+    
+    const sendBtn = document.querySelector('.mail-send-btn');
+    if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...';
+    if (textarea) textarea.disabled = true;
+    if (inputWA) inputWA.disabled = true;
+
+    toggleMail();
+
+    fetch(`${URL_MAIL}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}&msg=${encodeURIComponent(msg)}&category=${encodeURIComponent(selectedCategory)}&type=mail`)
+    .then(res => res.json())
+    .then(data => {
+        isSendingMail = false;
+        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
+
+        if (data.status === "success") {
+            tampilkanToast("✉️ Surat berhasil dikirim");
+        } else {
+            tampilkanToast("⚠️ Gagal: " + (data.message || "Sistem error."));
+            toggleMail();
+            if (textarea) textarea.disabled = false;
+            if (inputWA) inputWA.disabled = false;
+        }
+    })
+    .catch(err => {
+        isSendingMail = false;
+        if (sendBtn) sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG';
+        tampilkanToast("🚨 Koneksi terputus. Gagal mengirim.");
+        toggleMail();
+        if (textarea) textarea.disabled = false;
+        if (inputWA) inputWA.disabled = false;
+        console.error("Pipa GAS 1 Terputus:", err);
+    });
+}
+
+window.addEventListener('click', function(e) {
+    const mailModal = document.getElementById('mail-modal');
+    if (e.target === mailModal) {
+        toggleMail(); 
+    }
+});
+
+// ==========================================
+// PRELOAD CHAT DATA (TAMBAHKAN DI AKHIR, SEBELUM EXPOSE)
+// ==========================================
+async function preloadChatData() {
+    const user = dapatkanIdentitasAman();
+    if (!user) return;
+    
+    const url = `${URL_READ}?uid=${user.uid}&ign=${encodeURIComponent(user.ign)}`;
+    
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.logs) {
+            const stamp = JSON.stringify(data.logs);
+            sessionStorage.setItem('umbrella_cached_chat_logs', stamp);
+            sessionStorage.setItem('umbrella_cached_chat_timestamp', Date.now().toString());
+            sessionStorage.setItem('umbrella_last_chat_stamp', stamp);  // ← TAMBAHKAN
+            console.log("✅ Chat data preloaded successfully");
+        }
+    } catch(e) {
+        console.error("Preload chat error:", e);
+    }
+}
+
+function renderFromCache() {
+    const cached = sessionStorage.getItem('umbrella_cached_chat_logs');
+    const container = document.getElementById('chat-logs');
+    
+    if (!cached || !container) return false;
+    
+    try {
+        const arrayChat = JSON.parse(cached);
+        container.innerHTML = '';
+        
+        for (const msg of arrayChat) {
+            // Copy-paste logika render dari syncChat (dari let msgType sampai lb.appendChild(d))
+            // Gunakan user dari dapatkanIdentitasAman()
+            const user = dapatkanIdentitasAman();
+            
+            let msgType = msg.type || 'msg';
+            let msgUID = msg.uid || msg[2] || '';
+            let msgName = msg.username || msg[3] || 'Anon';
+            let msgText = msg.message || msg[4] || '';
+            let msgRole = msg.role || msg[5] || '';
+            
+            let isSystem = false;
+            let isMuteCommand = false;
+            let muteTargetUID = null;
+            let muteDurasi = null;
+            
+            if (msgType === 'command') {
+                if (msgText.startsWith('MUTE_')) {
+                    const parts = msgText.split('_');
+                    muteTargetUID = parts[1];
+                    muteDurasi = parts[2] || '?';
+                    const targetIGN = parts[3] || 'Seseorang';
+                    msgText = `🔇 ${targetIGN} dibisukan selama ${muteDurasi} menit.`;
+                    isSystem = true;
+                    isMuteCommand = true;
+                } else if (msgText.startsWith('UNMUTE_')) {
+                    const parts = msgText.split('_');
+                    muteTargetUID = parts[1];
+                    const targetIGN = parts[2] || 'Seseorang';
+                    msgText = `🔊 Bisuan ${targetIGN} telah dibuka.`;
+                    isSystem = true;
+                    isMuteCommand = true;
+                } else {
+                    continue;
+                }
+            }
+            
+            if (msgType !== 'msg' && !isSystem) continue;
+            
+            const isMe = msgUID === user.uid;
+            const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
+            const isDeleted = (msgType === 'msg' && msgText === '[deleted by admin]');
+            
+            const d = document.createElement('div');
+            
+            if (isSystem) {
+                d.className = 'chat-row system-message';
+                d.innerHTML = `<div class="system-text">${msgText}</div>`;
+            } else if (isDeleted) {
+                d.className = `chat-row ${isMe ? 'me' : 'other'} deleted`;
+                d.innerHTML = `<b>${msgName}</b><div class="msg-text">🗑️ Pesan dihapus oleh admin</div>`;
+            } else if (isAdmin) {
+                d.className = 'chat-row admin-msg';
+                d.innerHTML = `<b>ADMIN-${msgName}</b><div class="admin-bubble-box"><span>${msgText}</span></div>`;
+            } else if (isMe) {
+                d.className = 'chat-row me';
+                d.innerHTML = `<b>${msgName}</b><span class="msg-text">${msgText}</span>`;
+            } else {
+                d.className = 'chat-row other';
+                d.innerHTML = `<b style="color:${getHashColor(msgUID)}">${msgName}</b><span class="msg-text">${msgText}</span>`;
+            }
+            
+            container.appendChild(d);
+        }
+        
+        fastScroll();
+        return true;
+    } catch(e) {
+        console.error("Render cache error:", e);
+        return false;
+    }
+}
+
+// Expose
+window.toggleChat = toggleChat;
+window.sendMessage = sendMessage;
+window.handleEnter = handleEnter;
+window.syncChat = syncChat;
+window.toggleMail = toggleMail;
+window.sendMail = sendMail;
+window.aturFormMailbox = aturFormMailbox;
+window.preloadChatData = preloadChatData;
+window.renderFromCache = renderFromCache;
+
+// Interval
+setInterval(() => {
+    syncChat(false);
+}, 4500);
+
+console.log("🛡️ Umbrella Chat Engine: Semua Komponen Terintegrasi Sempurna!");
