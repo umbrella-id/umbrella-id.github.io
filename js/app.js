@@ -133,27 +133,26 @@ function renderApp() {
         // Footer PC (prioritas: headline → openmember → kosong)
         let footerContent = null;
         let footerIndex = -1;
+        let footerText = "";
         
         if (hasHeadline && headlineItem.Body && headlineItem.Body.trim() !== "") {
             footerContent = headlineItem;
             footerIndex = cardData.findIndex(c => c.ID === headlineItem.ID);
+            footerText = stripHtmlButKeepText(headlineItem.Body);
         } else if (hasOpenmember && openmemberItem.Body && openmemberItem.Body.trim() !== "") {
             footerContent = openmemberItem;
             footerIndex = cardData.findIndex(c => c.ID === openmemberItem.ID);
+            footerText = stripHtmlButKeepText(openmemberItem.Body);
         }
         
-        const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
             const limit = 160;
-            const fullText = footerContent.Body;
-            const truncatedText = fullText.length > limit ? fullText.substring(0, limit) + "... " : fullText;
+            const truncatedText = footerText.length > limit ? footerText.substring(0, limit) + "... " : footerText;
             
             footerContainer.innerHTML = `
                 <div class="headline-body-pc">
                     ${truncatedText}
-                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">
-                        selengkapnya
-                    </span>
+                    <span class="inline-link-text" onclick="showDetail(${footerIndex})">selengkapnya</span>
                 </div>
             `;
         } else if (footerContainer) {
@@ -429,6 +428,16 @@ window.addEventListener('keydown', function(e) {
         navigateCard(1);
     }
 });
+
+function stripHtmlButKeepText(html) {
+    if (!html) return '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    // Hapus semua tag img
+    const images = temp.querySelectorAll('img');
+    images.forEach(img => img.remove());
+    return temp.textContent || temp.innerText || '';
+}
 
 // Pantau Perubahan Ukuran Layar (Auto-Switch Mode)
 let resizeTimer;
