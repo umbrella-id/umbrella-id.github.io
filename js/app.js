@@ -141,11 +141,20 @@ function renderApp() {
             footerContent = openmemberItem;
             footerIndex = cardData.findIndex(c => c.ID === openmemberItem.ID);
         }
-        
+
         const footerContainer = document.querySelector('.bottom-bar');
         if (footerContainer && footerContent) {
+            // 🎯 FILTER GAMBAR UNTUK FOOTER (tapi teks tetap utuh)
+            let cleanBody = footerContent.Body || "";
+            // Hapus semua tag <img> dan isinya
+            cleanBody = cleanBody.replace(/<img[^>]*>/gi, '');
+            // Hapus tag <figure> yang membungkus gambar (jika ada)
+            cleanBody = cleanBody.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
+            // Bersihkan spasi/enter berlebih hasil dari penghapusan
+            cleanBody = cleanBody.replace(/\n{3,}/g, '\n\n');
+            
             const limit = 160;
-            const fullText = footerContent.Body;
+            const fullText = cleanBody;
             const truncatedText = fullText.length > limit ? fullText.substring(0, limit) + "... " : fullText;
             
             footerContainer.innerHTML = `
