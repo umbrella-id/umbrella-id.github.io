@@ -133,13 +133,13 @@
   }
 
   /* ============================================
-     CHAT BOX — lebar 45%, tinggi tetap 25%
+     CHAT BOX
      ============================================ */
   .chat-box {
     position: absolute;
     bottom: 0;
-    left: 27.5%;                     /* center: (100 - 45) / 2 */
-    width: 45%;                      /* ← 45% */
+    left: 27.5%;
+    width: 45%;
     height: 25%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 100;
@@ -149,10 +149,9 @@
   }
   .chat-box.dragging { transition: none; }
 
-  /* Saat modal terbuka — chat geser KIRI, lebar tetap 45% */
   .chat-box.shifted {
-    left: 1%;                        /* ← geser kiri */
-    width: 45%;                      /* ← tetap 45% */
+    left: 1%;
+    width: 45%;
     height: 25%;
   }
 
@@ -244,7 +243,7 @@
   }
 
   /* ============================================
-     MODAL MENU — tinggi 75%, posisi bawah
+     MODAL MENU — posisi: 10% dari kolom chat
      ============================================ */
   .modal-overlay {
     display: none;
@@ -252,19 +251,21 @@
     inset: 0;
     background: transparent;
     z-index: 500;
-    /* Modal nempel ke bawah & ke kanan */
-    justify-content: flex-end;
-    align-items: flex-end;           /* ← nempel bawah */
+    /* Pakai positioning manual, bukan flex */
     pointer-events: none;
   }
-  .modal-overlay.open { display: flex; }
+  .modal-overlay.open { display: block; }
 
   .modal {
-    position: relative;
+    position: absolute;
+    /* Posisi: rata kanan, dengan jarak 10% lebar dari chat */
+    /* Chat ada di kiri (lebar 45%), jadi modal di kanan */
+    /* 100% - 10% (gap) - 35% (lebar modal) = 55% */
+    right: 3%;
+    bottom: 2%;
     width: 35%;
-    height: 75%;                     /* ← 75% tinggi */
-    /* Padding kecil biar tombol rapat ke bingkai */
-    padding: 30px 40px 26px 40px;
+    height: 75%;
+    padding: 30px 26px 26px 26px;    /* ← padding: atas | kanan | bawah | kiri */
     background: rgba(15, 10, 6, 0.92);
     color: #f5e6c8;
     overflow: visible;
@@ -272,21 +273,18 @@
     flex-direction: column;
     justify-content: center;
     pointer-events: auto;
-    margin-right: 2%;
-    margin-bottom: 2%;               /* ← jarak dari bawah */
 
     /* Animasi slide dari bawah */
-    transform: translateY(100%);
+    transform: translateY(120%);
     opacity: 0;
     transition:
-      transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.1),
-      opacity 0.4s ease;
+      transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.05),
+      opacity 0.45s ease;
   }
 
   .modal-overlay.open .modal {
     transform: translateY(0);
     opacity: 1;
-    transition-delay: 0.4s;          /* ← tunggu chat geser dulu */
   }
 
   /* ===== BINGKAI MODAL ===== */
@@ -360,10 +358,11 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 12px;                       /* ← jarak antar tombol */
+    gap: 12px;
     align-items: stretch;
-    /* Padding biar tombol nggak nempel ke bingkai */
-    padding: 0 4px;
+    /* Tombol cuma 5px dari bingkai
+       Padding modal: 26px kiri-kanan
+       Padding content: 0 (langsung full) */
   }
 
   .modal-list-item {
@@ -378,7 +377,7 @@
     letter-spacing: 1.5px;
   }
   .modal-list-item.btn-svg {
-    height: 34px;                    /* ← tinggi tombol list */
+    height: 34px;
   }
   .modal-list-item .btn-ujung-kiri,
   .modal-list-item .btn-ujung-kanan {
@@ -613,11 +612,16 @@
        ============================================ */
     const modalOverlay = document.getElementById('modalOverlay');
     let modalTimer = null;
+    let chatTimer = null;
 
     function openModal() {
+      clearTimeout(modalTimer);
+      clearTimeout(chatTimer);
+
       // TAHAP 1: chat geser kiri
       chatBox.classList.add('shifted');
-      // TAHAP 2: tunggu 400ms, baru modal muncul
+
+      // TAHAP 2: tunggu chat sampai tujuan, baru modal muncul
       modalTimer = setTimeout(function() {
         modalOverlay.classList.add('open');
       }, 400);
@@ -625,12 +629,15 @@
 
     function closeModal() {
       clearTimeout(modalTimer);
-      // TAHAP 1: modal hilang dulu
+      clearTimeout(chatTimer);
+
+      // TAHAP 1: modal hilang dulu (slide ke bawah)
       modalOverlay.classList.remove('open');
-      // TAHAP 2: tunggu 400ms, baru chat balik
-      setTimeout(function() {
+
+      // TAHAP 2: tunggu modal hilang, baru chat balik
+      chatTimer = setTimeout(function() {
         chatBox.classList.remove('shifted');
-      }, 400);
+      }, 450);
     }
 
     // ESC = close
