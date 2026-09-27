@@ -30,7 +30,7 @@
     z-index: 1;
   }
 
-  /* ===== STAGE (area utama, rasio landscape) ===== */
+  /* ===== STAGE ===== */
   .stage {
     position: relative;
     width: 100vw;
@@ -38,47 +38,63 @@
     z-index: 2;
   }
 
-  /* ===== ORNAMEN MENU ===== */
-  /* Ini gambar SVG_BG-MENU.svg sebagai latar belakang tombol */
-  .menu-btn {
+  /* ===== KOTAK TOMBOL (ornamen + tombol) ===== */
+  /* Setiap tombol punya wrapper, isi: ornamen + tombol di atasnya */
+  .btn-wrap {
     position: absolute;
-    width: 280px;          /* ukuran ornamen */
-    height: 80px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);   /* posisi tengah */
+    width: 200px;
+    height: 70px;
+  }
+
+  /* Pojok kiri atas */
+  .btn-wrap.kiri-atas {
+    top: 10px;
+    left: 10px;
+  }
+
+  /* Pojok kanan atas */
+  .btn-wrap.kanan-atas {
+    top: 10px;
+    right: 10px;
+  }
+
+  /* ===== ORNAMEN (SVG_BG-MENU.svg) ===== */
+  .btn-ornamen {
+    position: absolute;
+    inset: 0;
     background: url('Assets/SVG_BG-MENU.svg') no-repeat center center;
     background-size: 100% 100%;
-    border: none;
-    cursor: pointer;
-    padding: 0;
+    pointer-events: none;   /* biar klik tembus ke tombol */
   }
 
   /* ===== TOMBOL (SVG_BT-MENU.svg) ===== */
-  /* Ini tombol yang bisa ditekan, di atas ornamen */
-  .menu-btn-inner {
+  .btn-isi {
     position: absolute;
-    width: 200px;
-    height: 50px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 70%;
+    height: 55%;
     background: url('Assets/SVG_BT-MENU.svg') no-repeat center center;
     background-size: 100% 100%;
     border: none;
     cursor: pointer;
-    transition: transform 0.1s ease;
+    padding: 0;
+    transition: transform 0.1s ease, filter 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Efek tekan */
-  .menu-btn-inner:active {
-    transform: translate(-50%, -50%) scale(0.95);
-    filter: brightness(0.8);
+  /* Efek hover (desktop) */
+  .btn-isi:hover {
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(107, 189, 232, 0.7));
   }
 
-  /* Efek hover */
-  .menu-btn-inner:hover {
-    filter: brightness(1.2) drop-shadow(0 0 12px rgba(107, 189, 232, 0.8));
+  /* Efek tekan (klik / tap) */
+  .btn-isi:active {
+    transform: translate(-50%, -50%) scale(0.92);
+    filter: brightness(0.75);
+    /* efek masuk ke dalam */
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
   }
 
 </style>
@@ -88,13 +104,19 @@
   <!-- Background game -->
   <div class="bg"></div>
 
-  <!-- Stage / area utama -->
+  <!-- Stage -->
   <div class="stage">
 
-    <!-- Ornamen menu -->
-    <div class="menu-btn">
-      <!-- Tombol yang bisa diklik -->
-      <button class="menu-btn-inner" onclick="alert('Tombol diklik!')"></button>
+    <!-- Tombol KIRI ATAS -->
+    <div class="btn-wrap kiri-atas">
+      <div class="btn-ornamen"></div>
+      <button class="btn-isi" aria-label="Menu Kiri"></button>
+    </div>
+
+    <!-- Tombol KANAN ATAS -->
+    <div class="btn-wrap kanan-atas">
+      <div class="btn-ornamen"></div>
+      <button class="btn-isi" aria-label="Menu Kanan"></button>
     </div>
 
   </div>
