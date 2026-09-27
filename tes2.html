@@ -133,27 +133,27 @@
   }
 
   /* ============================================
-     CHAT BOX — punya state default & geser
+     CHAT BOX — geser kiri, tinggi tetap
      ============================================ */
   .chat-box {
     position: absolute;
     bottom: 0;
     left: 25%;
     width: 50%;
-    height: 25%;
+    height: 25%;                     /* ← tetap 25% */
     background: rgba(0, 0, 0, 0.5);
     z-index: 100;
     display: flex;
     flex-direction: column;
-    transition: height 0.25s ease-out, left 0.35s ease-out, width 0.35s ease-out;
+    transition: left 0.35s ease-out, width 0.35s ease-out;
   }
   .chat-box.dragging { transition: none; }
 
-  /* Saat modal menu terbuka — chat geser ke KIRI */
+  /* Saat modal terbuka — chat geser ke KIRI, TINGGI TETAP */
   .chat-box.shifted {
-    left: 1%;                /* ← geser ke kiri */
-    width: 48%;              /* ← sesuaikan lebarnya */
-    height: 40%;             /* ← naikkan sedikit biar proporsional */
+    left: 1%;                        /* ← geser ke kiri */
+    width: 32%;                      /* ← menyesuaikan lebar sisa */
+    height: 25%;                     /* ← tetap 25% */
   }
 
   .chat-drag {
@@ -250,33 +250,33 @@
     display: none;
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);    /* ← hitam 70% */
+    /* TANPA background — tampilan dasar tetap jelas */
+    background: transparent;
     z-index: 500;
-    /* Modal di kanan — pakai flex align kanan */
-    justify-content: flex-end;
+    justify-content: flex-end;       /* ← ke kanan */
     align-items: center;
-    /* Animasi fade overlay */
-    opacity: 0;
-    transition: opacity 0.35s ease;
+    pointer-events: none;            /* ← overlay nggak nge-blok klik di luar modal */
   }
   .modal-overlay.open {
     display: flex;
-    opacity: 1;
+    pointer-events: none;
   }
 
   .modal {
     position: relative;
-    width: 50%;                        /* ← lebar 50% (kanan layar) */
-    height: 100%;                      /* ← full tinggi */
+    width: 35%;                      /* ← 35% lebar */
+    height: 70%;                     /* ← 70% tinggi */
     padding: 26px 44px 22px 44px;
     background: rgba(15, 10, 6, 0.92);
     color: #f5e6c8;
     overflow: visible;
     display: flex;
     flex-direction: column;
-    justify-content: center;           /* ← konten di tengah vertikal */
+    justify-content: center;
+    pointer-events: auto;            /* ← modal sendiri tetap bisa diklik */
+    margin-right: 2%;                /* ← jarak dari tepi kanan */
 
-    /* Animasi masuk: dari bawah, geser + timbul */
+    /* Animasi masuk: dari bawah */
     transform: translateY(100%);
     opacity: 0;
     transition:
@@ -284,7 +284,6 @@
       opacity 0.4s ease;
   }
 
-  /* Saat modal terbuka — animasi masuk */
   .modal-overlay.open .modal {
     transform: translateY(0);
     opacity: 1;
@@ -332,7 +331,7 @@
     background-size: 100% 100%;
   }
 
-  /* Flip pojok — mirror */
+  /* Flip pojok */
   .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
   .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
   .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
@@ -363,11 +362,10 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     align-items: stretch;
   }
 
-  /* Tombol list — pakai .btn-svg juga */
   .modal-list-item {
     width: 100%;
   }
@@ -380,7 +378,6 @@
     letter-spacing: 1.5px;
   }
 
-  /* Ukuran tombol list lebih tinggi */
   .modal-list-item.btn-svg {
     height: 32px;
   }
@@ -478,12 +475,11 @@
     </div>
 
     <!-- ============================================
-         MODAL MENU (kanan layar)
+         MODAL MENU
          ============================================ -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal">
 
-        <!-- Bingkai -->
         <div class="modal-frame">
           <div class="frame-h atas">
             <div class="pojok"></div>
@@ -507,7 +503,6 @@
           </div>
         </div>
 
-        <!-- Isi: List tombol -->
         <div class="modal-content">
 
           <div class="btn-svg modal-list-item" onclick="menuClick('info')">
@@ -629,18 +624,12 @@
 
     function openModal() {
       modalOverlay.classList.add('open');
-      chatBox.classList.add('shifted');      // ← geser chat ke kiri
+      chatBox.classList.add('shifted');
     }
-
     function closeModal() {
       modalOverlay.classList.remove('open');
-      chatBox.classList.remove('shifted');   // ← balikin chat
+      chatBox.classList.remove('shifted');
     }
-
-    // Klik overlay = close
-    modalOverlay.addEventListener('click', function(e) {
-      if (e.target === modalOverlay) closeModal();
-    });
 
     // ESC = close
     document.addEventListener('keydown', function(e) {
@@ -650,7 +639,12 @@
     // Tombol kiri = buka modal
     document.getElementById('btnKiri').addEventListener('click', function(e) {
       if (e.target.closest('.plat-nama')) return;
-      openModal();
+      // Toggle: kalau udah kebuka, tutup
+      if (modalOverlay.classList.contains('open')) {
+        closeModal();
+      } else {
+        openModal();
+      }
     });
 
     /* ============================================
@@ -658,8 +652,6 @@
        ============================================ */
     function menuClick(type) {
       console.log('Menu dipilih:', type);
-      // Nanti: buka menu detail sesuai type
-      // 'info', 'kirim', 'ganti', 'tentang', 'gallery'
     }
   </script>
 
