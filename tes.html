@@ -44,6 +44,7 @@
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 0.3s ease;      /* ← animasi halus saat geser */
   }
 
   .btn-wrap.kiri-atas { top: 0; left: 0; }
@@ -100,12 +101,12 @@
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
   }
 
-  /* ===== PLAT NAMA (3 SVG) ===== */
+  /* ===== PLAT NAMA ===== */
   .plat-nama {
     position: absolute;
     top: 5px;
-    left: 180px;                 /* ← kembali ke 180px */
-    margin-left: -25px;          /* ← geser kiri 25px */
+    left: 180px;
+    margin-left: -25px;
     height: 38px;
     display: flex;
     align-items: stretch;
@@ -113,7 +114,6 @@
     pointer-events: none;
   }
 
-  /* Ujung kiri — FIXED */
   .plat-nama .ujung-kiri {
     width: 28px;
     height: 100%;
@@ -123,7 +123,6 @@
     flex-grow: 0;
   }
 
-  /* Tengah — MELAR */
   .plat-nama .tengah {
     height: 100%;
     flex-grow: 1;
@@ -134,7 +133,6 @@
     background-size: 100% 100%;
   }
 
-  /* Ujung kanan — FIXED */
   .plat-nama .ujung-kanan {
     width: 38px;
     height: 100%;
@@ -144,19 +142,29 @@
     flex-grow: 0;
   }
 
-  /* Teks nama — font diperbesar */
   .plat-nama .teks-nama {
     position: absolute;
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #f5e6c8;
-    font-size: 15px;              /* ← dari 13px jadi 15px */
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 1.5px;
     white-space: nowrap;
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     z-index: 2;
+  }
+
+  /* ===== RESPONSIF: LAYAR ≤ 2× TINGGI ===== */
+  /* Tombol kiri-keluar bingkai 30%, tombol kanan-keluar bingkai 30% */
+  @media (max-aspect-ratio: 2/1) {
+    .btn-wrap.kiri-atas {
+      transform: translateX(-30%);       /* ← geser kiri 30% keluar */
+    }
+    .btn-wrap.kanan-atas {
+      transform: translateX(30%);        /* ← geser kanan 30% keluar */
+    }
   }
 
   /* ===== LAYAR PERINGATAN PORTRAIT ===== */
