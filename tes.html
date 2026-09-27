@@ -167,16 +167,14 @@
     width: 50%;
     height: 25%;
     max-height: 100%;
-    background: rgba(10, 8, 5, 0.75);
+    background: rgba(0, 0, 0, 0.5);     /* ← hitam 50% */
     z-index: 100;
     display: flex;
     flex-direction: column;
     pointer-events: auto;
-    /* Animasi snap halus */
     transition: height 0.25s ease-out;
   }
 
-  /* Saat sedang di-drag — matikan transisi biar responsif */
   .chat-box.dragging {
     transition: none;
   }
@@ -383,9 +381,9 @@
     let startHeight = 0;
 
     const DEFAULT_PERCENT = 25;         // posisi awal
-    const SNAP_THRESHOLD = 75;          // ambang snap
+    const SNAP_THRESHOLD = 90;          // ← ambang pemicu, 90%
     const FULL_PERCENT = 100;           // posisi fullscreen
-    const MIN_PERCENT = 3;              // minimal saat ditarik ke bawah
+    const MIN_PERCENT = 3;              // minimal saat ditarik
 
     function onDown(e) {
       isDragging = true;
@@ -399,7 +397,7 @@
       if (!isDragging) return;
 
       const currentY = getY(e);
-      const deltaY = startY - currentY;   // positif = naik
+      const deltaY = startY - currentY;
       const vh = window.innerHeight;
       const newHeight = startHeight + deltaY;
       const percent = (newHeight / vh) * 100;
@@ -414,17 +412,14 @@
       isDragging = false;
       chatBox.classList.remove('dragging');
 
-      // ===== SNAP LOGIC =====
       const vh = window.innerHeight;
       const currentHeight = chatBox.getBoundingClientRect().height;
       const currentPercent = (currentHeight / vh) * 100;
 
       if (currentPercent > SNAP_THRESHOLD) {
-        // Lewat 75% → snap ke 100%
-        chatBox.style.height = FULL_PERCENT + '%';
+        chatBox.style.height = FULL_PERCENT + '%';   // snap full
       } else {
-        // ≤ 75% → snap balik ke 25%
-        chatBox.style.height = DEFAULT_PERCENT + '%';
+        chatBox.style.height = DEFAULT_PERCENT + '%'; // snap balik
       }
     }
 
