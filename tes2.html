@@ -133,7 +133,7 @@
   }
 
   /* ============================================
-     CHAT BOX
+     CHAT BOX — animasi geser DIPERCEPAT (0.25s)
      ============================================ */
   .chat-box {
     position: absolute;
@@ -145,7 +145,7 @@
     z-index: 100;
     display: flex;
     flex-direction: column;
-    transition: left 0.4s ease-out, width 0.4s ease-out;
+    transition: left 0.25s ease-out, width 0.25s ease-out;   /* ← dipercepat */
   }
   .chat-box.dragging { transition: none; }
 
@@ -243,7 +243,7 @@
   }
 
   /* ============================================
-     MODAL MENU — posisi: 10% dari kolom chat
+     MODAL MENU — jarak 15% dari tepi kanan
      ============================================ */
   .modal-overlay {
     display: none;
@@ -251,21 +251,18 @@
     inset: 0;
     background: transparent;
     z-index: 500;
-    /* Pakai positioning manual, bukan flex */
     pointer-events: none;
+    /* Kunci: bikin overlay nggak nge-blok, dan modal bisa animate */
   }
   .modal-overlay.open { display: block; }
 
   .modal {
     position: absolute;
-    /* Posisi: rata kanan, dengan jarak 10% lebar dari chat */
-    /* Chat ada di kiri (lebar 45%), jadi modal di kanan */
-    /* 100% - 10% (gap) - 35% (lebar modal) = 55% */
-    right: 3%;
+    right: 15%;                      /* ← 15% dari tepi kanan */
     bottom: 2%;
     width: 35%;
     height: 75%;
-    padding: 30px 26px 26px 26px;    /* ← padding: atas | kanan | bawah | kiri */
+    padding: 30px 16px 26px 16px;    /* ← padding kiri-kanan kecilin (16px) */
     background: rgba(15, 10, 6, 0.92);
     color: #f5e6c8;
     overflow: visible;
@@ -278,11 +275,12 @@
     transform: translateY(120%);
     opacity: 0;
     transition:
-      transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.05),
-      opacity 0.45s ease;
+      transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.05),
+      opacity 0.5s ease;
   }
 
-  .modal-overlay.open .modal {
+  /* Saat overlay "siap animasi" — trigger */
+  .modal-overlay.animate-in .modal {
     transform: translateY(0);
     opacity: 1;
   }
@@ -358,11 +356,8 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     align-items: stretch;
-    /* Tombol cuma 5px dari bingkai
-       Padding modal: 26px kiri-kanan
-       Padding content: 0 (langsung full) */
   }
 
   .modal-list-item {
@@ -373,15 +368,15 @@
     padding: 0 20px;
   }
   .modal-list-item .btn-teks {
-    font-size: 13px;
+    font-size: 12px;                 /* ← dari 13px */
     letter-spacing: 1.5px;
   }
   .modal-list-item.btn-svg {
-    height: 34px;
+    height: 28px;                    /* ← dari 34px */
   }
   .modal-list-item .btn-ujung-kiri,
   .modal-list-item .btn-ujung-kanan {
-    width: 16px;
+    width: 14px;                     /* ← dari 16px */
   }
 
   /* ============================================
@@ -608,7 +603,7 @@
     document.addEventListener('touchend', onUp);
 
     /* ============================================
-       MODAL MENU — 2 tahap animasi
+       MODAL MENU — 2 tahap animasi (yang benar)
        ============================================ */
     const modalOverlay = document.getElementById('modalOverlay');
     let modalTimer = null;
@@ -618,13 +613,25 @@
       clearTimeout(modalTimer);
       clearTimeout(chatTimer);
 
-      // TAHAP 1: chat geser kiri
+      // TAHAP 1: chat geser kiri (0.25s)
       chatBox.classList.add('shifted');
 
-      // TAHAP 2: tunggu chat sampai tujuan, baru modal muncul
+      // TAHAP 2: tunggu chat sampai tujuan (300ms), baru modal muncul
       modalTimer = setTimeout(function() {
+        // Set display: block DULU
         modalOverlay.classList.add('open');
-      }, 400);
+
+        // TRIK: paksa browser "reflow" sebelum trigger animasi
+        // Biar transisi dari translateY(120%) → translateY(0) beneran jalan
+        void modalOverlay.offsetHeight;
+
+        // BARU tambah class animate-in untuk trigger animasi
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            modalOverlay.classList.add('animate-in');
+          });
+        });
+      }, 300);
     }
 
     function closeModal() {
@@ -632,12 +639,13 @@
       clearTimeout(chatTimer);
 
       // TAHAP 1: modal hilang dulu (slide ke bawah)
-      modalOverlay.classList.remove('open');
+      modalOverlay.classList.remove('animate-in');
 
-      // TAHAP 2: tunggu modal hilang, baru chat balik
-      chatTimer = setTimeout(function() {
+      // TAHAP 2: tunggu modal hilang (500ms), baru hilangkan display & balikin chat
+      modalTimer = setTimeout(function() {
+        modalOverlay.classList.remove('open');
         chatBox.classList.remove('shifted');
-      }, 450);
+      }, 500);
     }
 
     // ESC = close
