@@ -27,11 +27,15 @@
     z-index: 1;
   }
 
-  /* ===== STAGE ===== */
+  /* ===== STAGE — di-scale oleh JS ===== */
   .stage {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Ukuran dasar — JS yang atur lebar & transform */
+    width: 600px;               /* default, JS akan override */
+    height: 300px;              /* tinggi dasar */
+    transform-origin: center center;
     z-index: 2;
   }
 
@@ -101,17 +105,17 @@
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
   }
 
-  /* ===== PLAT NAMA (di dalam .btn-wrap.kiri-atas) ===== */
+  /* ===== PLAT NAMA ===== */
   .plat-nama {
     position: absolute;
-    top: 5px;                    /* dari atas tombol kiri */
-    left: 155px;                 /* mulai dari kanan tombol */
+    top: 5px;
+    left: 155px;
     height: 38px;
     display: flex;
     align-items: stretch;
     z-index: 3;
     pointer-events: none;
-    white-space: nowrap;         /* biar nggak patah */
+    white-space: nowrap;
   }
 
   .plat-nama .ujung-kiri {
@@ -157,16 +161,17 @@
   }
 
   /* ===== RESPONSIF: LAYAR ≤ 2× TINGGI ===== */
+  /* (pakai calc aspect-ratio biar tetap jalan setelah di-scale) */
   @media (max-aspect-ratio: 2/1) {
     .btn-wrap.kiri-atas {
-      transform: translateX(-30%);       /* tombol kiri keluar */
+      transform: translateX(-30%);
     }
     .btn-wrap.kanan-atas {
-      transform: translateX(30%);        /* tombol kanan keluar */
+      transform: translateX(30%);
     }
   }
 
-  /* ===== LAYAR PERINGATAN PORTRAIT ===== */
+  /* ===== PORTRAIT ===== */
   .rotate-warning {
     display: none;
     position: fixed;
@@ -187,16 +192,8 @@
     animation: putar 1.6s ease-in-out infinite;
   }
 
-  .rotate-warning h2 {
-    font-size: 20px;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-
-  .rotate-warning p {
-    font-size: 14px;
-    color: #c9a55a;
-  }
+  .rotate-warning h2 { font-size: 20px; margin-bottom: 8px; letter-spacing: 1px; }
+  .rotate-warning p { font-size: 14px; color: #c9a55a; }
 
   @keyframes putar {
     0%   { transform: rotate(0deg); }
@@ -215,9 +212,9 @@
 
   <div class="bg"></div>
 
-  <div class="stage">
+  <div class="stage" id="stage">
 
-    <!-- ===== TOMBOL KIRI + PLAT NAMA (satu kesatuan) ===== -->
+    <!-- ===== TOMBOL KIRI + PLAT NAMA ===== -->
     <div class="btn-wrap kiri-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -227,7 +224,6 @@
       </svg>
       <div class="ikon"></div>
 
-      <!-- Plat nama — ikut tombol -->
       <div class="plat-nama">
         <div class="ujung-kiri"></div>
         <div class="tengah">
@@ -256,6 +252,39 @@
     <h2>PUTAR PERANGKAT</h2>
     <p>Halaman ini hanya bisa dibuka dalam mode landscape</p>
   </div>
+
+  <!-- ===== SCRIPT AUTO-SCALE ===== -->
+  <script>
+    // Tinggi dasar web (di sini ornamen akan tampil ukuran "aslinya")
+    const BASE_HEIGHT = 300;
+
+    function resizeStage() {
+      const stage = document.getElementById('stage');
+      if (!stage) return;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
+      // Skala = tinggi layar / tinggi dasar
+      const scale = vh / BASE_HEIGHT;
+
+      // Lebar stage = lebar layar / scale (biar pas setelah di-scale)
+      const stageWidth = vw / scale;
+
+      // Set ukuran stage
+      stage.style.width = stageWidth + 'px';
+      stage.style.height = BASE_HEIGHT + 'px';
+
+      // Posisikan di tengah & scale
+      stage.style.transform =
+        'translate(-50%, -50%) scale(' + scale + ')';
+    }
+
+    // Jalankan saat load & saat resize
+    window.addEventListener('load', resizeStage);
+    window.addEventListener('resize', resizeStage);
+    window.addEventListener('orientationchange', resizeStage);
+  </script>
 
 </body>
 </html>
