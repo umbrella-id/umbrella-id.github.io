@@ -38,7 +38,7 @@
     z-index: 2;
   }
 
-  /* ===== WRAPPER TOMBOL ===== */
+  /* ===== TOMBOL ===== */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -166,29 +166,33 @@
     left: 25%;
     width: 50%;
     height: 25%;
-    min-height: 20px;              /* collapsed — cuma beberapa pixel */
     max-height: 100%;
-    background: rgba(10, 8, 5, 0.75);   /* ← kotak hitam semi transparan */
-    /* tanpa border, tanpa rounded */
-    z-index: 100;                  /* ← di atas stage, tapi di bawah modal */
+    background: rgba(10, 8, 5, 0.75);
+    z-index: 100;
     display: flex;
     flex-direction: column;
     pointer-events: auto;
+    /* Animasi snap halus */
+    transition: height 0.25s ease-out;
   }
 
-  /* ===== AREA DRAG (TEPI ATAS CHAT) ===== */
-  /* Ini yang di-drag. Warnanya sama kayak chat, transparan, jadi nggak kelihatan */
+  /* Saat sedang di-drag — matikan transisi biar responsif */
+  .chat-box.dragging {
+    transition: none;
+  }
+
+  /* ===== AREA DRAG ===== */
   .chat-drag {
     position: absolute;
-    top: -10px;                     /* naik dikit di atas chat */
+    top: -10px;
     left: 0;
     width: 100%;
-    height: 20px;                   /* area sentuh lebih tebal biar gampang */
+    height: 20px;
     cursor: ns-resize;
     z-index: 1;
   }
 
-  /* Isi chat */
+  /* ===== ISI CHAT ===== */
   .chat-body {
     flex: 1;
     overflow-y: auto;
@@ -196,7 +200,6 @@
     color: #e0d5b8;
     font-size: 13px;
     line-height: 1.5;
-    transition: opacity 0.2s ease;
   }
 
   .chat-line {
@@ -210,11 +213,8 @@
     margin-right: 6px;
   }
 
-  .chat-text {
-    color: #e0d5b8;
-  }
+  .chat-text { color: #e0d5b8; }
 
-  /* Scrollbar tipis ala game */
   .chat-body::-webkit-scrollbar { width: 4px; }
   .chat-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
   .chat-body::-webkit-scrollbar-thumb {
@@ -271,7 +271,6 @@
 
   <div class="stage" id="stage">
 
-    <!-- TOMBOL KIRI + PLAT NAMA -->
     <div class="btn-wrap kiri-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -290,7 +289,6 @@
       </div>
     </div>
 
-    <!-- TOMBOL KANAN -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -305,11 +303,8 @@
 
   <!-- ===== CHAT BOX ===== -->
   <div class="chat-box" id="chatBox">
-
-    <!-- Area drag di tepi atas (transparan, nggak kelihatan) -->
     <div class="chat-drag" id="chatDrag"></div>
 
-    <!-- Isi chat -->
     <div class="chat-body" id="chatBody">
       <div class="chat-line">
         <span class="chat-name">[Guild]:</span>
@@ -348,7 +343,6 @@
         <span class="chat-text">Siap hadir</span>
       </div>
     </div>
-
   </div>
 
   <!-- ===== PERINGATAN PORTRAIT ===== -->
@@ -380,7 +374,7 @@
     window.addEventListener('resize', resizeStage);
     window.addEventListener('orientationchange', resizeStage);
 
-    // ===== CHAT DRAG =====
+    // ===== CHAT DRAG + SNAP =====
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
 
@@ -388,14 +382,16 @@
     let startY = 0;
     let startHeight = 0;
 
-    const MIN_PERCENT = 3;              // collapsed
-    const MAX_PERCENT = 100;
+    const DEFAULT_PERCENT = 25;         // posisi awal
+    const SNAP_THRESHOLD = 75;          // ambang snap
+    const FULL_PERCENT = 100;           // posisi fullscreen
+    const MIN_PERCENT = 3;              // minimal saat ditarik ke bawah
 
     function onDown(e) {
       isDragging = true;
       startY = getY(e);
       startHeight = chatBox.getBoundingClientRect().height;
-      chatBox.style.transition = 'none';
+      chatBox.classList.add('dragging');
       e.preventDefault();
     }
 
@@ -403,11 +399,11 @@
       if (!isDragging) return;
 
       const currentY = getY(e);
-      const deltaY = startY - currentY;
+      const deltaY = startY - currentY;   // positif = naik
       const vh = window.innerHeight;
       const newHeight = startHeight + deltaY;
       const percent = (newHeight / vh) * 100;
-      const clamped = Math.max(MIN_PERCENT, Math.min(MAX_PERCENT, percent));
+      const clamped = Math.max(MIN_PERCENT, Math.min(FULL_PERCENT, percent));
 
       chatBox.style.height = clamped + '%';
       e.preventDefault();
@@ -416,23 +412,33 @@
     function onUp() {
       if (!isDragging) return;
       isDragging = false;
-      chatBox.style.transition = '';
+      chatBox.classList.remove('dragging');
+
+      // ===== SNAP LOGIC =====
+      const vh = window.innerHeight;
+      const currentHeight = chatBox.getBoundingClientRect().height;
+      const currentPercent = (currentHeight / vh) * 100;
+
+      if (currentPercent > SNAP_THRESHOLD) {
+        // Lewat 75% → snap ke 100%
+        chatBox.style.height = FULL_PERCENT + '%';
+      } else {
+        // ≤ 75% → snap balik ke 25%
+        chatBox.style.height = DEFAULT_PERCENT + '%';
+      }
     }
 
     function getY(e) {
       return e.clientY || (e.touches && e.touches[0].clientY) || 0;
     }
 
-    // Mouse
     chatDrag.addEventListener('mousedown', onDown);
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
 
-    // Touch
     chatDrag.addEventListener('touchstart', onDown, { passive: false });
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
-
   </script>
 
 </body>
