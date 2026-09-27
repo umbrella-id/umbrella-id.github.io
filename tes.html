@@ -101,18 +101,19 @@
   }
 
   /* ===== PLAT NAMA (IGN) ===== */
+  /* Wrapper setinggi ornamen penuh */
   .plat-nama {
     position: absolute;
     top: 18px;
     left: 170px;
-    height: 38px;
+    height: 38px;                    /* tinggi ornamen (penuh) */
     display: flex;
-    align-items: stretch;
+    align-items: center;             /* semua item center vertikal */
     z-index: 3;
     pointer-events: none;
   }
 
-  /* Ujung kiri (SVG_IGN-L) — di ATAS tengah */
+  /* Ujung kiri (SVG_IGN-L) — full tinggi ornamen */
   .plat-nama .ujung-kiri {
     width: 24px;
     height: 100%;
@@ -120,26 +121,28 @@
     background-size: 100% 100%;
     flex-shrink: 0;
     position: relative;
-    z-index: 2;                     /* ← di atas tengah */
+    z-index: 2;
   }
 
-  /* Tengah — mundur ke belakang, ditarik ke dalam kiri-kanan
-     biar ujung SVG menimpa di atasnya */
+  /* Tengah — 50% tinggi, kapsul, masuk ke dalam ornamen */
   .plat-nama .tengah {
-    height: 100%;
+    height: 50%;                     /* ← 50% dari tinggi ornamen */
     display: flex;
     align-items: center;
     padding: 0 18px;
     background: rgba(15, 10, 6, 0.75);
     border-top: 1px solid rgba(201, 165, 90, 0.6);
     border-bottom: 1px solid rgba(201, 165, 90, 0.6);
+    /* Kapsul: rounded kiri & kanan */
+    border-radius: 999px;
+    /* Geser ke kiri & kanan supaya ornamen nutupin tepinya */
+    margin-left: -14px;
+    margin-right: -14px;
     position: relative;
-    z-index: 1;                     /* ← di bawah ujung */
-    margin-left: -8px;              /* ← masuk ke kiri, ketutup ujung kiri */
-    margin-right: -8px;             /* ← masuk ke kanan, ketutup ujung kanan */
+    z-index: 1;
   }
 
-  /* Ujung kanan (SVG_IGN-R) — di ATAS tengah */
+  /* Ujung kanan (SVG_IGN-R) — full tinggi ornamen */
   .plat-nama .ujung-kanan {
     width: 24px;
     height: 100%;
@@ -147,13 +150,13 @@
     background-size: 100% 100%;
     flex-shrink: 0;
     position: relative;
-    z-index: 2;                     /* ← di atas tengah */
+    z-index: 2;
   }
 
   /* Teks nama */
   .plat-nama .teks-nama {
     color: #f5e6c8;
-    font-size: 15px;
+    font-size: 13px;                 /* agak kecil biar proporsional */
     font-weight: 600;
     letter-spacing: 1.5px;
     white-space: nowrap;
