@@ -101,18 +101,19 @@
   }
 
   /* ===== PLAT NAMA (IGN) ===== */
+  /* Wrapper pakai position relative, biar ujung & tengah bisa absolute */
   .plat-nama {
     position: absolute;
     top: 18px;
     left: 170px;
-    height: 38px;                    /* tinggi ornamen penuh */
-    display: flex;
-    align-items: center;
+    height: 38px;              /* tinggi ornamen penuh */
+    display: flex;             /* untuk hitung lebar otomatis */
+    align-items: stretch;
     z-index: 3;
     pointer-events: none;
   }
 
-  /* Ujung kiri (SVG_IGN-L) — full tinggi */
+  /* Ujung kiri (SVG_IGN-L) — full tinggi, di ATAS */
   .plat-nama .ujung-kiri {
     width: 24px;
     height: 100%;
@@ -120,38 +121,35 @@
     background-size: 100% 100%;
     flex-shrink: 0;
     position: relative;
-    z-index: 2;
+    z-index: 3;                 /* ← paling atas */
   }
 
-  /* Tengah — kapsul, 50% tinggi, turun 5%-55%, transparan 50% */
+  /* Tengah — kapsul, diposisikan absolute biar bisa nongol ke kiri & kanan
+     tanpa menggeser ornamen */
   .plat-nama .tengah {
-    position: relative;
-    z-index: 1;
-
-    /* Posisi vertikal: 5% dari atas, 55% dari atas = tinggi efektif 50% */
     position: absolute;
+    /* Posisi vertikal: 5% dari atas, 45% dari bawah */
     top: 5%;
-    bottom: 45%;                     /* 100% - 55% = 45% dari bawah */
-    left: 0;
-    right: 0;
+    bottom: 45%;
+
+    /* Melebar ke kiri & kanan, biar tepinya nyelip di bawah ornamen */
+    left: -10px;               /* ← masuk ke kiri */
+    right: -10px;              /* ← masuk ke kanan */
 
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 40px;           /* biar teks nggak nempel tepi kapsul */
 
-    padding: 0 40px;                 /* padding besar biar teks nggak ketutup ornamen */
-    background: rgba(15, 10, 6, 0.5); /* ← transparansi 50% */
-
+    background: rgba(15, 10, 6, 0.5);   /* ← transparan 50% */
     border-top: 1px solid rgba(201, 165, 90, 0.5);
     border-bottom: 1px solid rgba(201, 165, 90, 0.5);
     border-radius: 999px;
 
-    /* Ornamen masuk ~70% → margin negatif besar */
-    margin-left: -16px;
-    margin-right: -16px;
+    z-index: 1;                /* ← di bawah ornamen */
   }
 
-  /* Ujung kanan (SVG_IGN-R) — full tinggi */
+  /* Ujung kanan (SVG_IGN-R) — full tinggi, di ATAS */
   .plat-nama .ujung-kanan {
     width: 24px;
     height: 100%;
@@ -159,7 +157,7 @@
     background-size: 100% 100%;
     flex-shrink: 0;
     position: relative;
-    z-index: 2;
+    z-index: 3;                 /* ← paling atas */
   }
 
   /* Teks nama */
