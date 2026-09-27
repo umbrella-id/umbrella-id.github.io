@@ -103,8 +103,9 @@
   /* ===== PLAT NAMA (3 SVG) ===== */
   .plat-nama {
     position: absolute;
-    top: 5px;                     /* ← 5px dari tepi atas */
-    left: 180px;                  /* ← nempel ke ujung kanan tombol */
+    top: 5px;
+    left: 180px;                 /* ← kembali ke 180px */
+    margin-left: -25px;          /* ← geser kiri 25px */
     height: 38px;
     display: flex;
     align-items: stretch;
@@ -143,14 +144,14 @@
     flex-grow: 0;
   }
 
-  /* Teks nama — titik tengah di 40% dari atas */
+  /* Teks nama — font diperbesar */
   .plat-nama .teks-nama {
     position: absolute;
-    top: 40%;                   /* ← 40% */
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #f5e6c8;
-    font-size: 13px;
+    font-size: 15px;              /* ← dari 13px jadi 15px */
     font-weight: 600;
     letter-spacing: 1.5px;
     white-space: nowrap;
