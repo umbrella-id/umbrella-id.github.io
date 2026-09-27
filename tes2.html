@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Guild Toram</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <!-- ===== STAGE ===== -->
+  <div class="stage" id="stage">
+
+    <!-- Tombol kiri + plat nama -->
+    <div class="btn-wrap kiri-atas" onclick="openModal('info')">
+      <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+        <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+      </svg>
+      <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+        <image href="Assets/SVG_BT-MENU.svg" width="200" height="80"/>
+      </svg>
+      <div class="ikon"></div>
+      <div class="plat-nama">
+        <div class="ujung-kiri"></div>
+        <div class="tengah"><span class="teks-nama">PLAYER</span></div>
+        <div class="ujung-kanan"></div>
+      </div>
+    </div>
+
+    <!-- Tombol kanan -->
+    <div class="btn-wrap kanan-atas">
+      <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+        <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+      </svg>
+      <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+        <image href="Assets/SVG_BT-MENU.svg" width="200" height="80"/>
+      </svg>
+      <div class="ikon"></div>
+    </div>
+
+  </div>
+
+  <!-- ===== CHAT BOX ===== -->
+  <div class="chat-box" id="chatBox">
+    <div class="chat-drag" id="chatDrag"></div>
+    <div class="chat-body">
+      <div class="chat-line"><span class="chat-name">[Guild]:</span><span class="chat-text">Selamat datang di guild UMBRELLA!</span></div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL OVERLAY ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+
+      <!-- Bingkai (layer belakang, punya tonjolan keluar) -->
+      <div class="modal-frame">
+
+        <!-- Atas: pojok + garis H + pojok -->
+        <div class="frame-h atas">
+          <div class="pojok pojok-ki"></div>
+          <div class="garis-h"></div>
+          <div class="pojok pojok-ka"></div>
+        </div>
+
+        <!-- Bawah -->
+        <div class="frame-h bawah">
+          <div class="pojok pojok-kib"></div>
+          <div class="garis-h"></div>
+          <div class="pojok pojok-kab"></div>
+        </div>
+
+        <!-- Kiri -->
+        <div class="frame-v kiri">
+          <div class="pojok pojok-kv"></div>
+          <div class="garis-v"></div>
+          <div class="pojok pojok-kvb"></div>
+        </div>
+
+        <!-- Kanan -->
+        <div class="frame-v kanan">
+          <div class="pojok pojok-kav"></div>
+          <div class="garis-v"></div>
+          <div class="pojok pojok-kavb"></div>
+        </div>
+
+      </div>
+
+      <!-- Konten (layer depan) -->
+      <div class="modal-header" id="modalTitle">INFO SERIKAT</div>
+      <div class="modal-body" id="modalBody">
+        <p>Selamat datang di guild <strong>UMBRELLA</strong>!</p>
+        <p style="margin-top: 8px;">Level guild: 10</p>
+        <p>Member: 25 / 30</p>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal()">Tutup</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PORTRAIT -->
+  <div class="rotate-warning">
+    <div class="ikon-putar">📱</div>
+    <h2>PUTAR PERANGKAT</h2>
+    <p>Halaman ini hanya bisa dibuka dalam mode landscape</p>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
