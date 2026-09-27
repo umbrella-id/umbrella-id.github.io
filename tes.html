@@ -101,19 +101,18 @@
   }
 
   /* ===== PLAT NAMA (IGN) ===== */
-  /* Wrapper setinggi ornamen penuh */
   .plat-nama {
     position: absolute;
     top: 18px;
     left: 170px;
-    height: 38px;                    /* tinggi ornamen (penuh) */
+    height: 38px;                    /* tinggi ornamen penuh */
     display: flex;
-    align-items: center;             /* semua item center vertikal */
+    align-items: center;
     z-index: 3;
     pointer-events: none;
   }
 
-  /* Ujung kiri (SVG_IGN-L) — full tinggi ornamen */
+  /* Ujung kiri (SVG_IGN-L) — full tinggi */
   .plat-nama .ujung-kiri {
     width: 24px;
     height: 100%;
@@ -124,25 +123,35 @@
     z-index: 2;
   }
 
-  /* Tengah — 50% tinggi, kapsul, masuk ke dalam ornamen */
+  /* Tengah — kapsul, 50% tinggi, turun 5%-55%, transparan 50% */
   .plat-nama .tengah {
-    height: 50%;                     /* ← 50% dari tinggi ornamen */
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    background: rgba(15, 10, 6, 0.75);
-    border-top: 1px solid rgba(201, 165, 90, 0.6);
-    border-bottom: 1px solid rgba(201, 165, 90, 0.6);
-    /* Kapsul: rounded kiri & kanan */
-    border-radius: 999px;
-    /* Geser ke kiri & kanan supaya ornamen nutupin tepinya */
-    margin-left: -14px;
-    margin-right: -14px;
     position: relative;
     z-index: 1;
+
+    /* Posisi vertikal: 5% dari atas, 55% dari atas = tinggi efektif 50% */
+    position: absolute;
+    top: 5%;
+    bottom: 45%;                     /* 100% - 55% = 45% dari bawah */
+    left: 0;
+    right: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 40px;                 /* padding besar biar teks nggak ketutup ornamen */
+    background: rgba(15, 10, 6, 0.5); /* ← transparansi 50% */
+
+    border-top: 1px solid rgba(201, 165, 90, 0.5);
+    border-bottom: 1px solid rgba(201, 165, 90, 0.5);
+    border-radius: 999px;
+
+    /* Ornamen masuk ~70% → margin negatif besar */
+    margin-left: -16px;
+    margin-right: -16px;
   }
 
-  /* Ujung kanan (SVG_IGN-R) — full tinggi ornamen */
+  /* Ujung kanan (SVG_IGN-R) — full tinggi */
   .plat-nama .ujung-kanan {
     width: 24px;
     height: 100%;
@@ -156,7 +165,7 @@
   /* Teks nama */
   .plat-nama .teks-nama {
     color: #f5e6c8;
-    font-size: 13px;                 /* agak kecil biar proporsional */
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 1.5px;
     white-space: nowrap;
