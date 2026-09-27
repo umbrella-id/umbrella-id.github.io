@@ -18,6 +18,9 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* ============================================
+     BACKGROUND
+     ============================================ */
   .bg {
     position: fixed;
     inset: 0;
@@ -26,6 +29,9 @@
     z-index: 1;
   }
 
+  /* ============================================
+     STAGE — semua UI di dalam sini, ikut zoom
+     ============================================ */
   .stage {
     position: absolute;
     top: 50%;
@@ -36,7 +42,9 @@
     z-index: 2;
   }
 
-  /* ===== TOMBOL MENU ===== */
+  /* ============================================
+     TOMBOL MENU (kiri & kanan atas)
+     ============================================ */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -64,13 +72,18 @@
     transform-origin: center;
     transition: transform 0.1s ease, filter 0.15s ease;
   }
+
+  /* Hover — naik kecil, tanpa glow */
   .btn-wrap:hover .svg-tombol {
-    filter: brightness(1.25) drop-shadow(0 0 10px rgba(107, 189, 232, 0.8));
+    transform: translate(-50%, -52%);
   }
+
+  /* Tekan — turun + mengecil + gelap */
   .btn-wrap:active .svg-tombol {
-    transform: translate(-50%, -50%) scale(0.9);
-    filter: brightness(0.75) drop-shadow(0 0 4px rgba(107, 189, 232, 0.4));
+    transform: translate(-50%, -48%) scale(0.95);
+    filter: brightness(0.75);
   }
+
   .btn-wrap .ikon {
     position: absolute;
     top: 50%;
@@ -85,7 +98,9 @@
     z-index: 3;
   }
 
-  /* ===== PLAT NAMA ===== */
+  /* ============================================
+     PLAT NAMA (IGN)
+     ============================================ */
   .plat-nama {
     position: absolute;
     top: 5px;
@@ -132,7 +147,9 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* ===== CHAT BOX ===== */
+  /* ============================================
+     CHAT BOX
+     ============================================ */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -175,23 +192,26 @@
   }
 
   /* ============================================
-     TOMBOL SVG (REUSABLE) — 3 SVG
+     TOMBOL SVG (REUSABLE)
      ============================================ */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
-    height: 24px;                /* tinggi tombol */
+    height: 24px;
     cursor: pointer;
     user-select: none;
     transition: transform 0.1s ease, filter 0.15s ease;
+    isolation: isolate;
   }
 
   .btn-svg .btn-ujung-kiri {
-    width: 12px;                 /* lebar ujung kiri (rasio 15:30 → 12:24) */
+    width: 12px;
     height: 100%;
     background: url('Assets/SVG_BTN-L.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .btn-svg .btn-tengah {
@@ -204,15 +224,20 @@
     background: url('Assets/SVG_BTN-M.svg') no-repeat center center;
     background-size: 100% 100%;
     position: relative;
+    z-index: 2;
     min-width: 40px;
+    margin-left: -1px;
+    margin-right: -1px;
   }
 
   .btn-svg .btn-ujung-kanan {
-    width: 12px;                 /* lebar ujung kanan */
+    width: 12px;
     height: 100%;
     background: url('Assets/SVG_BTN-R.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .btn-svg .btn-teks {
@@ -225,18 +250,20 @@
     font-family: inherit;
   }
 
-  /* Hover */
+  /* Hover — tanpa glow, cuma naik 1px */
   .btn-svg:hover {
-    filter: brightness(1.2) drop-shadow(0 0 6px rgba(107, 189, 232, 0.7));
+    transform: translateY(-1px);
   }
 
-  /* Tekan */
+  /* Tekan — turun 1px + mengecil + gelap */
   .btn-svg:active {
-    transform: scale(0.95);
-    filter: brightness(0.8);
+    transform: translateY(1px) scale(0.97);
+    filter: brightness(0.75);
   }
 
-  /* ===== MODAL ===== */
+  /* ============================================
+     MODAL
+     ============================================ */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -264,7 +291,7 @@
     to   { opacity: 1; transform: scale(1); }
   }
 
-  /* ===== BINGKAI ===== */
+  /* ===== BINGKAI MODAL ===== */
   .modal-frame {
     position: absolute;
     top: 0;
@@ -306,7 +333,7 @@
     background-size: 100% 100%;
   }
 
-  /* ===== FLIP POJOK ===== */
+  /* Flip pojok — mirror, bukan rotate */
   .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
   .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
   .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
@@ -314,7 +341,7 @@
   .frame-v.kanan .pojok:nth-child(1) { transform: scaleX(-1); }
   .frame-v.kanan .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
 
-  /* ===== GARIS ===== */
+  /* Garis */
   .garis-h {
     flex-grow: 1;
     height: 100%;
@@ -386,13 +413,17 @@
     opacity: 0.9;
   }
 
-  /* ===== RESPONSIF ===== */
+  /* ============================================
+     RESPONSIF — tombol keluar bingkai
+     ============================================ */
   @media (max-aspect-ratio: 22/10) {
     .btn-wrap.kiri-atas { transform: translateX(-30%); }
     .btn-wrap.kanan-atas { transform: translateX(30%); }
   }
 
-  /* ===== PORTRAIT ===== */
+  /* ============================================
+     PORTRAIT WARNING
+     ============================================ */
   .rotate-warning {
     display: none;
     position: fixed;
@@ -429,9 +460,12 @@
 
   <div class="bg"></div>
 
+  <!-- ============================================
+       STAGE — semua UI di dalam sini
+       ============================================ -->
   <div class="stage" id="stage">
 
-    <!-- TOMBOL KIRI + PLAT NAMA -->
+    <!-- ===== TOMBOL KIRI + PLAT NAMA ===== -->
     <div class="btn-wrap kiri-atas" id="btnKiri">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -440,6 +474,7 @@
         <image href="Assets/SVG_BTN-MENU.svg" width="200" height="80"/>
       </svg>
       <div class="ikon"></div>
+
       <div class="plat-nama">
         <div class="ujung-kiri"></div>
         <div class="tengah"><span class="teks-nama">PLAYER</span></div>
@@ -447,7 +482,7 @@
       </div>
     </div>
 
-    <!-- TOMBOL KANAN -->
+    <!-- ===== TOMBOL KANAN ===== -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -458,20 +493,22 @@
       <div class="ikon"></div>
     </div>
 
-    <!-- CHAT BOX -->
+    <!-- ===== CHAT BOX ===== -->
     <div class="chat-box" id="chatBox">
       <div class="chat-drag" id="chatDrag"></div>
       <div class="chat-body">
         <div class="chat-line"><span class="chat-name">[Guild]:</span><span class="chat-text">Selamat datang di guild UMBRELLA!</span></div>
         <div class="chat-line"><span class="chat-name">Player1:</span><span class="chat-text">Halo semua</span></div>
         <div class="chat-line"><span class="chat-name">Player2:</span><span class="chat-text">Ayo raid malam ini</span></div>
+        <div class="chat-line"><span class="chat-name">Player3:</span><span class="chat-text">Siap!</span></div>
       </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal">
 
+        <!-- Bingkai -->
         <div class="modal-frame">
           <div class="frame-h atas">
             <div class="pojok"></div>
@@ -495,21 +532,21 @@
           </div>
         </div>
 
+        <!-- Isi -->
         <div class="modal-header">INFO SERIKAT</div>
         <div class="modal-body">
           <p>Selamat datang di guild <strong>UMBRELLA</strong>!</p>
           <p style="margin-top: 6px;">Level guild: 10</p>
           <p>Member: 25 / 30</p>
         </div>
-        <div class="modal-footer">
 
-          <!-- TOMBOL SVG (pakai 3 file) -->
+        <!-- Footer + Tombol SVG -->
+        <div class="modal-footer">
           <div class="btn-svg" onclick="closeModal()">
             <div class="btn-ujung-kiri"></div>
             <div class="btn-tengah"><span class="btn-teks">TUTUP</span></div>
             <div class="btn-ujung-kanan"></div>
           </div>
-
         </div>
 
       </div>
@@ -517,7 +554,7 @@
 
   </div>
 
-  <!-- PORTRAIT -->
+  <!-- ===== PORTRAIT WARNING ===== -->
   <div class="rotate-warning">
     <div class="ikon-putar">📱</div>
     <h2>PUTAR PERANGKAT</h2>
@@ -525,6 +562,9 @@
   </div>
 
   <script>
+    /* ============================================
+       AUTO SCALE STAGE
+       ============================================ */
     const BASE_HEIGHT = 300;
 
     function resizeStage() {
@@ -542,11 +582,17 @@
     window.addEventListener('resize', resizeStage);
     window.addEventListener('orientationchange', resizeStage);
 
-    // CHAT DRAG
+    /* ============================================
+       CHAT DRAG + SNAP
+       ============================================ */
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
     let isDragging = false, startY = 0, startHeight = 0;
-    const DEFAULT_PERCENT = 25, SNAP_THRESHOLD = 90, FULL_PERCENT = 100, MIN_PERCENT = 3;
+
+    const DEFAULT_PERCENT = 25;
+    const SNAP_THRESHOLD = 90;
+    const FULL_PERCENT = 100;
+    const MIN_PERCENT = 3;
 
     function getY(e) {
       return e.clientY || (e.touches && e.touches[0].clientY) || 0;
@@ -583,17 +629,22 @@
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
 
-    // MODAL
+    /* ============================================
+       MODAL
+       ============================================ */
     const modalOverlay = document.getElementById('modalOverlay');
+
     function openModal() { modalOverlay.classList.add('open'); }
     function closeModal() { modalOverlay.classList.remove('open'); }
 
     modalOverlay.addEventListener('click', function(e) {
       if (e.target === modalOverlay) closeModal();
     });
+
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeModal();
     });
+
     document.getElementById('btnKiri').addEventListener('click', function(e) {
       if (e.target.closest('.plat-nama')) return;
       openModal();
