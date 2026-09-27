@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guild Toram</title>
+<style>
+
+  /* ===== RESET DASAR ===== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+    background: #000;
+  }
+
+  /* ===== BACKGROUND GAME ===== */
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: url('Assets/Background.png') no-repeat center center;
+    background-size: cover;
+    z-index: 1;
+  }
+
+  /* ===== STAGE (area utama, rasio landscape) ===== */
+  .stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+  }
+
+  /* ===== ORNAMEN MENU ===== */
+  /* Ini gambar SVG_BG-MENU.svg sebagai latar belakang tombol */
+  .menu-btn {
+    position: absolute;
+    width: 280px;          /* ukuran ornamen */
+    height: 80px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* posisi tengah */
+    background: url('Assets/SVG_BG-MENU.svg') no-repeat center center;
+    background-size: 100% 100%;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* ===== TOMBOL (SVG_BT-MENU.svg) ===== */
+  /* Ini tombol yang bisa ditekan, di atas ornamen */
+  .menu-btn-inner {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url('Assets/SVG_BT-MENU.svg') no-repeat center center;
+    background-size: 100% 100%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  /* Efek tekan */
+  .menu-btn-inner:active {
+    transform: translate(-50%, -50%) scale(0.95);
+    filter: brightness(0.8);
+  }
+
+  /* Efek hover */
+  .menu-btn-inner:hover {
+    filter: brightness(1.2) drop-shadow(0 0 12px rgba(107, 189, 232, 0.8));
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- Background game -->
+  <div class="bg"></div>
+
+  <!-- Stage / area utama -->
+  <div class="stage">
+
+    <!-- Ornamen menu -->
+    <div class="menu-btn">
+      <!-- Tombol yang bisa diklik -->
+      <button class="menu-btn-inner" onclick="alert('Tombol diklik!')"></button>
+    </div>
+
+  </div>
+
+</body>
+</html>
