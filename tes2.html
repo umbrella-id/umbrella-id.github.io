@@ -176,14 +176,14 @@
   }
 
   /* ========================================
-     ===== MODAL =====
+     ===== MODAL (di dalam stage) =====
      ======================================== */
   .modal-overlay {
     display: none;
-    position: fixed;
+    position: absolute;         /* ← absolute, bukan fixed */
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
+    z-index: 500;
     align-items: center;
     justify-content: center;
   }
@@ -191,11 +191,11 @@
 
   .modal {
     position: relative;
-    min-width: 320px;
-    min-height: 180px;
+    min-width: 220px;
+    min-height: 120px;
     background: rgba(15, 10, 6, 0.92);
     color: #f5e6c8;
-    padding: 34px 38px 28px 38px;
+    padding: 26px 30px 22px 30px;
     overflow: visible;
     animation: modalIn 0.25s ease-out;
   }
@@ -236,7 +236,7 @@
   .frame-v.kiri  { left: 0; }
   .frame-v.kanan { right: 0; }
 
-  /* Pojok */
+  /* Pojok — normal (kiri-atas) */
   .pojok {
     width: 24px;
     height: 24px;
@@ -245,12 +245,35 @@
     background-size: 100% 100%;
   }
 
-  /* Flip pojok sesuai posisi */
-  .frame-h.bawah .pojok { transform: scaleY(-1); }
-  .frame-v .pojok:last-child { transform: scaleY(-1); }
-  .frame-h .pojok:last-child { transform: scaleX(-1); }
-  .frame-h.bawah .pojok:last-child { transform: scale(-1); }
-  .frame-v.kanan .pojok:last-child { transform: scale(-1); }
+  /* ===== FLIP PAKAI MIRROR (scaleX / scaleY) ===== */
+
+  /* Kanan atas: mirror horizontal */
+  .frame-h.atas .pojok:nth-child(3) {
+    transform: scaleX(-1);
+  }
+
+  /* Kiri bawah: mirror vertikal */
+  .frame-h.bawah .pojok:nth-child(1) {
+    transform: scaleY(-1);
+  }
+
+  /* Kanan bawah: mirror dua-duanya */
+  .frame-h.bawah .pojok:nth-child(3) {
+    transform: scaleX(-1) scaleY(-1);
+  }
+
+  /* Frame vertikal kiri: pojok atas normal, pojok bawah mirror vertikal */
+  .frame-v.kiri .pojok:nth-child(3) {
+    transform: scaleY(-1);
+  }
+
+  /* Frame vertikal kanan: pojok atas mirror horizontal, bawah mirror dua-duanya */
+  .frame-v.kanan .pojok:nth-child(1) {
+    transform: scaleX(-1);
+  }
+  .frame-v.kanan .pojok:nth-child(3) {
+    transform: scaleX(-1) scaleY(-1);
+  }
 
   /* Garis */
   .garis-h {
@@ -269,10 +292,10 @@
   /* ===== ISI MODAL ===== */
   .modal-header {
     position: relative;
-    padding-bottom: 14px;
-    margin-bottom: 16px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
     text-align: center;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 2px;
     color: #f0d78c;
@@ -280,7 +303,7 @@
     z-index: 2;
   }
 
-  /* Pemisah header — pakai MODAL-HEADER.svg */
+  /* Pemisah header */
   .modal-header::after {
     content: '';
     position: absolute;
@@ -294,7 +317,7 @@
   }
 
   .modal-body {
-    font-size: 14px;
+    font-size: 11px;
     line-height: 1.6;
     color: #e0d5b8;
     text-align: center;
@@ -304,15 +327,15 @@
 
   .modal-footer {
     position: relative;
-    margin-top: 20px;
-    padding-top: 14px;
+    margin-top: 14px;
+    padding-top: 10px;
     display: flex;
     justify-content: center;
     gap: 12px;
     z-index: 2;
   }
 
-  /* Pemisah footer — pakai MODAL-HEADER.svg */
+  /* Pemisah footer */
   .modal-footer::before {
     content: '';
     position: absolute;
@@ -328,15 +351,15 @@
   .modal-btn {
     background: linear-gradient(to bottom, #5ba8d8, #1d5a86);
     border: 1px solid #8bc6e8;
-    border-radius: 14px;
+    border-radius: 10px;
     color: #fff;
-    padding: 8px 24px;
-    font-size: 14px;
+    padding: 5px 16px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    box-shadow: 0 2px 0 #0d3a5a, 0 4px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 0 #0d3a5a, 0 3px 6px rgba(0,0,0,0.5);
     transition: all 0.15s;
   }
   .modal-btn:hover { filter: brightness(1.15); }
@@ -390,7 +413,7 @@
 
   <div class="stage" id="stage">
 
-    <!-- ===== TOMBOL KIRI (klik = buka modal) ===== -->
+    <!-- TOMBOL KIRI -->
     <div class="btn-wrap kiri-atas" id="btnKiri">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -406,7 +429,7 @@
       </div>
     </div>
 
-    <!-- ===== TOMBOL KANAN ===== -->
+    <!-- TOMBOL KANAN -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -417,9 +440,56 @@
       <div class="ikon"></div>
     </div>
 
+    <!-- ===== MODAL (di dalam stage, ikut scale) ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+
+        <div class="modal-frame">
+          <!-- Frame atas: pojok kiri | garis | pojok kanan -->
+          <div class="frame-h atas">
+            <div class="pojok"></div>
+            <div class="garis-h"></div>
+            <div class="pojok"></div>
+          </div>
+
+          <!-- Frame bawah -->
+          <div class="frame-h bawah">
+            <div class="pojok"></div>
+            <div class="garis-h"></div>
+            <div class="pojok"></div>
+          </div>
+
+          <!-- Frame kiri -->
+          <div class="frame-v kiri">
+            <div class="pojok"></div>
+            <div class="garis-v"></div>
+            <div class="pojok"></div>
+          </div>
+
+          <!-- Frame kanan -->
+          <div class="frame-v kanan">
+            <div class="pojok"></div>
+            <div class="garis-v"></div>
+            <div class="pojok"></div>
+          </div>
+        </div>
+
+        <div class="modal-header">INFO SERIKAT</div>
+        <div class="modal-body">
+          <p>Selamat datang di guild <strong>UMBRELLA</strong>!</p>
+          <p style="margin-top: 6px;">Level guild: 10</p>
+          <p>Member: 25 / 30</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn" onclick="closeModal()">Tutup</button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
-  <!-- ===== CHAT BOX ===== -->
+  <!-- CHAT BOX -->
   <div class="chat-box" id="chatBox">
     <div class="chat-drag" id="chatDrag"></div>
     <div class="chat-body">
@@ -427,51 +497,7 @@
     </div>
   </div>
 
-  <!-- ========================================
-       ===== MODAL =====
-       ======================================== -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-
-      <!-- BINGKAI -->
-      <div class="modal-frame">
-        <div class="frame-h atas">
-          <div class="pojok"></div>
-          <div class="garis-h"></div>
-          <div class="pojok"></div>
-        </div>
-        <div class="frame-h bawah">
-          <div class="pojok"></div>
-          <div class="garis-h"></div>
-          <div class="pojok"></div>
-        </div>
-        <div class="frame-v kiri">
-          <div class="pojok"></div>
-          <div class="garis-v"></div>
-          <div class="pojok"></div>
-        </div>
-        <div class="frame-v kanan">
-          <div class="pojok"></div>
-          <div class="garis-v"></div>
-          <div class="pojok"></div>
-        </div>
-      </div>
-
-      <!-- ISI -->
-      <div class="modal-header">INFO SERIKAT</div>
-      <div class="modal-body">
-        <p>Selamat datang di guild <strong>UMBRELLA</strong>!</p>
-        <p style="margin-top: 8px;">Level guild: 10</p>
-        <p>Member: 25 / 30</p>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-btn" onclick="closeModal()">Tutup</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ===== PERINGATAN PORTRAIT ===== -->
+  <!-- PORTRAIT -->
   <div class="rotate-warning">
     <div class="ikon-putar">📱</div>
     <h2>PUTAR PERANGKAT</h2>
@@ -544,19 +570,15 @@
     function openModal() { modalOverlay.classList.add('open'); }
     function closeModal() { modalOverlay.classList.remove('open'); }
 
-    // Klik overlay = close
     modalOverlay.addEventListener('click', function(e) {
       if (e.target === modalOverlay) closeModal();
     });
 
-    // ESC = close
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeModal();
     });
 
-    // ===== TOMBOL KIRI → buka modal =====
     document.getElementById('btnKiri').addEventListener('click', function(e) {
-      // Hindari kalau yang diklik adalah plat nama
       if (e.target.closest('.plat-nama')) return;
       openModal();
     });
