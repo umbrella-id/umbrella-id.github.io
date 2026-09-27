@@ -18,7 +18,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ===== BACKGROUND GAME ===== */
+  /* ===== BACKGROUND ===== */
   .bg {
     position: fixed;
     inset: 0;
@@ -44,7 +44,7 @@
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 0.3s ease;      /* ← animasi halus saat geser */
+    transition: transform 0.3s ease;
   }
 
   .btn-wrap.kiri-atas { top: 0; left: 0; }
@@ -101,17 +101,17 @@
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
   }
 
-  /* ===== PLAT NAMA ===== */
+  /* ===== PLAT NAMA (di dalam .btn-wrap.kiri-atas) ===== */
   .plat-nama {
     position: absolute;
-    top: 5px;
-    left: 180px;
-    margin-left: -25px;
+    top: 5px;                    /* dari atas tombol kiri */
+    left: 155px;                 /* mulai dari kanan tombol */
     height: 38px;
     display: flex;
     align-items: stretch;
     z-index: 3;
     pointer-events: none;
+    white-space: nowrap;         /* biar nggak patah */
   }
 
   .plat-nama .ujung-kiri {
@@ -157,13 +157,12 @@
   }
 
   /* ===== RESPONSIF: LAYAR ≤ 2× TINGGI ===== */
-  /* Tombol kiri-keluar bingkai 30%, tombol kanan-keluar bingkai 30% */
   @media (max-aspect-ratio: 2/1) {
     .btn-wrap.kiri-atas {
-      transform: translateX(-30%);       /* ← geser kiri 30% keluar */
+      transform: translateX(-30%);       /* tombol kiri keluar */
     }
     .btn-wrap.kanan-atas {
-      transform: translateX(30%);        /* ← geser kanan 30% keluar */
+      transform: translateX(30%);        /* tombol kanan keluar */
     }
   }
 
@@ -218,7 +217,7 @@
 
   <div class="stage">
 
-    <!-- ===== TOMBOL KIRI ATAS ===== -->
+    <!-- ===== TOMBOL KIRI + PLAT NAMA (satu kesatuan) ===== -->
     <div class="btn-wrap kiri-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -227,18 +226,18 @@
         <image href="Assets/SVG_BT-MENU.svg" width="200" height="80"/>
       </svg>
       <div class="ikon"></div>
-    </div>
 
-    <!-- ===== PLAT NAMA ===== -->
-    <div class="plat-nama">
-      <div class="ujung-kiri"></div>
-      <div class="tengah">
-        <span class="teks-nama">PLAYER</span>
+      <!-- Plat nama — ikut tombol -->
+      <div class="plat-nama">
+        <div class="ujung-kiri"></div>
+        <div class="tengah">
+          <span class="teks-nama">PLAYER</span>
+        </div>
+        <div class="ujung-kanan"></div>
       </div>
-      <div class="ujung-kanan"></div>
     </div>
 
-    <!-- ===== TOMBOL KANAN ATAS ===== -->
+    <!-- ===== TOMBOL KANAN ===== -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
