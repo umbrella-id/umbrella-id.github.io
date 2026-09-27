@@ -112,16 +112,19 @@
     pointer-events: none;
   }
 
-  /* Ujung kiri (SVG_IGN-L) */
+  /* Ujung kiri (SVG_IGN-L) — di ATAS tengah */
   .plat-nama .ujung-kiri {
     width: 24px;
     height: 100%;
     background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;                     /* ← di atas tengah */
   }
 
-  /* Tengah (CSS kotak semi-transparan) */
+  /* Tengah — mundur ke belakang, ditarik ke dalam kiri-kanan
+     biar ujung SVG menimpa di atasnya */
   .plat-nama .tengah {
     height: 100%;
     display: flex;
@@ -130,15 +133,21 @@
     background: rgba(15, 10, 6, 0.75);
     border-top: 1px solid rgba(201, 165, 90, 0.6);
     border-bottom: 1px solid rgba(201, 165, 90, 0.6);
+    position: relative;
+    z-index: 1;                     /* ← di bawah ujung */
+    margin-left: -8px;              /* ← masuk ke kiri, ketutup ujung kiri */
+    margin-right: -8px;             /* ← masuk ke kanan, ketutup ujung kanan */
   }
 
-  /* Ujung kanan (SVG_IGN-R) */
+  /* Ujung kanan (SVG_IGN-R) — di ATAS tengah */
   .plat-nama .ujung-kanan {
     width: 24px;
     height: 100%;
     background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;                     /* ← di atas tengah */
   }
 
   /* Teks nama */
@@ -213,7 +222,7 @@
       <div class="ikon"></div>
     </div>
 
-    <!-- ===== PLAT NAMA (di sebelah kanan tombol kiri) ===== -->
+    <!-- ===== PLAT NAMA ===== -->
     <div class="plat-nama">
       <div class="ujung-kiri"></div>
       <div class="tengah">
