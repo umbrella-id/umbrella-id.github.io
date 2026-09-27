@@ -100,64 +100,46 @@
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
   }
 
-  /* ===== PLAT NAMA (IGN) ===== */
-  /* Wrapper pakai position relative, biar ujung & tengah bisa absolute */
+  /* ===== PLAT NAMA (3 SVG) ===== */
   .plat-nama {
     position: absolute;
     top: 18px;
     left: 170px;
-    height: 38px;              /* tinggi ornamen penuh */
-    display: flex;             /* untuk hitung lebar otomatis */
+    height: 38px;              /* tinggi plat nama */
+    display: flex;
     align-items: stretch;
     z-index: 3;
     pointer-events: none;
   }
 
-  /* Ujung kiri (SVG_IGN-L) — full tinggi, di ATAS */
+  /* Ujung kiri — fixed */
   .plat-nama .ujung-kiri {
-    width: 24px;
+    width: 32px;               /* lebar tetap SVG kiri */
     height: 100%;
     background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
-    position: relative;
-    z-index: 3;                 /* ← paling atas */
   }
 
-  /* Tengah — kapsul, diposisikan absolute biar bisa nongol ke kiri & kanan
-     tanpa menggeser ornamen */
+  /* Tengah — melar mengikuti panjang nama */
   .plat-nama .tengah {
-    position: absolute;
-    /* Posisi vertikal: 5% dari atas, 45% dari bawah */
-    top: 5%;
-    bottom: 45%;
-
-    /* Melebar ke kiri & kanan, biar tepinya nyelip di bawah ornamen */
-    left: -10px;               /* ← masuk ke kiri */
-    right: -10px;              /* ← masuk ke kanan */
-
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 40px;           /* biar teks nggak nempel tepi kapsul */
-
-    background: rgba(15, 10, 6, 0.5);   /* ← transparan 50% */
-    border-top: 1px solid rgba(201, 165, 90, 0.5);
-    border-bottom: 1px solid rgba(201, 165, 90, 0.5);
-    border-radius: 999px;
-
-    z-index: 1;                /* ← di bawah ornamen */
+    padding: 0 12px;           /* jarak teks ke tepi */
+    background: url('Assets/SVG_IGN-M.svg') no-repeat center center;
+    background-size: 100% 100%; /* ← SVG melar penuh */
+    flex-grow: 1;
   }
 
-  /* Ujung kanan (SVG_IGN-R) — full tinggi, di ATAS */
+  /* Ujung kanan — fixed */
   .plat-nama .ujung-kanan {
-    width: 24px;
+    width: 32px;               /* lebar tetap SVG kanan */
     height: 100%;
     background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
-    position: relative;
-    z-index: 3;                 /* ← paling atas */
   }
 
   /* Teks nama */
@@ -232,7 +214,7 @@
       <div class="ikon"></div>
     </div>
 
-    <!-- ===== PLAT NAMA ===== -->
+    <!-- ===== PLAT NAMA (3 SVG) ===== -->
     <div class="plat-nama">
       <div class="ujung-kiri"></div>
       <div class="tengah">
