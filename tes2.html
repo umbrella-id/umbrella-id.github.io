@@ -173,15 +173,18 @@
     border-radius: 2px;
   }
 
-  /* ===== MODAL ===== */
+  /* ========================================
+     ===== MODAL (di dalam stage) =====
+     ======================================== */
   .modal-overlay {
     display: none;
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 500;
+    z-index: 500;                    /* ← di atas chat (100) */
     align-items: center;
     justify-content: center;
+    overflow: visible;               /* ← biar tonjolan nggak kepotong */
   }
   .modal-overlay.open { display: flex; }
 
@@ -189,9 +192,10 @@
     position: relative;
     min-width: 220px;
     min-height: 120px;
+    /* Padding modal extra buat nampung tonjolan 9px di sekeliling */
+    padding: 35px 39px 31px 39px;    /* ← dari 26/30/22 → +9px */
     background: rgba(15, 10, 6, 0.92);
     color: #f5e6c8;
-    padding: 26px 30px 22px 30px;
     overflow: visible;
     animation: modalIn 0.25s ease-out;
   }
@@ -202,9 +206,13 @@
   }
 
   /* ===== BINGKAI ===== */
+  /* Bingkai diposisikan -9px di luar modal, biar tonjolannya keluar dari modal */
   .modal-frame {
     position: absolute;
-    inset: 0;
+    top: -9px;
+    left: -9px;
+    right: -9px;
+    bottom: -9px;
     pointer-events: none;
     z-index: 1;
   }
@@ -255,11 +263,7 @@
     background: url('Assets/MODAL-H.svg') no-repeat center center;
     background-size: 100% 100%;
   }
-
-  /* ← Garis H pada frame BAWAH: mirror vertikal */
-  .frame-h.bawah .garis-h {
-    transform: scaleY(-1);
-  }
+  .frame-h.bawah .garis-h { transform: scaleY(-1); }
 
   .garis-v {
     flex-grow: 1;
@@ -267,11 +271,7 @@
     background: url('Assets/MODAL-V.svg') no-repeat center center;
     background-size: 100% 100%;
   }
-
-  /* ← Garis V pada frame KANAN: mirror horizontal */
-  .frame-v.kanan .garis-v {
-    transform: scaleX(-1);
-  }
+  .frame-v.kanan .garis-v { transform: scaleX(-1); }
 
   /* ===== ISI MODAL ===== */
   .modal-header {
@@ -286,7 +286,6 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     z-index: 2;
   }
-
   .modal-header::after {
     content: '';
     position: absolute;
@@ -317,7 +316,6 @@
     gap: 12px;
     z-index: 2;
   }
-
   .modal-footer::before {
     content: '';
     position: absolute;
