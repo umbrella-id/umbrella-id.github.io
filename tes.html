@@ -15,7 +15,7 @@
     background: #000;
   }
 
-  /* Background game */
+  /* Background */
   .bg {
     position: fixed;
     inset: 0;
@@ -35,44 +35,83 @@
   /* ===== WRAPPER TOMBOL ===== */
   .btn-wrap {
     position: absolute;
-    width: 200px;
-    height: 80px;
+    top: 0;                    /* nempel ke atas */
+    width: 180px;
+    height: 72px;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .btn-wrap.kiri-atas { top: 10px; left: 10px; }
-  .btn-wrap.kanan-atas { top: 10px; right: 10px; }
+  /* Kiri atas — nempel pojok */
+  .btn-wrap.kiri-atas {
+    top: 0;
+    left: 0;
+  }
 
-  /* ===== ORNAMEN & TOMBOL (SVG inline) ===== */
+  /* Kanan atas — nempel pojok */
+  .btn-wrap.kanan-atas {
+    top: 0;
+    right: 0;
+  }
+
+  /* ===== SVG ORNAMEN & TOMBOL ===== */
   .btn-wrap svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    transition: transform 0.1s ease, filter 0.15s ease;
     pointer-events: none;
+    transition: transform 0.1s ease, filter 0.15s ease;
   }
 
-  /* Tombol di atas ornamen, sedikit lebih kecil */
+  /* Tombol di dalam ornamen */
   .btn-wrap .svg-tombol {
-    inset: 15% 18%;   /* atas-bawah kiri-kanan, biar di dalam ornamen */
+    inset: 14% 16%;
     width: auto;
     height: auto;
     transform-origin: center;
-    transition: transform 0.1s ease, filter 0.15s ease;
   }
 
-  /* Hover (desktop) */
+  /* ===== IKON DI DALAM TOMBOL ===== */
+  /* Slot ikon, posisi di tengah tombol */
+  .btn-wrap .ikon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;   /* klik tetap ke tombol */
+    z-index: 3;
+  }
+
+  .btn-wrap .ikon img,
+  .btn-wrap .ikon svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* kasih warna keemasan biar nyatu sama tema */
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+  }
+
+  /* Hover */
   .btn-wrap:hover .svg-tombol {
     filter: brightness(1.25) drop-shadow(0 0 10px rgba(107, 189, 232, 0.8));
   }
 
-  /* Efek tekan — hanya SVG tombol yang berubah, bukan kotaknya */
+  /* Tekan */
   .btn-wrap:active .svg-tombol {
     transform: scale(0.9);
     filter: brightness(0.75) drop-shadow(0 0 4px rgba(107, 189, 232, 0.4));
+  }
+
+  /* Ikon ikut sedikit turun saat ditekan (biar serasa nyatu) */
+  .btn-wrap:active .ikon {
+    transform: translate(-50%, -50%) scale(0.9);
   }
 
 </style>
@@ -83,26 +122,38 @@
 
   <div class="stage">
 
-    <!-- Tombol KIRI ATAS -->
+    <!-- ===== TOMBOL KIRI ATAS ===== -->
     <div class="btn-wrap kiri-atas">
       <!-- Ornamen -->
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
       </svg>
+
       <!-- Tombol -->
       <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BT-MENU.svg" width="200" height="80"/>
       </svg>
+
+      <!-- Ikon (nanti diisi) -->
+      <div class="ikon">
+        <!-- Ganti src dengan file icon kamu nanti, contoh: -->
+        <!-- <img src="Assets/icon-home.svg" alt="Home"> -->
+      </div>
     </div>
 
-    <!-- Tombol KANAN ATAS -->
+    <!-- ===== TOMBOL KANAN ATAS ===== -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
       </svg>
+
       <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BT-MENU.svg" width="200" height="80"/>
       </svg>
+
+      <div class="ikon">
+        <!-- Icon kanan nanti di sini -->
+      </div>
     </div>
 
   </div>
