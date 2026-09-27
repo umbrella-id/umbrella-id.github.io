@@ -18,7 +18,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ===== BACKGROUND ===== */
   .bg {
     position: fixed;
     inset: 0;
@@ -27,7 +26,6 @@
     z-index: 1;
   }
 
-  /* ===== STAGE ===== */
   .stage {
     position: absolute;
     top: 50%;
@@ -175,12 +173,10 @@
     border-radius: 2px;
   }
 
-  /* ========================================
-     ===== MODAL (di dalam stage) =====
-     ======================================== */
+  /* ===== MODAL ===== */
   .modal-overlay {
     display: none;
-    position: absolute;         /* ← absolute, bukan fixed */
+    position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     z-index: 500;
@@ -236,7 +232,6 @@
   .frame-v.kiri  { left: 0; }
   .frame-v.kanan { right: 0; }
 
-  /* Pojok — normal (kiri-atas) */
   .pojok {
     width: 24px;
     height: 24px;
@@ -245,48 +240,37 @@
     background-size: 100% 100%;
   }
 
-  /* ===== FLIP PAKAI MIRROR (scaleX / scaleY) ===== */
+  /* ===== FLIP POJOK ===== */
+  .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
+  .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
+  .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+  .frame-v.kiri .pojok:nth-child(3) { transform: scaleY(-1); }
+  .frame-v.kanan .pojok:nth-child(1) { transform: scaleX(-1); }
+  .frame-v.kanan .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
 
-  /* Kanan atas: mirror horizontal */
-  .frame-h.atas .pojok:nth-child(3) {
-    transform: scaleX(-1);
-  }
-
-  /* Kiri bawah: mirror vertikal */
-  .frame-h.bawah .pojok:nth-child(1) {
-    transform: scaleY(-1);
-  }
-
-  /* Kanan bawah: mirror dua-duanya */
-  .frame-h.bawah .pojok:nth-child(3) {
-    transform: scaleX(-1) scaleY(-1);
-  }
-
-  /* Frame vertikal kiri: pojok atas normal, pojok bawah mirror vertikal */
-  .frame-v.kiri .pojok:nth-child(3) {
-    transform: scaleY(-1);
-  }
-
-  /* Frame vertikal kanan: pojok atas mirror horizontal, bawah mirror dua-duanya */
-  .frame-v.kanan .pojok:nth-child(1) {
-    transform: scaleX(-1);
-  }
-  .frame-v.kanan .pojok:nth-child(3) {
-    transform: scaleX(-1) scaleY(-1);
-  }
-
-  /* Garis */
+  /* ===== GARIS ===== */
   .garis-h {
     flex-grow: 1;
     height: 100%;
     background: url('Assets/MODAL-H.svg') no-repeat center center;
     background-size: 100% 100%;
   }
+
+  /* ← Garis H pada frame BAWAH: mirror vertikal */
+  .frame-h.bawah .garis-h {
+    transform: scaleY(-1);
+  }
+
   .garis-v {
     flex-grow: 1;
     width: 100%;
     background: url('Assets/MODAL-V.svg') no-repeat center center;
     background-size: 100% 100%;
+  }
+
+  /* ← Garis V pada frame KANAN: mirror horizontal */
+  .frame-v.kanan .garis-v {
+    transform: scaleX(-1);
   }
 
   /* ===== ISI MODAL ===== */
@@ -303,7 +287,6 @@
     z-index: 2;
   }
 
-  /* Pemisah header */
   .modal-header::after {
     content: '';
     position: absolute;
@@ -335,7 +318,6 @@
     z-index: 2;
   }
 
-  /* Pemisah footer */
   .modal-footer::before {
     content: '';
     position: absolute;
@@ -413,7 +395,6 @@
 
   <div class="stage" id="stage">
 
-    <!-- TOMBOL KIRI -->
     <div class="btn-wrap kiri-atas" id="btnKiri">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -429,7 +410,6 @@
       </div>
     </div>
 
-    <!-- TOMBOL KANAN -->
     <div class="btn-wrap kanan-atas">
       <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
         <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -440,33 +420,26 @@
       <div class="ikon"></div>
     </div>
 
-    <!-- ===== MODAL (di dalam stage, ikut scale) ===== -->
+    <!-- MODAL -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal">
 
         <div class="modal-frame">
-          <!-- Frame atas: pojok kiri | garis | pojok kanan -->
           <div class="frame-h atas">
             <div class="pojok"></div>
             <div class="garis-h"></div>
             <div class="pojok"></div>
           </div>
-
-          <!-- Frame bawah -->
           <div class="frame-h bawah">
             <div class="pojok"></div>
             <div class="garis-h"></div>
             <div class="pojok"></div>
           </div>
-
-          <!-- Frame kiri -->
           <div class="frame-v kiri">
             <div class="pojok"></div>
             <div class="garis-v"></div>
             <div class="pojok"></div>
           </div>
-
-          <!-- Frame kanan -->
           <div class="frame-v kanan">
             <div class="pojok"></div>
             <div class="garis-v"></div>
@@ -489,7 +462,6 @@
 
   </div>
 
-  <!-- CHAT BOX -->
   <div class="chat-box" id="chatBox">
     <div class="chat-drag" id="chatDrag"></div>
     <div class="chat-body">
@@ -497,7 +469,6 @@
     </div>
   </div>
 
-  <!-- PORTRAIT -->
   <div class="rotate-warning">
     <div class="ikon-putar">📱</div>
     <h2>PUTAR PERANGKAT</h2>
@@ -505,7 +476,6 @@
   </div>
 
   <script>
-    // ===== AUTO SCALE STAGE =====
     const BASE_HEIGHT = 300;
 
     function resizeStage() {
@@ -523,7 +493,7 @@
     window.addEventListener('resize', resizeStage);
     window.addEventListener('orientationchange', resizeStage);
 
-    // ===== CHAT DRAG =====
+    // CHAT DRAG
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
     let isDragging = false, startY = 0, startHeight = 0;
@@ -564,20 +534,17 @@
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
 
-    // ===== MODAL =====
+    // MODAL
     const modalOverlay = document.getElementById('modalOverlay');
-
     function openModal() { modalOverlay.classList.add('open'); }
     function closeModal() { modalOverlay.classList.remove('open'); }
 
     modalOverlay.addEventListener('click', function(e) {
       if (e.target === modalOverlay) closeModal();
     });
-
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeModal();
     });
-
     document.getElementById('btnKiri').addEventListener('click', function(e) {
       if (e.target.closest('.plat-nama')) return;
       openModal();
