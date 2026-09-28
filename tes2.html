@@ -114,25 +114,25 @@
     pointer-events: none;
   }
 
-  /* BG CSS — mulai y=3, tinggi 28px */
+  /* BG CSS — overlap 9px */
   .plat-nama .plat-bg {
     position: absolute;
     top: 3px;
-    left: 10px;
-    right: 10px;
+    left: 9px;
+    right: 9px;
     height: 28px;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 999px;
     z-index: 0;
   }
 
-  /* Teks nama — sejajar BG, margin mepet */
+  /* Teks nama — naikkan sedikit */
   .plat-nama .teks-nama {
     position: relative;
     z-index: 1;
     line-height: 28px;
-    margin-top: 3px;
-    margin-left: 40px;               /* ← mepet: dari 30px jadi... */
+    margin-top: 1px;
+    margin-left: 40px;
     margin-right: 40px;
     color: #f5e6c8;
     font-size: 15px;
@@ -142,7 +142,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* Ornamen kiri — mulai y=1 (2px di atas BG) */
+  /* Ornamen kiri */
   .plat-nama .ujung-kiri {
     position: absolute;
     top: 1px;
