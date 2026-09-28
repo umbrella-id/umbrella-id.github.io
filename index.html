@@ -16,45 +16,8 @@
 </head>
 <body>
 
-  <!-- ============ IDENTITY GATE ============ -->
-  <div id="gatekeeper" class="gatekeeper">
-    <div class="gate-content">
-      <p class="gate-label">Masukan Nama Anda</p>
-
-      <div class="gate-form-wrap">
-        <div class="gate-frame modal-frame">
-          <div class="frame-h atas">
-            <div class="pojok"></div>
-            <div class="garis-h"></div>
-            <div class="pojok"></div>
-          </div>
-          <div class="frame-h bawah">
-            <div class="pojok"></div>
-            <div class="garis-h"></div>
-            <div class="pojok"></div>
-          </div>
-          <div class="frame-v kiri">
-            <div class="pojok"></div>
-            <div class="garis-v"></div>
-            <div class="pojok"></div>
-          </div>
-          <div class="frame-v kanan">
-            <div class="pojok"></div>
-            <div class="garis-v"></div>
-            <div class="pojok"></div>
-          </div>
-        </div>
-
-        <input type="text" id="gate-input" placeholder="Nama / IGN" maxlength="15" autocomplete="off">
-      </div>
-
-      <div class="btn-svg gate-btn" onclick="saveIdentity()">
-        <div class="btn-ujung-kiri"></div>
-        <div class="btn-tengah"><span class="btn-teks">SELESAI</span></div>
-        <div class="btn-ujung-kanan"></div>
-      </div>
-    </div>
-  </div>
+  <!-- ============ OVERLAY GATE (luar stage, full layar) ============ -->
+  <div id="gateOverlay" class="gate-overlay"></div>
 
   <!-- ============ ROTATE WRAPPER ============ -->
   <div class="rotate-wrapper">
@@ -63,7 +26,47 @@
 
     <div class="stage" id="stage">
 
-      <!-- TOMBOL KIRI + PLAT NAMA -->
+      <!-- ============ IDENTITY GATE (di dalam stage, ikut zoom) ============ -->
+      <div id="gatekeeper" class="gatekeeper">
+        <div class="gate-content">
+          <p class="gate-label">Masukan Nama Anda</p>
+
+          <div class="gate-form-wrap">
+            <div class="modal-frame">
+              <div class="frame-h atas">
+                <div class="pojok"></div>
+                <div class="garis-h"></div>
+                <div class="pojok"></div>
+              </div>
+              <div class="frame-h bawah">
+                <div class="pojok"></div>
+                <div class="garis-h"></div>
+                <div class="pojok"></div>
+              </div>
+              <div class="frame-v kiri">
+                <div class="pojok"></div>
+                <div class="garis-v"></div>
+                <div class="pojok"></div>
+              </div>
+              <div class="frame-v kanan">
+                <div class="pojok"></div>
+                <div class="garis-v"></div>
+                <div class="pojok"></div>
+              </div>
+            </div>
+
+            <input type="text" id="gate-input" placeholder="Nama / IGN" maxlength="15" autocomplete="off">
+          </div>
+
+          <div class="btn-svg gate-btn" onclick="saveIdentity()">
+            <div class="btn-ujung-kiri"></div>
+            <div class="btn-tengah"><span class="btn-teks">SELESAI</span></div>
+            <div class="btn-ujung-kanan"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ TOMBOL KIRI + PLAT NAMA ============ -->
       <div class="btn-wrap kiri-atas" id="btnKiri">
         <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
           <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -83,7 +86,7 @@
         </div>
       </div>
 
-      <!-- TOMBOL KANAN -->
+      <!-- ============ TOMBOL KANAN ============ -->
       <div class="btn-wrap kanan-atas" id="btnKanan">
         <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
           <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
@@ -96,7 +99,7 @@
         </div>
       </div>
 
-      <!-- CHAT BOX -->
+      <!-- ============ CHAT BOX ============ -->
       <div class="chat-box" id="chatBox">
         <div class="chat-drag" id="chatDrag"></div>
         <div class="chat-body" id="chatLogs">
@@ -107,7 +110,7 @@
         </div>
       </div>
 
-      <!-- MODAL MENU -->
+      <!-- ============ MODAL MENU ============ -->
       <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
           <div class="modal-frame">
