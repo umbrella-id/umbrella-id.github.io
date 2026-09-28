@@ -114,7 +114,6 @@
     pointer-events: none;
   }
 
-  /* BG CSS — overlap 9px */
   .plat-nama .plat-bg {
     position: absolute;
     top: 3px;
@@ -126,14 +125,14 @@
     z-index: 0;
   }
 
-  /* Teks nama — naikkan sedikit */
+  /* Teks — turun & mepet ke ornamen */
   .plat-nama .teks-nama {
     position: relative;
     z-index: 1;
     line-height: 28px;
-    margin-top: 1px;
-    margin-left: 40px;
-    margin-right: 40px;
+    margin-top: 4px;                 /* ← turun 3px */
+    margin-left: 25px;               /* ← mepet */
+    margin-right: 25px;
     color: #f5e6c8;
     font-size: 15px;
     font-weight: 600;
@@ -142,7 +141,6 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* Ornamen kiri */
   .plat-nama .ujung-kiri {
     position: absolute;
     top: 1px;
@@ -154,7 +152,6 @@
     z-index: 2;
   }
 
-  /* Ornamen kanan */
   .plat-nama .ujung-kanan {
     position: absolute;
     top: 1px;
@@ -522,7 +519,6 @@
   </div>
 
   <script>
-    /* CEK ORIENTASI */
     function isPortrait() {
       return window.innerHeight > window.innerWidth;
     }
@@ -534,7 +530,6 @@
       }
     }
 
-    /* AUTO SCALE STAGE */
     const BASE_HEIGHT = 300;
     function resizeStage() {
       const stage = document.getElementById('stage');
@@ -557,7 +552,6 @@
       setTimeout(updateLayout, 150);
     });
 
-    /* CHAT DRAG + SNAP */
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
 
@@ -639,7 +633,6 @@
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
 
-    /* MODAL */
     const modalOverlay = document.getElementById('modalOverlay');
     let modalTimer = null;
 
