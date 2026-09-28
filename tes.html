@@ -18,6 +18,9 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* ============================================
+     WRAPPER ROTASI
+     ============================================ */
   .rotate-wrapper {
     position: fixed;
     inset: 0;
@@ -35,6 +38,7 @@
     transform: translate(-50%, -50%) rotate(90deg);
   }
 
+  /* ===== BACKGROUND ===== */
   .bg {
     position: absolute;
     inset: 0;
@@ -43,6 +47,7 @@
     z-index: 1;
   }
 
+  /* ===== STAGE ===== */
   .stage {
     position: absolute;
     top: 50%;
@@ -53,7 +58,7 @@
     z-index: 2;
   }
 
-  /* TOMBOL MENU */
+  /* ===== TOMBOL MENU ===== */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -100,7 +105,7 @@
     z-index: 3;
   }
 
-  /* PLAT NAMA */
+  /* ===== PLAT NAMA ===== */
   .plat-nama {
     position: absolute;
     top: 5px;
@@ -147,7 +152,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* CHAT BOX */
+  /* ===== CHAT BOX ===== */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -195,7 +200,7 @@
     border-radius: 2px;
   }
 
-  /* TOMBOL SVG */
+  /* ===== TOMBOL SVG ===== */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
@@ -253,7 +258,7 @@
     filter: brightness(0.75);
   }
 
-  /* MODAL */
+  /* ===== MODAL ===== */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -381,6 +386,7 @@
     width: 14px;
   }
 
+  /* ===== RESPONSIF ===== */
   @media (max-aspect-ratio: 22/10) {
     .btn-wrap.kiri-atas { transform: translateX(-30%); }
     .btn-wrap.kanan-atas { transform: translateX(30%); }
@@ -390,6 +396,7 @@
 </head>
 <body>
 
+  <!-- ===== WRAPPER ROTASI ===== -->
   <div class="rotate-wrapper">
 
     <div class="bg"></div>
@@ -570,9 +577,9 @@
       isDragging = true;
 
       if (isPortrait()) {
-        startPos = getPointerX(e);       // ← pakai X di portrait
+        startPos = getPointerX(e);
       } else {
-        startPos = getPointerY(e);       // ← pakai Y di landscape
+        startPos = getPointerY(e);
       }
 
       startHeight = chatBox.getBoundingClientRect().height;
@@ -586,11 +593,11 @@
       let delta;
 
       if (isPortrait()) {
-        // Di portrait: visual "naik" = X berkurang
+        // Portrait: visual "naik" = X berkurang
+        // Maka delta = startPos - currentX (biar drag ke atas = chat membesar)
         const currentX = getPointerX(e);
-        delta = startPos - currentX;     // ← dibalik
+        delta = startPos - currentX;     // ← FIX: biar arahnya benar
       } else {
-        // Landscape: visual "naik" = Y berkurang
         const currentY = getPointerY(e);
         delta = startPos - currentY;
       }
