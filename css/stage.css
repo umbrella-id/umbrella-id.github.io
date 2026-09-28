@@ -1,38 +1,46 @@
-/* ==========================================
-   stage.css — Rotasi & Auto-scale
-   ========================================== */
+/**
+ * stage.js — Auto-scale + Orientasi + Set --stage-scale
+ */
 
-.rotate-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  transform-origin: center center;
+function isPortrait() {
+  return window.innerHeight > window.innerWidth;
 }
 
-html.portrait .rotate-wrapper {
-  width: 100vh;
-  height: 100vw;
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  transform: translate(-50%, -50%) rotate(90deg);
+function checkOrientation() {
+  if (isPortrait()) {
+    document.documentElement.classList.add('portrait');
+  } else {
+    document.documentElement.classList.remove('portrait');
+  }
 }
 
-.bg {
-  position: absolute;
-  inset: 0;
-  background: url('../Assets/Background.png') no-repeat center center;
-  background-size: cover;
-  z-index: 1;
+const BASE_HEIGHT = 300;
+
+function resizeStage() {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+
+  const vw = isPortrait() ? window.innerHeight : window.innerWidth;
+  const vh = isPortrait() ? window.innerWidth : window.innerHeight;
+  const scale = vh / BASE_HEIGHT;
+  const stageWidth = vw / scale;
+
+  stage.style.width = stageWidth + 'px';
+  stage.style.height = BASE_HEIGHT + 'px';
+  stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+
+  // Set CSS variable untuk counter-scale overlay
+  document.documentElement.style.setProperty('--stage-scale', scale);
 }
 
-.stage {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 300px;
-  transform-origin: center center;
-  z-index: 2;
+function updateLayout() {
+  checkOrientation();
+  resizeStage();
 }
+
+window.addEventListener('load', updateLayout);
+window.addEventListener('resize', updateLayout);
+window.addEventListener('orientationchange', () => setTimeout(updateLayout, 150));
+
+window.isPortrait = isPortrait;
+console.log('✅ stage.js loaded');
