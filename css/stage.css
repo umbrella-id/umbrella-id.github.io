@@ -1,0 +1,38 @@
+/* ==========================================
+   stage.css — Rotasi & Auto-scale
+   ========================================== */
+
+.rotate-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  transform-origin: center center;
+}
+
+html.portrait .rotate-wrapper {
+  width: 100vh;
+  height: 100vw;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background: url('../Assets/Background.png') no-repeat center center;
+  background-size: cover;
+  z-index: 1;
+}
+
+.stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 300px;
+  transform-origin: center center;
+  z-index: 2;
+}
