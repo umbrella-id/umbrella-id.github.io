@@ -53,6 +53,7 @@
     z-index: 2;
   }
 
+  /* TOMBOL MENU */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -99,6 +100,7 @@
     z-index: 3;
   }
 
+  /* PLAT NAMA — UDAH DIPERBAIKI */
   .plat-nama {
     position: absolute;
     top: 5px;
@@ -109,6 +111,7 @@
     z-index: 3;
     pointer-events: none;
     white-space: nowrap;
+    isolation: isolate;
   }
   .plat-nama .ujung-kiri {
     width: 28px;
@@ -116,6 +119,8 @@
     background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
   .plat-nama .tengah {
     height: 100%;
@@ -124,6 +129,9 @@
     position: relative;
     background: url('Assets/SVG_IGN-M.svg') no-repeat center center;
     background-size: 100% 100%;
+    z-index: 2;
+    margin-left: -1px;
+    margin-right: -1px;
   }
   .plat-nama .ujung-kanan {
     width: 38px;
@@ -131,6 +139,8 @@
     background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
     background-size: 100% 100%;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
   .plat-nama .teks-nama {
     position: absolute;
@@ -145,6 +155,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
+  /* CHAT BOX */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -194,6 +205,7 @@
     border-radius: 2px;
   }
 
+  /* TOMBOL SVG */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
@@ -251,6 +263,7 @@
     filter: brightness(0.75);
   }
 
+  /* MODAL */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -538,7 +551,7 @@
     let isDragging = false;
     let startPointer = { x: 0, y: 0 };
     let startChatHeightPct = 25;
-    let currentChatHeightPct = 25;   // ← track pakai variabel, bukan DOM
+    let currentChatHeightPct = 25;
     let hasMoved = false;
 
     const DEFAULT_PERCENT = 25;
@@ -561,7 +574,6 @@
       isDragging = true;
       hasMoved = false;
       startPointer = getPointer(e);
-      // Pakai variabel currentChatHeightPct — nggak baca DOM
       startChatHeightPct = currentChatHeightPct;
       chatBox.classList.add('dragging');
       if (e.type === 'mousedown') e.preventDefault();
