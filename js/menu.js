@@ -2,24 +2,28 @@
  * menu.js — Tombol Menu + Navigasi State
  */
 
-const modalOverlay = document.getElementById('modalOverlay');
-
 let currentPage = 'home';
 let pageHistory = ['home'];
+
+function getModalOverlay() {
+  return document.getElementById('modalOverlay');
+}
 
 function updateButtons() {
   const ikonKiri = document.getElementById('ikonKiri');
   const ikonKanan = document.getElementById('ikonKanan');
+  const modalOverlay = getModalOverlay();
+  if (!ikonKiri || !ikonKanan || !modalOverlay) return;
+
   const modalOpen = modalOverlay.classList.contains('open');
 
   if (currentPage === 'home') {
     if (modalOpen) {
       ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
-      ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
     } else {
       ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-MENU.svg" alt="">';
-      ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
     }
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
   } else {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
@@ -47,28 +51,35 @@ function goHome() {
   updateButtons();
 }
 
-// ===== KLIK TOMBOL KIRI =====
-document.getElementById('btnKiri').addEventListener('click', (e) => {
-  if (e.target.closest('.plat-nama')) return;
+document.addEventListener('DOMContentLoaded', () => {
+  const btnKiri = document.getElementById('btnKiri');
+  const btnKanan = document.getElementById('btnKanan');
 
-  if (currentPage === 'home') {
-    if (modalOverlay.classList.contains('open')) {
-      closeModal();
-    } else {
-      openModal();
-    }
-  } else {
-    goBack();
+  if (btnKiri) {
+    btnKiri.addEventListener('click', (e) => {
+      if (e.target.closest('.plat-nama')) return;
+
+      if (currentPage === 'home') {
+        const modalOverlay = getModalOverlay();
+        if (modalOverlay && modalOverlay.classList.contains('open')) {
+          closeModal();
+        } else {
+          openModal();
+        }
+      } else {
+        goBack();
+      }
+    });
   }
-});
 
-// ===== KLIK TOMBOL KANAN =====
-document.getElementById('btnKanan').addEventListener('click', () => {
-  if (currentPage === 'home') {
-    console.log('Buka form tulis chat');
-    // TODO: buka modal tulis chat
-  } else {
-    goHome();
+  if (btnKanan) {
+    btnKanan.addEventListener('click', () => {
+      if (currentPage === 'home') {
+        console.log('Buka form tulis chat');
+      } else {
+        goHome();
+      }
+    });
   }
 });
 
