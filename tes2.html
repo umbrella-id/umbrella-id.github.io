@@ -114,25 +114,23 @@
     pointer-events: none;
   }
 
-  /* Background CSS — kotak membulat, di belakang */
+  /* Background CSS — kotak membulat, hitam 50% */
   .plat-nama .plat-bg {
     position: absolute;
-    /* Kasih padding biar ornamen bisa overlap */
-    left: 20px;              /* geser ke kanan (di bawah ujung kiri) */
-    right: 20px;             /* geser ke kiri (di bawah ujung kanan) */
-    top: 0;
-    bottom: 0;
-    background: rgba(10, 8, 5, 0.5);       /* semi transparan */
-    border-radius: 999px;                  /* ← bentuk kapsul membulat */
-    border: 1px solid rgba(201, 165, 90, 0.5);
-    z-index: 0;                            /* di belakang ornamen */
+    top: 2px;                          /* ← 2px dari atas */
+    left: 36px;                        /* ← ornamen masuk 36px dari kiri */
+    right: 36px;                       /* ← ornamen masuk 36px dari kanan */
+    height: 28px;                      /* ← tinggi BG 28px */
+    background: rgba(0, 0, 0, 0.5);    /* ← hitam 50% */
+    border-radius: 999px;              /* ← bentuk kapsul */
+    z-index: 0;
   }
 
   /* Teks nama — di atas background, di tengah */
   .plat-nama .teks-nama {
     position: relative;
     z-index: 1;
-    margin: 0 30px;                        /* jarak dari ornamen */
+    margin: 0 40px;
     align-self: center;
     color: #f5e6c8;
     font-size: 15px;
@@ -142,22 +140,22 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* Ornamen kiri — SVG, di atas background */
+  /* Ornamen kiri — di atas background */
   .plat-nama .ujung-kiri {
     position: relative;
     z-index: 2;
-    width: 30px;
+    width: 36px;
     height: 100%;
     flex-shrink: 0;
     background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
     background-size: 100% 100%;
   }
 
-  /* Ornamen kanan — SVG, di atas background */
+  /* Ornamen kanan — di atas background */
   .plat-nama .ujung-kanan {
     position: relative;
     z-index: 2;
-    width: 30px;
+    width: 36px;
     height: 100%;
     flex-shrink: 0;
     background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
@@ -424,7 +422,6 @@
         </svg>
         <div class="ikon"></div>
 
-        <!-- PLAT NAMA — struktur baru -->
         <div class="plat-nama">
           <div class="plat-bg"></div>
           <div class="ujung-kiri"></div>
