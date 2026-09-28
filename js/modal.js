@@ -2,48 +2,58 @@
  * modal.js — Modal Menu Logic
  */
 
-const modalOverlay2 = document.getElementById('modalOverlay');
 let modalTimer = null;
 
 function openModal() {
-  clearTimeout(modalTimer);
+  const modalOverlay = document.getElementById('modalOverlay');
   const chatBox = document.getElementById('chatBox');
+  if (!modalOverlay) return;
+
+  clearTimeout(modalTimer);
+
   if (chatBox) chatBox.classList.add('shifted');
 
   modalTimer = setTimeout(() => {
-    modalOverlay2.classList.add('open');
-    void modalOverlay2.offsetHeight;
+    modalOverlay.classList.add('open');
+    void modalOverlay.offsetHeight;   // force reflow
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        modalOverlay2.classList.add('animate-in');
-        updateButtons();
+        modalOverlay.classList.add('animate-in');
+        if (typeof updateButtons === 'function') updateButtons();
       });
     });
   }, 220);
 }
 
 function closeModal() {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const chatBox = document.getElementById('chatBox');
+  if (!modalOverlay) return;
+
   clearTimeout(modalTimer);
-  modalOverlay2.classList.remove('animate-in');
+  modalOverlay.classList.remove('animate-in');
 
   modalTimer = setTimeout(() => {
-    modalOverlay2.classList.remove('open');
-    const chatBox = document.getElementById('chatBox');
+    modalOverlay.classList.remove('open');
     if (chatBox) chatBox.classList.remove('shifted');
-    updateButtons();
+    if (typeof updateButtons === 'function') updateButtons();
   }, 350);
 }
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (modalOverlay2.classList.contains('open')) closeModal();
+    const modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay && modalOverlay.classList.contains('open')) closeModal();
   }
 });
 
 function menuClick(type) {
   console.log('Menu dipilih:', type);
   closeModal();
-  setTimeout(() => goToPage(type), 400);
+  setTimeout(() => {
+    if (typeof goToPage === 'function') goToPage(type);
+  }, 400);
 }
 
 window.openModal = openModal;
