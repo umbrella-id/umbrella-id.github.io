@@ -145,7 +145,6 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* CHAT BOX */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -174,7 +173,7 @@
     height: 20px;
     cursor: ns-resize;
     z-index: 1;
-    touch-action: none;                /* ← BARU */
+    touch-action: none;
     -webkit-user-select: none;
   }
 
@@ -195,7 +194,6 @@
     border-radius: 2px;
   }
 
-  /* TOMBOL SVG */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
@@ -253,7 +251,6 @@
     filter: brightness(0.75);
   }
 
-  /* MODAL */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -541,7 +538,7 @@
     let isDragging = false;
     let startPointer = { x: 0, y: 0 };
     let startChatHeightPct = 25;
-    let currentChatHeightPct = 25;
+    let currentChatHeightPct = 25;   // ← track pakai variabel, bukan DOM
     let hasMoved = false;
 
     const DEFAULT_PERCENT = 25;
@@ -564,9 +561,8 @@
       isDragging = true;
       hasMoved = false;
       startPointer = getPointer(e);
-      const vh = getVisualVH();
-      startChatHeightPct = (chatBox.getBoundingClientRect().height / vh) * 100;
-      currentChatHeightPct = startChatHeightPct;
+      // Pakai variabel currentChatHeightPct — nggak baca DOM
+      startChatHeightPct = currentChatHeightPct;
       chatBox.classList.add('dragging');
       if (e.type === 'mousedown') e.preventDefault();
     }
