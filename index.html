@@ -1,156 +1,179 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script>
-      // Mulai request GAS sejak dini (paralel dengan loading CSS/JS)
-      window.contentPromise = fetch("https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec").then(res => res.json());
-    </script>
-    <title>Umbrella - Toram Online</title>
-    
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/identity.css">
-    
-    <link rel="stylesheet" href="css/pc-mode.css">
-    <link rel="stylesheet" href="css/mobile-mode.css">
-    
-    <link rel="stylesheet" href="css/blocking.css">
-    <link rel="stylesheet" href="css/brosur.css">
-    
-    <link rel="stylesheet" href="css/chat.css">
-    <link rel="stylesheet" href="css/mailbox.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Guild Toram</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/stage.css">
+<link rel="stylesheet" href="css/btn-menu.css">
+<link rel="stylesheet" href="css/plat-nama.css">
+<link rel="stylesheet" href="css/chat.css">
+<link rel="stylesheet" href="css/modal.css">
+<link rel="stylesheet" href="css/gate.css">
 </head>
 <body>
-    <div id="site-gatekeeper">
-        <div class="portal-box">
-            <span class="close-gate" onclick="closeGate()">&times;</span>
-            
-            <h2 id="gate-title">Selamat Datang</h2>
-    
-            <div class="input-row">
-                <input type="text" id="global-ign-input" placeholder="masukan nama / IGN" maxlength="15" autocomplete="off">
-                <button id="save-btn" onclick="saveIdentity()">
-                    <i class="fa-solid fa-check"></i>
-                </button>
+
+  <!-- ============ IDENTITY GATE ============ -->
+  <div id="gatekeeper" class="gatekeeper">
+    <div class="gate-content">
+      <p class="gate-label">Masukan Nama Anda</p>
+
+      <div class="gate-form-wrap">
+        <div class="gate-frame modal-frame">
+          <div class="frame-h atas">
+            <div class="pojok"></div>
+            <div class="garis-h"></div>
+            <div class="pojok"></div>
+          </div>
+          <div class="frame-h bawah">
+            <div class="pojok"></div>
+            <div class="garis-h"></div>
+            <div class="pojok"></div>
+          </div>
+          <div class="frame-v kiri">
+            <div class="pojok"></div>
+            <div class="garis-v"></div>
+            <div class="pojok"></div>
+          </div>
+          <div class="frame-v kanan">
+            <div class="pojok"></div>
+            <div class="garis-v"></div>
+            <div class="pojok"></div>
+          </div>
+        </div>
+
+        <input type="text" id="gate-input" placeholder="Nama / IGN" maxlength="15" autocomplete="off">
+      </div>
+
+      <div class="btn-svg gate-btn" onclick="saveIdentity()">
+        <div class="btn-ujung-kiri"></div>
+        <div class="btn-tengah"><span class="btn-teks">SELESAI</span></div>
+        <div class="btn-ujung-kanan"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ROTATE WRAPPER ============ -->
+  <div class="rotate-wrapper">
+
+    <div class="bg"></div>
+
+    <div class="stage" id="stage">
+
+      <!-- TOMBOL KIRI + PLAT NAMA -->
+      <div class="btn-wrap kiri-atas" id="btnKiri">
+        <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+        </svg>
+        <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BTN-MENU.svg" width="200" height="80"/>
+        </svg>
+        <div class="ikon" id="ikonKiri">
+          <img src="Assets/SVG_ICON-MENU.svg" alt="">
+        </div>
+
+        <div class="plat-nama">
+          <div class="plat-bg"></div>
+          <div class="ujung-kiri"></div>
+          <span class="teks-nama" id="current-ign-display">Guest</span>
+          <div class="ujung-kanan"></div>
+        </div>
+      </div>
+
+      <!-- TOMBOL KANAN -->
+      <div class="btn-wrap kanan-atas" id="btnKanan">
+        <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+        </svg>
+        <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BTN-MENU.svg" width="200" height="80"/>
+        </svg>
+        <div class="ikon" id="ikonKanan">
+          <img src="Assets/SVG_ICON-CHAT.svg" alt="">
+        </div>
+      </div>
+
+      <!-- CHAT BOX -->
+      <div class="chat-box" id="chatBox">
+        <div class="chat-drag" id="chatDrag"></div>
+        <div class="chat-body" id="chatLogs">
+          <div class="chat-line">
+            <span class="chat-name">[Guild]:</span>
+            <span class="chat-text">Selamat datang di guild UMBRELLA!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL MENU -->
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
             </div>
-        </div>
-    </div>
-    
-    <div class="mail-container" id="mail-trigger" onclick="toggleMail()">
-        <i class="fa-solid fa-envelope-open-text"></i> KOTAK SURAT
-    </div>
-    <div id="ign-label-container" onclick="unlockSite()">
-        <i class="fas fa-user-circle"></i>
-        <span id="current-ign-display"></span>
-    </div>
-    <div class="running-text-wrapper" id="marquee-area">
-        <div class="running-text-content" id="pc-marquee"></div>
-    </div>
-    <div class="sosmed-corner" id="sosmed-area">
-        <a href="#" class="sosmed-link"><i class="fab fa-whatsapp"></i></a>
-        <a href="#" class="sosmed-link"><i class="fab fa-facebook"></i></a>
-        <a href="#" class="sosmed-link"><i class="fab fa-discord"></i></a>
-    </div>
-    <div class="chat-container" id="chat-trigger" onclick="toggleChat()">
-        <i class="fa-solid fa-comments"></i>
-    </div>
-    <!-- Tombol Share (Brosur) -->
-    <div class="share-container" id="share-trigger" onclick="triggerShare()">
-        <i class="fas fa-share-alt"></i> BAGIKAN
-    </div>
-    
-    <div class="master-frame">
-        <div class="top-bar">
-            <div class="pc-header-text" id="pc-title-target">SELAMAT DATANG</div>
-        </div>
-        <div class="content-wrapper">
-            <div class="sidebar-brand" id="sidebar-area">
-                <div class="logo-wrapper">
-                    <img src="logo-umbrella.svg" id="main-logo" alt="Logo Umbrella">
-                </div>
-                <div class="brand-container">
-                    <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
-                    <div class="brand-sub">dari pertemuan jadi kebersamaan<br>dari serikat jadi keluarga</div>
-                </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
             </div>
-            <div id="app-container">
-                <div id="main-stacker">
-                    <div class="stacker-card is-active">
-                        <div class="card-content">
-                            <div class="loading-spinner">
-                                <i class="fas fa-spinner fa-spin"></i> Memuat data...
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
             </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+
+          <div class="modal-content">
+            <div class="btn-svg modal-list-item" onclick="menuClick('info')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">INFO SERIKAT</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+            <div class="btn-svg modal-list-item" onclick="menuClick('kirim')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">KIRIM SURAT</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+            <div class="btn-svg modal-list-item" onclick="menuClick('ganti')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">GANTI NAMA</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+            <div class="btn-svg modal-list-item" onclick="menuClick('tentang')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">TENTANG KAMI</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+            <div class="btn-svg modal-list-item" onclick="menuClick('gallery')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">GALLERY</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+          </div>
         </div>
-        <div class="bottom-bar">
-            <p class="headline-body-pc"></p>
-            <span class="inline-link-text"></span>
-        </div>
+      </div>
+
     </div>
 
-    <div id="chat-popup" class="chat-popup-hidden">
-        <div id="chat-header">
-            <span id="admin-status">ADMIN : <b class="status-offline">OFFLINE</b></span>
-        </div>
-        <div id="chat-logs"></div>
-        <div class="chat-input-area">
-            <div class="input-row">
-                <input type="text" id="msg-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
-                <button class="send-btn" onclick="sendMessage()">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="mail-modal" class="mail-modal-hidden">
-        <div class="mail-modal-content">
-            <div class="mail-modal-header">
-                <h3><i class="fa-solid fa-envelope"></i> KIRIM SURAT</h3>
-                <span class="close-mail" onclick="toggleMail()">&times;</span>
-            </div>
-            <div class="mail-modal-body">
-                <div class="mail-input-group">
-                    <label>Kategori Surat :</label>
-                    <select id="mail-category" onchange="aturFormMailbox()">
-                        <option value="Umum">📝 UMUM / GENERAL</option>
-                        <option value="Request Join">🛡️ REQUEST JOIN</option>
-                        <option value="Saran">💡 SARAN / MASUKAN</option>
-                    </select>
-                </div>
-            
-                <div class="mail-input-group" id="wa-group" style="display: none;">
-                    <label>Nomor WhatsApp Aktif :</label>
-                    <input type="number" id="mail-wa" placeholder="Contoh: 08xxxxxxxxxx">
-                </div>
-            
-                <div class="mail-input-group">
-                    <label id="mail-label-pesan">Pesan Anda :</label>
-                    <textarea id="mail-message" placeholder="Tulis pesan atau laporan untuk Admin Umbrella..." rows="5"></textarea>
-                </div>
-                
-                <button class="mail-send-btn" onclick="sendMail()">
-                    <i class="fa-solid fa-paper-plane"></i> KIRIM SEKARANG
-                </button>
-            </div> </div> </div> <div id="mail-toast"></div>
-    
-    <script src="js/identity.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/chat.js"></script>
-    <script src="js/share.js"></script>
+  </div>
 
-    <div id="rotate-device-screen">
-        <div class="rotate-box-content">
-            <div class="rotate-icon-fallback"></div>
-            <p>Gunakan Mode Portrait</p>
-            <span>Demi kenyamanan, silakan putar kembali perangkat Anda ke posisi tegak.</span>
-        </div>
-    </div>
+  <!-- ============ SCRIPT ============ -->
+  <script src="js/api.js"></script>
+  <script src="js/identity.js"></script>
+  <script src="js/stage.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/modal.js"></script>
+
 </body>
 </html>
