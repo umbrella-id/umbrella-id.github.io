@@ -18,18 +18,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ============================================
-     WRAPPER ROTASI
-     ============================================ */
   .rotate-wrapper {
     position: fixed;
     inset: 0;
     z-index: 2;
     transform-origin: center center;
-    /* Default: tanpa rotasi (landscape) */
   }
 
-  /* Saat portrait — rotate 90° searah jarum jam */
   html.portrait .rotate-wrapper {
     width: 100vh;
     height: 100vw;
@@ -40,7 +35,6 @@
     transform: translate(-50%, -50%) rotate(90deg);
   }
 
-  /* ===== BACKGROUND ===== */
   .bg {
     position: absolute;
     inset: 0;
@@ -49,7 +43,6 @@
     z-index: 1;
   }
 
-  /* ===== STAGE ===== */
   .stage {
     position: absolute;
     top: 50%;
@@ -60,7 +53,7 @@
     z-index: 2;
   }
 
-  /* ===== TOMBOL MENU ===== */
+  /* TOMBOL MENU */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -107,7 +100,7 @@
     z-index: 3;
   }
 
-  /* ===== PLAT NAMA ===== */
+  /* PLAT NAMA */
   .plat-nama {
     position: absolute;
     top: 5px;
@@ -154,7 +147,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* ===== CHAT BOX ===== */
+  /* CHAT BOX */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -202,7 +195,7 @@
     border-radius: 2px;
   }
 
-  /* ===== TOMBOL SVG ===== */
+  /* TOMBOL SVG */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
@@ -260,7 +253,7 @@
     filter: brightness(0.75);
   }
 
-  /* ===== MODAL ===== */
+  /* MODAL */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -388,7 +381,6 @@
     width: 14px;
   }
 
-  /* ===== RESPONSIF ===== */
   @media (max-aspect-ratio: 22/10) {
     .btn-wrap.kiri-atas { transform: translateX(-30%); }
     .btn-wrap.kanan-atas { transform: translateX(30%); }
@@ -398,7 +390,6 @@
 </head>
 <body>
 
-  <!-- ===== WRAPPER ROTASI ===== -->
   <div class="rotate-wrapper">
 
     <div class="bg"></div>
@@ -532,7 +523,6 @@
       const stage = document.getElementById('stage');
       if (!stage) return;
 
-      // Kalau portrait, pakai dimensi yang udah di-swap
       const vw = isPortrait() ? window.innerHeight : window.innerWidth;
       const vh = isPortrait() ? window.innerWidth : window.innerHeight;
 
@@ -552,34 +542,39 @@
     window.addEventListener('load', updateLayout);
     window.addEventListener('resize', updateLayout);
     window.addEventListener('orientationchange', function() {
-      // Delay dikit — browser butuh waktu update dimensi
       setTimeout(updateLayout, 150);
     });
 
     /* ============================================
-       CHAT DRAG + SNAP
-       (Arah delta disesuaikan orientasi)
+       CHAT DRAG + SNAP (SUPPORT PORTRAIT)
        ============================================ */
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
-    let isDragging = false, startY = 0, startHeight = 0;
+    let isDragging = false;
+    let startPos = 0;
+    let startHeight = 0;
 
     const DEFAULT_PERCENT = 25;
     const SNAP_THRESHOLD = 90;
     const FULL_PERCENT = 100;
     const MIN_PERCENT = 3;
 
-    function getY(e) {
-      return e.clientY || (e.touches && e.touches[0].clientY) || 0;
-    }
-    function getX(e) {
+    function getPointerX(e) {
       return e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    }
+    function getPointerY(e) {
+      return e.clientY || (e.touches && e.touches[0].clientY) || 0;
     }
 
     function onDown(e) {
       isDragging = true;
-      // Simpan Y & X — biar tahu mana yang "visual Y" setelah rotate
-      startY = isPortrait() ? getX(e) : getY(e);
+
+      if (isPortrait()) {
+        startPos = getPointerX(e);       // ← pakai X di portrait
+      } else {
+        startPos = getPointerY(e);       // ← pakai Y di landscape
+      }
+
       startHeight = chatBox.getBoundingClientRect().height;
       chatBox.classList.add('dragging');
       e.preventDefault();
@@ -588,19 +583,18 @@
     function onMove(e) {
       if (!isDragging) return;
 
-      // Di portrait: gerakan "visual ke atas" = X berkurang
-      // Jadi kita pakai X sebagai basis, dan dibalik
-      let currentPos;
+      let delta;
+
       if (isPortrait()) {
-        currentPos = getX(e);
-        // Di portrait, drag naik = X berkurang → dibalik
-        var delta = currentPos - startY;
+        // Di portrait: visual "naik" = X berkurang
+        const currentX = getPointerX(e);
+        delta = startPos - currentX;     // ← dibalik
       } else {
-        currentPos = getY(e);
-        var delta = startY - currentPos;
+        // Landscape: visual "naik" = Y berkurang
+        const currentY = getPointerY(e);
+        delta = startPos - currentY;
       }
 
-      // Hitung tinggi efektif — pakai "tinggi visual" stage
       const vh = isPortrait() ? window.innerWidth : window.innerHeight;
       const percent = ((startHeight + delta) / vh) * 100;
       const clamped = Math.max(MIN_PERCENT, Math.min(FULL_PERCENT, percent));
@@ -627,7 +621,7 @@
     document.addEventListener('touchend', onUp);
 
     /* ============================================
-       MODAL MENU
+       MODAL
        ============================================ */
     const modalOverlay = document.getElementById('modalOverlay');
     let modalTimer = null;
