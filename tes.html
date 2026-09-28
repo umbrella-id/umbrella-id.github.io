@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Guild Toram</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ============================================
+     WRAPPER ROTASI
+     ============================================ */
+  .rotate-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    transform-origin: center center;
+    /* Default: tanpa rotasi (landscape) */
+  }
+
+  /* Saat portrait — rotate 90° searah jarum jam */
+  html.portrait .rotate-wrapper {
+    width: 100vh;
+    height: 100vw;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  /* ===== BACKGROUND ===== */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background: url('Assets/Background.png') no-repeat center center;
+    background-size: cover;
+    z-index: 1;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 300px;
+    transform-origin: center center;
+    z-index: 2;
+  }
+
+  /* ===== TOMBOL MENU ===== */
+  .btn-wrap {
+    position: absolute;
+    top: 0;
+    width: 180px;
+    height: 72px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .btn-wrap.kiri-atas { top: 0; left: 0; }
+  .btn-wrap.kanan-atas { top: 0; right: 0; }
+
+  .btn-wrap svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .btn-wrap .svg-ornamen { top: 0; left: 0; }
+  .btn-wrap .svg-tombol {
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    transition: transform 0.1s ease, filter 0.15s ease;
+  }
+  .btn-wrap:hover .svg-tombol { transform: translate(-50%, -52%); }
+  .btn-wrap:active .svg-tombol {
+    transform: translate(-50%, -48%) scale(0.95);
+    filter: brightness(0.75);
+  }
+  .btn-wrap .ikon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* ===== PLAT NAMA ===== */
+  .plat-nama {
+    position: absolute;
+    top: 5px;
+    left: 155px;
+    height: 38px;
+    display: flex;
+    align-items: stretch;
+    z-index: 3;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .plat-nama .ujung-kiri {
+    width: 28px;
+    height: 100%;
+    background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
+    background-size: 100% 100%;
+    flex-shrink: 0;
+  }
+  .plat-nama .tengah {
+    height: 100%;
+    flex-grow: 1;
+    min-width: 60px;
+    position: relative;
+    background: url('Assets/SVG_IGN-M.svg') no-repeat center center;
+    background-size: 100% 100%;
+  }
+  .plat-nama .ujung-kanan {
+    width: 38px;
+    height: 100%;
+    background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
+    background-size: 100% 100%;
+    flex-shrink: 0;
+  }
+  .plat-nama .teks-nama {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f5e6c8;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  }
+
+  /* ===== CHAT BOX ===== */
+  .chat-box {
+    position: absolute;
+    bottom: 0;
+    left: 27.5%;
+    width: 45%;
+    height: 25%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.2s ease-out, width 0.2s ease-out;
+  }
+  .chat-box.dragging { transition: none; }
+
+  .chat-box.shifted {
+    left: 1%;
+    width: 45%;
+    height: 25%;
+  }
+
+  .chat-drag {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    cursor: ns-resize;
+    z-index: 1;
+  }
+
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 10px;
+    color: #e0d5b8;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .chat-line { padding: 2px 0; }
+  .chat-name { color: #f0d78c; font-weight: 600; margin-right: 6px; }
+  .chat-text { color: #e0d5b8; }
+  .chat-body::-webkit-scrollbar { width: 4px; }
+  .chat-body::-webkit-scrollbar-thumb {
+    background: rgba(201, 165, 90, 0.4);
+    border-radius: 2px;
+  }
+
+  /* ===== TOMBOL SVG ===== */
+  .btn-svg {
+    display: inline-flex;
+    align-items: stretch;
+    height: 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s ease, filter 0.15s ease;
+    isolation: isolate;
+  }
+  .btn-svg .btn-ujung-kiri {
+    width: 12px;
+    height: 100%;
+    background: url('Assets/SVG_BTN-L.svg') no-repeat center center;
+    background-size: 100% 100%;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .btn-svg .btn-tengah {
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    background: url('Assets/SVG_BTN-M.svg') no-repeat center center;
+    background-size: 100% 100%;
+    position: relative;
+    z-index: 2;
+    min-width: 40px;
+    margin-left: -1px;
+    margin-right: -1px;
+  }
+  .btn-svg .btn-ujung-kanan {
+    width: 12px;
+    height: 100%;
+    background: url('Assets/SVG_BTN-R.svg') no-repeat center center;
+    background-size: 100% 100%;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .btn-svg .btn-teks {
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    font-family: inherit;
+  }
+  .btn-svg:hover { transform: translateY(-1px); }
+  .btn-svg:active {
+    transform: translateY(1px) scale(0.97);
+    filter: brightness(0.75);
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 500;
+    pointer-events: none;
+  }
+  .modal-overlay.open { display: block; }
+
+  .modal {
+    position: absolute;
+    right: 10%;
+    bottom: 2%;
+    width: 35%;
+    height: 75%;
+    padding: 30px 16px 26px 16px;
+    background: rgba(15, 10, 6, 0.92);
+    color: #f5e6c8;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    pointer-events: auto;
+
+    transform: translateY(120%);
+    opacity: 0;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.05),
+      opacity 0.35s ease;
+  }
+
+  .modal-overlay.animate-in .modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .modal-frame {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -8px;
+    right: -8px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .frame-h {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 24px;
+    display: flex;
+    align-items: stretch;
+  }
+  .frame-h.atas  { top: 0; }
+  .frame-h.bawah { bottom: 0; }
+
+  .frame-v {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .frame-v.kiri  { left: 0; }
+  .frame-v.kanan { right: 0; }
+
+  .pojok {
+    width: 30px;
+    height: 24px;
+    flex-shrink: 0;
+    background: url('Assets/MODAL-CORNER.svg') no-repeat center center;
+    background-size: 100% 100%;
+  }
+
+  .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
+  .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
+  .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+  .frame-v.kiri .pojok:nth-child(3) { transform: scaleY(-1); }
+  .frame-v.kanan .pojok:nth-child(1) { transform: scaleX(-1); }
+  .frame-v.kanan .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+
+  .garis-h {
+    flex-grow: 1;
+    height: 100%;
+    background: url('Assets/MODAL-H.svg') no-repeat center center;
+    background-size: 100% 100%;
+  }
+  .frame-h.bawah .garis-h { transform: scaleY(-1); }
+
+  .garis-v {
+    flex-grow: 1;
+    width: 100%;
+    background: url('Assets/MODAL-V.svg') no-repeat center center;
+    background-size: 100% 100%;
+  }
+  .frame-v.kanan .garis-v { transform: scaleX(-1); }
+
+  .modal-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .modal-list-item { width: 100%; }
+  .modal-list-item .btn-tengah {
+    flex-grow: 1;
+    padding: 0 20px;
+  }
+  .modal-list-item .btn-teks {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+  }
+  .modal-list-item.btn-svg {
+    height: 28px;
+  }
+  .modal-list-item .btn-ujung-kiri,
+  .modal-list-item .btn-ujung-kanan {
+    width: 14px;
+  }
+
+  /* ===== RESPONSIF ===== */
+  @media (max-aspect-ratio: 22/10) {
+    .btn-wrap.kiri-atas { transform: translateX(-30%); }
+    .btn-wrap.kanan-atas { transform: translateX(30%); }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ===== WRAPPER ROTASI ===== -->
+  <div class="rotate-wrapper">
+
+    <div class="bg"></div>
+
+    <div class="stage" id="stage">
+
+      <div class="btn-wrap kiri-atas" id="btnKiri">
+        <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+        </svg>
+        <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BTN-MENU.svg" width="200" height="80"/>
+        </svg>
+        <div class="ikon"></div>
+        <div class="plat-nama">
+          <div class="ujung-kiri"></div>
+          <div class="tengah"><span class="teks-nama">PLAYER</span></div>
+          <div class="ujung-kanan"></div>
+        </div>
+      </div>
+
+      <div class="btn-wrap kanan-atas">
+        <svg class="svg-ornamen" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BG-MENU.svg" width="200" height="80"/>
+        </svg>
+        <svg class="svg-tombol" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <image href="Assets/SVG_BTN-MENU.svg" width="200" height="80"/>
+        </svg>
+        <div class="ikon"></div>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="chat-drag" id="chatDrag"></div>
+        <div class="chat-body">
+          <div class="chat-line"><span class="chat-name">[Guild]:</span><span class="chat-text">Selamat datang di guild UMBRELLA!</span></div>
+          <div class="chat-line"><span class="chat-name">Player1:</span><span class="chat-text">Halo semua</span></div>
+          <div class="chat-line"><span class="chat-name">Player2:</span><span class="chat-text">Ayo raid malam ini</span></div>
+          <div class="chat-line"><span class="chat-name">Player3:</span><span class="chat-text">Siap!</span></div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+
+          <div class="modal-content">
+
+            <div class="btn-svg modal-list-item" onclick="menuClick('info')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">INFO SERIKAT</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+            <div class="btn-svg modal-list-item" onclick="menuClick('kirim')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">KIRIM SURAT</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+            <div class="btn-svg modal-list-item" onclick="menuClick('ganti')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">GANTI NAMA</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+            <div class="btn-svg modal-list-item" onclick="menuClick('tentang')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">TENTANG KAMI</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+            <div class="btn-svg modal-list-item" onclick="menuClick('gallery')">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">GALLERY</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    /* ============================================
+       CEK ORIENTASI
+       ============================================ */
+    function isPortrait() {
+      return window.innerHeight > window.innerWidth;
+    }
+
+    function checkOrientation() {
+      if (isPortrait()) {
+        document.documentElement.classList.add('portrait');
+      } else {
+        document.documentElement.classList.remove('portrait');
+      }
+    }
+
+    /* ============================================
+       AUTO SCALE STAGE
+       ============================================ */
+    const BASE_HEIGHT = 300;
+
+    function resizeStage() {
+      const stage = document.getElementById('stage');
+      if (!stage) return;
+
+      // Kalau portrait, pakai dimensi yang udah di-swap
+      const vw = isPortrait() ? window.innerHeight : window.innerWidth;
+      const vh = isPortrait() ? window.innerWidth : window.innerHeight;
+
+      const scale = vh / BASE_HEIGHT;
+      const stageWidth = vw / scale;
+
+      stage.style.width = stageWidth + 'px';
+      stage.style.height = BASE_HEIGHT + 'px';
+      stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+    }
+
+    function updateLayout() {
+      checkOrientation();
+      resizeStage();
+    }
+
+    window.addEventListener('load', updateLayout);
+    window.addEventListener('resize', updateLayout);
+    window.addEventListener('orientationchange', function() {
+      // Delay dikit — browser butuh waktu update dimensi
+      setTimeout(updateLayout, 150);
+    });
+
+    /* ============================================
+       CHAT DRAG + SNAP
+       (Arah delta disesuaikan orientasi)
+       ============================================ */
+    const chatBox = document.getElementById('chatBox');
+    const chatDrag = document.getElementById('chatDrag');
+    let isDragging = false, startY = 0, startHeight = 0;
+
+    const DEFAULT_PERCENT = 25;
+    const SNAP_THRESHOLD = 90;
+    const FULL_PERCENT = 100;
+    const MIN_PERCENT = 3;
+
+    function getY(e) {
+      return e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    }
+    function getX(e) {
+      return e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    }
+
+    function onDown(e) {
+      isDragging = true;
+      // Simpan Y & X — biar tahu mana yang "visual Y" setelah rotate
+      startY = isPortrait() ? getX(e) : getY(e);
+      startHeight = chatBox.getBoundingClientRect().height;
+      chatBox.classList.add('dragging');
+      e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+
+      // Di portrait: gerakan "visual ke atas" = X berkurang
+      // Jadi kita pakai X sebagai basis, dan dibalik
+      let currentPos;
+      if (isPortrait()) {
+        currentPos = getX(e);
+        // Di portrait, drag naik = X berkurang → dibalik
+        var delta = currentPos - startY;
+      } else {
+        currentPos = getY(e);
+        var delta = startY - currentPos;
+      }
+
+      // Hitung tinggi efektif — pakai "tinggi visual" stage
+      const vh = isPortrait() ? window.innerWidth : window.innerHeight;
+      const percent = ((startHeight + delta) / vh) * 100;
+      const clamped = Math.max(MIN_PERCENT, Math.min(FULL_PERCENT, percent));
+      chatBox.style.height = clamped + '%';
+      e.preventDefault();
+    }
+
+    function onUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      chatBox.classList.remove('dragging');
+
+      const vh = isPortrait() ? window.innerWidth : window.innerHeight;
+      const h = chatBox.getBoundingClientRect().height;
+      const p = (h / vh) * 100;
+      chatBox.style.height = (p > SNAP_THRESHOLD ? FULL_PERCENT : DEFAULT_PERCENT) + '%';
+    }
+
+    chatDrag.addEventListener('mousedown', onDown);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    chatDrag.addEventListener('touchstart', onDown, { passive: false });
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
+
+    /* ============================================
+       MODAL MENU
+       ============================================ */
+    const modalOverlay = document.getElementById('modalOverlay');
+    let modalTimer = null;
+
+    function openModal() {
+      clearTimeout(modalTimer);
+      chatBox.classList.add('shifted');
+
+      modalTimer = setTimeout(function() {
+        modalOverlay.classList.add('open');
+        void modalOverlay.offsetHeight;
+
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            modalOverlay.classList.add('animate-in');
+          });
+        });
+      }, 220);
+    }
+
+    function closeModal() {
+      clearTimeout(modalTimer);
+      modalOverlay.classList.remove('animate-in');
+
+      modalTimer = setTimeout(function() {
+        modalOverlay.classList.remove('open');
+        chatBox.classList.remove('shifted');
+      }, 350);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    document.getElementById('btnKiri').addEventListener('click', function(e) {
+      if (e.target.closest('.plat-nama')) return;
+      if (modalOverlay.classList.contains('open')) {
+        closeModal();
+      } else {
+        openModal();
+      }
+    });
+
+    function menuClick(type) {
+      console.log('Menu dipilih:', type);
+    }
+  </script>
+
+</body>
+</html>
