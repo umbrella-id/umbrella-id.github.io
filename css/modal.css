@@ -1,0 +1,182 @@
+/* ==========================================
+   modal.css — Modal Menu + Bingkai + Tombol SVG
+   ========================================== */
+
+/* ===== TOMBOL SVG (REUSABLE) ===== */
+.btn-svg {
+  display: inline-flex;
+  align-items: stretch;
+  height: 24px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  isolation: isolate;
+}
+.btn-svg .btn-ujung-kiri {
+  width: 12px;
+  height: 100%;
+  background: url('../Assets/SVG_BTN-L.svg') no-repeat center center;
+  background-size: 100% 100%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.btn-svg .btn-tengah {
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  background: url('../Assets/SVG_BTN-M.svg') no-repeat center center;
+  background-size: 100% 100%;
+  position: relative;
+  z-index: 2;
+  min-width: 40px;
+  margin-left: -1px;
+  margin-right: -1px;
+}
+.btn-svg .btn-ujung-kanan {
+  width: 12px;
+  height: 100%;
+  background: url('../Assets/SVG_BTN-R.svg') no-repeat center center;
+  background-size: 100% 100%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.btn-svg .btn-teks {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  font-family: inherit;
+}
+.btn-svg:hover { transform: translateY(-1px); }
+.btn-svg:active {
+  transform: translateY(1px) scale(0.97);
+  filter: brightness(0.75);
+}
+
+/* ===== BINGKAI (REUSABLE) ===== */
+.modal-frame {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -8px;
+  right: -8px;
+  pointer-events: none;
+  z-index: 1;
+}
+.frame-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 24px;
+  display: flex;
+  align-items: stretch;
+}
+.frame-h.atas  { top: 0; }
+.frame-h.bawah { bottom: 0; }
+.frame-v {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.frame-v.kiri  { left: 0; }
+.frame-v.kanan { right: 0; }
+.pojok {
+  width: 30px;
+  height: 24px;
+  flex-shrink: 0;
+  background: url('../Assets/MODAL-CORNER.svg') no-repeat center center;
+  background-size: 100% 100%;
+}
+.frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
+.frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
+.frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+.frame-v.kiri .pojok:nth-child(3) { transform: scaleY(-1); }
+.frame-v.kanan .pojok:nth-child(1) { transform: scaleX(-1); }
+.frame-v.kanan .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+
+.garis-h {
+  flex-grow: 1;
+  height: 100%;
+  background: url('../Assets/MODAL-H.svg') no-repeat center center;
+  background-size: 100% 100%;
+}
+.frame-h.bawah .garis-h { transform: scaleY(-1); }
+.garis-v {
+  flex-grow: 1;
+  width: 100%;
+  background: url('../Assets/MODAL-V.svg') no-repeat center center;
+  background-size: 100% 100%;
+}
+.frame-v.kanan .garis-v { transform: scaleX(-1); }
+
+/* ===== MODAL MENU ===== */
+.modal-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 500;
+  pointer-events: none;
+}
+.modal-overlay.open { display: block; }
+
+.modal {
+  position: absolute;
+  right: 10%;
+  bottom: 2%;
+  width: 35%;
+  height: 75%;
+  padding: 30px 16px 26px 16px;
+  background: rgba(15, 10, 6, 0.92);
+  color: #f5e6c8;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: auto;
+  transform: translateY(120%);
+  opacity: 0;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.05),
+    opacity 0.35s ease;
+}
+.modal-overlay.animate-in .modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+.modal-list-item { width: 100%; }
+.modal-list-item .btn-tengah {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+.modal-list-item .btn-teks {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+.modal-list-item.btn-svg {
+  height: 28px;
+}
+.modal-list-item .btn-ujung-kiri,
+.modal-list-item .btn-ujung-kanan {
+  width: 14px;
+}
