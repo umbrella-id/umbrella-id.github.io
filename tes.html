@@ -53,7 +53,6 @@
     z-index: 2;
   }
 
-  /* TOMBOL MENU */
   .btn-wrap {
     position: absolute;
     top: 0;
@@ -87,9 +86,6 @@
     filter: brightness(0.75);
   }
 
-  /* ============================================
-     IKON di tombol
-     ============================================ */
   .ikon {
     position: absolute;
     top: 50%;
@@ -102,26 +98,19 @@
     justify-content: center;
     pointer-events: none;
     z-index: 3;
-    transition: transform 0.1s ease, opacity 0.2s ease;
+    transition: transform 0.1s ease;
   }
-
   .ikon img,
   .ikon svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
-    /* Kalau SVG-nya hitam, bisa dikasih filter biar putih/emas */
   }
-
-  /* Efek tekan di ikon */
   .btn-wrap:active .ikon {
     transform: translate(-50%, -50%) scale(0.9);
   }
 
-  /* ============================================
-     PLAT NAMA
-     ============================================ */
   .plat-nama {
     position: absolute;
     top: 5px;
@@ -132,7 +121,6 @@
     z-index: 3;
     pointer-events: none;
   }
-
   .plat-nama .plat-bg {
     position: absolute;
     top: 3px;
@@ -143,7 +131,6 @@
     border-radius: 999px;
     z-index: 0;
   }
-
   .plat-nama .teks-nama {
     position: relative;
     z-index: 1;
@@ -158,7 +145,6 @@
     white-space: nowrap;
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
-
   .plat-nama .ujung-kiri {
     position: absolute;
     top: 1px;
@@ -169,7 +155,6 @@
     background-size: 100% 100%;
     z-index: 2;
   }
-
   .plat-nama .ujung-kanan {
     position: absolute;
     top: 1px;
@@ -181,7 +166,6 @@
     z-index: 2;
   }
 
-  /* CHAT BOX */
   .chat-box {
     position: absolute;
     bottom: 0;
@@ -195,13 +179,11 @@
     transition: left 0.2s ease-out, width 0.2s ease-out;
   }
   .chat-box.dragging { transition: none; }
-
   .chat-box.shifted {
     left: 1%;
     width: 45%;
     height: 25%;
   }
-
   .chat-drag {
     position: absolute;
     top: -10px;
@@ -213,7 +195,6 @@
     touch-action: none;
     -webkit-user-select: none;
   }
-
   .chat-body {
     flex: 1;
     overflow-y: auto;
@@ -231,7 +212,6 @@
     border-radius: 2px;
   }
 
-  /* TOMBOL SVG */
   .btn-svg {
     display: inline-flex;
     align-items: stretch;
@@ -289,7 +269,6 @@
     filter: brightness(0.75);
   }
 
-  /* MODAL */
   .modal-overlay {
     display: none;
     position: absolute;
@@ -314,14 +293,12 @@
     flex-direction: column;
     justify-content: center;
     pointer-events: auto;
-
     transform: translateY(120%);
     opacity: 0;
     transition:
       transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.05),
       opacity 0.35s ease;
   }
-
   .modal-overlay.animate-in .modal {
     transform: translateY(0);
     opacity: 1;
@@ -336,7 +313,6 @@
     pointer-events: none;
     z-index: 1;
   }
-
   .frame-h {
     position: absolute;
     left: 0;
@@ -347,7 +323,6 @@
   }
   .frame-h.atas  { top: 0; }
   .frame-h.bawah { bottom: 0; }
-
   .frame-v {
     position: absolute;
     top: 0;
@@ -359,7 +334,6 @@
   }
   .frame-v.kiri  { left: 0; }
   .frame-v.kanan { right: 0; }
-
   .pojok {
     width: 30px;
     height: 24px;
@@ -367,7 +341,6 @@
     background: url('Assets/MODAL-CORNER.svg') no-repeat center center;
     background-size: 100% 100%;
   }
-
   .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
   .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
   .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
@@ -382,7 +355,6 @@
     background-size: 100% 100%;
   }
   .frame-h.bawah .garis-h { transform: scaleY(-1); }
-
   .garis-v {
     flex-grow: 1;
     width: 100%;
@@ -399,7 +371,6 @@
     gap: 10px;
     align-items: stretch;
   }
-
   .modal-list-item { width: 100%; }
   .modal-list-item .btn-tengah {
     flex-grow: 1;
@@ -541,9 +512,6 @@
   </div>
 
   <script>
-    /* ============================================
-       CEK ORIENTASI
-       ============================================ */
     function isPortrait() {
       return window.innerHeight > window.innerWidth;
     }
@@ -555,9 +523,6 @@
       }
     }
 
-    /* ============================================
-       AUTO SCALE STAGE
-       ============================================ */
     const BASE_HEIGHT = 300;
     function resizeStage() {
       const stage = document.getElementById('stage');
@@ -580,53 +545,50 @@
       setTimeout(updateLayout, 150);
     });
 
-    /* ============================================
-       STATE HALAMAN
-       ============================================ */
-    // 'home' atau 'subpage'
-    let currentPage = 'home';
+    const modalOverlay = document.getElementById('modalOverlay');
 
-    // Simpan nama halaman sebelumnya (buat back)
+    /* STATE */
+    let currentPage = 'home';
     let pageHistory = ['home'];
 
-    /* ============================================
-       UPDATE TOMBOL (icon & fungsi)
-       ============================================ */
+    /* UPDATE ICON TOMBOL */
     function updateButtons() {
       const ikonKiri = document.getElementById('ikonKiri');
       const ikonKanan = document.getElementById('ikonKanan');
+      const modalOpen = modalOverlay.classList.contains('open');
 
       if (currentPage === 'home') {
-        // HOME: Menu + Chat
-        ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-MENU.svg" alt="">';
-        ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
+        if (modalOpen) {
+          // Home + modal buka → Back + Chat
+          ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+          ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
+        } else {
+          // Home + modal tutup → Menu + Chat
+          ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-MENU.svg" alt="">';
+          ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
+        }
       } else {
-        // SUBPAGE: Back + Home
+        // Subpage → Back + Home
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
       }
     }
 
-    /* ============================================
-       NAVIGASI
-       ============================================ */
+    /* NAVIGASI */
     function goToPage(pageName) {
       currentPage = pageName;
       pageHistory.push(pageName);
       updateButtons();
       console.log('Pindah ke halaman:', pageName);
-      // Nanti: render konten halaman sesuai pageName
     }
-
     function goBack() {
       if (pageHistory.length > 1) {
-        pageHistory.pop();                    // buang halaman sekarang
+        pageHistory.pop();
         currentPage = pageHistory[pageHistory.length - 1];
         updateButtons();
         console.log('Kembali ke:', currentPage);
       }
     }
-
     function goHome() {
       pageHistory = ['home'];
       currentPage = 'home';
@@ -634,45 +596,33 @@
       console.log('Kembali ke home');
     }
 
-    /* ============================================
-       KLIK TOMBOL KIRI
-       ============================================ */
+    /* KLIK TOMBOL KIRI */
     document.getElementById('btnKiri').addEventListener('click', function(e) {
       if (e.target.closest('.plat-nama')) return;
 
       if (currentPage === 'home') {
-        // Buka modal menu
         if (modalOverlay.classList.contains('open')) {
           closeModal();
         } else {
           openModal();
         }
       } else {
-        // Kembali 1 langkah
         goBack();
       }
     });
 
-    /* ============================================
-       KLIK TOMBOL KANAN
-       ============================================ */
+    /* KLIK TOMBOL KANAN */
     document.getElementById('btnKanan').addEventListener('click', function(e) {
       if (currentPage === 'home') {
-        // Buka form tulis chat
         console.log('Buka form tulis chat');
-        // Nanti: buka modal chat input
       } else {
-        // Kembali ke home
         goHome();
       }
     });
 
-    /* ============================================
-       CHAT DRAG + SNAP
-       ============================================ */
+    /* CHAT DRAG + SNAP */
     const chatBox = document.getElementById('chatBox');
     const chatDrag = document.getElementById('chatDrag');
-
     let isDragging = false;
     let startPointer = { x: 0, y: 0 };
     let startChatHeightPct = 25;
@@ -746,10 +696,7 @@
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
 
-    /* ============================================
-       MODAL
-       ============================================ */
-    const modalOverlay = document.getElementById('modalOverlay');
+    /* MODAL */
     let modalTimer = null;
 
     function openModal() {
@@ -761,6 +708,7 @@
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
             modalOverlay.classList.add('animate-in');
+            updateButtons();
           });
         });
       }, 220);
@@ -771,29 +719,24 @@
       modalTimer = setTimeout(function() {
         modalOverlay.classList.remove('open');
         chatBox.classList.remove('shifted');
+        updateButtons();
       }, 350);
     }
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        if (modalOverlay.classList.contains('open')) closeModal();
+      }
     });
 
-    /* ============================================
-       MENU CLICK — placeholder
-       ============================================ */
     function menuClick(type) {
       console.log('Menu dipilih:', type);
-      // Tutup modal dulu
       closeModal();
-      // Tunggu chat balik, baru pindah halaman
       setTimeout(function() {
         goToPage(type);
       }, 400);
     }
 
-    /* ============================================
-       INISIALISASI
-       ============================================ */
     updateButtons();
   </script>
 
