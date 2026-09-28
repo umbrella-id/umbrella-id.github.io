@@ -101,37 +101,38 @@
   }
 
   /* ============================================
-     PLAT NAMA — BG CSS + ornamen SVG
+     PLAT NAMA — semua pakai absolute positioning
      ============================================ */
   .plat-nama {
     position: absolute;
     top: 5px;
     left: 155px;
-    height: 46px;                       /* tinggi = ornamen */
-    display: flex;
-    align-items: center;
+    height: 46px;
     z-index: 3;
     pointer-events: none;
+    /* Width auto, ikutin konten (flex) */
+    display: flex;
+    align-items: flex-start;           /* rata atas */
   }
 
-  /* Background CSS — kapsul hitam 50% */
+  /* BG CSS — center dengan ornamen */
   .plat-nama .plat-bg {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 10px;                         /* ornamen overlap 36px, sisa 10px */
+    top: 9px;                          /* ← center di ornamen (7 + 2 = 9) */
+    left: 10px;
     right: 10px;
-    height: 28px;                       /* tinggi BG 28px */
-    background: rgba(0, 0, 0, 0.5);     /* hitam 50% */
+    height: 28px;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 999px;
     z-index: 0;
   }
 
-  /* Teks nama */
+  /* Teks nama — center ornamen */
   .plat-nama .teks-nama {
     position: relative;
     z-index: 1;
-    margin: 0 60px;
+    margin: 0 20px;
+    align-self: center;                /* center vertikal di wrapper */
     color: #f5e6c8;
     font-size: 15px;
     font-weight: 600;
@@ -140,7 +141,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* Ornamen kiri */
+  /* Ornamen kiri — rata atas + naik 2px */
   .plat-nama .ujung-kiri {
     position: relative;
     z-index: 2;
@@ -149,9 +150,10 @@
     flex-shrink: 0;
     background: url('Assets/SVG_IGN-L.svg') no-repeat center center;
     background-size: 100% 100%;
+    margin-top: -2px;                  /* ← naik 2px */
   }
 
-  /* Ornamen kanan */
+  /* Ornamen kanan — rata atas + naik 2px */
   .plat-nama .ujung-kanan {
     position: relative;
     z-index: 2;
@@ -160,6 +162,7 @@
     flex-shrink: 0;
     background: url('Assets/SVG_IGN-R.svg') no-repeat center center;
     background-size: 100% 100%;
+    margin-top: -2px;                  /* ← naik 2px */
   }
 
   /* CHAT BOX */
