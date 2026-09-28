@@ -1,24 +1,13 @@
 /* ==========================================
-   gate.css — Identity Gate
+   gate.css — Identity Gate (Counter-Scale Overlay)
    ========================================== */
 
-/* Overlay hitam 50% full layar (di luar stage) */
-.gate-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 800;
-  pointer-events: auto;
-}
-.gate-overlay.open { display: block; }
-
-/* Gate content (di dalam stage, ikut zoom) */
+/* Gatekeeper — di dalam stage, full stage */
 .gatekeeper {
   display: none;
   position: absolute;
-  inset: 0;                      /* full stage */
-  z-index: 900;                  /* di atas semua isi stage */
+  inset: 0;
+  z-index: 900;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -26,7 +15,22 @@
 }
 .gatekeeper.open { display: flex; }
 
+/* Overlay — counter-scale biar nutupin viewport */
+.gate-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(100vw / var(--stage-scale, 1));
+  height: calc(100vh / var(--stage-scale, 1));
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+/* Konten gate — di atas overlay */
 .gate-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,19 +47,19 @@
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
 }
 
-/* Wrapper bingkai + input — TINGGI MINIMAL */
+/* Wrapper bingkai + input */
 .gate-form-wrap {
   position: relative;
   width: 100%;
-  padding: 6px 40px;             /* ← padding kecil, cuma 1 baris */
+  padding: 6px 40px;
   background: rgba(15, 10, 6, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;              /* tinggi total ~36px */
+  min-height: 36px;
 }
 
-/* Input — 1 baris */
+/* Input */
 #gate-input {
   width: 100%;
   background: transparent;
@@ -69,7 +73,7 @@
   font-family: inherit;
   padding: 0;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-  line-height: 24px;             /* tinggi baris */
+  line-height: 24px;
 }
 #gate-input::placeholder {
   color: rgba(245, 230, 200, 0.4);
