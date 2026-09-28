@@ -1,0 +1,62 @@
+/* ==========================================
+   plat-nama.css — Plat Nama (IGN)
+   ========================================== */
+
+.plat-nama {
+  position: absolute;
+  top: 5px;
+  left: 155px;
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.plat-nama .plat-bg {
+  position: absolute;
+  top: 3px;
+  left: 9px;
+  right: 9px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 999px;
+  z-index: 0;
+}
+
+.plat-nama .teks-nama {
+  position: relative;
+  z-index: 1;
+  line-height: 28px;
+  margin-top: 6px;
+  margin-left: 32px;
+  margin-right: 32px;
+  color: #f5e6c8;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+.plat-nama .ujung-kiri {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 46px;
+  height: 46px;
+  background: url('../Assets/SVG_IGN-L.svg') no-repeat center center;
+  background-size: 100% 100%;
+  z-index: 2;
+}
+
+.plat-nama .ujung-kanan {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  width: 46px;
+  height: 46px;
+  background: url('../Assets/SVG_IGN-R.svg') no-repeat center center;
+  background-size: 100% 100%;
+  z-index: 2;
+}
