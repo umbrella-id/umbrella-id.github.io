@@ -554,6 +554,7 @@
     let isDragging = false;
     let startPointer = { x: 0, y: 0 };
     let startChatHeightPct = 25;
+    let currentChatHeightPct = 25;
     let hasMoved = false;
 
     const DEFAULT_PERCENT = 25;
@@ -580,6 +581,7 @@
 
       const vh = getVisualVH();
       startChatHeightPct = (chatBox.getBoundingClientRect().height / vh) * 100;
+      currentChatHeightPct = startChatHeightPct;
 
       chatBox.classList.add('dragging');
       e.preventDefault();
@@ -606,6 +608,8 @@
       const vh = getVisualVH();
       const percent = startChatHeightPct + (movement / vh) * 100;
       const clamped = Math.max(MIN_PERCENT, Math.min(FULL_PERCENT, percent));
+
+      currentChatHeightPct = clamped;
       chatBox.style.height = clamped + '%';
       e.preventDefault();
     }
@@ -617,14 +621,12 @@
 
       if (!hasMoved) return;
 
-      const vh = getVisualVH();
-      const h = chatBox.getBoundingClientRect().height;
-      const p = (h / vh) * 100;
-
-      if (p > SNAP_THRESHOLD) {
+      if (currentChatHeightPct > SNAP_THRESHOLD) {
         chatBox.style.height = FULL_PERCENT + '%';
+        currentChatHeightPct = FULL_PERCENT;
       } else {
         chatBox.style.height = DEFAULT_PERCENT + '%';
+        currentChatHeightPct = DEFAULT_PERCENT;
       }
     }
 
