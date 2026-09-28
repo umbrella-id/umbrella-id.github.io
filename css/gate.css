@@ -2,15 +2,27 @@
    gate.css — Identity Gate
    ========================================== */
 
-.gatekeeper {
+/* Overlay hitam 50% full layar (di luar stage) */
+.gate-overlay {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
+  z-index: 800;
+  pointer-events: auto;
+}
+.gate-overlay.open { display: block; }
+
+/* Gate content (di dalam stage, ikut zoom) */
+.gatekeeper {
+  display: none;
+  position: absolute;
+  inset: 0;                      /* full stage */
+  z-index: 900;                  /* di atas semua isi stage */
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  pointer-events: auto;
 }
 .gatekeeper.open { display: flex; }
 
@@ -20,7 +32,6 @@
   align-items: center;
   gap: 20px;
   width: 50%;
-  max-width: 400px;
 }
 
 .gate-label {
@@ -32,30 +43,33 @@
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
 }
 
-/* Wrapper bingkai + input */
+/* Wrapper bingkai + input — TINGGI MINIMAL */
 .gate-form-wrap {
   position: relative;
   width: 100%;
-  padding: 30px 40px;
+  padding: 6px 40px;             /* ← padding kecil, cuma 1 baris */
   background: rgba(15, 10, 6, 0.92);
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-height: 36px;              /* tinggi total ~36px */
 }
 
-/* Input */
+/* Input — 1 baris */
 #gate-input {
   width: 100%;
   background: transparent;
   border: none;
   outline: none;
   color: #f5e6c8;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 1px;
   text-align: center;
   font-family: inherit;
-  padding: 4px 0;
+  padding: 0;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  line-height: 24px;             /* tinggi baris */
 }
 #gate-input::placeholder {
   color: rgba(245, 230, 200, 0.4);
