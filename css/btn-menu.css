@@ -5,8 +5,8 @@
 .btn-wrap {
   position: absolute;
   top: 0;
-  width: 180px;
-  height: 72px;
+  width: 162px;                  /* ← dari 180px (90%) */
+  height: 65px;                  /* ← dari 72px (90%) */
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 950;
@@ -41,8 +41,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
+  width: 28px;                   /* ← dari 32px (90%) */
+  height: 28px;                  /* ← dari 32px (90%) */
   display: flex;
   align-items: center;
   justify-content: center;
