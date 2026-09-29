@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate
+ * menu.js — Tombol Menu + Navigasi State + Handle Gate + Handle Mail
  */
 
 let currentPage = 'home';
@@ -13,6 +13,9 @@ function getGate() {
   return document.getElementById('gatekeeper');
 }
 
+// ==========================================
+// UPDATE ICON TOMBOL
+// ==========================================
 function updateButtons() {
   const ikonKiri = document.getElementById('ikonKiri');
   const ikonKanan = document.getElementById('ikonKanan');
@@ -27,7 +30,7 @@ function updateButtons() {
     return;
   }
 
-  // Prioritas 2: Gate mode 'change' → BACK + plat nama hidden
+  // Prioritas 2: Gate mode 'change'
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
@@ -50,10 +53,14 @@ function updateButtons() {
   }
 }
 
+// ==========================================
+// NAVIGASI
+// ==========================================
 function goToPage(pageName) {
   currentPage = pageName;
   pageHistory.push(pageName);
   updateButtons();
+  console.log('Pindah ke halaman:', pageName);
 }
 
 function goBack() {
@@ -70,29 +77,36 @@ function goHome() {
   updateButtons();
 }
 
+// ==========================================
+// EVENT LISTENER
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   const btnKiri = document.getElementById('btnKiri');
   const btnKanan = document.getElementById('btnKanan');
 
+  // ===== KLIK TOMBOL KIRI =====
   if (btnKiri) {
     btnKiri.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
-    
+
       const stage = document.getElementById('stage');
-    
-      // Prioritas 1: Form surat buka → tutup surat
+
+      // Prioritas 1: Form surat buka → kembali ke menu
       if (stage && stage.classList.contains('mail-open')) {
         if (typeof closeMailForm === 'function') closeMailForm();
+        setTimeout(() => {
+          if (typeof openModal === 'function') openModal();
+        }, 100);
         return;
       }
-    
+
       // Prioritas 2: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
-    
+
       // Prioritas 3: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
@@ -107,23 +121,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ===== KLIK TOMBOL KANAN =====
   if (btnKanan) {
     btnKanan.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
-    
+
       const stage = document.getElementById('stage');
-    
+
       // Prioritas 1: Form surat buka → balik ke home
       if (stage && stage.classList.contains('mail-open')) {
         if (typeof closeMailForm === 'function') closeMailForm();
         if (typeof goHome === 'function') goHome();
         return;
       }
-    
+
       // Prioritas 2: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
-    
+
       // Prioritas 3: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
@@ -134,6 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// ==========================================
+// EXPOSE
+// ==========================================
 window.goToPage = goToPage;
 window.goBack = goBack;
 window.goHome = goHome;
