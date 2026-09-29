@@ -30,7 +30,7 @@ function updateButtons() {
     return;
   }
 
-  // Prioritas 2: Gate mode 'change'
+  // Prioritas 2: Gate mode 'change' → BACK
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
@@ -93,17 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prioritas 1: Form surat buka → kembali ke menu
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm();
-        setTimeout(() => {
-          if (typeof openModal === 'function') openModal();
-        }, 100);
+        if (typeof closeMailForm === 'function') closeMailForm();   // default skipMenu=false
         return;
       }
 
       // Prioritas 2: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
-        if (typeof closeGate === 'function') closeGate();
+        if (typeof closeGate === 'function') closeGate();   // default skipMenu=false
         return;
       }
 
@@ -130,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prioritas 1: Form surat buka → balik ke home
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm();
+        if (typeof closeMailForm === 'function') closeMailForm(true);   // skipMenu=true
         if (typeof goHome === 'function') goHome();
         return;
       }
