@@ -40,16 +40,14 @@ function loadBackground() {
   console.log('🎨 Mulai load background...');
 
   const img = new Image();
-  const bgUrl = 'Assets/Background.png';
+  const imgLoadPath = 'Assets/Background.png';     // ← relatif ke index.html
+  const cssPath = '../Assets/Background.png';      // ← relatif ke css/stage.css
 
   img.onload = () => {
-    // Set CSS variable
-    document.documentElement.style.setProperty('--bg-image', `url('${bgUrl}')`);
+    document.documentElement.style.setProperty('--bg-image', `url('${cssPath}')`);
 
-    // Trigger fade-in
     const bgEl = document.querySelector('.bg');
     if (bgEl) {
-      // Force reflow biar transisi jalan
       void bgEl.offsetHeight;
       bgEl.classList.add('loaded');
     }
@@ -58,20 +56,17 @@ function loadBackground() {
   };
 
   img.onerror = () => {
-    console.warn('⚠️ Background gagal load');
+    console.warn('⚠️ Background gagal load:', imgLoadPath);
   };
 
-  img.src = bgUrl;
+  img.src = imgLoadPath;
 }
 
 // ===== INIT =====
 window.addEventListener('load', () => {
-  // 1. Layout dulu — ornamen & tombol rapi
   updateLayout();
   console.log('✅ Layout siap');
 
-  // 2. Delay 300ms — biar ornamen kelihatan dulu
-  //    Baru load background
   setTimeout(loadBackground, 300);
 });
 
