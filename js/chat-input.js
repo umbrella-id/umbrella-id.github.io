@@ -118,13 +118,13 @@ async function kirimChat() {
     showChatInputMessage('Identitas belum diisi');
     return;
   }
-
+  
   // Optimistic UI
   const chatLogs = document.getElementById('chatLogs');
   if (chatLogs) {
     const d = document.createElement('div');
     d.className = 'chat-line';
-    d.innerHTML = `<span class="chat-name" style="color:#f0d78c">${escapeHtml(ign)}:</span><span class="chat-text">${escapeHtml(result.text)}</span>`;
+    d.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(result.text)}</span>`;
     chatLogs.appendChild(d);
     chatLogs.scrollTop = chatLogs.scrollHeight;
   }
