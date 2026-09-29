@@ -103,12 +103,77 @@ function escapeHtml(str) {
   });
 }
 
-// ===== WARNA USERNAME =====
-function getHashColor(uid) {
-  if (!uid) return '#ccc';
-  let h = 0;
-  for (let i = 0; i < uid.length; i++) h = uid.charCodeAt(i) + ((h << 5) - h);
-  return `hsl(${Math.abs(h) % 360}, 75%, 75%)`;
+// ===== PARSE COMMAND =====
+// Kembalikan { type: 'mute'|'unmute', uid, durasi, ign, timestamp }
+function parseCommand(msgText) {
+  if (msgText.startsWith('MUTE_')) {
+    const parts = msgText.split('_');
+    return {
+      type: 'mute',
+      uid: parts[1] || '',
+      durasi: parseInt(parts[2]) || 0,
+      ign: parts[3] || 'Seseorang'
+    };
+  }
+  if (msgText.startsWith('UNMUTE_')) {
+    const parts = msgText.split('_');
+    return {
+      type: 'unmute',
+      uid: parts[1] || '',
+      ign: parts[2] || 'Seseorang'
+    };
+  }
+  return null;
+}
+
+// ===== CEK APAKAH SYSTEM MESSAGE MASIH BERLAKU =====
+// Logs: array lengkap dari GAS (terurut dari lama → baru)
+// index: index pesan yang sedang dicek
+// Kembalikan true kalau pesan ini masih "berlaku"
+function isSystemMessageMasihBerlaku(logs, index) {
+  const msg = logs[index];
+  const msgText = msg.message || '';
+  const parsed = parseCommand(msgText);
+  if (!parsed) return true;   // bukan command, tampil
+
+  if (parsed.type === 'mute') {
+    // Cek: apakah ada UNMUTE untuk uid yang sama SETELAH pesan ini?
+    for (let i = index + 1; i < logs.length; i++) {
+      const next = logs[i];
+      if (next.type !== 'command') continue;
+      const nextParsed = parseCommand(next.message || '');
+      if (nextParsed && nextParsed.type === 'unmute' && nextParsed.uid === parsed.uid) {
+        return false;   // udah di-unmute → sembunyikan
+      }
+    }
+
+    // Cek: apakah durasi mute udah lewat?
+    if (parsed.durasi > 0) {
+      const msgTime = msg.timestamp || 0;
+      const muteEndTime = msgTime + (parsed.durasi * 60 * 1000);
+      if (Date.now() > muteEndTime) {
+        return false;   // udah expired → sembunyikan
+      }
+    }
+
+    return true;   // masih berlaku
+  }
+
+  if (parsed.type === 'unmute') {
+    // Unmute selalu ditampilkan (berlaku) — kalau nggak ada mute setelahnya
+    // Cek: apakah ada MUTE untuk uid yang sama SETELAH pesan ini?
+    for (let i = index + 1; i < logs.length; i++) {
+      const next = logs[i];
+      if (next.type !== 'command') continue;
+      const nextParsed = parseCommand(next.message || '');
+      if (nextParsed && nextParsed.type === 'mute' && nextParsed.uid === parsed.uid) {
+        return false;   // udah di-mute lagi → unmute lama nggak relevan
+      }
+    }
+    return true;
+  }
+
+  return true;
 }
 
 // ===== RENDER LOG =====
@@ -125,7 +190,7 @@ function renderChatLogs(logs) {
 
   const uid = window.myUID;
 
-  logs.forEach(msg => {
+  logs.forEach((msg, index) => {
     try {
       const msgType = msg.type || 'msg';
       const msgUID = msg.uid || '';
@@ -138,28 +203,28 @@ function renderChatLogs(logs) {
 
       const d = document.createElement('div');
 
-      // 🎯 SYSTEM MESSAGE (command MUTE/UNMUTE atau info)
+      // 🎯 SYSTEM MESSAGE (command MUTE/UNMUTE)
       if (msgType === 'command') {
-        let displayText = msgText;
-        if (msgText.startsWith('MUTE_')) {
-          const parts = msgText.split('_');
-          const targetIGN = parts[3] || 'Seseorang';
-          const durasi = parts[2] || '?';
-          displayText = `🔇 ${targetIGN} dibisukan selama ${durasi} menit`;
-        } else if (msgText.startsWith('UNMUTE_')) {
-          const parts = msgText.split('_');
-          const targetIGN = parts[2] || 'Seseorang';
-          displayText = `🔊 Bisuan ${targetIGN} telah dibuka`;
-        } else {
-          displayText = msgText;
+        const parsed = parseCommand(msgText);
+        if (!parsed) return;   // command unknown, skip
+
+        // 🎯 Cek: masih berlaku atau nggak?
+        if (!isSystemMessageMasihBerlaku(logs, index)) return;   // skip
+
+        let displayText = '';
+        if (parsed.type === 'mute') {
+          displayText = `${parsed.ign} dibisukan selama ${parsed.durasi} menit`;   // ← tanpa emoji
+        } else if (parsed.type === 'unmute') {
+          displayText = `Bisuan ${parsed.ign} telah dibuka`;   // ← tanpa emoji
         }
+
         d.className = 'chat-line chat-system';
         d.innerHTML = `<span class="chat-text">${escapeHtml(displayText)}</span>`;
       }
       // 🎯 PESAN DIHAPUS ADMIN
       else if (isDeleted) {
         d.className = 'chat-line chat-system';
-        d.innerHTML = `<span class="chat-text">🗑️ Sebuah pesan dihapus oleh admin</span>`;
+        d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;   // ← tanpa emoji
       }
       // 🎯 PESAN ADMIN (hijau)
       else if (isAdmin) {
@@ -187,7 +252,6 @@ async function syncChat(force = false) {
   const ign = window.myIGN;
   if (!uid || !ign) return;
 
-  // Cek mute
   const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
   const isMuted = Date.now() < muteExpiry;
 
@@ -198,7 +262,6 @@ async function syncChat(force = false) {
     const arrayChat = data.logs || [];
     const currentStamp = JSON.stringify(arrayChat);
 
-    // Kalau data sama → skip render
     if (currentStamp === lastChatStamp && !force) {
       console.log('✅ Chat stamp sama, skip render');
       return;
@@ -250,12 +313,9 @@ function stopPolling() {
 
 // ===== INISIALISASI =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Coba load dari cache dulu
   const loaded = loadChatFromCache();
-
-  // Fetch fresh dari GAS
   setTimeout(() => {
-    syncChat(true);   // force fetch
+    syncChat(true);
     startPolling();
   }, loaded ? 500 : 0);
 });
