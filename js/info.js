@@ -1,5 +1,5 @@
 /**
- * info.js — Modal Info Serikat (dengan preload cache)
+ * info.js — Modal Info Serikat (dengan tombol join guild)
  */
 
 let infoOpen = false;
@@ -7,7 +7,7 @@ let profilList = [];
 let currentView = 'list';
 let currentDetailIndex = -1;
 
-// ===== PRELOAD (dipanggil dari stage.js) =====
+// ===== PRELOAD =====
 async function preloadInfoData() {
   if (profilList.length > 0) {
     console.log('✅ Info data sudah di-cache');
@@ -72,7 +72,7 @@ function closeInfoModal(skipMenu = false) {
   }
 }
 
-// ===== FETCH (fallback) =====
+// ===== FETCH =====
 async function fetchInfoData() {
   const contentCol = document.getElementById('infoContentCol');
   if (!contentCol) return;
@@ -122,7 +122,7 @@ function renderInfoList() {
     `;
   });
 
-  // Tombol "Saya Ingin Bergabung" — hijau
+  // Tombol Join Guild
   html += `
     <div class="info-join-btn" onclick="infoJoinGuild()">
       <div class="btn-ujung-kiri"></div>
