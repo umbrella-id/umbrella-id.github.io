@@ -56,6 +56,8 @@ function menuClick(type) {
   setTimeout(() => {
     if (type === 'ganti') {
       if (typeof openGate === 'function') openGate('change');
+    } else if (type === 'kirim') {
+      if (typeof openMailForm === 'function') openMailForm();
     } else {
       if (typeof goToPage === 'function') goToPage(type);
     }
