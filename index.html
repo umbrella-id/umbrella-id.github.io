@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="css/modal.css">
 <link rel="stylesheet" href="css/gate.css">
 <link rel="stylesheet" href="css/mail.css">
+<link rel="stylesheet" href="css/info.css">
 </head>
 <body>
 
@@ -264,6 +265,53 @@
         </div>
       </div>
 
+      <!-- ============ MODAL INFO SERIKAT ============ -->
+      <div class="info-overlay" id="infoOverlay">
+        <div class="info-modal">
+
+          <!-- Bingkai -->
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+
+          <!-- Header -->
+          <div class="info-header">UMBRELLA</div>
+
+          <!-- Body: 2 kolom -->
+          <div class="info-body">
+            <!-- Kiri: logo -->
+            <div class="info-logo-col">
+              <img src="Assets/logo.svg" alt="Logo Umbrella">
+            </div>
+
+            <!-- Kanan: list / isi -->
+            <div class="info-content-col" id="infoContentCol">
+              <div class="info-loading">Memuat data...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -277,6 +325,7 @@
   <script src="js/chat.js"></script>
   <script src="js/chat-input.js"></script>
   <script src="js/mail.js"></script>
+  <script src="js/info.js"></script>
 
 </body>
 </html>
