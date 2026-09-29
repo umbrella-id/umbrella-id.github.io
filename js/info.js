@@ -1,11 +1,30 @@
 /**
- * info.js — Modal Info Serikat
+ * info.js — Modal Info Serikat (dengan preload cache)
  */
 
 let infoOpen = false;
 let profilList = [];
-let currentView = 'list';   // 'list' atau 'detail'
+let currentView = 'list';
 let currentDetailIndex = -1;
+
+// ===== PRELOAD (dipanggil dari stage.js / init) =====
+async function preloadInfoData() {
+  if (profilList.length > 0) {
+    console.log('✅ Info data sudah di-cache');
+    return;   // udah ada
+  }
+
+  try {
+    console.log('📥 Preload info data...');
+    const rawData = await API.getContent();
+    if (!rawData || !Array.isArray(rawData)) return;
+
+    profilList = rawData.filter(item => (item.ID || '').toLowerCase() === 'profil');
+    console.log('✅ Info data preloaded:', profilList.length, 'profil');
+  } catch (err) {
+    console.error('❌ Preload info gagal:', err);
+  }
+}
 
 // ===== BUKA MODAL =====
 function openInfoModal() {
@@ -22,13 +41,18 @@ function openInfoModal() {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Fetch data dari GAS
-  fetchInfoData();
+  // Kalau data udah ada → langsung render
+  if (profilList.length > 0) {
+    renderInfoList();
+  } else {
+    // Belum ada → tampil loading + fetch
+    const contentCol = document.getElementById('infoContentCol');
+    if (contentCol) contentCol.innerHTML = '<div class="info-loading">Memuat data...</div>';
+    fetchInfoData();
+  }
 }
 
 // ===== TUTUP MODAL =====
-// skipMenu = true  → langsung balik home
-// skipMenu = false → balik ke menu
 function closeInfoModal(skipMenu = false) {
   const overlay = document.getElementById('infoOverlay');
   const stage = document.getElementById('stage');
@@ -50,7 +74,7 @@ function closeInfoModal(skipMenu = false) {
   }
 }
 
-// ===== FETCH DATA =====
+// ===== FETCH (fallback kalau preload gagal) =====
 async function fetchInfoData() {
   const contentCol = document.getElementById('infoContentCol');
   if (!contentCol) return;
@@ -64,7 +88,6 @@ async function fetchInfoData() {
       return;
     }
 
-    // Filter ID 'profil'
     profilList = rawData.filter(item => (item.ID || '').toLowerCase() === 'profil');
 
     if (profilList.length === 0) {
@@ -119,47 +142,41 @@ function showInfoDetail(idx) {
   const judul = item.Header || 'Tanpa Judul';
   const isi = item.Body || '';
 
-  // Format isi: newline → <br>, deteksi HTML
   const isiFormatted = formatIsiCard(isi);
 
   contentCol.innerHTML = `
     <div class="info-detail">
-      <h3 style="color:#f0d78c; font-size:14px; margin-bottom:10px; letter-spacing:1.5px;">${escapeHtml(judul)}</h3>
+      <h3>${escapeHtml(judul)}</h3>
       ${isiFormatted}
     </div>
   `;
 
-  // Reset scroll
   contentCol.scrollTop = 0;
 
   if (typeof updateButtons === 'function') updateButtons();
 }
 
-// ===== FORMAT ISI CARD =====
+// ===== FORMAT ISI =====
 function formatIsiCard(text) {
   if (!text) return '';
 
-  // Kalau ada tag HTML, biarkan (sanitize dulu)
   if (/<[a-z][\s\S]*>/i.test(text)) {
-    // Ada HTML — sanitize tag berbahaya
     return sanitizeHtml(text);
   }
 
-  // Plain text → newline jadi <br>
   return escapeHtml(text).replace(/\n/g, '<br>');
 }
 
-// ===== SANITIZE HTML =====
+// ===== SANITIZE =====
 function sanitizeHtml(html) {
-  // Hapus tag script, iframe, dll
   let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
   cleaned = cleaned.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
-  cleaned = cleaned.replace(/on\w+="[^"]*"/gi, '');   // hapus event handler
+  cleaned = cleaned.replace(/on\w+="[^"]*"/gi, '');
   cleaned = cleaned.replace(/javascript:/gi, '');
   return cleaned;
 }
 
-// ===== ESCAPE HTML =====
+// ===== ESCAPE =====
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/[&<>"']/g, function(m) {
@@ -173,14 +190,12 @@ function escapeHtml(str) {
 }
 
 // ===== HANDLE TOMBOL BACK =====
-// Dipanggil dari menu.js saat tombol kiri diklik
 function infoGoBack() {
   if (currentView === 'detail') {
-    // Balik ke list
     renderInfoList();
-    return true;   // handled
+    return true;
   }
-  return false;    // nggak handled → biarin menu.js handle
+  return false;
 }
 
 // ===== ESC =====
@@ -201,5 +216,6 @@ window.openInfoModal = openInfoModal;
 window.closeInfoModal = closeInfoModal;
 window.showInfoDetail = showInfoDetail;
 window.infoGoBack = infoGoBack;
+window.preloadInfoData = preloadInfoData;
 
 console.log('✅ info.js loaded');
