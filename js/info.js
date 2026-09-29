@@ -126,7 +126,7 @@ function renderInfoList() {
   html += `
     <div class="info-join-btn" onclick="infoJoinGuild()">
       <div class="btn-ujung-kiri"></div>
-      <div class="btn-tengah"><span class="btn-teks">SAYA INGIN BERGABUNG</span></div>
+      <div class="btn-tengah"><span class="btn-teks">Saya Ingin Bergabung</span></div>
       <div class="btn-ujung-kanan"></div>
     </div>
   `;
