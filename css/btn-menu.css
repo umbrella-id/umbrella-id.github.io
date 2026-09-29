@@ -61,17 +61,11 @@
   transform: translate(-50%, -50%) scale(0.9);
 }
 
-/* ==========================================
-   RESPONSIF — Posisi tombol di tepi
-   ========================================== */
-
-/* Layar ≤ 2.2× tinggi → tombol geser keluar 30% */
+/* Responsif */
 @media (max-aspect-ratio: 22/10) {
   .btn-wrap.kiri-atas { transform: translateX(-30%); }
   .btn-wrap.kanan-atas { transform: translateX(30%); }
 }
-
-/* Layar > 2.2× tinggi → tombol geser ke tepi 15px */
 @media (min-aspect-ratio: 22/10) {
   .btn-wrap.kiri-atas { transform: translateX(-15px); }
   .btn-wrap.kanan-atas { transform: translateX(15px); }
@@ -80,15 +74,26 @@
 /* ==========================================
    STATE SAAT GATE TERBUKA
    ========================================== */
-
-/* Gate mode 'first' — semua tombol & plat nama hidden */
 .stage.gate-first .btn-wrap,
 .stage.gate-first .plat-nama {
   display: none !important;
 }
 
-/* Gate mode 'change' — tombol kanan & plat nama hidden, tombol kiri muncul */
 .stage.gate-edit-mode .btn-wrap.kanan-atas,
 .stage.gate-edit-mode .plat-nama {
   display: none !important;
+}
+
+/* ==========================================
+   STATE SAAT FORM SURAT TERBUKA
+   ========================================== */
+
+/* Sembunyikan plat nama */
+.stage.mail-open .plat-nama {
+  display: none !important;
+}
+
+/* Naikkan z-index tombol agar di atas overlay surat */
+.stage.mail-open .btn-wrap {
+  z-index: 970 !important;
 }
