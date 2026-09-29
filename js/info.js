@@ -168,6 +168,9 @@ function showInfoDetail(idx) {
 
 // ===== KLIK "SAYA INGIN BERGABUNG" =====
 function infoJoinGuild() {
+  // Set flag: form surat dibuka dari info
+  window._mailFromInfo = true;
+
   // Tutup info (skip menu)
   closeInfoModal(true);
 
