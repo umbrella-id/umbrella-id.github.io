@@ -18,7 +18,6 @@ function openMailForm() {
   const stage = document.getElementById('stage');
   if (!overlay) return;
 
-  // Reset
   kategoriTerpilih = 'Umum';
   updateKategoriLabel();
   document.getElementById('mailPesan').value = '';
@@ -29,15 +28,11 @@ function openMailForm() {
   mailOpen = true;
   overlay.classList.add('open');
 
-  // Tambah class di stage → tombol berubah jadi BACK + HOME
   if (stage) stage.classList.add('mail-open');
-
   closeKategoriList();
 
-  // Update tombol (icon)
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Focus ke textarea
   setTimeout(() => {
     const ta = document.getElementById('mailPesan');
     if (ta) ta.focus();
@@ -53,13 +48,11 @@ function closeMailForm() {
   mailOpen = false;
   overlay.classList.remove('open');
 
-  // Hapus class mail-open
   if (stage) stage.classList.remove('mail-open');
 
   closeKategoriList();
   clearMailMessage();
 
-  // Update tombol (icon)
   if (typeof updateButtons === 'function') updateButtons();
 }
 
@@ -80,7 +73,6 @@ function pilihKategori(val) {
   updateKategoriLabel();
   closeKategoriList();
 
-  // Tampilkan / sembunyikan WA
   const waGroup = document.querySelector('.mail-group.wa-group');
   if (waGroup) {
     if (val === 'Request Join') {
@@ -96,7 +88,7 @@ function updateKategoriLabel() {
   if (el) el.innerText = KATEGORI_LABEL[kategoriTerpilih] || 'Umum';
 }
 
-// ===== PESAN ERROR/SUKSES =====
+// ===== PESAN =====
 function showMailMessage(msg, type = 'error') {
   const el = document.getElementById('mailMessage');
   if (!el) return;
@@ -113,10 +105,9 @@ function clearMailMessage() {
   el.classList.remove('show', 'success');
 }
 
-// ===== SANITASI (anti formula injection) =====
+// ===== SANITASI =====
 function sanitasiMail(text) {
   if (!text) return '';
-  // Hapus karakter berbahaya di AWAL
   let cleaned = text.replace(/^[=+\-@<>]+/, '');
   return cleaned;
 }
@@ -128,7 +119,6 @@ async function kirimMail() {
   const pesan = pesanEl ? pesanEl.value.trim() : '';
   const wa = waEl ? waEl.value.trim() : '';
 
-  // Validasi kategori WA
   if (kategoriTerpilih === 'Request Join') {
     if (!wa) {
       showMailMessage('Nomor WhatsApp wajib diisi');
@@ -142,7 +132,6 @@ async function kirimMail() {
     }
   }
 
-  // Validasi pesan
   if (!pesan) {
     showMailMessage('Pesan tidak boleh kosong');
     if (pesanEl) pesanEl.focus();
@@ -161,15 +150,12 @@ async function kirimMail() {
     return;
   }
 
-  // Gabung pesan + WA (kalau ada)
   let finalMsg = sanitasiMail(pesan);
   if (kategoriTerpilih === 'Request Join' && wa) {
     finalMsg = sanitasiMail(wa) + '\n' + finalMsg;
   }
 
-  // Disable tombol
   const btn = document.querySelector('.mail-footer .btn-svg');
-  const originalHTML = btn ? btn.innerHTML : '';
   if (btn) {
     btn.style.opacity = '0.6';
     btn.style.pointerEvents = 'none';
@@ -182,10 +168,8 @@ async function kirimMail() {
     if (res && res.status === 'success') {
       showMailMessage('Surat berhasil dikirim', 'success');
 
-      // Tutup form setelah 800ms
       setTimeout(() => {
         closeMailForm();
-        // Balik ke home
         if (typeof goHome === 'function') goHome();
       }, 800);
     } else {
