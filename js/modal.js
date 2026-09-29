@@ -15,7 +15,7 @@ function openModal() {
 
   modalTimer = setTimeout(() => {
     modalOverlay.classList.add('open');
-    void modalOverlay.offsetHeight;   // force reflow
+    void modalOverlay.offsetHeight;
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
