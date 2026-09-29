@@ -50,12 +50,12 @@
   opacity: 0.9;
 }
 
-/* Body: 2 kolom */
+/* Body: 2 kolom — digeser 20px ke kanan via padding */
 .info-body {
   flex: 1;
   display: flex;
   gap: 20px;
-  padding: 20px 30px;
+  padding: 20px 30px 20px 50px;   /* ← kiri 50px (dari 30px = geser 20px) */
   overflow: hidden;
   position: relative;
   z-index: 2;
@@ -69,10 +69,10 @@
   justify-content: center;
   overflow: hidden;
   padding-top: 0;
-  margin-top: -5px;
+  margin-top: 0;              /* ← dari -5px jadi 0 */
 }
 
-/* Logo — 90% dengan glow kecil */
+/* Logo */
 .info-logo-col img {
   max-width: 90%;
   max-height: 90%;
@@ -164,7 +164,7 @@
   filter: brightness(0.75);
 }
 
-/* Isi detail — geser 10px ke kanan */
+/* Isi detail */
 .info-detail {
   color: #f5e6c8;
   font-size: 11px;
