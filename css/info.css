@@ -65,10 +65,11 @@
 .info-logo-col {
   flex: 0 0 40%;
   display: flex;
-  align-items: flex-start;      /* ← rata atas */
+  align-items: flex-start;
   justify-content: center;
   overflow: hidden;
-  padding-top: 10px;            /* ← sedikit jarak dari atas */
+  padding-top: 0;            /* ← dari 10px jadi 0 */
+  margin-top: -10px;         /* ← naik 10px */
 }
 
 /* Logo — 90% */
@@ -163,7 +164,7 @@
   filter: brightness(0.75);
 }
 
-/* Isi detail — rata tengah di kolom kanan */
+/* Isi detail — rata kiri, dalam kolom kanan */
 .info-detail {
   color: #f5e6c8;
   font-size: 11px;
@@ -171,11 +172,17 @@
   letter-spacing: 0.3px;
   word-break: break-word;
   padding: 4px 0;
-  max-width: 80%;
   width: 100%;
-  margin: 0 auto;
-  text-align: center;
+  text-align: left;          /* ← rata kiri */
+  box-sizing: border-box;    /* ← biar padding nggak bikin lebar */
 }
+
+/* Semua anak detail: max width 100% */
+.info-detail * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .info-detail p { margin-bottom: 8px; }
 .info-detail img {
   max-width: 100%;
@@ -186,7 +193,6 @@
 .info-detail ul {
   padding-left: 20px;
   margin-bottom: 8px;
-  text-align: left;              /* ← list tetap rata kiri */
 }
 .info-detail li {
   margin-bottom: 4px;
@@ -198,7 +204,6 @@
   color: #f0d78c;
   margin-bottom: 8px;
   letter-spacing: 1.2px;
-  text-align: center;
 }
 
 /* Loading & Empty */
