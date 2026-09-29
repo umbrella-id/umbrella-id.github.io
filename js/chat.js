@@ -11,7 +11,7 @@ let startChatHeightPct = 25;
 let currentChatHeightPct = 25;
 let hasMoved = false;
 
-const DEFAULT_PERCENT = 25;
+const DEFAULT_PERCENT = 22;
 const SNAP_THRESHOLD = 90;
 const FULL_PERCENT = 100;
 const MIN_PERCENT = 3;
