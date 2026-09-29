@@ -7,11 +7,11 @@ let profilList = [];
 let currentView = 'list';
 let currentDetailIndex = -1;
 
-// ===== PRELOAD (dipanggil dari stage.js / init) =====
+// ===== PRELOAD (dipanggil dari stage.js) =====
 async function preloadInfoData() {
   if (profilList.length > 0) {
     console.log('✅ Info data sudah di-cache');
-    return;   // udah ada
+    return;
   }
 
   try {
@@ -41,11 +41,9 @@ function openInfoModal() {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Kalau data udah ada → langsung render
   if (profilList.length > 0) {
     renderInfoList();
   } else {
-    // Belum ada → tampil loading + fetch
     const contentCol = document.getElementById('infoContentCol');
     if (contentCol) contentCol.innerHTML = '<div class="info-loading">Memuat data...</div>';
     fetchInfoData();
@@ -74,7 +72,7 @@ function closeInfoModal(skipMenu = false) {
   }
 }
 
-// ===== FETCH (fallback kalau preload gagal) =====
+// ===== FETCH (fallback) =====
 async function fetchInfoData() {
   const contentCol = document.getElementById('infoContentCol');
   if (!contentCol) return;
@@ -111,6 +109,8 @@ function renderInfoList() {
   currentDetailIndex = -1;
 
   let html = '<div class="info-list">';
+
+  // List profil
   profilList.forEach((item, idx) => {
     const judul = item.Header || 'Tanpa Judul';
     html += `
@@ -121,6 +121,16 @@ function renderInfoList() {
       </div>
     `;
   });
+
+  // Tombol "Saya Ingin Bergabung" — hijau
+  html += `
+    <div class="info-join-btn" onclick="infoJoinGuild()">
+      <div class="btn-ujung-kiri"></div>
+      <div class="btn-tengah"><span class="btn-teks">SAYA INGIN BERGABUNG</span></div>
+      <div class="btn-ujung-kanan"></div>
+    </div>
+  `;
+
   html += '</div>';
 
   contentCol.innerHTML = html;
@@ -154,6 +164,19 @@ function showInfoDetail(idx) {
   contentCol.scrollTop = 0;
 
   if (typeof updateButtons === 'function') updateButtons();
+}
+
+// ===== KLIK "SAYA INGIN BERGABUNG" =====
+function infoJoinGuild() {
+  // Tutup info (skip menu)
+  closeInfoModal(true);
+
+  // Buka form surat dengan kategori Request Join
+  setTimeout(() => {
+    if (typeof openMailForm === 'function') {
+      openMailForm('Request Join');
+    }
+  }, 200);
 }
 
 // ===== FORMAT ISI =====
@@ -217,5 +240,6 @@ window.closeInfoModal = closeInfoModal;
 window.showInfoDetail = showInfoDetail;
 window.infoGoBack = infoGoBack;
 window.preloadInfoData = preloadInfoData;
+window.infoJoinGuild = infoJoinGuild;
 
 console.log('✅ info.js loaded');
