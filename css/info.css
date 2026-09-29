@@ -56,7 +56,7 @@
   display: flex;
   gap: 20px;
   padding: 20px 30px;
-  overflow: visible;         /* ← biar glow kelihatan */
+  overflow: hidden;
   position: relative;
   z-index: 2;
 }
@@ -67,17 +67,17 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  overflow: visible;         /* ← biar glow nggak kepotong */
+  overflow: hidden;
   padding-top: 0;
-  margin-top: -5px;          /* ← dari -10px jadi -5px */
+  margin-top: -5px;
 }
 
-/* Logo — 90% */
+/* Logo — 90% dengan glow kecil */
 .info-logo-col img {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(240, 215, 140, 0.3));
+  filter: drop-shadow(0 0 6px rgba(240, 215, 140, 0.3));
 }
 
 /* Kolom kanan: list / isi */
@@ -89,7 +89,6 @@
   padding-right: 4px;
   align-items: center;
   width: 100%;
-  max-height: 100%;          /* ← batasi tinggi biar nggak keluar modal */
 }
 .info-content-col::-webkit-scrollbar { width: 4px; }
 .info-content-col::-webkit-scrollbar-thumb {
@@ -172,17 +171,15 @@
   line-height: 1.5;
   letter-spacing: 0.3px;
   word-break: break-word;
-  padding: 4px 0 4px 10px;   /* ← padding kiri 10px */
+  padding: 4px 0 4px 10px;
   width: 100%;
   text-align: left;
   box-sizing: border-box;
 }
-
 .info-detail * {
   max-width: 100%;
   box-sizing: border-box;
 }
-
 .info-detail p { margin-bottom: 8px; }
 .info-detail img {
   max-width: 100%;
