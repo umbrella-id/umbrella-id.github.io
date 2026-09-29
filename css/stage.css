@@ -1,5 +1,5 @@
 /* ==========================================
-   stage.css — Rotasi & Auto-scale
+   stage.css — Rotasi & Auto-scale + Background Fade-in
    ========================================== */
 
 .rotate-wrapper {
@@ -19,12 +19,21 @@ html.portrait .rotate-wrapper {
   transform: translate(-50%, -50%) rotate(90deg);
 }
 
+/* Background — load belakangan, fade-in halus */
 .bg {
   position: absolute;
   inset: 0;
-  background: url('../Assets/Background.png') no-repeat center center;
+  background-color: #000;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-position: center center;
   background-size: cover;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.bg.loaded {
+  opacity: 1;
 }
 
 .stage {
