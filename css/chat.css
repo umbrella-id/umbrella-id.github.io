@@ -22,27 +22,37 @@
   height: 25%;
 }
 
+/* ===== ZONA SENTUH DRAG (DIPERBESAR) ===== */
 .chat-drag {
   position: absolute;
-  top: -10px;
+  top: -15px;                    /* ← dari -10px */
   left: 0;
   width: 100%;
-  height: 20px;
+  height: 30px;                  /* ← dari 20px (lebih luas) */
   cursor: ns-resize;
-  z-index: 1;
+  z-index: 2;
   touch-action: none;
   -webkit-user-select: none;
 }
 
-/* Area log chat */
+/* ===== AREA LOG CHAT ===== */
 .chat-body {
   flex: 1;
-  overflow-y: auto;
+  display: flex;                 /* ← tambah flex */
+  flex-direction: column;
+  justify-content: flex-end;     /* ← chat rata bawah */
+  overflow-y: hidden;            /* ← scroll mati default */
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
-  font-size: 13px;               /* ← dari 11px */
-  line-height: 1.35;             /* ← sedikit naik */
+  font-size: 13px;
+  line-height: 1.35;
 }
+
+/* Scroll aktif HANYA saat maximize */
+.chat-box.maximized .chat-body {
+  overflow-y: auto;
+}
+
 .chat-body::-webkit-scrollbar { width: 4px; }
 .chat-body::-webkit-scrollbar-thumb {
   background: rgba(201, 165, 90, 0.4);
@@ -50,16 +60,17 @@
 }
 
 /* ==========================================
-   GAYA BARIS CHAT — SEMUA SERAGAM
+   GAYA BARIS CHAT
    ========================================== */
 
 .chat-line {
   padding: 1px 0;
   margin: 0;
   word-break: break-word;
-  font-size: 13px;               /* ← dari 11px */
+  font-size: 13px;
   line-height: 1.35;
   font-family: inherit;
+  flex-shrink: 0;                /* ← biar nggak kekecilan */
 }
 
 .chat-name {
@@ -75,13 +86,11 @@
    WARNA CHAT
    ========================================== */
 
-/* 1. Pengunjung biasa — PUTIH */
 .chat-line .chat-name,
 .chat-line .chat-text {
   color: #ffffff;
 }
 
-/* 2. Chat Admin — HIJAU */
 .chat-line.chat-admin .chat-name,
 .chat-line.chat-admin .chat-text {
   color: #4ade80;
@@ -90,7 +99,6 @@
   font-weight: 700;
 }
 
-/* 3. Chat System — KUNING, font seragam */
 .chat-line.chat-system {
   text-align: left;
   font-style: normal;
@@ -99,7 +107,7 @@
 }
 .chat-line.chat-system .chat-text {
   color: #facc15;
-  font-size: 13px;               /* ← dari 11px */
+  font-size: 13px;
   line-height: 1.35;
   font-family: inherit;
   letter-spacing: normal;
