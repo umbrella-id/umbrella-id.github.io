@@ -66,6 +66,14 @@ function onMove(e) {
   const clamped = Math.max(MIN_PERCENT, Math.min(FULL_PERCENT, percent));
   currentChatHeightPct = clamped;
   chatBox.style.height = clamped + '%';
+
+  // Aktifkan scroll saat melewati threshold
+  if (clamped > SNAP_THRESHOLD) {
+    chatBox.classList.add('maximized');
+  } else {
+    chatBox.classList.remove('maximized');
+  }
+
   e.preventDefault();
 }
 
@@ -74,12 +82,15 @@ function onUp() {
   isDragging = false;
   chatBox.classList.remove('dragging');
   if (!hasMoved) return;
+
   if (currentChatHeightPct > SNAP_THRESHOLD) {
     chatBox.style.height = FULL_PERCENT + '%';
     currentChatHeightPct = FULL_PERCENT;
+    chatBox.classList.add('maximized');
   } else {
     chatBox.style.height = DEFAULT_PERCENT + '%';
     currentChatHeightPct = DEFAULT_PERCENT;
+    chatBox.classList.remove('maximized');
   }
 }
 
@@ -104,7 +115,6 @@ function escapeHtml(str) {
 }
 
 // ===== PARSE COMMAND =====
-// Kembalikan { type: 'mute'|'unmute', uid, durasi, ign, timestamp }
 function parseCommand(msgText) {
   if (msgText.startsWith('MUTE_')) {
     const parts = msgText.split('_');
@@ -126,48 +136,37 @@ function parseCommand(msgText) {
   return null;
 }
 
-// ===== CEK APAKAH SYSTEM MESSAGE MASIH BERLAKU =====
-// Logs: array lengkap dari GAS (terurut dari lama → baru)
-// index: index pesan yang sedang dicek
-// Kembalikan true kalau pesan ini masih "berlaku"
+// ===== CEK SYSTEM MESSAGE MASIH BERLAKU =====
 function isSystemMessageMasihBerlaku(logs, index) {
   const msg = logs[index];
   const msgText = msg.message || '';
   const parsed = parseCommand(msgText);
-  if (!parsed) return true;   // bukan command, tampil
+  if (!parsed) return true;
 
   if (parsed.type === 'mute') {
-    // Cek: apakah ada UNMUTE untuk uid yang sama SETELAH pesan ini?
     for (let i = index + 1; i < logs.length; i++) {
       const next = logs[i];
       if (next.type !== 'command') continue;
       const nextParsed = parseCommand(next.message || '');
       if (nextParsed && nextParsed.type === 'unmute' && nextParsed.uid === parsed.uid) {
-        return false;   // udah di-unmute → sembunyikan
+        return false;
       }
     }
-
-    // Cek: apakah durasi mute udah lewat?
     if (parsed.durasi > 0) {
       const msgTime = msg.timestamp || 0;
       const muteEndTime = msgTime + (parsed.durasi * 60 * 1000);
-      if (Date.now() > muteEndTime) {
-        return false;   // udah expired → sembunyikan
-      }
+      if (Date.now() > muteEndTime) return false;
     }
-
-    return true;   // masih berlaku
+    return true;
   }
 
   if (parsed.type === 'unmute') {
-    // Unmute selalu ditampilkan (berlaku) — kalau nggak ada mute setelahnya
-    // Cek: apakah ada MUTE untuk uid yang sama SETELAH pesan ini?
     for (let i = index + 1; i < logs.length; i++) {
       const next = logs[i];
       if (next.type !== 'command') continue;
       const nextParsed = parseCommand(next.message || '');
       if (nextParsed && nextParsed.type === 'mute' && nextParsed.uid === parsed.uid) {
-        return false;   // udah di-mute lagi → unmute lama nggak relevan
+        return false;
       }
     }
     return true;
@@ -203,35 +202,29 @@ function renderChatLogs(logs) {
 
       const d = document.createElement('div');
 
-      // 🎯 SYSTEM MESSAGE (command MUTE/UNMUTE)
       if (msgType === 'command') {
         const parsed = parseCommand(msgText);
-        if (!parsed) return;   // command unknown, skip
-
-        // 🎯 Cek: masih berlaku atau nggak?
-        if (!isSystemMessageMasihBerlaku(logs, index)) return;   // skip
+        if (!parsed) return;
+        if (!isSystemMessageMasihBerlaku(logs, index)) return;
 
         let displayText = '';
         if (parsed.type === 'mute') {
-          displayText = `${parsed.ign} dibisukan selama ${parsed.durasi} menit`;   // ← tanpa emoji
+          displayText = `${parsed.ign} dibisukan selama ${parsed.durasi} menit`;
         } else if (parsed.type === 'unmute') {
-          displayText = `Bisuan ${parsed.ign} telah dibuka`;   // ← tanpa emoji
+          displayText = `Bisuan ${parsed.ign} telah dibuka`;
         }
 
         d.className = 'chat-line chat-system';
         d.innerHTML = `<span class="chat-text">${escapeHtml(displayText)}</span>`;
       }
-      // 🎯 PESAN DIHAPUS ADMIN
       else if (isDeleted) {
         d.className = 'chat-line chat-system';
-        d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;   // ← tanpa emoji
+        d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;
       }
-      // 🎯 PESAN ADMIN (hijau)
       else if (isAdmin) {
         d.className = 'chat-line chat-admin';
         d.innerHTML = `<span class="chat-name">[ADMIN] ${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
       }
-      // 🎯 PESAN PENGGUNA (putih)
       else {
         d.className = 'chat-line';
         d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
