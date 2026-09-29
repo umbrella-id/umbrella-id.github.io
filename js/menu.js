@@ -13,13 +13,19 @@ function getGate() {
   return document.getElementById('gatekeeper');
 }
 
-// ==========================================
-// UPDATE ICON TOMBOL
-// ==========================================
 function updateButtons() {
   const ikonKiri = document.getElementById('ikonKiri');
   const ikonKanan = document.getElementById('ikonKanan');
   if (!ikonKiri || !ikonKanan) return;
+
+  // Cek apakah gate mode 'change' (edit nama)
+  const stage = document.getElementById('stage');
+  const isGateEdit = stage && stage.classList.contains('gate-edit-mode');
+
+  if (isGateEdit) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    return;
+  }
 
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
@@ -37,14 +43,10 @@ function updateButtons() {
   }
 }
 
-// ==========================================
-// NAVIGASI
-// ==========================================
 function goToPage(pageName) {
   currentPage = pageName;
   pageHistory.push(pageName);
   updateButtons();
-  console.log('Pindah ke halaman:', pageName);
 }
 
 function goBack() {
@@ -61,19 +63,15 @@ function goHome() {
   updateButtons();
 }
 
-// ==========================================
-// EVENT LISTENER
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   const btnKiri = document.getElementById('btnKiri');
   const btnKanan = document.getElementById('btnKanan');
 
-  // ===== KLIK TOMBOL KIRI =====
   if (btnKiri) {
     btnKiri.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
 
-      // Prioritas 1: Gate buka → close
+      // Prioritas 1: Gate buka
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
@@ -94,19 +92,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== KLIK TOMBOL KANAN =====
   if (btnKanan) {
     btnKanan.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
 
-      // Kalau gate buka → tombol kanan non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
       if (currentPage === 'home') {
-        // Buka form tulis chat (placeholder)
         console.log('Buka form tulis chat');
-        // TODO: openChatInput()
       } else {
         goHome();
       }
@@ -114,9 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ==========================================
-// EXPOSE
-// ==========================================
 window.goToPage = goToPage;
 window.goBack = goBack;
 window.goHome = goHome;
