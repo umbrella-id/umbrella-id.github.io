@@ -50,3 +50,11 @@
   background: rgba(201, 165, 90, 0.4);
   border-radius: 2px;
 }
+
+/* ==========================================
+   SAAT GATE AKTIF — Sembunyikan chat box
+   ========================================== */
+.stage.gate-first .chat-box,
+.stage.gate-edit-mode .chat-box {
+  display: none !important;
+}
