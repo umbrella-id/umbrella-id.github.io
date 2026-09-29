@@ -56,20 +56,20 @@
   display: flex;
   gap: 20px;
   padding: 20px 30px;
-  overflow: hidden;
+  overflow: visible;         /* ← biar glow kelihatan */
   position: relative;
   z-index: 2;
 }
 
-/* Kolom kiri: logo — rata atas */
+/* Kolom kiri: logo */
 .info-logo-col {
   flex: 0 0 40%;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
-  padding-top: 0;            /* ← dari 10px jadi 0 */
-  margin-top: -10px;         /* ← naik 10px */
+  overflow: visible;         /* ← biar glow nggak kepotong */
+  padding-top: 0;
+  margin-top: -5px;          /* ← dari -10px jadi -5px */
 }
 
 /* Logo — 90% */
@@ -89,6 +89,7 @@
   padding-right: 4px;
   align-items: center;
   width: 100%;
+  max-height: 100%;          /* ← batasi tinggi biar nggak keluar modal */
 }
 .info-content-col::-webkit-scrollbar { width: 4px; }
 .info-content-col::-webkit-scrollbar-thumb {
@@ -164,20 +165,19 @@
   filter: brightness(0.75);
 }
 
-/* Isi detail — rata kiri, dalam kolom kanan */
+/* Isi detail — geser 10px ke kanan */
 .info-detail {
   color: #f5e6c8;
   font-size: 11px;
   line-height: 1.5;
   letter-spacing: 0.3px;
   word-break: break-word;
-  padding: 4px 0;
+  padding: 4px 0 4px 10px;   /* ← padding kiri 10px */
   width: 100%;
-  text-align: left;          /* ← rata kiri */
-  box-sizing: border-box;    /* ← biar padding nggak bikin lebar */
+  text-align: left;
+  box-sizing: border-box;
 }
 
-/* Semua anak detail: max width 100% */
 .info-detail * {
   max-width: 100%;
   box-sizing: border-box;
