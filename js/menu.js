@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate + Handle Mail
+ * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info
  */
 
 let currentPage = 'home';
@@ -30,13 +30,20 @@ function updateButtons() {
     return;
   }
 
-  // Prioritas 2: Gate mode 'change' → BACK
+  // Prioritas 2: Info serikat buka → BACK + HOME
+  if (stage && stage.classList.contains('info-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
+  // Prioritas 3: Gate mode 'change' → BACK
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
 
-  // Prioritas 3: Normal
+  // Prioritas 4: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -93,18 +100,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prioritas 1: Form surat buka → kembali ke menu
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm();   // default skipMenu=false
+        if (typeof closeMailForm === 'function') closeMailForm();
         return;
       }
 
-      // Prioritas 2: Gate buka → close
+      // Prioritas 2: Info serikat buka
+      if (stage && stage.classList.contains('info-open')) {
+        // Cek: apakah sedang lihat detail profil?
+        if (typeof infoGoBack === 'function' && infoGoBack()) {
+          return;   // handled → balik ke list
+        }
+        // Nggak handled → tutup modal, balik ke menu
+        if (typeof closeInfoModal === 'function') closeInfoModal();
+        return;
+      }
+
+      // Prioritas 3: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
-        if (typeof closeGate === 'function') closeGate();   // default skipMenu=false
+        if (typeof closeGate === 'function') closeGate();
         return;
       }
 
-      // Prioritas 3: Normal
+      // Prioritas 4: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -127,16 +145,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prioritas 1: Form surat buka → balik ke home
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm(true);   // skipMenu=true
+        if (typeof closeMailForm === 'function') closeMailForm(true);
         if (typeof goHome === 'function') goHome();
         return;
       }
 
-      // Prioritas 2: Gate buka → non-aktif
+      // Prioritas 2: Info serikat buka → balik ke home
+      if (stage && stage.classList.contains('info-open')) {
+        if (typeof closeInfoModal === 'function') closeInfoModal(true);
+        if (typeof goHome === 'function') goHome();
+        return;
+      }
+
+      // Prioritas 3: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
-      // Prioritas 3: Normal
+      // Prioritas 4: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
       } else {
