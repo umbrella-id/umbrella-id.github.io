@@ -50,12 +50,12 @@
   opacity: 0.9;
 }
 
-/* Body: 2 kolom — digeser 20px ke kanan via padding */
+/* Body: 2 kolom */
 .info-body {
   flex: 1;
   display: flex;
   gap: 20px;
-  padding: 20px 30px 20px 50px;   /* ← kiri 50px (dari 30px = geser 20px) */
+  padding: 20px 30px 20px 50px;
   overflow: hidden;
   position: relative;
   z-index: 2;
@@ -69,7 +69,7 @@
   justify-content: center;
   overflow: hidden;
   padding-top: 0;
-  margin-top: 0;              /* ← dari -5px jadi 0 */
+  margin-top: 0;
 }
 
 /* Logo */
@@ -162,6 +162,69 @@
 .info-list-item:active {
   transform: translateY(1px) scale(0.97);
   filter: brightness(0.75);
+}
+
+/* ==========================================
+   TOMBOL JOIN GUILD — Hijau
+   ========================================== */
+.info-join-btn {
+  display: inline-flex;
+  align-items: stretch;
+  height: 32px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  isolation: isolate;
+  width: 80%;
+  margin-top: 16px;
+  filter: hue-rotate(90deg) saturate(1.5);
+}
+.info-join-btn .btn-ujung-kiri {
+  width: 12px;
+  height: 100%;
+  background: url('../Assets/SVG_BTN-L.svg') no-repeat center center;
+  background-size: 100% 100%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.info-join-btn .btn-tengah {
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  background: url('../Assets/SVG_BTN-M.svg') no-repeat center center;
+  background-size: 100% 100%;
+  position: relative;
+  z-index: 2;
+  min-width: 40px;
+  margin-left: -1px;
+  margin-right: -1px;
+}
+.info-join-btn .btn-ujung-kanan {
+  width: 12px;
+  height: 100%;
+  background: url('../Assets/SVG_BTN-R.svg') no-repeat center center;
+  background-size: 100% 100%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.info-join-btn .btn-teks {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  font-family: inherit;
+}
+.info-join-btn:hover { transform: translateY(-1px); }
+.info-join-btn:active {
+  transform: translateY(1px) scale(0.97);
+  filter: hue-rotate(90deg) saturate(1.5) brightness(0.75);
 }
 
 /* Isi detail */
