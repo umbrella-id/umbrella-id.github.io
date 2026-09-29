@@ -51,16 +51,12 @@ document.addEventListener('keydown', (e) => {
 function menuClick(type) {
   console.log('Menu dipilih:', type);
 
-  // Tutup modal dulu
   closeModal();
 
-  // Tunggu modal nutup, baru aksi
   setTimeout(() => {
     if (type === 'ganti') {
-      // Buka gate dalam mode ganti nama
-      openGate('change');
+      if (typeof openGate === 'function') openGate('change');
     } else {
-      // Menu lain → pindah halaman (placeholder)
       if (typeof goToPage === 'function') goToPage(type);
     }
   }, 400);
