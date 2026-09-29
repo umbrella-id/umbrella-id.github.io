@@ -9,7 +9,7 @@
   height: 72px;
   cursor: pointer;
   transition: transform 0.3s ease;
-  z-index: 950;   /* ← SELALU di atas overlay gate */
+  z-index: 950;
 }
 .btn-wrap.kiri-atas { top: 0; left: 0; }
 .btn-wrap.kanan-atas { top: 0; right: 0; }
@@ -70,16 +70,14 @@
    STATE SAAT GATE TERBUKA
    ========================================== */
 
-/* --- GATE MODE 'first': SEMUA tombol & plat nama disembunyikan --- */
+/* Gate mode 'first' — semua tombol & plat nama hidden */
 .stage.gate-first .btn-wrap,
 .stage.gate-first .plat-nama {
   display: none !important;
 }
 
-/* --- GATE MODE 'change': tombol kiri muncul, sisanya sembunyi --- */
+/* Gate mode 'change' — tombol kanan & plat nama hidden, tombol kiri muncul */
 .stage.gate-edit-mode .btn-wrap.kanan-atas,
 .stage.gate-edit-mode .plat-nama {
   display: none !important;
 }
-
-/* Tombol kiri tetap muncul (default) */
