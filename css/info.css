@@ -170,13 +170,13 @@
 .info-join-btn {
   display: inline-flex;
   align-items: stretch;
-  height: 32px;
+  height: 28px;                 /* ← 28px, sama dengan tombol profil */
   cursor: pointer;
   user-select: none;
   transition: transform 0.1s ease, filter 0.15s ease;
   isolation: isolate;
   width: 80%;
-  margin-top: 16px;
+  margin-top: 6px;              /* ← 6px, lebih rapat */
   filter: hue-rotate(90deg) saturate(1.5);
 }
 .info-join-btn .btn-ujung-kiri {
