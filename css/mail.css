@@ -11,13 +11,13 @@
 }
 .mail-overlay.open { display: block; }
 
-/* Modal surat: center, 70% × 80% */
+/* Modal surat */
 .mail-modal {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 70%;
-  height: 80%;                   /* ← dari 70% jadi 80% */
+  height: 80%;
   transform: translate(-50%, -50%);
   background: rgba(15, 10, 6, 0.7);
   padding: 0;
@@ -30,9 +30,9 @@
 /* Header */
 .mail-header {
   position: relative;
-  padding: 10px 30px;            /* ← dari 14px jadi 10px */
+  padding: 10px 30px;
   text-align: center;
-  font-size: 14px;               /* ← dari 16px jadi 14px */
+  font-size: 13px;               /* ← dari 14px */
   font-weight: 600;
   letter-spacing: 2px;
   color: #f0d78c;
@@ -55,10 +55,10 @@
 /* Body form */
 .mail-body {
   flex: 1;
-  padding: 14px 30px;            /* ← dari 20px jadi 14px */
+  padding: 14px 30px;
   display: flex;
   flex-direction: column;
-  gap: 8px;                      /* ← dari 14px jadi 8px */
+  gap: 8px;
   overflow-y: auto;
   position: relative;
   z-index: 2;
@@ -72,7 +72,7 @@
 /* Label */
 .mail-label {
   color: #f0d78c;
-  font-size: 11px;               /* ← dari 12px jadi 11px */
+  font-size: 10px;               /* ← dari 11px */
   font-weight: 600;
   letter-spacing: 1px;
   margin-bottom: 3px;
@@ -85,14 +85,14 @@
 }
 
 /* ==========================================
-   KATEGORI (custom dropdown)
+   KATEGORI
    ========================================== */
 .mail-kategori-btn {
   background: #000000;
   color: #f5e6c8;
-  font-size: 12px;               /* ← dari 13px jadi 12px */
+  font-size: 11px;               /* ← dari 12px */
   font-weight: 500;
-  padding: 8px 14px;             /* ← dari 10px jadi 8px */
+  padding: 8px 14px;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -112,7 +112,7 @@
   margin-left: 8px;
 }
 
-/* Popup list kategori — background HITAM */
+/* Popup list kategori — hitam */
 .mail-kategori-list {
   display: none;
   position: absolute;
@@ -120,7 +120,7 @@
   left: 0;
   right: 0;
   margin-top: 4px;
-  background: #000000;           /* ← dari rgba jadi hitam solid */
+  background: #000000;
   border: 1px solid rgba(201, 165, 90, 0.4);
   border-radius: 4px;
   padding: 4px 0;
@@ -132,7 +132,7 @@
 .mail-kategori-item {
   padding: 8px 14px;
   color: #c9a55a;
-  font-size: 12px;
+  font-size: 11px;               /* ← dari 12px */
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -143,15 +143,15 @@
 }
 
 /* ==========================================
-   INPUT & TEXTAREA (hitam 100%)
+   INPUT & TEXTAREA
    ========================================== */
 .mail-input,
 .mail-textarea {
   background: #000000;
   color: #f5e6c8;
-  font-size: 12px;               /* ← dari 13px jadi 12px */
+  font-size: 11px;               /* ← dari 12px */
   font-weight: 500;
-  padding: 8px 14px;             /* ← dari 10px jadi 8px */
+  padding: 8px 14px;
   border-radius: 4px;
   border: 1px solid rgba(201, 165, 90, 0.3);
   outline: none;
@@ -169,10 +169,9 @@
   flex: 1;
   resize: none;
   line-height: 1.4;
-  min-height: 100px;             /* ← dari 120px jadi 100px */
+  min-height: 100px;
 }
 
-/* Grup WA (hidden default) */
 .mail-group.wa-group {
   display: none;
 }
@@ -180,21 +179,17 @@
   display: flex;
 }
 
-/* ==========================================
-   FOOTER — tombol kirim kanan
-   ========================================== */
+/* Footer */
 .mail-footer {
   position: relative;
-  padding: 10px 30px 14px 30px;  /* ← dari 12/16 jadi 10/14 */
+  padding: 10px 30px 14px 30px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   z-index: 2;
 }
 
-/* ==========================================
-   PESAN ERROR/SUKSES
-   ========================================== */
+/* Pesan */
 .mail-message {
   position: absolute;
   bottom: 55px;
