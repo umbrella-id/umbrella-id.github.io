@@ -15,6 +15,7 @@ let kategoriTerpilih = 'Umum';
 // ===== BUKA FORM =====
 function openMailForm() {
   const overlay = document.getElementById('mailOverlay');
+  const stage = document.getElementById('stage');
   if (!overlay) return;
 
   // Reset
@@ -27,7 +28,14 @@ function openMailForm() {
 
   mailOpen = true;
   overlay.classList.add('open');
+
+  // Tambah class di stage → tombol berubah jadi BACK + HOME
+  if (stage) stage.classList.add('mail-open');
+
   closeKategoriList();
+
+  // Update tombol (icon)
+  if (typeof updateButtons === 'function') updateButtons();
 
   // Focus ke textarea
   setTimeout(() => {
@@ -39,12 +47,20 @@ function openMailForm() {
 // ===== TUTUP FORM =====
 function closeMailForm() {
   const overlay = document.getElementById('mailOverlay');
+  const stage = document.getElementById('stage');
   if (!overlay) return;
 
   mailOpen = false;
   overlay.classList.remove('open');
+
+  // Hapus class mail-open
+  if (stage) stage.classList.remove('mail-open');
+
   closeKategoriList();
   clearMailMessage();
+
+  // Update tombol (icon)
+  if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ===== KATEGORI =====
