@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (gate && gate.classList.contains('open')) return;
 
       if (currentPage === 'home') {
-        console.log('Buka form tulis chat');
+        // Buka form tulis chat
+        if (typeof openChatInput === 'function') openChatInput();
       } else {
         goHome();
       }
