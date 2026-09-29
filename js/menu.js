@@ -20,13 +20,18 @@ function updateButtons() {
 
   const stage = document.getElementById('stage');
 
-  // Prioritas 1: Gate mode 'change' → tombol kiri = BACK
+  // Prioritas 1: Form surat buka → BACK + HOME
+  if (stage && stage.classList.contains('mail-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
+  // Prioritas 2: Gate mode 'change' → BACK + plat nama hidden
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
-
-  // Prioritas 2: Gate mode 'first' → tombol di-hide via CSS, nggak perlu ubah icon
 
   // Prioritas 3: Normal
   const modalOverlay = getModalOverlay();
@@ -72,13 +77,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnKiri) {
     btnKiri.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
-
+    
+      const stage = document.getElementById('stage');
+    
+      // Prioritas 1: Form surat buka → tutup surat
+      if (stage && stage.classList.contains('mail-open')) {
+        if (typeof closeMailForm === 'function') closeMailForm();
+        return;
+      }
+    
+      // Prioritas 2: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
-
+    
+      // Prioritas 3: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -95,12 +110,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnKanan) {
     btnKanan.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
-
+    
+      const stage = document.getElementById('stage');
+    
+      // Prioritas 1: Form surat buka → balik ke home
+      if (stage && stage.classList.contains('mail-open')) {
+        if (typeof closeMailForm === 'function') closeMailForm();
+        if (typeof goHome === 'function') goHome();
+        return;
+      }
+    
+      // Prioritas 2: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
-
+    
+      // Prioritas 3: Normal
       if (currentPage === 'home') {
-        // Buka form tulis chat
         if (typeof openChatInput === 'function') openChatInput();
       } else {
         goHome();
