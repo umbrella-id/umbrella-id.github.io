@@ -1,0 +1,214 @@
+/* ==========================================
+   mail.css — Form Kirim Surat
+   ========================================== */
+
+.mail-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 960;
+  pointer-events: auto;
+}
+.mail-overlay.open { display: block; }
+
+/* Modal surat: center, 70% × 70% */
+.mail-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 10, 6, 0.7);
+  padding: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+/* Header */
+.mail-header {
+  position: relative;
+  padding: 14px 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #f0d78c;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  z-index: 2;
+}
+
+/* Garis pemisah di bawah header */
+.mail-header::after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  bottom: 0;
+  height: 3px;
+  background: url('../Assets/MODAL-HEADER.svg') no-repeat center center;
+  background-size: 100% 100%;
+  opacity: 0.9;
+}
+
+/* Body form */
+.mail-body {
+  flex: 1;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2;
+}
+.mail-body::-webkit-scrollbar { width: 4px; }
+.mail-body::-webkit-scrollbar-thumb {
+  background: rgba(201, 165, 90, 0.4);
+  border-radius: 2px;
+}
+
+/* Label */
+.mail-label {
+  color: #f0d78c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  margin-bottom: 4px;
+}
+
+/* Group */
+.mail-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ==========================================
+   KATEGORI (custom dropdown)
+   ========================================== */
+.mail-kategori-btn {
+  background: #000000;
+  color: #f5e6c8;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(201, 165, 90, 0.3);
+  transition: all 0.15s;
+}
+.mail-kategori-btn:hover {
+  border-color: rgba(201, 165, 90, 0.6);
+}
+.mail-kategori-btn::after {
+  content: '▼';
+  font-size: 9px;
+  color: #c9a55a;
+  margin-left: 8px;
+}
+
+/* Popup list kategori */
+.mail-kategori-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  padding: 4px 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+.mail-kategori-list.open { display: block; }
+
+.mail-kategori-item {
+  padding: 8px 14px;
+  color: #c9a55a;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.mail-kategori-item:hover {
+  background: rgba(201, 165, 90, 0.15);
+}
+
+/* ==========================================
+   INPUT & TEXTAREA (hitam 100%)
+   ========================================== */
+.mail-input,
+.mail-textarea {
+  background: #000000;
+  color: #f5e6c8;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(201, 165, 90, 0.3);
+  outline: none;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.mail-input:focus,
+.mail-textarea:focus {
+  border-color: rgba(201, 165, 90, 0.7);
+}
+
+.mail-textarea {
+  flex: 1;
+  resize: none;
+  line-height: 1.5;
+  min-height: 120px;
+}
+
+/* Grup WA (hidden default) */
+.mail-group.wa-group {
+  display: none;
+}
+.mail-group.wa-group.visible {
+  display: flex;
+}
+
+/* ==========================================
+   FOOTER — tombol kirim kanan
+   ========================================== */
+.mail-footer {
+  position: relative;
+  padding: 12px 30px 16px 30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 2;
+}
+
+/* ==========================================
+   PESAN ERROR/SUKSES
+   ========================================== */
+.mail-message {
+  position: absolute;
+  bottom: 60px;
+  left: 30px;
+  right: 30px;
+  color: #ff9999;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.mail-message.show { opacity: 1; }
+.mail-message.success { color: #99ff99; }
