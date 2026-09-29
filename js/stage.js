@@ -1,5 +1,5 @@
 /**
- * stage.js — Auto-scale + Orientasi + Background Load Belakangan
+ * stage.js — Auto-scale + Orientasi + Background Load Belakangan + Preload Info
  */
 
 function isPortrait() {
@@ -40,15 +40,15 @@ function loadBackground() {
   console.log('🎨 Mulai load background...');
 
   const img = new Image();
-  const imgLoadPath = 'Assets/Background.png';     // ← relatif ke index.html
-  const cssPath = '../Assets/Background.png';      // ← relatif ke css/stage.css
+  const imgLoadPath = 'Assets/Background.png';       // relatif ke index.html
+  const cssPath = '../Assets/Background.png';        // relatif ke css/stage.css
 
   img.onload = () => {
     document.documentElement.style.setProperty('--bg-image', `url('${cssPath}')`);
 
     const bgEl = document.querySelector('.bg');
     if (bgEl) {
-      void bgEl.offsetHeight;
+      void bgEl.offsetHeight;   // force reflow
       bgEl.classList.add('loaded');
     }
 
@@ -62,12 +62,26 @@ function loadBackground() {
   img.src = imgLoadPath;
 }
 
+// ===== PRELOAD INFO DATA =====
+function preloadInfo() {
+  if (typeof preloadInfoData === 'function') {
+    console.log('📥 Preload info data...');
+    preloadInfoData();
+  } else {
+    console.warn('⚠️ preloadInfoData() belum tersedia');
+  }
+}
+
 // ===== INIT =====
 window.addEventListener('load', () => {
   updateLayout();
   console.log('✅ Layout siap');
 
+  // Background load belakangan (300ms setelah layout)
   setTimeout(loadBackground, 300);
+
+  // Preload info data (500ms setelah layout)
+  setTimeout(preloadInfo, 500);
 });
 
 window.addEventListener('resize', updateLayout);
