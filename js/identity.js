@@ -88,6 +88,7 @@ function openGate(mode = 'first') {
       input.disabled = true;
       showGateMessage('Kamu hanya bisa ganti nama 1× per 24 jam. Sisa: ' + formatSisaWaktu(cd.sisaMs));
       gate.classList.add('open');
+      if (typeof updateButtons === 'function') updateButtons();
       return;
     }
 
@@ -101,6 +102,9 @@ function openGate(mode = 'first') {
   }
 
   gate.classList.add('open');
+
+  // Update icon tombol
+  if (typeof updateButtons === 'function') updateButtons();
 
   if (input && !input.disabled && window.innerWidth >= 768) {
     setTimeout(() => {
@@ -152,7 +156,6 @@ function closeGate() {
   const stage = document.getElementById('stage');
   if (!gate) return;
 
-  // Mode first: wajib isi nama
   if (gateMode === 'first' && !window.myIGN) {
     const input = document.getElementById('gate-input');
     if (input) {
@@ -169,10 +172,11 @@ function closeGate() {
   const input = document.getElementById('gate-input');
   if (input) input.disabled = false;
 
-  // Hapus class state
   if (stage) stage.classList.remove('gate-first', 'gate-edit-mode');
 
   gateMode = 'first';
+
+  // Update icon tombol kembali normal
   if (typeof updateButtons === 'function') updateButtons();
 }
 
