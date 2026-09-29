@@ -1,5 +1,5 @@
 /**
- * stage.js — Auto-scale + Orientasi + Preload
+ * stage.js — Auto-scale + Orientasi + Preload Background & Info
  */
 
 function isPortrait() {
@@ -35,15 +35,13 @@ function updateLayout() {
   resizeStage();
 }
 
-// ===== PRELOAD BACKGROUND (belakangan) =====
+// ===== PRELOAD BACKGROUND =====
 function preloadBackground() {
   const img = new Image();
   const bgUrl = 'Assets/Background.png';
 
   img.onload = () => {
-    // Pasang sebagai CSS variable
     document.documentElement.style.setProperty('--bg-image', `url('${bgUrl}')`);
-    // Fade-in
     const bgEl = document.querySelector('.bg');
     if (bgEl) bgEl.classList.add('loaded');
     console.log('✅ Background siap');
@@ -65,13 +63,8 @@ function preloadInfo() {
 
 // ===== INIT =====
 window.addEventListener('load', () => {
-  // Layout dulu — biar UI muncul cepat
   updateLayout();
-
-  // Preload background (belakangan)
   setTimeout(preloadBackground, 100);
-
-  // Preload info data (belakangan)
   setTimeout(preloadInfo, 300);
 });
 
