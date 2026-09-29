@@ -12,7 +12,6 @@ const KATA_TERLARANG = [
   'memek', 'mmk', 'ngentot', 'ngentod', 'ngewe', 'pepek', 'peler',
   'titit', 'tai', 'tahi', 'kampret', 'keparat', 'sialan', 'babi',
   'monyet', 'kadal', 'asu', 'bedebah', 'brengsek', 'setan', 'iblis',
-  // Varian sensor
   'anj*ng', 'b*ngs*t', 'k*nt*l', 'm*m*k', 'ng*nt*t',
   // Bahasa Inggris
   'fuck', 'fck', 'shit', 'bitch', 'asshole', 'dick', 'pussy',
@@ -24,20 +23,15 @@ let chatInputOpen = false;
 
 // ===== FILTER =====
 function filterPesan(text) {
-  // 1. Sanitasi karakter berbahaya di AWAL (untuk Google Sheets)
   let cleaned = text.replace(/^[=+\-@<>]+/, '');
-
-  // 2. Hapus tag HTML berbahaya
   cleaned = cleaned.replace(/<[^>]*>/g, '');
 
-  // 3. Cek kata terlarang
   const lowerText = cleaned.toLowerCase();
   const foundBad = KATA_TERLARANG.some(kata => lowerText.includes(kata));
   if (foundBad) {
     return { ok: false, reason: 'Pesan mengandung kata yang tidak pantas' };
   }
 
-  // 4. Cek panjang
   if (cleaned.length > CHAT_MAX_CHARS) {
     return { ok: false, reason: `Maksimal ${CHAT_MAX_CHARS} karakter` };
   }
@@ -68,7 +62,6 @@ function openChatInput() {
   overlay.classList.add('open');
   clearChatInputMessage();
 
-  // Auto-focus di desktop
   if (window.innerWidth >= 768) {
     setTimeout(() => input.focus(), 300);
   }
@@ -100,20 +93,25 @@ function clearChatInputMessage() {
   el.classList.remove('show');
 }
 
-// ===== KIRIM =====
+// ===== KIRIM / BATAL =====
 async function kirimChat() {
   const input = document.getElementById('chatInputBox');
   if (!input) return;
 
-  const rawText = input.innerText || '';
-  const result = filterPesan(rawText);
+  const rawText = (input.innerText || '').trim();
 
+  // 🎯 KALAU KOSONG → BATAL (tutup form)
+  if (rawText === '') {
+    closeChatInput();
+    return;
+  }
+
+  const result = filterPesan(rawText);
   if (!result.ok) {
     showChatInputMessage(result.reason);
     return;
   }
 
-  // Cek identitas
   const uid = window.myUID;
   const ign = window.myIGN;
   if (!uid || !ign) {
@@ -121,7 +119,7 @@ async function kirimChat() {
     return;
   }
 
-  // Optimistic UI: tampilkan dulu di log
+  // Optimistic UI
   const chatLogs = document.getElementById('chatLogs');
   if (chatLogs) {
     const d = document.createElement('div');
@@ -131,13 +129,15 @@ async function kirimChat() {
     chatLogs.scrollTop = chatLogs.scrollHeight;
   }
 
-  // Tutup form
   closeChatInput();
 
-  // Kirim ke GAS
   try {
     const res = await API.sendChat(uid, ign, result.text, 'msg');
     console.log('✅ Chat terkirim:', res);
+    // Refresh log chat setelah kirim
+    if (typeof syncChat === 'function') {
+      setTimeout(() => syncChat(true), 500);
+    }
   } catch (err) {
     console.error('❌ Gagal kirim chat:', err);
     showChatInputMessage('Gagal mengirim pesan');
@@ -157,21 +157,17 @@ function escapeHtml(str) {
   });
 }
 
-// ===== AUTO-GROW KOTAK INPUT (max 3 baris) =====
+// ===== AUTO-GROW KOTAK INPUT =====
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('chatInputBox');
   if (input) {
     input.addEventListener('input', () => {
-      // Reset height dulu biar bisa ngukur
       input.style.height = 'auto';
-      // Set max 90px (3 baris)
       const newHeight = Math.min(input.scrollHeight, 90);
       input.style.height = newHeight + 'px';
 
-      // Cek panjang
       if (input.innerText.length > CHAT_MAX_CHARS) {
         input.innerText = input.innerText.substring(0, CHAT_MAX_CHARS);
-        // Pindahkan cursor ke akhir
         const range = document.createRange();
         range.selectNodeContents(input);
         range.collapse(false);
@@ -180,9 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sel.addRange(range);
       }
     });
-
-    // Enter → baris baru (default behavior di contenteditable)
-    // Tapi cegah form submit & handle Ctrl+Enter? Nggak ada (kamu bilang kirim wajib tombol)
   }
 });
 
