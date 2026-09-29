@@ -13,13 +13,15 @@ const KATEGORI_LABEL = {
 let kategoriTerpilih = 'Umum';
 
 // ===== BUKA FORM =====
-function openMailForm() {
+function openMailForm(kategoriAwal = 'Umum') {
   const overlay = document.getElementById('mailOverlay');
   const stage = document.getElementById('stage');
   if (!overlay) return;
 
-  kategoriTerpilih = 'Umum';
+  // Set kategori awal
+  kategoriTerpilih = kategoriAwal;
   updateKategoriLabel();
+
   document.getElementById('mailPesan').value = '';
   document.getElementById('mailWA').value = '';
   document.getElementById('mailWA').parentElement.classList.remove('visible');
@@ -31,6 +33,16 @@ function openMailForm() {
   if (stage) stage.classList.add('mail-open');
   closeKategoriList();
 
+  // Tampilkan WA kalau Request Join
+  const waGroup = document.querySelector('.mail-group.wa-group');
+  if (waGroup) {
+    if (kategoriAwal === 'Request Join') {
+      waGroup.classList.add('visible');
+    } else {
+      waGroup.classList.remove('visible');
+    }
+  }
+
   if (typeof updateButtons === 'function') updateButtons();
 
   setTimeout(() => {
@@ -40,8 +52,6 @@ function openMailForm() {
 }
 
 // ===== TUTUP FORM =====
-// skipMenu = true  → langsung balik home (dari KIRIM sukses)
-// skipMenu = false → balik ke menu (dari tombol BACK)
 function closeMailForm(skipMenu = false) {
   const overlay = document.getElementById('mailOverlay');
   const stage = document.getElementById('stage');
@@ -57,7 +67,6 @@ function closeMailForm(skipMenu = false) {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Balik ke menu kalau bukan dari aksi selesai
   if (!skipMenu) {
     setTimeout(() => {
       if (typeof openModal === 'function') openModal();
@@ -178,7 +187,7 @@ async function kirimMail() {
       showMailMessage('Surat berhasil dikirim', 'success');
 
       setTimeout(() => {
-        closeMailForm(true);   // ← skip menu
+        closeMailForm(true);
         if (typeof goHome === 'function') goHome();
       }, 800);
     } else {
@@ -203,7 +212,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (mailOpen) {
       closeMailForm();
-      // closeMailForm() default skipMenu = false → otomatis balik menu
     }
   }
 });
