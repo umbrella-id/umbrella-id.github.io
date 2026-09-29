@@ -83,17 +83,3 @@
 .stage.gate-edit-mode .plat-nama {
   display: none !important;
 }
-
-/* ==========================================
-   STATE SAAT FORM SURAT TERBUKA
-   ========================================== */
-
-/* Sembunyikan plat nama */
-.stage.mail-open .plat-nama {
-  display: none !important;
-}
-
-/* Naikkan z-index tombol agar di atas overlay surat */
-.stage.mail-open .btn-wrap {
-  z-index: 970 !important;
-}
