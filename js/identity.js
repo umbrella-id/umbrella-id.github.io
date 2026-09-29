@@ -13,7 +13,7 @@ window.myUID = localStorage.getItem(STORAGE_UID) || 'U-' + Math.random().toStrin
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
 localStorage.setItem(STORAGE_UID, window.myUID);
 
-let gateMode = 'first';   // 'first' | 'change'
+let gateMode = 'first';
 
 // ===== UI =====
 function updateIdentityUI() {
@@ -64,12 +64,23 @@ function openGate(mode = 'first') {
   const gate = document.getElementById('gatekeeper');
   const input = document.getElementById('gate-input');
   const label = document.querySelector('.gate-label');
+  const stage = document.getElementById('stage');
   if (!gate || !input) return;
 
   clearGateMessage();
 
+  // Kelola class di stage
+  if (stage) {
+    stage.classList.remove('gate-first', 'gate-edit-mode');
+
+    if (mode === 'change') {
+      stage.classList.add('gate-edit-mode');
+    } else {
+      stage.classList.add('gate-first');
+    }
+  }
+
   if (mode === 'change') {
-    // Cek cooldown
     const cd = cekCooldownGantiNama();
     if (!cd.bisa) {
       if (label) label.innerText = 'Ganti Nama';
@@ -77,7 +88,6 @@ function openGate(mode = 'first') {
       input.disabled = true;
       showGateMessage('Kamu hanya bisa ganti nama 1× per 24 jam. Sisa: ' + formatSisaWaktu(cd.sisaMs));
       gate.classList.add('open');
-      updateButtonsForGate();
       return;
     }
 
@@ -91,25 +101,12 @@ function openGate(mode = 'first') {
   }
 
   gate.classList.add('open');
-  updateButtonsForGate();
 
   if (input && !input.disabled && window.innerWidth >= 768) {
     setTimeout(() => {
       input.focus();
       input.select();
     }, 300);
-  }
-}
-
-// Update tombol kiri/kanan saat gate mode ganti
-function updateButtonsForGate() {
-  const ikonKiri = document.getElementById('ikonKiri');
-  if (!ikonKiri) return;
-
-  if (gateMode === 'change') {
-    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
-  } else {
-    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-MENU.svg" alt="">';
   }
 }
 
@@ -152,6 +149,7 @@ function saveIdentity() {
 // ===== TUTUP GATE =====
 function closeGate() {
   const gate = document.getElementById('gatekeeper');
+  const stage = document.getElementById('stage');
   if (!gate) return;
 
   // Mode first: wajib isi nama
@@ -171,8 +169,11 @@ function closeGate() {
   const input = document.getElementById('gate-input');
   if (input) input.disabled = false;
 
+  // Hapus class state
+  if (stage) stage.classList.remove('gate-first', 'gate-edit-mode');
+
   gateMode = 'first';
-  updateButtonsForGate();
+  if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ===== INISIALISASI =====
