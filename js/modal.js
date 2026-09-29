@@ -58,6 +58,8 @@ function menuClick(type) {
       if (typeof openGate === 'function') openGate('change');
     } else if (type === 'kirim') {
       if (typeof openMailForm === 'function') openMailForm();
+    } else if (type === 'info') {
+      if (typeof openInfoModal === 'function') openInfoModal();
     } else {
       if (typeof goToPage === 'function') goToPage(type);
     }
