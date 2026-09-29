@@ -18,7 +18,6 @@ function openMailForm(kategoriAwal = 'Umum') {
   const stage = document.getElementById('stage');
   if (!overlay) return;
 
-  // Set kategori awal
   kategoriTerpilih = kategoriAwal;
   updateKategoriLabel();
 
@@ -33,7 +32,6 @@ function openMailForm(kategoriAwal = 'Umum') {
   if (stage) stage.classList.add('mail-open');
   closeKategoriList();
 
-  // Tampilkan WA kalau Request Join
   const waGroup = document.querySelector('.mail-group.wa-group');
   if (waGroup) {
     if (kategoriAwal === 'Request Join') {
@@ -67,6 +65,18 @@ function closeMailForm(skipMenu = false) {
 
   if (typeof updateButtons === 'function') updateButtons();
 
+  // 🎯 Kalau dari info → balik ke info
+  if (window._mailFromInfo) {
+    window._mailFromInfo = false;
+    if (!skipMenu) {
+      setTimeout(() => {
+        if (typeof openInfoModal === 'function') openInfoModal();
+      }, 100);
+    }
+    return;
+  }
+
+  // Default: balik menu
   if (!skipMenu) {
     setTimeout(() => {
       if (typeof openModal === 'function') openModal();
@@ -187,6 +197,7 @@ async function kirimMail() {
       showMailMessage('Surat berhasil dikirim', 'success');
 
       setTimeout(() => {
+        window._mailFromInfo = false;   // reset flag
         closeMailForm(true);
         if (typeof goHome === 'function') goHome();
       }, 800);
