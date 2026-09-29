@@ -40,7 +40,9 @@ function openMailForm() {
 }
 
 // ===== TUTUP FORM =====
-function closeMailForm() {
+// skipMenu = true  → langsung balik home (dari KIRIM sukses)
+// skipMenu = false → balik ke menu (dari tombol BACK)
+function closeMailForm(skipMenu = false) {
   const overlay = document.getElementById('mailOverlay');
   const stage = document.getElementById('stage');
   if (!overlay) return;
@@ -54,6 +56,13 @@ function closeMailForm() {
   clearMailMessage();
 
   if (typeof updateButtons === 'function') updateButtons();
+
+  // Balik ke menu kalau bukan dari aksi selesai
+  if (!skipMenu) {
+    setTimeout(() => {
+      if (typeof openModal === 'function') openModal();
+    }, 100);
+  }
 }
 
 // ===== KATEGORI =====
@@ -169,7 +178,7 @@ async function kirimMail() {
       showMailMessage('Surat berhasil dikirim', 'success');
 
       setTimeout(() => {
-        closeMailForm();
+        closeMailForm(true);   // ← skip menu
         if (typeof goHome === 'function') goHome();
       }, 800);
     } else {
@@ -194,7 +203,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (mailOpen) {
       closeMailForm();
-      if (typeof goHome === 'function') goHome();
+      // closeMailForm() default skipMenu = false → otomatis balik menu
     }
   }
 });
