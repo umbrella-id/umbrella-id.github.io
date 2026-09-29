@@ -5,8 +5,8 @@
 .btn-wrap {
   position: absolute;
   top: 0;
-  width: 162px;                  /* ← dari 180px (90%) */
-  height: 65px;                  /* ← dari 72px (90%) */
+  width: 162px;
+  height: 65px;
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 950;
@@ -41,8 +41,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 28px;                   /* ← dari 32px (90%) */
-  height: 28px;                  /* ← dari 32px (90%) */
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,9 +61,20 @@
   transform: translate(-50%, -50%) scale(0.9);
 }
 
+/* ==========================================
+   RESPONSIF — Posisi tombol di tepi
+   ========================================== */
+
+/* Layar ≤ 2.2× tinggi → tombol geser keluar 30% */
 @media (max-aspect-ratio: 22/10) {
   .btn-wrap.kiri-atas { transform: translateX(-30%); }
   .btn-wrap.kanan-atas { transform: translateX(30%); }
+}
+
+/* Layar > 2.2× tinggi → tombol geser ke tepi 15px */
+@media (min-aspect-ratio: 22/10) {
+  .btn-wrap.kiri-atas { transform: translateX(-15px); }
+  .btn-wrap.kanan-atas { transform: translateX(15px); }
 }
 
 /* ==========================================
