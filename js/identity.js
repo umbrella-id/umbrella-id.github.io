@@ -13,7 +13,7 @@ window.myUID = localStorage.getItem(STORAGE_UID) || 'U-' + Math.random().toStrin
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
 localStorage.setItem(STORAGE_UID, window.myUID);
 
-let gateMode = 'first';
+let gateMode = 'first';   // 'first' | 'change'
 
 // ===== UI =====
 function updateIdentityUI() {
@@ -103,7 +103,6 @@ function openGate(mode = 'first') {
 
   gate.classList.add('open');
 
-  // Update icon tombol
   if (typeof updateButtons === 'function') updateButtons();
 
   if (input && !input.disabled && window.innerWidth >= 768) {
@@ -147,15 +146,18 @@ function saveIdentity() {
   }
 
   updateIdentityUI();
-  closeGate();
+  closeGate(true);   // ← SELESAI → skip menu, balik home
 }
 
 // ===== TUTUP GATE =====
-function closeGate() {
+// skipMenu = true  → langsung balik home (dari SELESAI)
+// skipMenu = false → balik ke menu (dari tombol BACK)
+function closeGate(skipMenu = false) {
   const gate = document.getElementById('gatekeeper');
   const stage = document.getElementById('stage');
   if (!gate) return;
 
+  // Mode first: wajib isi nama
   if (gateMode === 'first' && !window.myIGN) {
     const input = document.getElementById('gate-input');
     if (input) {
@@ -166,18 +168,32 @@ function closeGate() {
     return;
   }
 
+  const wasEditMode = (gateMode === 'change');
+
   gate.classList.remove('open');
   clearGateMessage();
 
   const input = document.getElementById('gate-input');
   if (input) input.disabled = false;
 
-  if (stage) stage.classList.remove('gate-first', 'gate-edit-mode');
+  if (stage) stage.classList.remove('gate-edit-mode', 'gate-first');
 
   gateMode = 'first';
 
-  // Update icon tombol kembali normal
   if (typeof updateButtons === 'function') updateButtons();
+
+  // Kalau tadi mode edit → tindakan lanjutan
+  if (wasEditMode) {
+    if (skipMenu) {
+      // Dari SELESAI → balik home
+      if (typeof goHome === 'function') goHome();
+    } else {
+      // Dari BACK → balik ke menu
+      setTimeout(() => {
+        if (typeof openModal === 'function') openModal();
+      }, 100);
+    }
+  }
 }
 
 // ===== INISIALISASI =====
