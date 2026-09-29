@@ -9,6 +9,7 @@
   height: 72px;
   cursor: pointer;
   transition: transform 0.3s ease;
+  z-index: 950;   /* ← SELALU di atas overlay gate */
 }
 .btn-wrap.kiri-atas { top: 0; left: 0; }
 .btn-wrap.kanan-atas { top: 0; right: 0; }
@@ -60,27 +61,25 @@
   transform: translate(-50%, -50%) scale(0.9);
 }
 
-/* Responsif */
 @media (max-aspect-ratio: 22/10) {
   .btn-wrap.kiri-atas { transform: translateX(-30%); }
   .btn-wrap.kanan-atas { transform: translateX(30%); }
 }
 
 /* ==========================================
-   MODE GANTI NAMA (gate-edit-mode)
+   STATE SAAT GATE TERBUKA
    ========================================== */
 
-/* Tombol kiri: naikkan z-index di atas overlay gate */
-.stage.gate-edit-mode .btn-wrap.kiri-atas {
-  z-index: 950;
+/* --- GATE MODE 'first': SEMUA tombol & plat nama disembunyikan --- */
+.stage.gate-first .btn-wrap,
+.stage.gate-first .plat-nama {
+  display: none !important;
 }
 
-/* Plat nama: sembunyikan */
+/* --- GATE MODE 'change': tombol kiri muncul, sisanya sembunyi --- */
+.stage.gate-edit-mode .btn-wrap.kanan-atas,
 .stage.gate-edit-mode .plat-nama {
   display: none !important;
 }
 
-/* Tombol kanan: sembunyikan */
-.stage.gate-edit-mode .btn-wrap.kanan-atas {
-  display: none !important;
-}
+/* Tombol kiri tetap muncul (default) */
