@@ -7,11 +7,10 @@
   position: absolute;
   inset: 0;
   z-index: 960;
-  pointer-events: auto;
+  pointer-events: none;       /* ← klik tembus ke belakang */
 }
 .mail-overlay.open { display: block; }
 
-/* Modal surat */
 .mail-modal {
   position: absolute;
   top: 50%;
@@ -24,7 +23,7 @@
   overflow: visible;
   display: flex;
   flex-direction: column;
-  pointer-events: auto;
+  pointer-events: auto;       /* ← form tetap bisa diklik */
 }
 
 /* Header */
