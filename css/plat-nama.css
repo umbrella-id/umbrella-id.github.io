@@ -4,8 +4,8 @@
 
 .plat-nama {
   position: absolute;
-  top: 3px;                      /* ← naik 2px dari sebelumnya */
-  left: 135px;                   /* ← geser 5px ke kiri */
+  top: 3px;
+  left: 135px;
   height: 43px;
   display: flex;
   align-items: flex-start;
@@ -31,7 +31,7 @@
   margin-top: 5px;
   margin-left: 29px;
   margin-right: 29px;
-  color: #f5e6c8;
+  color: #ffffff;                /* ← PUTIH */
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 1.4px;
