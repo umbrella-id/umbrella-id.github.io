@@ -1,0 +1,100 @@
+/* ==========================================
+   chat-input.css — Form Tulis Chat
+   ========================================== */
+
+.chat-input-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 950;
+  pointer-events: auto;
+}
+.chat-input-overlay.open {
+  display: block;
+}
+
+/* Overlay hitam 50% */
+.chat-input-overlay .input-overlay-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Wrapper form: di tepi atas */
+.chat-input-wrap {
+  position: absolute;
+  top: 5px;
+  left: 5%;
+  right: 5%;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  z-index: 1;
+}
+
+/* Kotak input */
+.chat-input-box {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 36px;
+  max-height: 90px;                 /* ~3 baris */
+  overflow-y: auto;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 22px;
+  letter-spacing: 0.3px;
+  border: none;
+  outline: none;
+  resize: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Placeholder */
+.chat-input-box:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+/* Scrollbar */
+.chat-input-box::-webkit-scrollbar { width: 4px; }
+.chat-input-box::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+/* Tombol KIRIM (pakai .btn-svg) */
+.chat-input-wrap .btn-svg {
+  flex-shrink: 0;
+  height: 36px !important;
+}
+.chat-input-wrap .btn-svg .btn-tengah {
+  padding: 0 20px;
+}
+.chat-input-wrap .btn-svg .btn-teks {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* Pesan error (mute, kata kasar, dll) */
+.chat-input-message {
+  position: absolute;
+  top: 50px;
+  left: 5%;
+  right: 5%;
+  color: #ff9999;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.chat-input-message.show {
+  opacity: 1;
+}
