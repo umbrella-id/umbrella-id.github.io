@@ -133,7 +133,6 @@ function renderChatLogs(logs) {
       const msgText = msg.message || '';
       const msgRole = msg.role || '';
 
-      const isMe = msgUID === uid;
       const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
       const isDeleted = msgText === '[deleted by admin]';
 
@@ -165,12 +164,12 @@ function renderChatLogs(logs) {
       // 🎯 PESAN ADMIN (hijau)
       else if (isAdmin) {
         d.className = 'chat-line chat-admin';
-        d.innerHTML = `<span class="chat-name">[ADMIN] ${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
+        d.innerHTML = `<span class="chat-name">[ADMIN] ${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
       }
       // 🎯 PESAN PENGGUNA (putih)
       else {
         d.className = 'chat-line';
-        d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
+        d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
       }
 
       container.appendChild(d);
