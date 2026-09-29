@@ -79,7 +79,13 @@
   display: none !important;
 }
 
+
 .stage.gate-edit-mode .btn-wrap.kanan-atas,
 .stage.gate-edit-mode .plat-nama {
   display: none !important;
+}
+
+/* Saat info serikat buka — tombol di atas overlay */
+.stage.info-open .btn-wrap {
+  z-index: 970 !important;
 }
