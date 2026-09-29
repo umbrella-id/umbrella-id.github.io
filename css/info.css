@@ -11,7 +11,6 @@
 }
 .info-overlay.open { display: block; }
 
-/* Modal Info — ukuran normal (sama dengan surat) */
 .info-modal {
   position: absolute;
   top: 50%;
@@ -70,10 +69,10 @@
   overflow: hidden;
 }
 
-/* Logo — diperbesar 10% */
+/* Logo — 90% */
 .info-logo-col img {
-  max-width: 88%;                /* ← dari 80% jadi 88% */
-  max-height: 88%;
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
   filter: drop-shadow(0 0 12px rgba(240, 215, 140, 0.3));
 }
@@ -85,7 +84,7 @@
   flex-direction: column;
   overflow-y: auto;
   padding-right: 4px;
-  align-items: flex-start;
+  align-items: center;
 }
 .info-content-col::-webkit-scrollbar { width: 4px; }
 .info-content-col::-webkit-scrollbar-thumb {
@@ -98,10 +97,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-start;
+  align-items: center;
+  width: 100%;
 }
 
-/* Tombol list — lebar dikurangi 15% */
+/* Tombol list — 80% dari kolom kanan, rata tengah */
 .info-list-item {
   display: inline-flex;
   align-items: stretch;
@@ -110,7 +110,7 @@
   user-select: none;
   transition: transform 0.1s ease, filter 0.15s ease;
   isolation: isolate;
-  max-width: 85%;                /* ← dibatasi 85% (kurang 15%) */
+  width: 80%;
 }
 .info-list-item .btn-ujung-kiri {
   width: 12px;
@@ -160,7 +160,7 @@
   filter: brightness(0.75);
 }
 
-/* Isi detail — font diperkecil */
+/* Isi detail — font kecil */
 .info-detail {
   color: #f5e6c8;
   font-size: 11px;
@@ -193,7 +193,7 @@
   letter-spacing: 1.2px;
 }
 
-/* Loading state */
+/* Loading & Empty */
 .info-loading {
   color: #f0d78c;
   font-size: 12px;
@@ -202,8 +202,6 @@
   letter-spacing: 1px;
   width: 100%;
 }
-
-/* Empty state */
 .info-empty {
   color: #c9a55a;
   font-size: 12px;
