@@ -1,5 +1,5 @@
 /**
- * stage.js — Auto-scale + Orientasi
+ * stage.js — Auto-scale + Orientasi + Preload
  */
 
 function isPortrait() {
@@ -18,7 +18,6 @@ const BASE_HEIGHT = 300;
 
 function resizeStage() {
   const stage = document.getElementById('stage');
-  console.log('🔍 stage element:', stage);
   if (!stage) return;
 
   const vw = isPortrait() ? window.innerHeight : window.innerWidth;
@@ -26,13 +25,9 @@ function resizeStage() {
   const scale = vh / BASE_HEIGHT;
   const stageWidth = vw / scale;
 
-  console.log('📐 scale:', scale, 'vw:', vw, 'vh:', vh, 'stageWidth:', stageWidth);
-
   stage.style.width = stageWidth + 'px';
   stage.style.height = BASE_HEIGHT + 'px';
   stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
-
-  console.log('✅ stage size set:', stage.style.width, stage.style.height);
 }
 
 function updateLayout() {
@@ -40,7 +35,46 @@ function updateLayout() {
   resizeStage();
 }
 
-window.addEventListener('load', updateLayout);
+// ===== PRELOAD BACKGROUND (belakangan) =====
+function preloadBackground() {
+  const img = new Image();
+  const bgUrl = 'Assets/Background.png';
+
+  img.onload = () => {
+    // Pasang sebagai CSS variable
+    document.documentElement.style.setProperty('--bg-image', `url('${bgUrl}')`);
+    // Fade-in
+    const bgEl = document.querySelector('.bg');
+    if (bgEl) bgEl.classList.add('loaded');
+    console.log('✅ Background siap');
+  };
+
+  img.onerror = () => {
+    console.warn('⚠️ Background gagal load');
+  };
+
+  img.src = bgUrl;
+}
+
+// ===== PRELOAD INFO DATA =====
+function preloadInfo() {
+  if (typeof preloadInfoData === 'function') {
+    preloadInfoData();
+  }
+}
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+  // Layout dulu — biar UI muncul cepat
+  updateLayout();
+
+  // Preload background (belakangan)
+  setTimeout(preloadBackground, 100);
+
+  // Preload info data (belakangan)
+  setTimeout(preloadInfo, 300);
+});
+
 window.addEventListener('resize', updateLayout);
 window.addEventListener('orientationchange', () => setTimeout(updateLayout, 150));
 
