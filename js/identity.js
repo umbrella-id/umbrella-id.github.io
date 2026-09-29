@@ -3,7 +3,7 @@
  */
 
 // ===== KONFIG =====
-const NAMA_COOLDOWN_MS = 24 * 60 * 60 * 1000;   // 24 jam
+const NAMA_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const STORAGE_UID = 'u_uid';
 const STORAGE_IGN = 'u_ign';
 const STORAGE_LAST_CHANGE = 'u_ign_changed_at';
@@ -13,8 +13,7 @@ window.myUID = localStorage.getItem(STORAGE_UID) || 'U-' + Math.random().toStrin
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
 localStorage.setItem(STORAGE_UID, window.myUID);
 
-// Mode gate: 'first' (pertama kali) atau 'change' (ganti nama)
-let gateMode = 'first';
+let gateMode = 'first';   // 'first' | 'change'
 
 // ===== UI =====
 function updateIdentityUI() {
@@ -22,7 +21,23 @@ function updateIdentityUI() {
   if (display) display.innerText = window.myIGN || 'Guest';
 }
 
-// ===== CEK COOLDOWN =====
+function showGateMessage(msg, type = 'error') {
+  const el = document.getElementById('gateMessage');
+  if (!el) return;
+  el.innerText = msg;
+  el.classList.remove('success');
+  if (type === 'success') el.classList.add('success');
+  el.classList.add('show');
+}
+
+function clearGateMessage() {
+  const el = document.getElementById('gateMessage');
+  if (!el) return;
+  el.innerText = '';
+  el.classList.remove('show', 'success');
+}
+
+// ===== COOLDOWN =====
 function cekCooldownGantiNama() {
   const lastChange = parseInt(localStorage.getItem(STORAGE_LAST_CHANGE)) || 0;
   if (lastChange === 0) return { bisa: true, sisaMs: 0 };
@@ -34,7 +49,6 @@ function cekCooldownGantiNama() {
   return { bisa: false, sisaMs: sisaMs };
 }
 
-// Format sisa waktu "X jam Y menit"
 function formatSisaWaktu(ms) {
   const totalMenit = Math.ceil(ms / 60000);
   const jam = Math.floor(totalMenit / 60);
@@ -52,27 +66,50 @@ function openGate(mode = 'first') {
   const label = document.querySelector('.gate-label');
   if (!gate || !input) return;
 
-  // Kalau mode 'change', cek cooldown dulu
+  clearGateMessage();
+
   if (mode === 'change') {
+    // Cek cooldown
     const cd = cekCooldownGantiNama();
     if (!cd.bisa) {
-      alert('Kamu hanya bisa ganti nama 1× per 24 jam.\nSisa: ' + formatSisaWaktu(cd.sisaMs));
+      if (label) label.innerText = 'Ganti Nama';
+      input.value = window.myIGN || '';
+      input.disabled = true;
+      showGateMessage('Kamu hanya bisa ganti nama 1× per 24 jam. Sisa: ' + formatSisaWaktu(cd.sisaMs));
+      gate.classList.add('open');
+      updateButtonsForGate();
       return;
     }
+
     if (label) label.innerText = 'Ganti Nama Anda';
     input.value = window.myIGN || '';
+    input.disabled = false;
   } else {
     if (label) label.innerText = 'Masukan Nama Anda';
     input.value = '';
+    input.disabled = false;
   }
 
   gate.classList.add('open');
+  updateButtonsForGate();
 
-  if (input && window.innerWidth >= 768) {
+  if (input && !input.disabled && window.innerWidth >= 768) {
     setTimeout(() => {
       input.focus();
       input.select();
     }, 300);
+  }
+}
+
+// Update tombol kiri/kanan saat gate mode ganti
+function updateButtonsForGate() {
+  const ikonKiri = document.getElementById('ikonKiri');
+  if (!ikonKiri) return;
+
+  if (gateMode === 'change') {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+  } else {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-MENU.svg" alt="">';
   }
 }
 
@@ -81,6 +118,8 @@ function saveIdentity() {
   const input = document.getElementById('gate-input');
   if (!input) return;
 
+  clearGateMessage();
+
   let rawValue = input.value.trim();
   rawValue = rawValue.replace(/^[=+\-@]+/, '');
 
@@ -88,21 +127,20 @@ function saveIdentity() {
     input.focus();
     input.style.color = '#ff6666';
     setTimeout(() => input.style.color = '', 800);
+    showGateMessage('Nama tidak boleh kosong');
     return;
   }
 
   rawValue = rawValue.substring(0, 15);
 
-  // Kalau mode 'change' dan nama baru SAMA dengan yang lama → tolak
   if (gateMode === 'change' && rawValue === window.myIGN) {
-    alert('Nama baru sama dengan nama lama.');
+    showGateMessage('Nama baru sama dengan nama lama');
     return;
   }
 
   window.myIGN = rawValue;
   localStorage.setItem(STORAGE_IGN, window.myIGN);
 
-  // Kalau mode 'change', catat timestamp
   if (gateMode === 'change') {
     localStorage.setItem(STORAGE_LAST_CHANGE, Date.now().toString());
   }
@@ -116,7 +154,7 @@ function closeGate() {
   const gate = document.getElementById('gatekeeper');
   if (!gate) return;
 
-  // Gate WAJIB diisi — kalau kosong, jangan tutup
+  // Mode first: wajib isi nama
   if (gateMode === 'first' && !window.myIGN) {
     const input = document.getElementById('gate-input');
     if (input) {
@@ -128,7 +166,13 @@ function closeGate() {
   }
 
   gate.classList.remove('open');
+  clearGateMessage();
+
+  const input = document.getElementById('gate-input');
+  if (input) input.disabled = false;
+
   gateMode = 'first';
+  updateButtonsForGate();
 }
 
 // ===== INISIALISASI =====
@@ -153,5 +197,6 @@ window.saveIdentity = saveIdentity;
 window.closeGate = closeGate;
 window.updateIdentityUI = updateIdentityUI;
 window.cekCooldownGantiNama = cekCooldownGantiNama;
+window.clearGateMessage = clearGateMessage;
 
 console.log('✅ identity.js loaded');
