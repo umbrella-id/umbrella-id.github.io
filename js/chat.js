@@ -44,6 +44,7 @@ function onDown(e) {
   chatBox.classList.add('dragging');
   if (e.type === 'mousedown') e.preventDefault();
 }
+
 function onMove(e) {
   if (!isDragging) return;
   const pointer = getPointer(e);
@@ -67,6 +68,7 @@ function onMove(e) {
   chatBox.style.height = clamped + '%';
   e.preventDefault();
 }
+
 function onUp() {
   if (!isDragging) return;
   isDragging = false;
@@ -115,7 +117,7 @@ function renderChatLogs(logs) {
   if (!container) return;
 
   if (!Array.isArray(logs) || logs.length === 0) {
-    container.innerHTML = '<div class="chat-line"><span class="chat-text">Belum ada pesan.</span></div>';
+    container.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
     return;
   }
 
@@ -131,24 +133,44 @@ function renderChatLogs(logs) {
       const msgText = msg.message || '';
       const msgRole = msg.role || '';
 
-      // Filter: cuma tampilkan tipe 'msg'
-      if (msgType !== 'msg') return;
-
       const isMe = msgUID === uid;
       const isAdmin = (typeof msgUID === 'string' && msgUID.startsWith('ADMIN_')) || msgRole === 'Admin';
       const isDeleted = msgText === '[deleted by admin]';
 
       const d = document.createElement('div');
-      d.className = 'chat-line';
 
-      if (isDeleted) {
-        d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}:</span><span class="chat-text" style="color:#ff8888;font-style:italic">🗑️ Pesan dihapus admin</span>`;
-      } else if (isAdmin) {
-        d.innerHTML = `<span class="chat-name" style="color:#f0d78c">[ADMIN] ${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
-      } else if (isMe) {
-        d.innerHTML = `<span class="chat-name" style="color:#f0d78c">${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
-      } else {
-        d.innerHTML = `<span class="chat-name" style="color:${getHashColor(msgUID)}">${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
+      // 🎯 SYSTEM MESSAGE (command MUTE/UNMUTE atau info)
+      if (msgType === 'command') {
+        let displayText = msgText;
+        if (msgText.startsWith('MUTE_')) {
+          const parts = msgText.split('_');
+          const targetIGN = parts[3] || 'Seseorang';
+          const durasi = parts[2] || '?';
+          displayText = `🔇 ${targetIGN} dibisukan selama ${durasi} menit`;
+        } else if (msgText.startsWith('UNMUTE_')) {
+          const parts = msgText.split('_');
+          const targetIGN = parts[2] || 'Seseorang';
+          displayText = `🔊 Bisuan ${targetIGN} telah dibuka`;
+        } else {
+          displayText = msgText;
+        }
+        d.className = 'chat-line chat-system';
+        d.innerHTML = `<span class="chat-text">${escapeHtml(displayText)}</span>`;
+      }
+      // 🎯 PESAN DIHAPUS ADMIN
+      else if (isDeleted) {
+        d.className = 'chat-line chat-system';
+        d.innerHTML = `<span class="chat-text">🗑️ Sebuah pesan dihapus oleh admin</span>`;
+      }
+      // 🎯 PESAN ADMIN (hijau)
+      else if (isAdmin) {
+        d.className = 'chat-line chat-admin';
+        d.innerHTML = `<span class="chat-name">[ADMIN] ${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
+      }
+      // 🎯 PESAN PENGGUNA (putih)
+      else {
+        d.className = 'chat-line';
+        d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}:</span><span class="chat-text">${escapeHtml(msgText)}</span>`;
       }
 
       container.appendChild(d);
@@ -157,7 +179,6 @@ function renderChatLogs(logs) {
     }
   });
 
-  // Auto-scroll ke bawah
   container.scrollTop = container.scrollHeight;
 }
 
