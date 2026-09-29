@@ -18,15 +18,17 @@ function updateButtons() {
   const ikonKanan = document.getElementById('ikonKanan');
   if (!ikonKiri || !ikonKanan) return;
 
-  // Cek apakah gate mode 'change' (edit nama)
   const stage = document.getElementById('stage');
-  const isGateEdit = stage && stage.classList.contains('gate-edit-mode');
 
-  if (isGateEdit) {
+  // Prioritas 1: Gate mode 'change' → tombol kiri = BACK
+  if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
 
+  // Prioritas 2: Gate mode 'first' → tombol di-hide via CSS, nggak perlu ubah icon
+
+  // Prioritas 3: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -71,14 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btnKiri.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
 
-      // Prioritas 1: Gate buka
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
 
-      // Prioritas 2: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
