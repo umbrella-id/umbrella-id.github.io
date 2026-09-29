@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/btn-menu.css">
 <link rel="stylesheet" href="css/plat-nama.css">
 <link rel="stylesheet" href="css/chat.css">
+<link rel="stylesheet" href="css/chat-input.css">
 <link rel="stylesheet" href="css/modal.css">
 <link rel="stylesheet" href="css/gate.css">
 </head>
@@ -110,6 +111,26 @@
         </div>
       </div>
 
+      <!-- ============ FORM TULIS CHAT ============ -->
+      <div class="chat-input-overlay" id="chatInputOverlay">
+        <div class="input-overlay-bg" onclick="closeChatInput()"></div>
+
+        <div class="chat-input-wrap">
+          <div class="chat-input-box"
+               id="chatInputBox"
+               contenteditable="true"
+               data-placeholder="Ketik pesan..."></div>
+
+          <div class="btn-svg" onclick="kirimChat()">
+            <div class="btn-ujung-kiri"></div>
+            <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
+            <div class="btn-ujung-kanan"></div>
+          </div>
+        </div>
+
+        <p class="chat-input-message" id="chatInputMessage"></p>
+      </div>
+
       <!-- ============ MODAL MENU ============ -->
       <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
@@ -177,6 +198,7 @@
   <script src="js/menu.js"></script>
   <script src="js/modal.js"></script>
   <script src="js/chat.js"></script>
+  <script src="js/chat-input.js"></script>
 
 </body>
 </html>
