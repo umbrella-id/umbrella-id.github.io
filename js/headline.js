@@ -40,7 +40,6 @@ function initHeadlineDisplay() {
   const container = document.getElementById('headlineBannerContainer');
   if (!container) return;
 
-  // Kalau gate/mail/info buka → tunda
   if (stage && (
     stage.classList.contains('gate-first') ||
     stage.classList.contains('gate-edit-mode') ||
@@ -94,6 +93,7 @@ function renderBannerContainer() {
 // ===== BUILD BANNER ITEM =====
 function buildBannerItem(data, type) {
   const body = data.Body || '';
+  const judul = data.Header || '';
 
   const imgMatch = body.match(/<img[^>]+src=["']([^"']+)["']/i);
 
@@ -103,9 +103,16 @@ function buildBannerItem(data, type) {
     // Ada gambar
     inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
   } else {
-    // Nggak ada gambar → cuma body
-    const textSingkat = getTextSingkat(body, '', 80);
-    inner = `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
+    // Nggak ada gambar → judul + body singkat
+    let textHtml = '';
+    if (judul) {
+      textHtml += `<div class="banner-title">${escapeHtml(judul)}</div>`;
+    }
+    const textSingkat = getTextSingkat(body, '', 60);
+    if (textSingkat) {
+      textHtml += `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
+    }
+    inner = textHtml;
   }
 
   return `
@@ -116,7 +123,7 @@ function buildBannerItem(data, type) {
 }
 
 // ===== AMBIL TEKS SINGKAT =====
-function getTextSingkat(body, fallbackJudul, maxChars = 80) {
+function getTextSingkat(body, fallbackJudul, maxChars = 60) {
   if (!body) return fallbackJudul;
 
   let text = body.replace(/<[^>]*>/g, ' ');
