@@ -2,8 +2,9 @@
  * headline.js — Banner (2 item) & Popup Headline
  */
 
-let headlineData = null;      // headline
-let openmemberData = null;    // openmember
+let headlineData = null;
+let openmemberData = null;
+let headlineDisplayed = false;
 
 const HEADLINE_SEEN_KEY = 'umbrella_headline_seen';
 
@@ -33,6 +34,8 @@ async function preloadHeadlineData() {
 
 // ===== INIT =====
 function initHeadlineDisplay() {
+  if (headlineDisplayed) return;
+
   const stage = document.getElementById('stage');
   const container = document.getElementById('headlineBannerContainer');
   if (!container) return;
@@ -48,26 +51,23 @@ function initHeadlineDisplay() {
     return;
   }
 
-  // Cek: minimal ada 1 data
   const punyaHeadline = headlineData && headlineData.Header && headlineData.Header.trim() !== '';
   const punyaOpenmember = openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '';
 
   if (!punyaHeadline && !punyaOpenmember) {
-    console.log('ℹ️ Nggak ada headline/openmember — banner & popup nggak ditampilkan');
+    console.log('ℹ️ Nggak ada headline/openmember');
     return;
   }
 
-  // Render banner (2 item kalau ada dua-duanya)
-  renderBannerContainer();
+  headlineDisplayed = true;
 
-  // Tampilkan container
+  renderBannerContainer();
   container.classList.add('show');
 
-  // Popup otomatis (1× per sesi)
   const sudahLihat = sessionStorage.getItem(HEADLINE_SEEN_KEY);
   if (!sudahLihat) {
     setTimeout(() => {
-      openHeadlinePopup();   // prioritas: headline → openmember
+      openHeadlinePopup();
       sessionStorage.setItem(HEADLINE_SEEN_KEY, '1');
     }, 600);
   }
@@ -80,12 +80,10 @@ function renderBannerContainer() {
 
   let html = '';
 
-  // Banner 1: Headline (kalau ada)
   if (headlineData && headlineData.Header && headlineData.Header.trim() !== '') {
     html += buildBannerItem(headlineData, 'headline');
   }
 
-  // Banner 2: Openmember (kalau ada)
   if (openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '') {
     html += buildBannerItem(openmemberData, 'openmember');
   }
@@ -96,18 +94,17 @@ function renderBannerContainer() {
 // ===== BUILD BANNER ITEM =====
 function buildBannerItem(data, type) {
   const body = data.Body || '';
-  const judul = data.Header || '';
 
   const imgMatch = body.match(/<img[^>]+src=["']([^"']+)["']/i);
 
   let inner = '';
 
   if (imgMatch && imgMatch[1]) {
-    // Ada gambar → tampilkan gambar (crop)
+    // Ada gambar
     inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
   } else {
-    // Nggak ada gambar → tampilkan teks singkat (judul + body)
-    const textSingkat = getTextSingkat(body, judul, 80);
+    // Nggak ada gambar → cuma body
+    const textSingkat = getTextSingkat(body, '', 80);
     inner = `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
   }
 
@@ -118,20 +115,15 @@ function buildBannerItem(data, type) {
   `;
 }
 
-// ===== AMBIL TEKS SINGKAT DARI BODY =====
+// ===== AMBIL TEKS SINGKAT =====
 function getTextSingkat(body, fallbackJudul, maxChars = 80) {
   if (!body) return fallbackJudul;
 
-  // Strip HTML tags
   let text = body.replace(/<[^>]*>/g, ' ');
-
-  // Hapus extra spaces & newlines
   text = text.replace(/\s+/g, ' ').trim();
 
-  // Ambil maxChars pertama
   if (text.length <= maxChars) return text;
 
-  // Potong di kata terakhir
   let truncated = text.substring(0, maxChars);
   const lastSpace = truncated.lastIndexOf(' ');
   if (lastSpace > maxChars * 0.6) {
@@ -142,8 +134,6 @@ function getTextSingkat(body, fallbackJudul, maxChars = 80) {
 }
 
 // ===== BUKA POPUP =====
-// type: 'headline' (default) atau 'openmember'
-// Kalau nggak ada argumen → auto: headline dulu, openmember kalau headline kosong
 function openHeadlinePopup(type) {
   let data = null;
 
@@ -152,7 +142,6 @@ function openHeadlinePopup(type) {
   } else if (type === 'headline') {
     data = headlineData;
   } else {
-    // Auto: prioritas headline → openmember
     const punyaHeadline = headlineData && headlineData.Header && headlineData.Header.trim() !== '';
     const punyaOpenmember = openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '';
 
