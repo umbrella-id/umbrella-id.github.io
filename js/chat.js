@@ -7,8 +7,8 @@ const chatDrag = document.getElementById('chatDrag');
 
 let isDragging = false;
 let startPointer = { x: 0, y: 0 };
-let startChatHeightPct = 25;
-let currentChatHeightPct = 25;
+let startChatHeightPct = 22;
+let currentChatHeightPct = 22;
 let hasMoved = false;
 
 const DEFAULT_PERCENT = 22;
@@ -67,7 +67,7 @@ function onMove(e) {
   currentChatHeightPct = clamped;
   chatBox.style.height = clamped + '%';
 
-  // Aktifkan scroll saat melewati threshold
+  // Aktifkan scroll kalau >= threshold
   if (clamped > SNAP_THRESHOLD) {
     chatBox.classList.add('maximized');
   } else {
@@ -186,8 +186,6 @@ function renderChatLogs(logs) {
   }
 
   container.innerHTML = '';
-
-  const uid = window.myUID;
 
   logs.forEach((msg, index) => {
     try {
