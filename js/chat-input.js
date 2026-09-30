@@ -5,20 +5,20 @@
 // ===== KONFIG =====
 const CHAT_MAX_CHARS = 100;
 
-// Daftar kata kasar / porno (dasar — bisa ditambah)
+// ===== STATE MUTE =====
+let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+
+// Daftar kata kasar / porno (dasar)
 const KATA_TERLARANG = [
-  // Kata kasar Indonesia
   'anjing', 'anjg', 'anjir', 'bangsat', 'bajingan', 'kontol', 'kntl',
   'memek', 'mmk', 'ngentot', 'ngentod', 'ngewe', 'pepek', 'peler',
   'titit', 'tai', 'tahi', 'kampret', 'keparat', 'sialan', 'babi',
   'monyet', 'kadal', 'asu', 'bedebah', 'brengsek', 'setan', 'iblis',
   'anj*ng', 'b*ngs*t', 'k*nt*l', 'm*m*k', 'ng*nt*t',
-  // Bahasa Inggris
   'fuck', 'fck', 'shit', 'bitch', 'asshole', 'dick', 'pussy',
   'cock', 'cunt', 'whore', 'slut', 'porn', 'sex', 'xxx',
 ];
 
-// ===== STATE =====
 let chatInputOpen = false;
 
 // ===== FILTER =====
@@ -45,12 +45,15 @@ function filterPesan(text) {
 
 // ===== BUKA FORM =====
 function openChatInput() {
+  // Baca ulang dari localStorage (fresh)
+  muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+
   const overlay = document.getElementById('chatInputOverlay');
   const input = document.getElementById('chatInputBox');
   if (!overlay || !input) return;
 
   // Cek mute
-  if (typeof muteExpiryTime !== 'undefined' && Date.now() < muteExpiryTime) {
+  if (muteExpiryTime > 0 && Date.now() < muteExpiryTime) {
     const sisaMs = muteExpiryTime - Date.now();
     const sisaMenit = Math.ceil(sisaMs / 60000);
     showChatInputMessage(`Kamu sedang di-mute. Sisa: ${sisaMenit} menit`);
@@ -77,7 +80,7 @@ function closeChatInput() {
   clearChatInputMessage();
 }
 
-// ===== PESAN ERROR =====
+// ===== PESAN =====
 function showChatInputMessage(msg) {
   const el = document.getElementById('chatInputMessage');
   if (!el) return;
@@ -93,14 +96,22 @@ function clearChatInputMessage() {
   el.classList.remove('show');
 }
 
-// ===== KIRIM / BATAL =====
+// ===== KIRIM =====
 async function kirimChat() {
+  // 🎯 Cek mute DULU
+  muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+  if (muteExpiryTime > 0 && Date.now() < muteExpiryTime) {
+    const sisaMenit = Math.ceil((muteExpiryTime - Date.now()) / 60000);
+    showChatInputMessage(`Kamu sedang di-mute. Sisa: ${sisaMenit} menit`);
+    return;
+  }
+
   const input = document.getElementById('chatInputBox');
   if (!input) return;
 
   const rawText = (input.innerText || '').trim();
 
-  // 🎯 KALAU KOSONG → BATAL (tutup form)
+  // Kosong → batal
   if (rawText === '') {
     closeChatInput();
     return;
@@ -118,7 +129,7 @@ async function kirimChat() {
     showChatInputMessage('Identitas belum diisi');
     return;
   }
-  
+
   // Optimistic UI
   const chatLogs = document.getElementById('chatLogs');
   if (chatLogs) {
@@ -134,7 +145,6 @@ async function kirimChat() {
   try {
     const res = await API.sendChat(uid, ign, result.text, 'msg');
     console.log('✅ Chat terkirim:', res);
-    // Refresh log chat setelah kirim
     if (typeof syncChat === 'function') {
       setTimeout(() => syncChat(true), 500);
     }
@@ -144,10 +154,10 @@ async function kirimChat() {
   }
 }
 
-// ===== ESCAPE HTML =====
+// ===== ESCAPE =====
 function escapeHtml(str) {
   if (!str) return '';
-  return str.replace(/[&<>"']/g, function(m) {
+  return String(str).replace(/[&<>"']/g, function(m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';
     if (m === '>') return '&gt;';
@@ -157,7 +167,7 @@ function escapeHtml(str) {
   });
 }
 
-// ===== AUTO-GROW KOTAK INPUT =====
+// ===== AUTO-GROW =====
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('chatInputBox');
   if (input) {
