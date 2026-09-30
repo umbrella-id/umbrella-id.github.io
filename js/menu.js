@@ -23,20 +23,6 @@ function updatePageClass() {
   } else {
     stage.classList.remove('page-home');
   }
-
-  // 🎯 Set 'banner-ready' setelah delay 1500ms
-  clearTimeout(stage._bannerTimer);
-
-  if (currentPage === 'home') {
-    stage.classList.remove('banner-ready');   // pastikan belum ready
-    stage._bannerTimer = setTimeout(() => {
-      if (currentPage === 'home') {
-        stage.classList.add('banner-ready');
-      }
-    }, 1500);
-  } else {
-    stage.classList.remove('banner-ready');   // langsung hapus
-  }
 }
 
 // ===== UPDATE ICON TOMBOL =====
