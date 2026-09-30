@@ -2,7 +2,6 @@
    headline.css — Banner & Popup Headline
    ========================================== */
 
-/* ===== BANNER CONTAINER ===== */
 .headline-banner-container {
   display: none;
   position: absolute;
@@ -15,8 +14,8 @@
   max-width: 22%;
 }
 
-/* Tampil HANYA saat page-home + banner-ready + show */
-.stage.page-home.banner-ready .headline-banner-container.show {
+/* Tampil HANYA saat page-home + ada headline */
+.stage.page-home .headline-banner-container.show {
   display: flex;
 }
 
@@ -29,7 +28,6 @@
   display: none !important;
 }
 
-/* ===== BANNER ITEM ===== */
 .headline-banner {
   padding: 6px 8px;
   background: rgba(15, 10, 6, 0.85);
