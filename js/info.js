@@ -61,6 +61,13 @@ function closeInfoModal(skipMenu = false) {
   currentDetailIndex = -1;
 
   overlay.classList.remove('open');
+
+  // 🎯 Kalau mau balik ke menu → tambah modal-open DULU
+  if (!skipMenu && stage) {
+    stage.classList.add('modal-open');
+  }
+
+  // Hapus info-open
   if (stage) stage.classList.remove('info-open');
 
   if (typeof updateButtons === 'function') updateButtons();
