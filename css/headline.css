@@ -2,7 +2,7 @@
    headline.css — Banner & Popup Headline
    ========================================== */
 
-/* ===== BANNER CONTAINER (kanan, di atas chat box) ===== */
+/* ===== BANNER CONTAINER ===== */
 .headline-banner-container {
   display: none;
   position: absolute;
@@ -42,7 +42,7 @@
   filter: brightness(0.85);
 }
 
-/* Isi banner: gambar */
+/* Gambar */
 .headline-banner .banner-img {
   width: 100%;
   height: 40px;
@@ -51,7 +51,7 @@
   border-radius: 3px;
 }
 
-/* Isi banner: judul */
+/* Judul */
 .headline-banner .banner-title {
   color: #f0d78c;
   font-size: 10px;
@@ -68,7 +68,7 @@
   overflow: hidden;
 }
 
-/* Isi banner: body singkat */
+/* Body singkat */
 .headline-banner .banner-text {
   color: #c9a55a;
   font-size: 9px;
@@ -114,7 +114,6 @@
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Header popup */
 .headline-header {
   position: relative;
   padding: 12px 50px 12px 30px;
@@ -139,7 +138,6 @@
   opacity: 0.9;
 }
 
-/* Tombol close (X) */
 .headline-close {
   position: absolute;
   top: 8px;
@@ -168,7 +166,6 @@
   transform: scale(0.95);
 }
 
-/* Body popup */
 .headline-body {
   flex: 1;
   padding: 20px 30px;
@@ -212,6 +209,7 @@
 .stage.gate-first .headline-banner-container,
 .stage.gate-edit-mode .headline-banner-container,
 .stage.mail-open .headline-banner-container,
-.stage.info-open .headline-banner-container {
+.stage.info-open .headline-banner-container,
+.stage.modal-open .headline-banner-container {
   display: none !important;
 }
