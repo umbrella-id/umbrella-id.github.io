@@ -4,6 +4,7 @@
 
 let currentPage = 'home';
 let pageHistory = ['home'];
+let pageClassTimer = null;   // ← timer untuk delay banner
 
 function getModalOverlay() {
   return document.getElementById('modalOverlay');
@@ -13,14 +14,21 @@ function getGate() {
   return document.getElementById('gatekeeper');
 }
 
-// ===== UPDATE CLASS PAGE DI STAGE =====
+// ===== UPDATE CLASS PAGE DI STAGE (DENGAN DELAY) =====
 function updatePageClass() {
   const stage = document.getElementById('stage');
   if (!stage) return;
 
+  // Clear timer lama
+  clearTimeout(pageClassTimer);
+
   if (currentPage === 'home') {
-    stage.classList.add('page-home');
+    // 🎯 Delay 500ms sebelum banner boleh tampil
+    pageClassTimer = setTimeout(() => {
+      stage.classList.add('page-home');
+    }, 500);
   } else {
+    // Langsung hapus page-home
     stage.classList.remove('page-home');
   }
 }
