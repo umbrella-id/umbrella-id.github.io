@@ -89,3 +89,13 @@
 .stage.info-open .btn-wrap {
   z-index: 970 !important;
 }
+
+/* ==========================================
+   Sembunyikan banner saat gate/mail/info buka
+   ========================================== */
+.stage.gate-first .headline-banner,
+.stage.gate-edit-mode .headline-banner,
+.stage.mail-open .headline-banner,
+.stage.info-open .headline-banner {
+  display: none !important;
+}
