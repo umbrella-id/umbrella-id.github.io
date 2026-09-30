@@ -98,17 +98,17 @@ function buildBannerItem(data, type) {
   const body = data.Body || '';
   const judul = data.Header || '';
 
-  // Deteksi gambar di body
   const imgMatch = body.match(/<img[^>]+src=["']([^"']+)["']/i);
 
   let inner = '';
 
   if (imgMatch && imgMatch[1]) {
-    // Ada gambar → tampilkan gambar
+    // Ada gambar → tampilkan gambar (crop)
     inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
   } else {
-    // Nggak ada gambar → tampilkan judul
-    inner = `<div class="banner-text">${escapeHtml(judul)}</div>`;
+    // Nggak ada gambar → tampilkan teks singkat (judul + body)
+    const textSingkat = getTextSingkat(body, judul, 80);
+    inner = `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
   }
 
   return `
@@ -116,6 +116,29 @@ function buildBannerItem(data, type) {
       ${inner}
     </div>
   `;
+}
+
+// ===== AMBIL TEKS SINGKAT DARI BODY =====
+function getTextSingkat(body, fallbackJudul, maxChars = 80) {
+  if (!body) return fallbackJudul;
+
+  // Strip HTML tags
+  let text = body.replace(/<[^>]*>/g, ' ');
+
+  // Hapus extra spaces & newlines
+  text = text.replace(/\s+/g, ' ').trim();
+
+  // Ambil maxChars pertama
+  if (text.length <= maxChars) return text;
+
+  // Potong di kata terakhir
+  let truncated = text.substring(0, maxChars);
+  const lastSpace = truncated.lastIndexOf(' ');
+  if (lastSpace > maxChars * 0.6) {
+    truncated = truncated.substring(0, lastSpace);
+  }
+
+  return truncated + '...';
 }
 
 // ===== BUKA POPUP =====
