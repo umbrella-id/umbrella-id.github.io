@@ -14,8 +14,19 @@
   width: 22%;
   max-width: 22%;
 }
-.headline-banner-container.show {
+
+/* Tampil HANYA saat page-home + ada headline */
+.stage.page-home .headline-banner-container.show {
   display: flex;
+}
+
+/* Sembunyikan saat modal buka */
+.stage.modal-open .headline-banner-container,
+.stage.gate-first .headline-banner-container,
+.stage.gate-edit-mode .headline-banner-container,
+.stage.mail-open .headline-banner-container,
+.stage.info-open .headline-banner-container {
+  display: none !important;
 }
 
 /* ===== BANNER ITEM ===== */
@@ -42,7 +53,6 @@
   filter: brightness(0.85);
 }
 
-/* Gambar */
 .headline-banner .banner-img {
   width: 100%;
   height: 40px;
@@ -51,7 +61,6 @@
   border-radius: 3px;
 }
 
-/* Judul */
 .headline-banner .banner-title {
   color: #f0d78c;
   font-size: 10px;
@@ -68,7 +77,6 @@
   overflow: hidden;
 }
 
-/* Body singkat */
 .headline-banner .banner-text {
   color: #c9a55a;
   font-size: 9px;
@@ -106,12 +114,10 @@
   flex-direction: column;
   pointer-events: auto;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .headline-overlay.open .headline-popup {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
 }
 
 .headline-header {
@@ -204,12 +210,3 @@
   margin-bottom: 10px;
 }
 .headline-body li { margin-bottom: 4px; }
-
-/* ===== SAAT MODAL BUKA — SEMBUNYIKAN BANNER ===== */
-.stage.gate-first .headline-banner-container,
-.stage.gate-edit-mode .headline-banner-container,
-.stage.mail-open .headline-banner-container,
-.stage.info-open .headline-banner-container,
-.stage.modal-open .headline-banner-container {
-  display: none !important;
-}
