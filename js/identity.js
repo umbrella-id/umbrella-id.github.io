@@ -176,19 +176,30 @@ function closeGate(skipMenu = false) {
   const input = document.getElementById('gate-input');
   if (input) input.disabled = false;
 
+  // 🎯 Kalau edit mode & mau balik ke menu → tambah modal-open DULU
+  if (wasEditMode && !skipMenu && stage) {
+    stage.classList.add('modal-open');
+  }
+
   if (stage) stage.classList.remove('gate-edit-mode', 'gate-first');
 
   gateMode = 'first';
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Kalau tadi mode edit → tindakan lanjutan
+  // Setelah gate tutup → tampilkan headline
+  if (!wasEditMode) {
+    if (typeof initHeadlineDisplay === 'function') {
+      setTimeout(() => {
+        initHeadlineDisplay();
+      }, 300);
+    }
+  }
+
   if (wasEditMode) {
     if (skipMenu) {
-      // Dari SELESAI → balik home
       if (typeof goHome === 'function') goHome();
     } else {
-      // Dari BACK → balik ke menu
       setTimeout(() => {
         if (typeof openModal === 'function') openModal();
       }, 100);
