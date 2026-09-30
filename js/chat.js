@@ -204,14 +204,26 @@ function renderChatLogs(logs) {
         const parsed = parseCommand(msgText);
         if (!parsed) return;
         if (!isSystemMessageMasihBerlaku(logs, index)) return;
-
+      
+        // 🎯 Kalau mute/unmute USER SENDIRI → update muteExpiryTime
+        if (parsed.uid === window.myUID) {
+          if (parsed.type === 'mute') {
+            const expiry = Date.now() + (parsed.durasi * 60 * 1000);
+            localStorage.setItem('umbrella_mute_expiry', expiry.toString());
+            console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
+          } else if (parsed.type === 'unmute') {
+            localStorage.removeItem('umbrella_mute_expiry');
+            console.log('🔊 Kamu di-unmute');
+          }
+        }
+      
         let displayText = '';
         if (parsed.type === 'mute') {
           displayText = `${parsed.ign} dibisukan selama ${parsed.durasi} menit`;
         } else if (parsed.type === 'unmute') {
           displayText = `Bisuan ${parsed.ign} telah dibuka`;
         }
-
+      
         d.className = 'chat-line chat-system';
         d.innerHTML = `<span class="chat-text">${escapeHtml(displayText)}</span>`;
       }
@@ -245,6 +257,12 @@ async function syncChat(force = false) {
 
   const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
   const isMuted = Date.now() < muteExpiry;
+
+  // 🎯 Auto-unlock kalau expired
+  if (muteExpiry > 0 && !isMuted) {
+    console.log('🔓 Mute expired, auto-unlock');
+    localStorage.removeItem('umbrella_mute_expiry');
+  }
 
   try {
     const data = await API.getChats(uid, ign, isMuted, muteExpiry);
