@@ -13,7 +13,7 @@ function openModal() {
   clearTimeout(modalTimer);
 
   if (chatBox) chatBox.classList.add('shifted');
-  if (stage) stage.classList.add('modal-open');   // ← sembunyikan banner
+  if (stage) stage.classList.add('modal-open');   // sembunyikan banner
 
   modalTimer = setTimeout(() => {
     modalOverlay.classList.add('open');
@@ -28,7 +28,9 @@ function openModal() {
   }, 220);
 }
 
-function closeModal() {
+// skipModalOpenClass = true → JANGAN hapus modal-open
+//                       (untuk transisi ke halaman/modal lain)
+function closeModal(skipModalOpenClass = false) {
   const modalOverlay = document.getElementById('modalOverlay');
   const chatBox = document.getElementById('chatBox');
   const stage = document.getElementById('stage');
@@ -40,7 +42,12 @@ function closeModal() {
   modalTimer = setTimeout(() => {
     modalOverlay.classList.remove('open');
     if (chatBox) chatBox.classList.remove('shifted');
-    if (stage) stage.classList.remove('modal-open');   // ← munculkan banner
+
+    // 🎯 Cuma hapus modal-open kalau tidak skip
+    if (stage && !skipModalOpenClass) {
+      stage.classList.remove('modal-open');
+    }
+
     if (typeof updateButtons === 'function') updateButtons();
   }, 350);
 }
@@ -55,9 +62,11 @@ document.addEventListener('keydown', (e) => {
 function menuClick(type) {
   console.log('Menu dipilih:', type);
 
-  closeModal();
+  // 🎯 closeModal dengan skip=TRUE → modal-open tetap ada
+  closeModal(true);
 
   setTimeout(() => {
+    // Pindah halaman / buka modal lain
     if (type === 'ganti') {
       if (typeof openGate === 'function') openGate('change');
     } else if (type === 'kirim') {
@@ -67,6 +76,12 @@ function menuClick(type) {
     } else {
       if (typeof goToPage === 'function') goToPage(type);
     }
+
+    // 🎯 Sekarang baru hapus modal-open
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.remove('modal-open');
+
+    if (typeof updateButtons === 'function') updateButtons();
   }, 400);
 }
 
