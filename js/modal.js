@@ -7,11 +7,13 @@ let modalTimer = null;
 function openModal() {
   const modalOverlay = document.getElementById('modalOverlay');
   const chatBox = document.getElementById('chatBox');
+  const stage = document.getElementById('stage');
   if (!modalOverlay) return;
 
   clearTimeout(modalTimer);
 
   if (chatBox) chatBox.classList.add('shifted');
+  if (stage) stage.classList.add('modal-open');   // ← sembunyikan banner
 
   modalTimer = setTimeout(() => {
     modalOverlay.classList.add('open');
@@ -29,6 +31,7 @@ function openModal() {
 function closeModal() {
   const modalOverlay = document.getElementById('modalOverlay');
   const chatBox = document.getElementById('chatBox');
+  const stage = document.getElementById('stage');
   if (!modalOverlay) return;
 
   clearTimeout(modalTimer);
@@ -37,6 +40,7 @@ function closeModal() {
   modalTimer = setTimeout(() => {
     modalOverlay.classList.remove('open');
     if (chatBox) chatBox.classList.remove('shifted');
+    if (stage) stage.classList.remove('modal-open');   // ← munculkan banner
     if (typeof updateButtons === 'function') updateButtons();
   }, 350);
 }
