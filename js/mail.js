@@ -58,6 +58,12 @@ function closeMailForm(skipMenu = false) {
   mailOpen = false;
   overlay.classList.remove('open');
 
+  // 🎯 Kalau mau balik ke menu → tambah modal-open DULU
+  if (!skipMenu && stage) {
+    stage.classList.add('modal-open');
+  }
+
+  // Hapus mail-open
   if (stage) stage.classList.remove('mail-open');
 
   closeKategoriList();
@@ -65,18 +71,6 @@ function closeMailForm(skipMenu = false) {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // 🎯 Kalau dari info → balik ke info
-  if (window._mailFromInfo) {
-    window._mailFromInfo = false;
-    if (!skipMenu) {
-      setTimeout(() => {
-        if (typeof openInfoModal === 'function') openInfoModal();
-      }, 100);
-    }
-    return;
-  }
-
-  // Default: balik menu
   if (!skipMenu) {
     setTimeout(() => {
       if (typeof openModal === 'function') openModal();
