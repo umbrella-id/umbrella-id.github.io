@@ -65,10 +65,14 @@ function loadBackground() {
 // ===== PRELOAD INFO DATA =====
 function preloadInfo() {
   if (typeof preloadInfoData === 'function') {
-    console.log('📥 Preload info data...');
     preloadInfoData();
-  } else {
-    console.warn('⚠️ preloadInfoData() belum tersedia');
+  }
+}
+
+// ===== PRELOAD HEADLINE =====
+function preloadHeadline() {
+  if (typeof preloadHeadlineData === 'function') {
+    preloadHeadlineData();
   }
 }
 
@@ -77,11 +81,9 @@ window.addEventListener('load', () => {
   updateLayout();
   console.log('✅ Layout siap');
 
-  // Background load belakangan (300ms setelah layout)
   setTimeout(loadBackground, 300);
-
-  // Preload info data (500ms setelah layout)
   setTimeout(preloadInfo, 500);
+  setTimeout(preloadHeadline, 800);   // ← headline terakhir
 });
 
 window.addEventListener('resize', updateLayout);
