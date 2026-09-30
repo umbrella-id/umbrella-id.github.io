@@ -1,109 +1,157 @@
 /**
- * headline.js — Banner & Popup Headline
+ * headline.js — Banner (2 item) & Popup Headline
  */
 
-let headlineData = null;
-let headlineBannerClosed = false;
+let headlineData = null;      // headline
+let openmemberData = null;    // openmember
 
 const HEADLINE_SEEN_KEY = 'umbrella_headline_seen';
 
-// ===== PRELOAD (dipanggil dari stage.js) =====
+// ===== PRELOAD =====
 async function preloadHeadlineData() {
-  if (headlineData) {
-    console.log('✅ Headline sudah di-cache');
+  if (headlineData || openmemberData) {
+    console.log('✅ Headline/Openmember sudah di-cache');
     return;
   }
 
   try {
-    console.log('📥 Preload headline...');
+    console.log('📥 Preload headline & openmember...');
     const rawData = await API.getContent();
     if (!rawData || !Array.isArray(rawData)) return;
 
     headlineData = rawData.find(item => (item.ID || '').toLowerCase() === 'headline') || null;
+    openmemberData = rawData.find(item => (item.ID || '').toLowerCase() === 'openmember') || null;
 
-    if (headlineData) {
-      console.log('✅ Headline preloaded:', headlineData.Header || '(tanpa judul)');
-      // Setelah preload, tampilkan banner & popup
-      initHeadlineDisplay();
-    } else {
-      console.log('ℹ️ Nggak ada headline');
-    }
+    console.log('✅ Headline:', headlineData ? 'ADA' : 'kosong');
+    console.log('✅ Openmember:', openmemberData ? 'ADA' : 'kosong');
+
+    initHeadlineDisplay();
   } catch (err) {
     console.error('❌ Preload headline gagal:', err);
   }
 }
 
-// ===== INISIALISASI BANNER & POPUP =====
+// ===== INIT =====
 function initHeadlineDisplay() {
-  if (!headlineData) return;
-
   const stage = document.getElementById('stage');
-  const banner = document.getElementById('headlineBanner');
-  if (!banner) return;
+  const container = document.getElementById('headlineBannerContainer');
+  if (!container) return;
 
-  // Kalau gate/mail/info buka → jangan tampil dulu
+  // Kalau gate/mail/info buka → tunda
   if (stage && (
     stage.classList.contains('gate-first') ||
     stage.classList.contains('gate-edit-mode') ||
     stage.classList.contains('mail-open') ||
     stage.classList.contains('info-open')
   )) {
-    console.log('⏸️ Headline ditunda — gate/mail/info buka');
+    console.log('⏸️ Headline ditunda — modal buka');
     return;
   }
 
-  // Set isi banner
-  renderBannerContent();
+  // Cek: minimal ada 1 data
+  const punyaHeadline = headlineData && headlineData.Header && headlineData.Header.trim() !== '';
+  const punyaOpenmember = openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '';
 
-  // Tampilkan banner
-  banner.classList.add('show');
+  if (!punyaHeadline && !punyaOpenmember) {
+    console.log('ℹ️ Nggak ada headline/openmember — banner & popup nggak ditampilkan');
+    return;
+  }
+
+  // Render banner (2 item kalau ada dua-duanya)
+  renderBannerContainer();
+
+  // Tampilkan container
+  container.classList.add('show');
 
   // Popup otomatis (1× per sesi)
   const sudahLihat = sessionStorage.getItem(HEADLINE_SEEN_KEY);
   if (!sudahLihat) {
-    // Delay dikit biar banner muncul dulu
     setTimeout(() => {
-      openHeadlinePopup();
+      openHeadlinePopup();   // prioritas: headline → openmember
       sessionStorage.setItem(HEADLINE_SEEN_KEY, '1');
     }, 600);
   }
 }
 
-// ===== RENDER ISI BANNER =====
-function renderBannerContent() {
-  const banner = document.getElementById('headlineBanner');
-  if (!banner || !headlineData) return;
+// ===== RENDER BANNER CONTAINER =====
+function renderBannerContainer() {
+  const container = document.getElementById('headlineBannerContainer');
+  if (!container) return;
 
-  const body = headlineData.Body || '';
-  const judul = headlineData.Header || 'Pengumuman';
+  let html = '';
+
+  // Banner 1: Headline (kalau ada)
+  if (headlineData && headlineData.Header && headlineData.Header.trim() !== '') {
+    html += buildBannerItem(headlineData, 'headline');
+  }
+
+  // Banner 2: Openmember (kalau ada)
+  if (openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '') {
+    html += buildBannerItem(openmemberData, 'openmember');
+  }
+
+  container.innerHTML = html;
+}
+
+// ===== BUILD BANNER ITEM =====
+function buildBannerItem(data, type) {
+  const body = data.Body || '';
+  const judul = data.Header || '';
 
   // Deteksi gambar di body
   const imgMatch = body.match(/<img[^>]+src=["']([^"']+)["']/i);
 
-  let html = '<div class="banner-label">PENGUMUMAN</div>';
+  let inner = '';
 
   if (imgMatch && imgMatch[1]) {
     // Ada gambar → tampilkan gambar
-    html += `<img class="banner-img" src="${imgMatch[1]}" alt="Headline">`;
+    inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
   } else {
     // Nggak ada gambar → tampilkan judul
-    html += `<div class="banner-text">${escapeHtml(judul)}</div>`;
+    inner = `<div class="banner-text">${escapeHtml(judul)}</div>`;
   }
 
-  banner.innerHTML = html;
+  return `
+    <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
+      ${inner}
+    </div>
+  `;
 }
 
 // ===== BUKA POPUP =====
-function openHeadlinePopup() {
-  if (!headlineData) return;
+// type: 'headline' (default) atau 'openmember'
+// Kalau nggak ada argumen → auto: headline dulu, openmember kalau headline kosong
+function openHeadlinePopup(type) {
+  let data = null;
+
+  if (type === 'openmember') {
+    data = openmemberData;
+  } else if (type === 'headline') {
+    data = headlineData;
+  } else {
+    // Auto: prioritas headline → openmember
+    const punyaHeadline = headlineData && headlineData.Header && headlineData.Header.trim() !== '';
+    const punyaOpenmember = openmemberData && openmemberData.Header && openmemberData.Header.trim() !== '';
+
+    if (punyaHeadline) {
+      data = headlineData;
+    } else if (punyaOpenmember) {
+      data = openmemberData;
+    }
+  }
+
+  if (!data) {
+    console.log('ℹ️ Data popup kosong');
+    return;
+  }
 
   const overlay = document.getElementById('headlineOverlay');
   const header = document.getElementById('headlineHeader');
   const body = document.getElementById('headlineBody');
   if (!overlay || !header || !body) return;
 
-  header.innerText = headlineData.Header || 'Pengumuman';
-  body.innerHTML = formatHeadlineBody(headlineData.Body || '');
+  header.innerText = data.Header || '';
+  body.innerHTML = formatHeadlineBody(data.Body || '');
 
   overlay.classList.add('open');
   body.scrollTop = 0;
@@ -116,23 +164,14 @@ function closeHeadlinePopup() {
   overlay.classList.remove('open');
 }
 
-// ===== TUTUP BANNER =====
-function closeHeadlineBanner() {
-  const banner = document.getElementById('headlineBanner');
-  if (banner) banner.classList.remove('show');
-  headlineBannerClosed = true;
-}
-
 // ===== FORMAT BODY =====
 function formatHeadlineBody(text) {
   if (!text) return '';
 
-  // Kalau ada HTML, sanitize
   if (/<[a-z][\s\S]*>/i.test(text)) {
     return sanitizeHtml(text);
   }
 
-  // Plain text
   return escapeHtml(text).replace(/\n/g, '<br>');
 }
 
@@ -172,7 +211,6 @@ document.addEventListener('keydown', (e) => {
 window.preloadHeadlineData = preloadHeadlineData;
 window.openHeadlinePopup = openHeadlinePopup;
 window.closeHeadlinePopup = closeHeadlinePopup;
-window.closeHeadlineBanner = closeHeadlineBanner;
 window.initHeadlineDisplay = initHeadlineDisplay;
 
 console.log('✅ headline.js loaded');
