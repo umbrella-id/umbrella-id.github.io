@@ -2,26 +2,32 @@
    headline.css — Banner & Popup Headline
    ========================================== */
 
-/* ===== BANNER (pojok kanan bawah) ===== */
-.headline-banner {
+/* ===== BANNER CONTAINER (pojok kanan bawah) ===== */
+.headline-banner-container {
   display: none;
   position: absolute;
   bottom: 2%;
   right: 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 200;
   max-width: 28%;
-  max-height: 25%;
+}
+.headline-banner-container.show {
+  display: flex;
+}
+
+/* ===== BANNER ITEM (per headline) ===== */
+.headline-banner {
   padding: 8px 12px;
   background: rgba(15, 10, 6, 0.85);
   border: 1px solid rgba(201, 165, 90, 0.5);
   border-radius: 6px;
   cursor: pointer;
-  z-index: 200;
   transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-}
-.headline-banner.show {
-  display: block;
 }
 .headline-banner:hover {
   transform: translateY(-2px);
@@ -50,17 +56,6 @@
   text-align: center;
   word-wrap: break-word;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
-}
-
-/* Label kecil di atas */
-.headline-banner .banner-label {
-  color: #c9a55a;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-align: center;
-  margin-bottom: 4px;
-  opacity: 0.8;
 }
 
 /* ===== POPUP ===== */
@@ -188,9 +183,9 @@
 .headline-body li { margin-bottom: 4px; }
 
 /* ===== SAAT GATE / MAIL / INFO BUKA — SEMBUNYIKAN BANNER ===== */
-.stage.gate-first .headline-banner,
-.stage.gate-edit-mode .headline-banner,
-.stage.mail-open .headline-banner,
-.stage.info-open .headline-banner {
+.stage.gate-first .headline-banner-container,
+.stage.gate-edit-mode .headline-banner-container,
+.stage.mail-open .headline-banner-container,
+.stage.info-open .headline-banner-container {
   display: none !important;
 }
