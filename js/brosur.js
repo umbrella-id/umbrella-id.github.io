@@ -74,11 +74,14 @@ function createBrosurElement() {
   container.className = 'brosur-container';
   container.id = 'brosur-temp';
 
-  // Header: nama guild (static, karena headline bisa bukan nama guild)
+  // ===== HEADER =====
   const headerHtml = `<div class="brosur-header"><h1>UMBRELLA</h1></div>`;
 
-  // Brand (kiri)
-  const brandHtml = `
+  // ===== BINGKAI UTAMA =====
+  let frameHtml = '<div class="brosur-frame">';
+
+  // --- Kiri: Brand ---
+  frameHtml += `
     <div class="brosur-brand">
       <img src="Assets/logo.svg" class="brosur-logo" alt="Logo Umbrella">
       <div class="brand-name">UMBRELLA</div>
@@ -87,30 +90,34 @@ function createBrosurElement() {
     </div>
   `;
 
-  // Profil (kanan)
-  let profilHtml = '<div class="brosur-profil">';
+  // --- Kanan: Profil ---
+  frameHtml += '<div class="brosur-content">';
+
   if (profilList.length === 0) {
-    profilHtml += '<div class="brosur-card"><h2>Profil</h2><div class="brosur-card-body"><p>Belum ada profil.</p></div></div>';
+    frameHtml += `
+      <div class="brosur-item">
+        <h2>Profil</h2>
+        <div class="brosur-item-body"><p>Belum ada profil.</p></div>
+      </div>
+    `;
   } else {
-    profilList.slice(0, 4).forEach(item => {
-      profilHtml += `
-        <div class="brosur-card">
+    profilList.forEach(item => {
+      frameHtml += `
+        <div class="brosur-item">
           <h2>${brosurEscapeHtml(item.Header || 'Profil')}</h2>
-          <div class="brosur-card-body">
+          <div class="brosur-item-body">
             ${brosurFormatText(item.Body)}
           </div>
         </div>
       `;
     });
-    // Padding biar grid rapi
-    const sisa = 4 - profilList.length;
-    for (let i = 0; i < sisa; i++) {
-      profilHtml += '<div class="brosur-card-empty"></div>';
-    }
   }
-  profilHtml += '</div>';
 
-  // Footer
+  frameHtml += '</div>';   // close brosur-content
+
+  frameHtml += '</div>';   // close brosur-frame
+
+  // ===== FOOTER =====
   let footerHtml = '';
   if (openmember && openmember.Body) {
     const cleanBody = openmember.Body.replace(/<br\s*\/?>|\r?\n/g, ' ');
@@ -129,7 +136,7 @@ function createBrosurElement() {
     `;
   }
 
-  container.innerHTML = headerHtml + brandHtml + profilHtml + footerHtml;
+  container.innerHTML = headerHtml + frameHtml + footerHtml;
   return container;
 }
 
