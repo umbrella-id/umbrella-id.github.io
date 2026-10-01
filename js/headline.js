@@ -172,6 +172,17 @@ function openHeadlinePopup(type) {
   header.innerText = data.Header || '';
   body.innerHTML = formatHeadlineBody(data.Body || '');
 
+  // 🎯 Tambah tombol share KALAU type = 'openmember'
+  if (type === 'openmember') {
+    body.innerHTML += `
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="headline-share-btn" onclick="triggerShare()">
+          📤 Bagikan Brosur
+        </button>
+      </div>
+    `;
+  }
+
   overlay.classList.add('open');
   body.scrollTop = 0;
 }
