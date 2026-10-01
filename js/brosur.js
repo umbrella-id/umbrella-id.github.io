@@ -35,12 +35,10 @@ function brosurEscapeHtml(str) {
 function brosurFormatText(text) {
   if (!text) return '';
 
-  // 🎯 HAPUS SEMUA TAG GAMBAR & FIGURE
   let cleaned = text;
   cleaned = cleaned.replace(/<img[^>]*>/gi, '');
   cleaned = cleaned.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
 
-  // Kalau masih ada HTML (bukan cuma img) → sanitize
   if (/<[a-z][\s\S]*>/i.test(cleaned)) {
     cleaned = cleaned.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
     cleaned = cleaned.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
@@ -49,7 +47,6 @@ function brosurFormatText(text) {
     return cleaned;
   }
 
-  // Plain text → convert newline + bullet
   const lines = cleaned.split('\n');
   let inList = false;
   let html = '';
@@ -70,32 +67,35 @@ function brosurFormatText(text) {
   return html;
 }
 
-// ===== BUILD BINGKAI =====
+// ===== BINGKAI MODAL (pakai <img>) =====
 function brosurBuildFrame() {
   return `
     <!-- Bingkai atas -->
     <div class="brosur-frame-h atas">
-      <div class="brosur-pojok"></div>
-      <div class="brosur-garis-h"></div>
-      <div class="brosur-pojok"></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
+      <div class="brosur-garis-h"><img src="Assets/MODAL-H.svg" alt=""></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
     </div>
+
     <!-- Bingkai bawah -->
     <div class="brosur-frame-h bawah">
-      <div class="brosur-pojok"></div>
-      <div class="brosur-garis-h"></div>
-      <div class="brosur-pojok"></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
+      <div class="brosur-garis-h"><img src="Assets/MODAL-H.svg" alt=""></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
     </div>
+
     <!-- Bingkai kiri -->
     <div class="brosur-frame-v kiri">
-      <div class="brosur-pojok"></div>
-      <div class="brosur-garis-v"></div>
-      <div class="brosur-pojok"></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
+      <div class="brosur-garis-v"><img src="Assets/MODAL-V.svg" alt=""></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
     </div>
+
     <!-- Bingkai kanan -->
     <div class="brosur-frame-v kanan">
-      <div class="brosur-pojok"></div>
-      <div class="brosur-garis-v"></div>
-      <div class="brosur-pojok"></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
+      <div class="brosur-garis-v"><img src="Assets/MODAL-V.svg" alt=""></div>
+      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
     </div>
   `;
 }
@@ -108,36 +108,41 @@ function createBrosurElement() {
   container.className = 'brosur-container';
   container.id = 'brosur-temp';
 
-  // ===== ISI (di dalam wrapper) =====
   let innerHtml = '<div class="brosur-content-wrap">';
 
   // Header
   innerHtml += `<div class="brosur-header"><h1>UMBRELLA</h1></div>`;
 
-  // Bingkai konten (1 panel)
+  // Bingkai konten utama
   innerHtml += '<div class="brosur-frame">';
 
-  // --- Kiri: Brand ---
+  // Kiri: Brand
   innerHtml += `
     <div class="brosur-brand">
-      <img src="Assets/logo.svg" class="brosur-logo" alt="Logo Umbrella">
+      <img src="Assets/logo.svg" class="brosur-logo" alt="Logo">
       <div class="brand-name">UMBRELLA</div>
       <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
       <div class="brand-sub">dari pertemuan jadi kebersamaan<br>dari serikat jadi keluarga</div>
     </div>
   `;
 
-  // --- Kanan: Profil ---
+  // Kanan: Grid 2×2
   innerHtml += '<div class="brosur-content">';
+
   if (profilList.length === 0) {
-    innerHtml += `
-      <div class="brosur-item">
-        <h2>Profil</h2>
-        <div class="brosur-item-body"><p>Belum ada profil.</p></div>
-      </div>
-    `;
+    // Kalau kosong, tampil placeholder
+    for (let i = 0; i < 4; i++) {
+      innerHtml += `
+        <div class="brosur-item">
+          <h2>Profil ${i + 1}</h2>
+          <div class="brosur-item-body"><p>Belum ada profil.</p></div>
+        </div>
+      `;
+    }
   } else {
-    profilList.forEach(item => {
+    // Ambil max 4 profil
+    const items = profilList.slice(0, 4);
+    items.forEach(item => {
       innerHtml += `
         <div class="brosur-item">
           <h2>${brosurEscapeHtml(item.Header || 'Profil')}</h2>
@@ -145,7 +150,18 @@ function createBrosurElement() {
         </div>
       `;
     });
+    // Padding biar grid 2×2 penuh
+    const sisa = 4 - items.length;
+    for (let i = 0; i < sisa; i++) {
+      innerHtml += `
+        <div class="brosur-item" style="opacity: 0.3;">
+          <h2>—</h2>
+          <div class="brosur-item-body"></div>
+        </div>
+      `;
+    }
   }
+
   innerHtml += '</div>';   // close brosur-content
   innerHtml += '</div>';   // close brosur-frame
 
@@ -172,7 +188,6 @@ function createBrosurElement() {
 
   innerHtml += '</div>';   // close brosur-content-wrap
 
-  // ===== GABUNG =====
   container.innerHTML = brosurBuildFrame() + innerHtml;
   return container;
 }
@@ -210,7 +225,7 @@ async function triggerShare() {
     const brosur = createBrosurElement();
     document.body.appendChild(brosur);
 
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 300));
 
     const blob = await brosurElementToBlob(brosur);
     brosur.remove();
@@ -225,13 +240,11 @@ async function triggerShare() {
         text: SHARE_TEXT,
         files: [imageFile]
       });
-      console.log('✅ Share berhasil');
     } else if (navigator.share) {
       await navigator.share({
         title: "Umbrella Guild",
         text: SHARE_TEXT
       });
-      console.log('✅ Share berhasil (tanpa file)');
     } else {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -239,7 +252,6 @@ async function triggerShare() {
       a.download = 'umbrella-brosur.png';
       a.click();
       URL.revokeObjectURL(url);
-      console.log('✅ Brosur didownload');
     }
   } catch (err) {
     console.error('❌ Share error:', err);
