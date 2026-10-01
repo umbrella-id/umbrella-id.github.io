@@ -15,7 +15,6 @@ function getBrosurData() {
   const openmember = openmemberData || null;
 
   console.log('📦 Brosur data:', profil.length, 'profil, openmember:', openmember ? 'ADA' : 'kosong');
-
   return { profilList: profil, openmember: openmember };
 }
 
@@ -32,13 +31,18 @@ function brosurEscapeHtml(str) {
   });
 }
 
-// ===== FORMAT TEKS =====
+// ===== FORMAT TEKS (TANPA GAMBAR) =====
 function brosurFormatText(text) {
   if (!text) return '';
 
-  // Kalau ada HTML → sanitize + return
-  if (/<[a-z][\s\S]*>/i.test(text)) {
-    let cleaned = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // 🎯 HAPUS SEMUA TAG GAMBAR & FIGURE
+  let cleaned = text;
+  cleaned = cleaned.replace(/<img[^>]*>/gi, '');
+  cleaned = cleaned.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
+
+  // Kalau masih ada HTML (bukan cuma img) → sanitize
+  if (/<[a-z][\s\S]*>/i.test(cleaned)) {
+    cleaned = cleaned.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
     cleaned = cleaned.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
     cleaned = cleaned.replace(/on\w+="[^"]*"/gi, '');
     cleaned = cleaned.replace(/javascript:/gi, '');
@@ -46,7 +50,7 @@ function brosurFormatText(text) {
   }
 
   // Plain text → convert newline + bullet
-  const lines = text.split('\n');
+  const lines = cleaned.split('\n');
   let inList = false;
   let html = '';
 
@@ -66,6 +70,36 @@ function brosurFormatText(text) {
   return html;
 }
 
+// ===== BUILD BINGKAI =====
+function brosurBuildFrame() {
+  return `
+    <!-- Bingkai atas -->
+    <div class="brosur-frame-h atas">
+      <div class="brosur-pojok"></div>
+      <div class="brosur-garis-h"></div>
+      <div class="brosur-pojok"></div>
+    </div>
+    <!-- Bingkai bawah -->
+    <div class="brosur-frame-h bawah">
+      <div class="brosur-pojok"></div>
+      <div class="brosur-garis-h"></div>
+      <div class="brosur-pojok"></div>
+    </div>
+    <!-- Bingkai kiri -->
+    <div class="brosur-frame-v kiri">
+      <div class="brosur-pojok"></div>
+      <div class="brosur-garis-v"></div>
+      <div class="brosur-pojok"></div>
+    </div>
+    <!-- Bingkai kanan -->
+    <div class="brosur-frame-v kanan">
+      <div class="brosur-pojok"></div>
+      <div class="brosur-garis-v"></div>
+      <div class="brosur-pojok"></div>
+    </div>
+  `;
+}
+
 // ===== BUAT ELEMEN BROSUR =====
 function createBrosurElement() {
   const { profilList, openmember } = getBrosurData();
@@ -74,14 +108,17 @@ function createBrosurElement() {
   container.className = 'brosur-container';
   container.id = 'brosur-temp';
 
-  // ===== HEADER =====
-  const headerHtml = `<div class="brosur-header"><h1>UMBRELLA</h1></div>`;
+  // ===== ISI (di dalam wrapper) =====
+  let innerHtml = '<div class="brosur-content-wrap">';
 
-  // ===== BINGKAI UTAMA =====
-  let frameHtml = '<div class="brosur-frame">';
+  // Header
+  innerHtml += `<div class="brosur-header"><h1>UMBRELLA</h1></div>`;
+
+  // Bingkai konten (1 panel)
+  innerHtml += '<div class="brosur-frame">';
 
   // --- Kiri: Brand ---
-  frameHtml += `
+  innerHtml += `
     <div class="brosur-brand">
       <img src="Assets/logo.svg" class="brosur-logo" alt="Logo Umbrella">
       <div class="brand-name">UMBRELLA</div>
@@ -91,10 +128,9 @@ function createBrosurElement() {
   `;
 
   // --- Kanan: Profil ---
-  frameHtml += '<div class="brosur-content">';
-
+  innerHtml += '<div class="brosur-content">';
   if (profilList.length === 0) {
-    frameHtml += `
+    innerHtml += `
       <div class="brosur-item">
         <h2>Profil</h2>
         <div class="brosur-item-body"><p>Belum ada profil.</p></div>
@@ -102,33 +138,31 @@ function createBrosurElement() {
     `;
   } else {
     profilList.forEach(item => {
-      frameHtml += `
+      innerHtml += `
         <div class="brosur-item">
           <h2>${brosurEscapeHtml(item.Header || 'Profil')}</h2>
-          <div class="brosur-item-body">
-            ${brosurFormatText(item.Body)}
-          </div>
+          <div class="brosur-item-body">${brosurFormatText(item.Body)}</div>
         </div>
       `;
     });
   }
+  innerHtml += '</div>';   // close brosur-content
+  innerHtml += '</div>';   // close brosur-frame
 
-  frameHtml += '</div>';   // close brosur-content
-
-  frameHtml += '</div>';   // close brosur-frame
-
-  // ===== FOOTER =====
-  let footerHtml = '';
+  // Footer
   if (openmember && openmember.Body) {
-    const cleanBody = openmember.Body.replace(/<br\s*\/?>|\r?\n/g, ' ');
-    footerHtml = `
+    const cleanBody = openmember.Body
+      .replace(/<img[^>]*>/gi, '')
+      .replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '')
+      .replace(/<br\s*\/?>|\r?\n/g, ' ');
+    innerHtml += `
       <div class="brosur-footer">
         <div class="brosur-footer-text">${brosurFormatText(cleanBody)}</div>
         <div class="brosur-link">https://umbrella-id.github.io</div>
       </div>
     `;
   } else {
-    footerHtml = `
+    innerHtml += `
       <div class="brosur-footer">
         <div class="brosur-footer-text">Ayo bergabung dengan Umbrella!</div>
         <div class="brosur-link">https://umbrella-id.github.io</div>
@@ -136,7 +170,10 @@ function createBrosurElement() {
     `;
   }
 
-  container.innerHTML = headerHtml + frameHtml + footerHtml;
+  innerHtml += '</div>';   // close brosur-content-wrap
+
+  // ===== GABUNG =====
+  container.innerHTML = brosurBuildFrame() + innerHtml;
   return container;
 }
 
@@ -170,24 +207,19 @@ async function triggerShare() {
   }
 
   try {
-    // 1. Buat elemen brosur
     const brosur = createBrosurElement();
     document.body.appendChild(brosur);
 
-    // 2. Tunggu render
     await new Promise(r => setTimeout(r, 200));
 
-    // 3. Convert ke blob
     const blob = await brosurElementToBlob(brosur);
     brosur.remove();
 
     if (!blob) throw new Error("Gagal membuat gambar brosur");
 
-    // 4. Cek navigator.share
     const imageFile = new File([blob], "umbrella-brosur.png", { type: "image/png" });
 
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-      // Support share dengan file
       await navigator.share({
         title: "Umbrella Guild",
         text: SHARE_TEXT,
@@ -195,14 +227,12 @@ async function triggerShare() {
       });
       console.log('✅ Share berhasil');
     } else if (navigator.share) {
-      // Share tanpa file
       await navigator.share({
         title: "Umbrella Guild",
         text: SHARE_TEXT
       });
       console.log('✅ Share berhasil (tanpa file)');
     } else {
-      // Fallback: download
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -221,12 +251,10 @@ async function triggerShare() {
       btn.innerHTML = originalHTML;
       btn.disabled = false;
     }
-    // Cleanup
     const leftover = document.getElementById('brosur-temp');
     if (leftover) leftover.remove();
   }
 }
 
-// ===== EXPOSE =====
 window.triggerShare = triggerShare;
 console.log('✅ brosur.js loaded');
