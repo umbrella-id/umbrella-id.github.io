@@ -1,6 +1,7 @@
 /**
  * chat.js — Chat Box (Log Only) + Drag + Snap + Sinkronisasi GAS
  * + Notifikasi Mute (mute-notif.js)
+ * + Fix: guard "sudah di-mute" biar timer tidak reset
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -209,22 +210,26 @@ function renderChatLogs(logs) {
         // 🎯 Kalau mute/unmute USER SENDIRI → update muteExpiryTime + notif
         if (parsed.uid === window.myUID) {
           if (parsed.type === 'mute') {
-            const expiry = Date.now() + (parsed.durasi * 60 * 1000);
-            localStorage.setItem('umbrella_mute_expiry', expiry.toString());
-            console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
+            // 🔍 Cek dulu: apakah sedang dalam masa mute?
+            const existingExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+            const now = Date.now();
 
-            // 🎯 Tampilkan notif mute
-            if (typeof showMuteNotif === 'function') {
-              showMuteNotif();
+            if (existingExpiry > now) {
+              // Sudah dalam masa mute → SKIP, jangan reset timer
+              console.log('⏭️ Sudah di-mute, skip reset (sisa ' + Math.ceil((existingExpiry - now) / 1000) + 's)');
+              // Tapi tetap tampilkan notif
+              if (typeof showMuteNotif === 'function') showMuteNotif();
+            } else {
+              // Belum di-mute / sudah expired → set expiry baru
+              const expiry = now + (parsed.durasi * 60 * 1000);
+              localStorage.setItem('umbrella_mute_expiry', expiry.toString());
+              console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
+              if (typeof showMuteNotif === 'function') showMuteNotif();
             }
           } else if (parsed.type === 'unmute') {
             localStorage.removeItem('umbrella_mute_expiry');
             console.log('🔊 Kamu di-unmute');
-
-            // 🎯 Sembunyikan notif mute
-            if (typeof hideMuteNotif === 'function') {
-              hideMuteNotif();
-            }
+            if (typeof hideMuteNotif === 'function') hideMuteNotif();
           }
         }
 
