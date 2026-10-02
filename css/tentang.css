@@ -43,14 +43,14 @@
 }
 
 .tentang-header-logo {
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(201, 165, 90, 0.5));
 }
 
 .tentang-header-name {
-  font-size: 22px;
+  font-size: 12px;
   font-weight: 900;
   color: #f0d78c;
   letter-spacing: 6px;
@@ -67,7 +67,7 @@
   flex: 1;
   overflow-y: auto;
   color: #f5e6c8;
-  font-size: 13px;
+  font-size: 8px;
   line-height: 1.6;
   letter-spacing: 0.3px;
   word-break: break-word;
