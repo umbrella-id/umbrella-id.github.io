@@ -1,5 +1,5 @@
 /* ==========================================
-   brosur.css — Brosur Share (1080×1080) — Layout 3 Bagian
+   brosur.css — Brosur Share (1080×1080)
    ========================================== */
 
 .brosur-container {
@@ -28,7 +28,7 @@
   z-index: 1;
 }
 
-/* ===== LAYER 2: FRAME SVG (overlay) ===== */
+/* ===== LAYER 2: FRAME SVG ===== */
 .brosur-frame-svg {
   position: absolute;
   inset: 0;
@@ -55,60 +55,73 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 100px 20px;
-  gap: 6px;
+  padding: 40px 100px 15px;      /* ← padding atas ditambah */
+  gap: 4px;
   text-align: center;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .brosur-logo {
-  width: 180px;
+  width: 140px;                  /* ← dari 180px */
   height: auto;
   display: block;
+  flex-shrink: 0;
   filter: drop-shadow(0 0 12px rgba(201, 165, 90, 0.7));
 }
 
 .brosur-guild-name {
-  font-size: 68px;
+  font-size: 56px;               /* ← dari 68px */
   font-weight: 900;
   color: #f0d78c;
-  letter-spacing: 16px;
+  letter-spacing: 14px;
   text-transform: uppercase;
   text-shadow:
     0 0 28px rgba(201, 165, 90, 0.8),
     0 4px 8px rgba(0, 0, 0, 0.95);
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.05;
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/* Judul openmember — auto-fit, max 2 baris */
 .brosur-open-header {
-  font-size: 68px;
+  font-size: clamp(28px, 4.5vh, 44px);   /* ← auto-scale */
   color: #f5e6c8;
-  font-weight: 900;
-  letter-spacing: 8px;
+  font-weight: 800;
+  letter-spacing: 4px;
   text-transform: uppercase;
   text-shadow:
-    0 0 20px rgba(201, 165, 90, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.95);
-  margin: 0;
+    0 0 16px rgba(201, 165, 90, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.95);
+  margin: 4px 0 0;
   max-width: 100%;
   line-height: 1.1;
+  /* Batasi 2 baris */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ===== BODY (50%) — Grid 2×2 ===== */
 .brosur-body {
   flex: 1;
-  padding: 20px 110px;
+  padding: 10px 110px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 .brosur-item {
-  padding: 10px 14px;
+  padding: 6px 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -116,31 +129,41 @@
 
 .brosur-item h3 {
   color: #f0d78c;
-  font-size: 26px;
+  font-size: 22px;               /* ← dari 26px */
   font-weight: 800;
   margin: 0 0 6px;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .brosur-item h3::before {
   content: '◆';
   color: #c9a55a;
-  font-size: 16px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
+/* Body profil — auto-fit, max 5 baris */
 .brosur-item-body {
-  font-size: 22px;
-  line-height: 1.25;
+  font-size: 18px;               /* ← dari 22px */
+  line-height: 1.3;
   color: #e0d5b8;
   flex: 1;
   overflow: hidden;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  /* Batasi 5 baris */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }
 
 .brosur-item-body ul {
@@ -152,7 +175,7 @@
 .brosur-item-body li {
   margin-bottom: 2px;
   position: relative;
-  padding-left: 20px;
+  padding-left: 16px;
 }
 
 .brosur-item-body li::before {
@@ -163,41 +186,49 @@
 }
 
 .brosur-item-body p {
-  margin: 0 0 4px;
+  margin: 0 0 3px;
 }
 
 /* ===== FOOTER (15%) ===== */
 .brosur-footer {
   height: 15%;
-  padding: 15px 100px 30px;
+  padding: 10px 100px 35px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 6px;
+  gap: 4px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .brosur-footer-text {
   color: #e0d5b8;
-  font-size: 22px;
-  line-height: 1.25;
+  font-size: 18px;               /* ← dari 22px */
+  line-height: 1.3;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
-  max-height: 100%;
-  overflow: hidden;
   max-width: 100%;
+  /* Batasi 2 baris */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .brosur-link {
   color: #f0d78c;
-  font-size: 26px;
+  font-size: 22px;               /* ← dari 26px */
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-shadow:
     0 0 20px rgba(201, 165, 90, 0.6),
     0 2px 6px rgba(0, 0, 0, 0.95);
   flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ===== TOMBOL SHARE ===== */
