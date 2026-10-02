@@ -108,6 +108,9 @@
         </div>
       </div>
 
+      <!-- ============ NOTIFIKASI MUTE ============ -->
+      <div class="mute-notif" id="muteNotif"></div>
+
       <!-- ============ CHAT BOX ============ -->
       <div class="chat-box" id="chatBox">
         <div class="chat-drag" id="chatDrag"></div>
@@ -118,9 +121,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Di dalam .stage, setelah chat-box -->
-      <div class="mute-notif" id="muteNotif"></div>
 
       <!-- ============ FORM TULIS CHAT ============ -->
       <div class="chat-input-overlay" id="chatInputOverlay">
@@ -202,7 +202,6 @@
       <div class="mail-overlay" id="mailOverlay">
         <div class="mail-modal">
 
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -226,13 +225,10 @@
             </div>
           </div>
 
-          <!-- Header -->
           <div class="mail-header">KIRIM SURAT</div>
 
-          <!-- Body -->
           <div class="mail-body">
 
-            <!-- Kategori -->
             <div class="mail-group">
               <label class="mail-label">KATEGORI</label>
               <div class="mail-kategori-btn" onclick="toggleKategoriList()">
@@ -245,13 +241,11 @@
               </div>
             </div>
 
-            <!-- WhatsApp (khusus Request Join) -->
             <div class="mail-group wa-group">
               <label class="mail-label">NOMOR WHATSAPP</label>
               <input type="tel" class="mail-input" id="mailWA" placeholder="08xxxxxxxxxx" maxlength="15">
             </div>
 
-            <!-- Pesan -->
             <div class="mail-group" style="flex:1;">
               <label class="mail-label">PESAN</label>
               <textarea class="mail-textarea" id="mailPesan" placeholder="Tulis pesan Anda..." maxlength="1000"></textarea>
@@ -259,7 +253,6 @@
 
           </div>
 
-          <!-- Footer -->
           <div class="mail-footer">
             <div class="btn-svg" onclick="kirimMail()">
               <div class="btn-ujung-kiri"></div>
@@ -268,7 +261,6 @@
             </div>
           </div>
 
-          <!-- Pesan error/sukses -->
           <p class="mail-message" id="mailMessage"></p>
 
         </div>
@@ -278,7 +270,6 @@
       <div class="info-overlay" id="infoOverlay">
         <div class="info-modal">
 
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -302,17 +293,13 @@
             </div>
           </div>
 
-          <!-- Header -->
           <div class="info-header">UMBRELLA</div>
 
-          <!-- Body: 2 kolom -->
           <div class="info-body">
-            <!-- Kiri: logo -->
             <div class="info-logo-col">
               <img src="Assets/logo.svg" alt="Logo Umbrella">
             </div>
 
-            <!-- Kanan: list / isi -->
             <div class="info-content-col" id="infoContentCol">
               <div class="info-loading">Memuat data...</div>
             </div>
@@ -328,7 +315,6 @@
       <div class="headline-overlay" id="headlineOverlay">
         <div class="headline-popup">
 
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -352,13 +338,10 @@
             </div>
           </div>
 
-          <!-- Header -->
           <div class="headline-header" id="headlineHeader">Pengumuman</div>
 
-          <!-- Tombol Close -->
-          <button class="headline-close" onclick="closeHeadlinePopup()" aria-label="Tutup">×</button>
+          <!-- 🎯 Tombol close X DIHAPUS — sudah ada tombol BACK & HOME di menu utama -->
 
-          <!-- Body -->
           <div class="headline-body" id="headlineBody"></div>
 
         </div>
@@ -368,7 +351,6 @@
       <div class="tentang-overlay" id="tentangOverlay">
         <div class="tentang-modal">
 
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -392,13 +374,11 @@
             </div>
           </div>
 
-          <!-- Header: logo + nama guild -->
           <div class="tentang-header">
             <img src="Assets/logo.svg" class="tentang-header-logo" alt="Logo">
             <h1 class="tentang-header-name">UMBRELLA</h1>
           </div>
 
-          <!-- Body: paragraf dari txt -->
           <div class="tentang-body" id="tentangBody"></div>
 
         </div>
@@ -408,7 +388,6 @@
       <div class="gallery-overlay" id="galleryOverlay">
         <div class="gallery-modal">
 
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -432,10 +411,8 @@
             </div>
           </div>
 
-          <!-- Header -->
           <div class="gallery-header">GALLERY</div>
 
-          <!-- Body (grid foto) -->
           <div class="gallery-body" id="galleryBody"></div>
 
         </div>
@@ -461,7 +438,6 @@
       <div class="exit-overlay" id="exitOverlay">
         <div class="exit-modal">
 
-          <!-- Bingkai modal -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -485,20 +461,16 @@
             </div>
           </div>
 
-          <!-- Teks -->
           <div class="exit-text">Yakin ingin keluar dari halaman?</div>
 
-          <!-- Tombol -->
           <div class="exit-actions">
 
-            <!-- TIDAK — hitam putih -->
             <div class="btn-svg btn-tidak" onclick="batalKeluar()">
               <div class="btn-ujung-kiri"></div>
               <div class="btn-tengah"><span class="btn-teks">TIDAK</span></div>
               <div class="btn-ujung-kanan"></div>
             </div>
 
-            <!-- YA — warna normal -->
             <div class="btn-svg" onclick="konfirmasiKeluar()">
               <div class="btn-ujung-kiri"></div>
               <div class="btn-tengah"><span class="btn-teks">YA</span></div>
