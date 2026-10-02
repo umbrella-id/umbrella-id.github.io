@@ -24,7 +24,8 @@
 .stage.gate-first .headline-banner-container,
 .stage.gate-edit-mode .headline-banner-container,
 .stage.mail-open .headline-banner-container,
-.stage.info-open .headline-banner-container {
+.stage.info-open .headline-banner-container,
+.stage.tentang-open .headline-banner-container {
   display: none !important;
 }
 
