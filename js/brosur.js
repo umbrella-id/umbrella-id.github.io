@@ -104,7 +104,10 @@ function createBrosurElement() {
 
   // --- HEADER ---
   html += `<div class="brosur-header">`;
+  html += `<div class="brosur-logo-wrap">`;
+  html += `<div class="brosur-logo-glow"></div>`;
   html += `<img src="Assets/logo.svg" class="brosur-logo" alt="Logo">`;
+  html += `</div>`;
   html += `<h1 class="brosur-guild-name">UMBRELLA</h1>`;
   html += `<p class="brosur-open-header">${brosurEscapeHtml(openHeader)}</p>`;
   html += `</div>`;   // close header
@@ -177,8 +180,8 @@ async function triggerShare() {
   const originalHTML = btn ? btn.innerHTML : '';
 
   if (btn) {
-    btn.innerHTML = '⏳ MEMBUAT...';
-    btn.disabled = true;
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.6';
   }
 
   try {
@@ -213,8 +216,8 @@ async function triggerShare() {
     }
   } finally {
     if (btn) {
-      btn.innerHTML = originalHTML;
-      btn.disabled = false;
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
     }
     const leftover = document.getElementById('brosur-temp');
     if (leftover) leftover.remove();
