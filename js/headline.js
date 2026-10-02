@@ -100,10 +100,8 @@ function buildBannerItem(data, type) {
   let inner = '';
 
   if (imgMatch && imgMatch[1]) {
-    // Ada gambar
     inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
   } else {
-    // Nggak ada gambar → judul + body singkat
     let textHtml = '';
     if (judul) {
       textHtml += `<div class="banner-title">${escapeHtml(judul)}</div>`;
@@ -143,9 +141,11 @@ function getTextSingkat(body, fallbackJudul, maxChars = 60) {
 // ===== BUKA POPUP =====
 function openHeadlinePopup(type) {
   let data = null;
+  let isOpenmember = false;   // ← DEKLARASI DI SINI
 
   if (type === 'openmember') {
     data = openmemberData;
+    isOpenmember = true;
   } else if (type === 'headline') {
     data = headlineData;
   } else {
@@ -156,6 +156,7 @@ function openHeadlinePopup(type) {
       data = headlineData;
     } else if (punyaOpenmember) {
       data = openmemberData;
+      isOpenmember = true;
     }
   }
 
@@ -246,4 +247,3 @@ window.closeHeadlinePopup = closeHeadlinePopup;
 window.initHeadlineDisplay = initHeadlineDisplay;
 
 console.log('✅ headline.js loaded');
-
