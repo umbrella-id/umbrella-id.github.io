@@ -75,6 +75,8 @@ function menuClick(type) {
       if (typeof openInfoModal === 'function') openInfoModal();
     } else if (type === 'tentang') {
       if (typeof openTentangModal === 'function') openTentangModal();
+    } else if (type === 'gallery') {
+      if (typeof openGalleryModal === 'function') openGalleryModal();
     } else {
       if (typeof goToPage === 'function') goToPage(type);
     }
