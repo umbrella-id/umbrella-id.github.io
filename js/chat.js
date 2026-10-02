@@ -1,5 +1,6 @@
 /**
  * chat.js — Chat Box (Log Only) + Drag + Snap + Sinkronisasi GAS
+ * + Notifikasi Mute (mute-notif.js)
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -204,26 +205,36 @@ function renderChatLogs(logs) {
         const parsed = parseCommand(msgText);
         if (!parsed) return;
         if (!isSystemMessageMasihBerlaku(logs, index)) return;
-      
-        // 🎯 Kalau mute/unmute USER SENDIRI → update muteExpiryTime
+
+        // 🎯 Kalau mute/unmute USER SENDIRI → update muteExpiryTime + notif
         if (parsed.uid === window.myUID) {
           if (parsed.type === 'mute') {
             const expiry = Date.now() + (parsed.durasi * 60 * 1000);
             localStorage.setItem('umbrella_mute_expiry', expiry.toString());
             console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
+
+            // 🎯 Tampilkan notif mute
+            if (typeof showMuteNotif === 'function') {
+              showMuteNotif();
+            }
           } else if (parsed.type === 'unmute') {
             localStorage.removeItem('umbrella_mute_expiry');
             console.log('🔊 Kamu di-unmute');
+
+            // 🎯 Sembunyikan notif mute
+            if (typeof hideMuteNotif === 'function') {
+              hideMuteNotif();
+            }
           }
         }
-      
+
         let displayText = '';
         if (parsed.type === 'mute') {
           displayText = `${parsed.ign} dibisukan selama ${parsed.durasi} menit`;
         } else if (parsed.type === 'unmute') {
           displayText = `Bisuan ${parsed.ign} telah dibuka`;
         }
-      
+
         d.className = 'chat-line chat-system';
         d.innerHTML = `<span class="chat-text">${escapeHtml(displayText)}</span>`;
       }
@@ -262,6 +273,16 @@ async function syncChat(force = false) {
   if (muteExpiry > 0 && !isMuted) {
     console.log('🔓 Mute expired, auto-unlock');
     localStorage.removeItem('umbrella_mute_expiry');
+
+    // Sembunyikan notif mute
+    if (typeof hideMuteNotif === 'function') {
+      hideMuteNotif();
+    }
+  }
+
+  // 🎯 Tampilkan notif mute kalau masih dalam masa mute
+  if (isMuted && typeof showMuteNotif === 'function') {
+    showMuteNotif();
   }
 
   try {
