@@ -179,7 +179,7 @@ function openHeadlinePopup(type) {
       <div style="text-align: center; margin-top: 20px;">
         <div class="btn-svg headline-share-btn" onclick="triggerShare()">
           <div class="btn-ujung-kiri"></div>
-          <div class="btn-tengah"><span class="btn-teks">BAGIKAN BROSUR</span></div>
+          <div class="btn-tengah"><span class="btn-teks">BAGIKAN</span></div>
           <div class="btn-ujung-kanan"></div>
         </div>
       </div>
