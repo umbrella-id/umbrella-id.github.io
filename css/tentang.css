@@ -11,7 +11,7 @@
 }
 .tentang-overlay.open { display: block; }
 
-/* Modal — ukuran seperti Info Serikat */
+/* Modal */
 .tentang-modal {
   position: absolute;
   top: 50%;
@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   pointer-events: auto;
-  padding: 30px 40px;
+  padding: 20px 30px;            /* ← dari 30px 40px */
   box-sizing: border-box;
 }
 
@@ -33,9 +33,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
+  gap: 4px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
   border-bottom: 1px solid rgba(201, 165, 90, 0.4);
   position: relative;
   z-index: 2;
@@ -46,18 +46,18 @@
   width: 30px;
   height: 30px;
   object-fit: contain;
-  filter: drop-shadow(0 0 8px rgba(201, 165, 90, 0.5));
+  filter: drop-shadow(0 0 5px rgba(201, 165, 90, 0.5));
 }
 
 .tentang-header-name {
-  font-size: 12px;
+  font-size: 10px;               /* ← dari 12px */
   font-weight: 900;
   color: #f0d78c;
-  letter-spacing: 6px;
+  letter-spacing: 3px;           /* ← dari 6px */
   text-transform: uppercase;
   text-shadow:
-    0 0 10px rgba(201, 165, 90, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.9);
+    0 0 6px rgba(201, 165, 90, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.9);
   margin: 0;
   line-height: 1.1;
 }
@@ -67,33 +67,33 @@
   flex: 1;
   overflow-y: auto;
   color: #f5e6c8;
-  font-size: 8px;
+  font-size: 8px;                /* ← tetap 8px */
   line-height: 1.6;
   letter-spacing: 0.3px;
   word-break: break-word;
   position: relative;
   z-index: 2;
-  padding-right: 6px;
+  padding-right: 4px;
 }
 
-.tentang-body::-webkit-scrollbar { width: 4px; }
+.tentang-body::-webkit-scrollbar { width: 3px; }
 .tentang-body::-webkit-scrollbar-thumb {
   background: rgba(201, 165, 90, 0.4);
   border-radius: 2px;
 }
 
-/* Heading di body */
+/* Heading */
 .tentang-body h1,
 .tentang-body h2,
 .tentang-body h3 {
   color: #f0d78c;
-  margin: 16px 0 10px;
-  letter-spacing: 1.5px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  margin: 10px 0 6px;            /* ← dari 16px 10px */
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
-.tentang-body h1 { font-size: 16px; }
-.tentang-body h2 { font-size: 15px; }
-.tentang-body h3 { font-size: 14px; }
+.tentang-body h1 { font-size: 14px; }    /* ← dari 16px */
+.tentang-body h2 { font-size: 12px; }    /* ← dari 15px */
+.tentang-body h3 { font-size: 10px; }    /* ← dari 14px */
 .tentang-body h1:first-child,
 .tentang-body h2:first-child,
 .tentang-body h3:first-child {
@@ -102,21 +102,21 @@
 
 /* Paragraf */
 .tentang-body p {
-  margin: 0 0 10px;
+  margin: 0 0 8px;               /* ← dari 10px */
   text-align: justify;
 }
 
 /* List */
 .tentang-body ul {
-  margin: 0 0 12px;
-  padding-left: 20px;
+  margin: 0 0 8px;               /* ← dari 12px */
+  padding-left: 12px;            /* ← dari 20px */
   list-style: none;
 }
 
 .tentang-body li {
-  margin-bottom: 4px;
+  margin-bottom: 3px;            /* ← dari 4px */
   position: relative;
-  padding-left: 14px;
+  padding-left: 10px;            /* ← dari 14px */
 }
 
 .tentang-body li::before {
@@ -124,17 +124,17 @@
   color: #c9a55a;
   position: absolute;
   left: 0;
-  font-size: 8px;
-  top: 5px;
+  font-size: 5px;                /* ← dari 8px */
+  top: 4px;
 }
 
 /* Loading & Empty */
 .tentang-loading,
 .tentang-empty {
   color: #c9a55a;
-  font-size: 12px;
+  font-size: 10px;               /* ← dari 12px */
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 20px;            /* ← dari 40px 20px */
   letter-spacing: 1px;
   opacity: 0.8;
 }
