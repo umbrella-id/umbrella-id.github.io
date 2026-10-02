@@ -106,7 +106,7 @@
   top: 50%;
   left: 50%;
   width: 70%;
-  height: 75%;
+  height: 80%;
   transform: translate(-50%, -50%);
   background: rgba(15, 10, 6, 0.85);
   display: flex;
@@ -148,7 +148,7 @@
 
 .headline-body {
   flex: 1;
-  padding: 20px 30px 25px;       /* ← 🎯 +5px di bawah */
+  padding: 20px 30px 30px;       /* ← 🎯 +10px di bawah (total 30px) */
   overflow-y: auto;
   color: #f5e6c8;
   font-size: 12px;
