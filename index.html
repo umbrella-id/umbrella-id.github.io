@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="css/headline.css">
 <link rel="stylesheet" href="css/brosur.css">
 <link rel="stylesheet" href="css/tentang.css">
+<link rel="stylesheet" href="css/gallery.css">
 </head>
 <body>
 
@@ -398,6 +399,59 @@
         </div>
       </div>
 
+      <!-- ============ MODAL GALLERY ============ -->
+      <div class="gallery-overlay" id="galleryOverlay">
+        <div class="gallery-modal">
+
+          <!-- Bingkai -->
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+
+          <!-- Header -->
+          <div class="gallery-header">GALLERY</div>
+
+          <!-- Body (grid foto) -->
+          <div class="gallery-body" id="galleryBody"></div>
+
+        </div>
+      </div>
+
+      <!-- ============ LIGHTBOX ============ -->
+      <div class="gallery-lightbox" id="galleryLightbox">
+        <button class="gallery-lb-close" onclick="closeLightbox()">×</button>
+        <div class="gallery-lb-counter" id="galleryLbCounter">1 / 1</div>
+
+        <img class="gallery-lb-img" id="galleryLbImg" src="" alt="">
+
+        <div class="gallery-lb-info">
+          <div class="gallery-lb-title" id="galleryLbTitle"></div>
+          <div class="gallery-lb-caption" id="galleryLbCaption"></div>
+        </div>
+
+        <div class="gallery-lb-nav prev" onclick="lightboxPrev()">◀</div>
+        <div class="gallery-lb-nav next" onclick="lightboxNext()">▶</div>
+      </div>
+
     </div>
 
   </div>
@@ -416,6 +470,7 @@
   <script src="js/headline.js"></script>
   <script src="js/brosur.js"></script>
   <script src="js/tentang.js"></script>
+  <script src="js/gallery.js"></script>
 
 </body>
 </html>
