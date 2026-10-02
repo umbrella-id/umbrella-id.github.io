@@ -99,3 +99,10 @@
 .stage.info-open .headline-banner {
   display: none !important;
 }
+
+/* ==========================================
+   Saat headline popup buka
+   ========================================== */
+.stage.headline-open .headline-banner-container {
+  display: none !important;   /* sembunyikan banner */
+}
