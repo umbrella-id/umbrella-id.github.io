@@ -15,7 +15,7 @@
   box-sizing: border-box;
 }
 
-/* ===== IMAGE ===== */
+/* ===== LAYER 1: IMAGE ===== */
 .brosur-image {
   position: absolute;
   top: 0;
@@ -28,7 +28,7 @@
   z-index: 1;
 }
 
-/* ===== FRAME SVG ===== */
+/* ===== LAYER 2: FRAME SVG ===== */
 .brosur-frame-svg {
   position: absolute;
   inset: 0;
@@ -39,7 +39,7 @@
   z-index: 2;
 }
 
-/* ===== LAYOUT ===== */
+/* ===== LAYER 3: KONTEN ===== */
 .brosur-layout {
   position: absolute;
   inset: 0;
@@ -264,39 +264,15 @@
   max-width: 100%;
 }
 
-/* ===== TOMBOL SHARE ===== */
+/* ===== TOMBOL SHARE (pakai tombol SVG) ===== */
 .headline-share-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 22px;
+  height: 34px !important;
   margin-top: 14px;
-  background: linear-gradient(180deg, #c9a55a, #8a6a1f);
-  color: #1a0f08;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  border: 1px solid #f0d78c;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
-  box-shadow:
-    0 3px 0 #5a4410,
-    0 6px 14px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
-.headline-share-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
+.headline-share-btn .btn-tengah {
+  padding: 0 32px;
 }
-.headline-share-btn:active {
-  transform: translateY(1px);
-}
-.headline-share-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+.headline-share-btn .btn-teks {
+  font-size: 13px;
+  letter-spacing: 1.8px;
 }
