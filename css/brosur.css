@@ -120,7 +120,7 @@
 }
 
 .brosur-open-header {
-  font-size: clamp(48px, 7vh, 68px);
+  font-size: clamp(64px, 9vh, 90px);
   color: #ffffff;
   font-weight: 900;
   letter-spacing: 6px;
