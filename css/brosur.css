@@ -89,7 +89,7 @@
 }
 
 .brosur-open-header {
-  font-size: clamp(36px, 6vh, 56px);
+  font-size: clamp(44px, 7vh, 68px);   /* ← lebih besar */
   color: #f5e6c8;
   font-weight: 900;
   letter-spacing: 6px;
@@ -111,8 +111,8 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 10px 100px;
+  align-items: stretch;           /* ← dari center jadi stretch */
+  padding: 0 100px;                /* ← dari 10px jadi 0 */
   overflow: hidden;
   box-sizing: border-box;
 }
