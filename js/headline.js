@@ -173,12 +173,14 @@ function openHeadlinePopup(type) {
   body.innerHTML = formatHeadlineBody(data.Body || '');
 
   // 🎯 Tambah tombol share KALAU type = 'openmember'
-  if (type === 'openmember') {
+  if (isOpenmember) {
     body.innerHTML += `
       <div style="text-align: center; margin-top: 20px;">
-        <button class="headline-share-btn" onclick="triggerShare()">
-          📤 Bagikan Brosur
-        </button>
+        <div class="btn-svg headline-share-btn" onclick="triggerShare()">
+          <div class="btn-ujung-kiri"></div>
+          <div class="btn-tengah"><span class="btn-teks">BAGIKAN BROSUR</span></div>
+          <div class="btn-ujung-kanan"></div>
+        </div>
       </div>
     `;
   }
