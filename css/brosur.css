@@ -1,311 +1,203 @@
 /* ==========================================
-   brosur.css — Brosur Share (1280×720) — Toram + Bingkai <img>
+   brosur.css — Brosur Share (1080×1080) — Layout 3 Bagian
    ========================================== */
 
 .brosur-container {
   position: fixed;
   top: -9999px;
   left: -9999px;
-  width: 1280px;
-  height: 720px;
+  width: 1080px;
+  height: 1080px;
   background: #1a0f08;
-  background-image:
-    radial-gradient(circle at 30% 20%, rgba(201, 165, 90, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(107, 68, 35, 0.25) 0%, transparent 50%),
-    linear-gradient(135deg, #2a1a10 0%, #1a0f08 50%, #0f0805 100%);
-  color: #f5e6c8;
+  position: relative;
+  overflow: hidden;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-/* ===== BINGKAI MODAL (pakai <img>) ===== */
-.brosur-frame-h {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-}
-.brosur-frame-h.atas { top: 0; }
-.brosur-frame-h.bawah { bottom: 0; }
-
-.brosur-frame-v {
+/* ===== LAYER 1: IMAGE (top 25%) ===== */
+.brosur-image {
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 10;
-}
-.brosur-frame-v.kiri { left: 0; }
-.brosur-frame-v.kanan { right: 0; }
-
-/* Pojok — pakai <img> */
-.brosur-pojok {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-.brosur-pojok img {
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: 25%;
+  object-fit: cover;
   display: block;
-  object-fit: contain;
+  z-index: 1;
 }
 
-/* Flip pojok */
-.brosur-frame-h.atas .brosur-pojok:last-child { transform: scaleX(-1); }
-.brosur-frame-h.bawah .brosur-pojok:first-child { transform: scaleY(-1); }
-.brosur-frame-h.bawah .brosur-pojok:last-child { transform: scale(-1); }
-.brosur-frame-v.kiri .brosur-pojok:last-child { transform: scaleY(-1); }
-.brosur-frame-v.kanan .brosur-pojok:first-child { transform: scaleX(-1); }
-.brosur-frame-v.kanan .brosur-pojok:last-child { transform: scale(-1); }
-
-/* Garis H — pakai <img> */
-.brosur-garis-h {
-  flex-grow: 1;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.brosur-garis-h img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: fill;
-}
-.brosur-frame-h.bawah .brosur-garis-h { transform: scaleY(-1); }
-
-/* Garis V — pakai <img> */
-.brosur-garis-v {
-  flex-grow: 1;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-.brosur-garis-v img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: fill;
-}
-.brosur-frame-v.kanan .brosur-garis-v { transform: scaleX(-1); }
-
-/* ===== ISI BROSUR ===== */
-.brosur-content-wrap {
+/* ===== LAYER 2: FRAME SVG (overlay) ===== */
+.brosur-frame-svg {
   position: absolute;
-  inset: 30px 34px 30px 34px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
 }
 
-/* HEADER */
+/* ===== LAYER 3: KONTEN ===== */
+.brosur-layout {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER (35%) ===== */
 .brosur-header {
+  height: 35%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 0 14px;
-  position: relative;
-  flex-shrink: 0;
+  padding: 30px 100px 20px;
+  gap: 10px;
+  text-align: center;
+  box-sizing: border-box;
 }
-.brosur-header h1 {
+
+.brosur-logo {
+  width: 120px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(201, 165, 90, 0.7));
+}
+
+.brosur-guild-name {
   font-size: 34px;
   font-weight: 900;
-  letter-spacing: 8px;
   color: #f0d78c;
+  letter-spacing: 8px;
   text-transform: uppercase;
   text-shadow:
-    0 0 12px rgba(201, 165, 90, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.9);
+    0 0 14px rgba(201, 165, 90, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.95);
   margin: 0;
   line-height: 1.1;
 }
-.brosur-header::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  left: 30%;
-  right: 30%;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #c9a55a, transparent);
-}
 
-/* ===== BINGKAI KONTEN ===== */
-.brosur-frame {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 30% 1fr;
-  gap: 0;
-  background: linear-gradient(135deg, rgba(58, 36, 22, 0.5), rgba(42, 26, 16, 0.5));
-  border: 1px solid rgba(201, 165, 90, 0.6);
-  border-radius: 4px;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Ornamen sudut */
-.brosur-frame::before,
-.brosur-frame::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-color: #c9a55a;
-  pointer-events: none;
-}
-.brosur-frame::before {
-  top: 5px; left: 5px;
-  border-top: 2px solid #c9a55a;
-  border-left: 2px solid #c9a55a;
-}
-.brosur-frame::after {
-  bottom: 5px; right: 5px;
-  border-bottom: 2px solid #c9a55a;
-  border-right: 2px solid #c9a55a;
-}
-
-/* ===== BRAND (kiri) ===== */
-.brosur-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 10px;
-  padding: 16px 14px;
-  border-right: 1px solid rgba(201, 165, 90, 0.4);
-}
-.brosur-logo {
-  width: 140px;
-  height: auto;
-  filter: drop-shadow(0 0 12px rgba(201, 165, 90, 0.5));
-}
-.brand-name {
-  font-size: 22px;
-  font-weight: 900;
-  color: #f0d78c;
-  letter-spacing: 4px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-.brand-main {
-  font-size: 11px;
-  color: #c9a55a;
-  line-height: 1.4;
+.brosur-open-header {
+  font-size: 15px;
+  color: #f5e6c8;
   font-weight: 600;
-  letter-spacing: 1px;
-}
-.brand-sub {
-  font-size: 9px;
-  color: #a89070;
-  line-height: 1.5;
-  margin-top: 4px;
-  font-style: italic;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+  margin: 0;
+  max-width: 100%;
+  line-height: 1.4;
 }
 
-/* ===== PROFIL (kanan) — 2×2 GRID ===== */
-.brosur-content {
+/* ===== BODY (50%) — Grid 2×2 ===== */
+.brosur-body {
+  flex: 1;
+  padding: 20px 100px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 8px;
-  padding: 12px;
+  gap: 14px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .brosur-item {
-  padding: 8px 10px;
-  background: rgba(42, 26, 16, 0.5);
-  border: 1px solid rgba(201, 165, 90, 0.4);
+  padding: 14px 18px;
+  background: rgba(20, 12, 6, 0.55);
+  border: 1px solid rgba(201, 165, 90, 0.5);
   border-radius: 4px;
-  position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.brosur-item h2 {
+.brosur-item h3 {
   color: #f0d78c;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
-.brosur-item h2::before {
+
+.brosur-item h3::before {
   content: '◆';
   color: #c9a55a;
-  font-size: 7px;
+  font-size: 8px;
 }
+
 .brosur-item-body {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
   color: #e0d5b8;
+  flex: 1;
   overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
+
 .brosur-item-body ul {
-  margin: 2px 0;
-  padding-left: 10px;
+  margin: 0;
+  padding-left: 0;
   list-style: none;
 }
+
 .brosur-item-body li {
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   position: relative;
-  padding-left: 8px;
+  padding-left: 10px;
 }
+
 .brosur-item-body li::before {
   content: '•';
   color: #c9a55a;
   position: absolute;
   left: 0;
 }
+
 .brosur-item-body p {
-  margin: 2px 0;
+  margin: 0 0 4px;
 }
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER (15%) ===== */
 .brosur-footer {
+  height: 15%;
+  padding: 15px 100px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 8px 16px 4px;
-  position: relative;
-  flex-shrink: 0;
+  gap: 6px;
+  box-sizing: border-box;
 }
-.brosur-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 30%;
-  right: 30%;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #c9a55a, transparent);
-}
+
 .brosur-footer-text {
   color: #e0d5b8;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
-  max-width: 90%;
-  margin-top: 4px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  max-height: 100%;
+  overflow: hidden;
+  max-width: 100%;
 }
+
 .brosur-link {
-  font-size: 13px;
   color: #f0d78c;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-  margin-top: 4px;
+  text-shadow:
+    0 0 10px rgba(201, 165, 90, 0.6),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+  flex-shrink: 0;
 }
 
 /* ===== TOMBOL SHARE ===== */
