@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="css/brosur.css">
 <link rel="stylesheet" href="css/tentang.css">
 <link rel="stylesheet" href="css/gallery.css">
+<link rel="stylesheet" href="css/exit-confirm.css">
 </head>
 <body>
 
@@ -452,6 +453,59 @@
         <div class="gallery-lb-nav next" onclick="lightboxNext()">▶</div>
       </div>
 
+      <!-- ============ POPUP KONFIRMASI KELUAR ============ -->
+      <div class="exit-overlay" id="exitOverlay">
+        <div class="exit-modal">
+
+          <!-- Bingkai modal -->
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+
+          <!-- Teks -->
+          <div class="exit-text">Yakin ingin keluar dari halaman?</div>
+
+          <!-- Tombol -->
+          <div class="exit-actions">
+
+            <!-- TIDAK — hitam putih -->
+            <div class="btn-svg btn-tidak" onclick="batalKeluar()">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">TIDAK</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+            <!-- YA — warna normal -->
+            <div class="btn-svg" onclick="konfirmasiKeluar()">
+              <div class="btn-ujung-kiri"></div>
+              <div class="btn-tengah"><span class="btn-teks">YA</span></div>
+              <div class="btn-ujung-kanan"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -471,6 +525,7 @@
   <script src="js/brosur.js"></script>
   <script src="js/tentang.js"></script>
   <script src="js/gallery.js"></script>
+  <script src="js/exit-confirm.js"></script>
 
 </body>
 </html>
