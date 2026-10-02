@@ -65,6 +65,22 @@ function brosurFormatText(text) {
   return html;
 }
 
+// ===== AMBIL BACKGROUND IMAGE (KONDISIONAL) =====
+function getBrosurBgImage(openmember) {
+  // 1. Cek di openmember Body ada <img>?
+  if (openmember && openmember.Body) {
+    const imgMatch = openmember.Body.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (imgMatch && imgMatch[1]) {
+      console.log('🖼️ Background dari openmember:', imgMatch[1]);
+      return imgMatch[1];
+    }
+  }
+
+  // 2. Fallback ke Background.png
+  console.log('🖼️ Background fallback: Assets/Background.png');
+  return 'Assets/Background.png';
+}
+
 // ===== BUAT ELEMEN BROSUR =====
 function createBrosurElement() {
   const { profilList, openmember } = getBrosurData();
@@ -77,11 +93,14 @@ function createBrosurElement() {
   const openHeader = openmember && openmember.Header ? openmember.Header : 'OPEN MEMBER';
   const openBody = openmember && openmember.Body ? openmember.Body : 'Ayo bergabung dengan Umbrella!';
 
+  // Background image (kondisional)
+  const bgImage = getBrosurBgImage(openmember);
+
   // ===== HTML =====
   let html = '';
 
-  // Layer 1: Image (top 25%)
-  html += `<img src="Assets/brosur-bg.jpg" class="brosur-image" alt="">`;
+  // Layer 1: Image (top 25%) — kondisional
+  html += `<img src="${bgImage}" class="brosur-image" alt="">`;
 
   // Layer 2: Frame SVG (overlay)
   html += `<img src="Assets/BROSUR-FRAME.svg" class="brosur-frame-svg" alt="">`;
@@ -120,7 +139,6 @@ function createBrosurElement() {
         </div>
       `;
     });
-    // Placeholder kalau kurang dari 4
     const sisa = 4 - items.length;
     for (let i = 0; i < sisa; i++) {
       html += `
@@ -196,13 +214,11 @@ async function triggerShare() {
         text: SHARE_TEXT,
         files: [imageFile]
       });
-      console.log('✅ Share berhasil');
     } else if (navigator.share) {
       await navigator.share({
         title: "Umbrella Guild",
         text: SHARE_TEXT
       });
-      console.log('✅ Share berhasil (tanpa file)');
     } else {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -210,7 +226,6 @@ async function triggerShare() {
       a.download = 'umbrella-brosur.png';
       a.click();
       URL.revokeObjectURL(url);
-      console.log('✅ Brosur didownload');
     }
   } catch (err) {
     console.error('❌ Share error:', err);
