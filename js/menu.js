@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline
+ * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline/Tentang
  */
 
 let currentPage = 'home';
@@ -54,13 +54,20 @@ function updateButtons() {
     return;
   }
 
-  // Prioritas 4: Gate mode 'change' → BACK
+  // Prioritas 4: Tentang Kami buka → BACK + HOME
+  if (stage && stage.classList.contains('tentang-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
+  // Prioritas 5: Gate mode 'change' → BACK
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
 
-  // Prioritas 5: Normal
+  // Prioritas 6: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -109,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnKiri = document.getElementById('btnKiri');
   const btnKanan = document.getElementById('btnKanan');
 
+  // ===== KLIK TOMBOL KIRI =====
   if (btnKiri) {
     btnKiri.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
@@ -136,14 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 4: Gate buka → close
+      // Prioritas 4: Tentang Kami buka → balik ke menu
+      if (stage && stage.classList.contains('tentang-open')) {
+        if (typeof closeTentangModal === 'function') closeTentangModal();
+        return;
+      }
+
+      // Prioritas 5: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
 
-      // Prioritas 5: Normal
+      // Prioritas 6: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -157,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ===== KLIK TOMBOL KANAN =====
   if (btnKanan) {
     btnKanan.addEventListener('click', (e) => {
       if (e.target.closest('.plat-nama')) return;
@@ -184,11 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 4: Gate buka → non-aktif
+      // Prioritas 4: Tentang Kami buka → tutup + home
+      if (stage && stage.classList.contains('tentang-open')) {
+        if (typeof closeTentangModal === 'function') closeTentangModal(true);
+        if (typeof goHome === 'function') goHome();
+        return;
+      }
+
+      // Prioritas 5: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
-      // Prioritas 5: Normal
+      // Prioritas 6: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
       } else {
@@ -198,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// ===== EXPOSE =====
 window.goToPage = goToPage;
 window.goBack = goBack;
 window.goHome = goHome;
