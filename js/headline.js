@@ -246,3 +246,4 @@ window.closeHeadlinePopup = closeHeadlinePopup;
 window.initHeadlineDisplay = initHeadlineDisplay;
 
 console.log('✅ headline.js loaded');
+
