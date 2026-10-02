@@ -114,6 +114,10 @@
   pointer-events: auto;
   opacity: 0;
   transition: opacity 0.3s ease;
+  
+  /* 🎯 RUANG UNTUK BINGKAI ORNAMEN BAWAH */
+  padding-bottom: 18px;
+  box-sizing: border-box;
 }
 .headline-overlay.open .headline-popup {
   opacity: 1;
@@ -148,7 +152,7 @@
 
 .headline-body {
   flex: 1;
-  padding: 20px 30px 30px;       /* ← 🎯 +10px di bawah (total 30px) */
+  padding: 20px 30px 20px;    /* ← balik ke 20px bawah */
   overflow-y: auto;
   color: #f5e6c8;
   font-size: 12px;
