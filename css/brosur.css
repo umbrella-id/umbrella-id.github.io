@@ -79,8 +79,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 180px;                    /* ← dari 220px jadi 180px (ikut logo kecil) */
-  height: 180px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
