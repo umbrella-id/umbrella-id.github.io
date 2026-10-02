@@ -122,7 +122,7 @@
 /* 🎯 HEADER — padding simetris (tanpa tombol X) */
 .headline-header {
   position: relative;
-  padding: 14px 30px 16px;       /* ← padding simetris kiri-kanan */
+  padding: 14px 30px 16px;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
@@ -148,7 +148,7 @@
 
 .headline-body {
   flex: 1;
-  padding: 20px 30px;
+  padding: 20px 30px 25px;       /* ← 🎯 +5px di bawah */
   overflow-y: auto;
   color: #f5e6c8;
   font-size: 12px;
