@@ -97,25 +97,32 @@ function buildBannerItem(data, type) {
 
   const imgMatch = body.match(/<img[^>]+src=["']([^"']+)["']/i);
 
-  let inner = '';
-
+  // 🎯 KALAU ADA GAMBAR → judul menimpa gambar
   if (imgMatch && imgMatch[1]) {
-    inner = `<img class="banner-img" src="${imgMatch[1]}" alt="Banner">`;
-  } else {
-    let textHtml = '';
-    if (judul) {
-      textHtml += `<div class="banner-title">${escapeHtml(judul)}</div>`;
-    }
-    const textSingkat = getTextSingkat(body, '', 60);
-    if (textSingkat) {
-      textHtml += `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
-    }
-    inner = textHtml;
+    return `
+      <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
+        <div class="headline-banner-inner">
+          <img class="banner-img" src="${imgMatch[1]}" alt="Banner">
+          <div class="banner-img-overlay"></div>
+          ${judul ? `<div class="banner-title">${escapeHtml(judul)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // 🎯 KALAU TIDAK ADA GAMBAR → fallback teks
+  let textHtml = '';
+  if (judul) {
+    textHtml += `<div class="banner-title">${escapeHtml(judul)}</div>`;
+  }
+  const textSingkat = getTextSingkat(body, '', 60);
+  if (textSingkat) {
+    textHtml += `<div class="banner-text">${escapeHtml(textSingkat)}</div>`;
   }
 
   return `
-    <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
-      ${inner}
+    <div class="headline-banner no-img" onclick="openHeadlinePopup('${type}')">
+      ${textHtml}
     </div>
   `;
 }
