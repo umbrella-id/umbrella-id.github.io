@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info
+ * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline
  */
 
 let currentPage = 'home';
@@ -33,23 +33,34 @@ function updateButtons() {
 
   const stage = document.getElementById('stage');
 
+  // Prioritas 1: Headline popup buka → BACK + HOME
+  if (stage && stage.classList.contains('headline-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
+  // Prioritas 2: Form surat buka → BACK + HOME
   if (stage && stage.classList.contains('mail-open')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
     return;
   }
 
+  // Prioritas 3: Info serikat buka → BACK + HOME
   if (stage && stage.classList.contains('info-open')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
     return;
   }
 
+  // Prioritas 4: Gate mode 'change' → BACK
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
 
+  // Prioritas 5: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -104,11 +115,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const stage = document.getElementById('stage');
 
+      // Prioritas 1: Headline popup buka → tutup
+      if (stage && stage.classList.contains('headline-open')) {
+        if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
+        return;
+      }
+
+      // Prioritas 2: Form surat buka → kembali ke menu
       if (stage && stage.classList.contains('mail-open')) {
         if (typeof closeMailForm === 'function') closeMailForm();
         return;
       }
 
+      // Prioritas 3: Info serikat buka
       if (stage && stage.classList.contains('info-open')) {
         if (typeof infoGoBack === 'function' && infoGoBack()) {
           return;
@@ -117,12 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Prioritas 4: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
 
+      // Prioritas 5: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -142,21 +163,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const stage = document.getElementById('stage');
 
+      // Prioritas 1: Headline popup buka → tutup + home
+      if (stage && stage.classList.contains('headline-open')) {
+        if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
+        if (typeof goHome === 'function') goHome();
+        return;
+      }
+
+      // Prioritas 2: Form surat buka → balik ke home
       if (stage && stage.classList.contains('mail-open')) {
         if (typeof closeMailForm === 'function') closeMailForm(true);
         if (typeof goHome === 'function') goHome();
         return;
       }
 
+      // Prioritas 3: Info serikat buka → balik ke home
       if (stage && stage.classList.contains('info-open')) {
         if (typeof closeInfoModal === 'function') closeInfoModal(true);
         if (typeof goHome === 'function') goHome();
         return;
       }
 
+      // Prioritas 4: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
+      // Prioritas 5: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
       } else {
