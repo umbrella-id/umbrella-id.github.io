@@ -1,0 +1,79 @@
+/* ==========================================
+   exit-confirm.css — Popup Konfirmasi Keluar
+   ========================================== */
+
+.exit-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 990;                     /* ← di atas modal biasa, di bawah lightbox */
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+}
+.exit-overlay.open { display: flex; }
+
+/* Modal konfirmasi */
+.exit-modal {
+  position: relative;
+  width: 50%;
+  max-width: 400px;
+  min-height: 160px;
+  background: rgba(15, 10, 6, 0.92);
+  padding: 30px 30px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: exitIn 0.25s ease-out;
+}
+
+@keyframes exitIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Teks pertanyaan */
+.exit-text {
+  color: #f5e6c8;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  line-height: 1.4;
+}
+
+/* Wrapper tombol */
+.exit-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Override tombol SVG di dalam exit */
+.exit-actions .btn-svg {
+  height: 32px !important;
+}
+.exit-actions .btn-svg .btn-tengah {
+  padding: 0 24px;
+}
+.exit-actions .btn-svg .btn-teks {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* 🎯 Tombol TIDAK — hitam putih (grayscale) */
+.exit-actions .btn-tidak {
+  filter: grayscale(1) brightness(0.9);
+}
+.exit-actions .btn-tidak:hover {
+  filter: grayscale(1) brightness(1.1);
+}
+.exit-actions .btn-tidak:active {
+  filter: grayscale(1) brightness(0.7);
+}
