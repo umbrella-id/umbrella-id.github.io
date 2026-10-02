@@ -53,15 +53,25 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  width: 100%;               /* ← full width parent */
 }
 
-/* Override tombol SVG di dalam exit */
+/* 🎯 Tombol SVG — lebar sama biar estetik */
 .exit-actions .btn-svg {
   height: 32px !important;
+  width: 110px;              /* ← LEBAR SAMA */
+  min-width: 110px;          /* ← jaga-jaga */
+  max-width: 110px;          /* ← jaga-jaga */
 }
+
 .exit-actions .btn-svg .btn-tengah {
-  padding: 0 24px;
+  padding: 0;                /* ← hapus padding, biar SVG yang atur */
+  flex-grow: 1;              /* ← isi ruang */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .exit-actions .btn-svg .btn-teks {
   font-size: 12px;
   letter-spacing: 1.5px;
