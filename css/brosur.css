@@ -15,7 +15,7 @@
   box-sizing: border-box;
 }
 
-/* ===== LAYER 1: IMAGE ===== */
+/* ===== IMAGE ===== */
 .brosur-image {
   position: absolute;
   top: 0;
@@ -28,7 +28,7 @@
   z-index: 1;
 }
 
-/* ===== LAYER 2: FRAME SVG ===== */
+/* ===== FRAME SVG ===== */
 .brosur-frame-svg {
   position: absolute;
   inset: 0;
@@ -39,7 +39,7 @@
   z-index: 2;
 }
 
-/* ===== LAYER 3: KONTEN ===== */
+/* ===== LAYOUT ===== */
 .brosur-layout {
   position: absolute;
   inset: 0;
@@ -48,38 +48,39 @@
   flex-direction: column;
 }
 
-/* ===== HEADER ===== */
+/* ===== HEADER (35%) ===== */
 .brosur-header {
   height: 35%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 100px 15px;
-  gap: 4px;
+  padding: 20px 100px 10px;
+  gap: 0px;
   text-align: center;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Logo wrapper + glow */
+/* Logo wrapper */
 .brosur-logo-wrap {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 20px;
+  padding: 10px;
+  margin-bottom: -10px;
 }
 
-/* Glow gelap — sebagai <div> */
+/* Glow gelap */
 .brosur-logo-glow {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 220px;
-  height: 220px;
+  width: 180px;                    /* ← dari 220px jadi 180px (ikut logo kecil) */
+  height: 180px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -92,7 +93,7 @@
 }
 
 .brosur-logo {
-  width: 140px;
+  width: 110px;
   height: auto;
   display: block;
   position: relative;
@@ -101,7 +102,7 @@
 }
 
 .brosur-guild-name {
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 900;
   color: #f0d78c;
   letter-spacing: 10px;
@@ -110,7 +111,7 @@
     0 0 28px rgba(201, 165, 90, 0.8),
     0 4px 8px rgba(0, 0, 0, 0.95);
   margin: 0;
-  line-height: 1.05;
+  line-height: 1;
   flex-shrink: 0;
   max-width: 100%;
   overflow: hidden;
@@ -118,9 +119,8 @@
   white-space: nowrap;
 }
 
-/* Judul openmember — putih */
 .brosur-open-header {
-  font-size: clamp(66px, 10.5vh, 102px);
+  font-size: clamp(48px, 7vh, 68px);
   color: #ffffff;
   font-weight: 900;
   letter-spacing: 6px;
@@ -128,16 +128,16 @@
   text-shadow:
     0 0 20px rgba(255, 255, 255, 0.5),
     0 3px 6px rgba(0, 0, 0, 0.95);
-  margin: 6px 0 0;
+  margin: 0;
   max-width: 100%;
-  line-height: 1.1;
+  line-height: 1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* ===== BODY ===== */
+/* ===== BODY (50%) ===== */
 .brosur-body {
   flex: 1;
   display: flex;
@@ -192,7 +192,6 @@
   flex-shrink: 0;
 }
 
-/* Body profil — putih */
 .brosur-item-body {
   font-size: 20px;
   line-height: 1.3;
@@ -223,7 +222,7 @@
   margin: 0 0 3px;
 }
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER (15%) ===== */
 .brosur-footer {
   height: 15%;
   padding: 10px 100px 35px;
@@ -264,7 +263,7 @@
   max-width: 100%;
 }
 
-/* ===== TOMBOL SHARE (pakai tombol SVG) ===== */
+/* ===== TOMBOL SHARE ===== */
 .headline-share-btn {
   height: 34px !important;
   margin-top: 14px;
@@ -276,4 +275,3 @@
   font-size: 13px;
   letter-spacing: 1.8px;
 }
-
