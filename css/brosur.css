@@ -121,7 +121,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 16px;
+  gap: 10px;                     /* ← dari 16px jadi 10px */
   width: 100%;
   max-width: 720px;
   height: 100%;
