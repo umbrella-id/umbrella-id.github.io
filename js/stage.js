@@ -73,6 +73,12 @@ function preloadAllData() {
   }
 }
 
+function preloadTentang() {
+  if (typeof preloadTentangData === 'function') {
+    preloadTentangData();
+  }
+}
+
 // ===== INIT =====
 window.addEventListener('load', () => {
   updateLayout();
@@ -80,6 +86,7 @@ window.addEventListener('load', () => {
 
   setTimeout(loadBackground, 300);
   setTimeout(preloadAllData, 500);
+  setTimeout(preloadTentang, 700); 
 });
 
 window.addEventListener('resize', updateLayout);
