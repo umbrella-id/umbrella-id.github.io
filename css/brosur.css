@@ -111,21 +111,23 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: stretch;           /* ← dari center jadi stretch */
-  padding: 0 100px;                /* ← dari 10px jadi 0 */
+  align-items: stretch;
+  padding: 0 100px;
   overflow: hidden;
   box-sizing: border-box;
+  min-height: 0;                 /* ← penting biar flex anak bisa scroll */
 }
 
 .brosur-body-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 10px;                     /* ← dari 16px jadi 10px */
+  gap: 10px;
   width: 100%;
   max-width: 720px;
-  height: 100%;
+  height: 100%;                  /* ← penuh tinggi */
   box-sizing: border-box;
+  align-items: stretch;          /* ← item penuh tinggi */
 }
 
 .brosur-item {
