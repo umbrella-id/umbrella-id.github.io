@@ -10,10 +10,8 @@ function getBrosurData() {
     console.warn('⚠️ Data profil/openmember belum siap');
     return { profilList: [], openmember: null };
   }
-
   const profil = Array.isArray(profilList) ? profilList : [];
   const openmember = openmemberData || null;
-
   console.log('📦 Brosur data:', profil.length, 'profil, openmember:', openmember ? 'ADA' : 'kosong');
   return { profilList: profil, openmember: openmember };
 }
@@ -67,39 +65,6 @@ function brosurFormatText(text) {
   return html;
 }
 
-// ===== BINGKAI MODAL (pakai <img>) =====
-function brosurBuildFrame() {
-  return `
-    <!-- Bingkai atas -->
-    <div class="brosur-frame-h atas">
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-      <div class="brosur-garis-h"><img src="Assets/MODAL-H.svg" alt=""></div>
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-    </div>
-
-    <!-- Bingkai bawah -->
-    <div class="brosur-frame-h bawah">
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-      <div class="brosur-garis-h"><img src="Assets/MODAL-H.svg" alt=""></div>
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-    </div>
-
-    <!-- Bingkai kiri -->
-    <div class="brosur-frame-v kiri">
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-      <div class="brosur-garis-v"><img src="Assets/MODAL-V.svg" alt=""></div>
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-    </div>
-
-    <!-- Bingkai kanan -->
-    <div class="brosur-frame-v kanan">
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-      <div class="brosur-garis-v"><img src="Assets/MODAL-V.svg" alt=""></div>
-      <div class="brosur-pojok"><img src="Assets/MODAL-CORNER.svg" alt=""></div>
-    </div>
-  `;
-}
-
 // ===== BUAT ELEMEN BROSUR =====
 function createBrosurElement() {
   const { profilList, openmember } = getBrosurData();
@@ -108,87 +73,78 @@ function createBrosurElement() {
   container.className = 'brosur-container';
   container.id = 'brosur-temp';
 
-  let innerHtml = '<div class="brosur-content-wrap">';
+  // Data header & footer dari openmember
+  const openHeader = openmember && openmember.Header ? openmember.Header : 'OPEN MEMBER';
+  const openBody = openmember && openmember.Body ? openmember.Body : 'Ayo bergabung dengan Umbrella!';
 
-  // Header
-  innerHtml += `<div class="brosur-header"><h1>UMBRELLA</h1></div>`;
+  // ===== HTML =====
+  let html = '';
 
-  // Bingkai konten utama
-  innerHtml += '<div class="brosur-frame">';
+  // Layer 1: Image (top 25%)
+  html += `<img src="Assets/brosur-bg.jpg" class="brosur-image" alt="">`;
 
-  // Kiri: Brand
-  innerHtml += `
-    <div class="brosur-brand">
+  // Layer 2: Frame SVG (overlay)
+  html += `<img src="Assets/BROSUR-FRAME.svg" class="brosur-frame-svg" alt="">`;
+
+  // Layer 3: Konten
+  html += `<div class="brosur-layout">`;
+
+  // --- HEADER (35%) ---
+  html += `
+    <div class="brosur-header">
       <img src="Assets/logo.svg" class="brosur-logo" alt="Logo">
-      <div class="brand-name">UMBRELLA</div>
-      <div class="brand-main">Tempat Kita Berteduh dan Bertumbuh</div>
-      <div class="brand-sub">dari pertemuan jadi kebersamaan<br>dari serikat jadi keluarga</div>
+      <h1 class="brosur-guild-name">UMBRELLA</h1>
+      <p class="brosur-open-header">${brosurEscapeHtml(openHeader)}</p>
     </div>
   `;
 
-  // Kanan: Grid 2×2
-  innerHtml += '<div class="brosur-content">';
+  // --- BODY (50%) — Grid 2×2 ---
+  html += `<div class="brosur-body">`;
 
   if (profilList.length === 0) {
-    // Kalau kosong, tampil placeholder
     for (let i = 0; i < 4; i++) {
-      innerHtml += `
+      html += `
         <div class="brosur-item">
-          <h2>Profil ${i + 1}</h2>
+          <h3>Profil ${i + 1}</h3>
           <div class="brosur-item-body"><p>Belum ada profil.</p></div>
         </div>
       `;
     }
   } else {
-    // Ambil max 4 profil
     const items = profilList.slice(0, 4);
     items.forEach(item => {
-      innerHtml += `
+      html += `
         <div class="brosur-item">
-          <h2>${brosurEscapeHtml(item.Header || 'Profil')}</h2>
+          <h3>${brosurEscapeHtml(item.Header || 'Profil')}</h3>
           <div class="brosur-item-body">${brosurFormatText(item.Body)}</div>
         </div>
       `;
     });
-    // Padding biar grid 2×2 penuh
+    // Placeholder kalau kurang dari 4
     const sisa = 4 - items.length;
     for (let i = 0; i < sisa; i++) {
-      innerHtml += `
+      html += `
         <div class="brosur-item" style="opacity: 0.3;">
-          <h2>—</h2>
+          <h3>—</h3>
           <div class="brosur-item-body"></div>
         </div>
       `;
     }
   }
 
-  innerHtml += '</div>';   // close brosur-content
-  innerHtml += '</div>';   // close brosur-frame
+  html += `</div>`;   // close body
 
-  // Footer
-  if (openmember && openmember.Body) {
-    const cleanBody = openmember.Body
-      .replace(/<img[^>]*>/gi, '')
-      .replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '')
-      .replace(/<br\s*\/?>|\r?\n/g, ' ');
-    innerHtml += `
-      <div class="brosur-footer">
-        <div class="brosur-footer-text">${brosurFormatText(cleanBody)}</div>
-        <div class="brosur-link">https://umbrella-id.github.io</div>
-      </div>
-    `;
-  } else {
-    innerHtml += `
-      <div class="brosur-footer">
-        <div class="brosur-footer-text">Ayo bergabung dengan Umbrella!</div>
-        <div class="brosur-link">https://umbrella-id.github.io</div>
-      </div>
-    `;
-  }
+  // --- FOOTER (15%) ---
+  html += `
+    <div class="brosur-footer">
+      <div class="brosur-footer-text">${brosurFormatText(openBody)}</div>
+      <div class="brosur-link">https://umbrella-id.github.io</div>
+    </div>
+  `;
 
-  innerHtml += '</div>';   // close brosur-content-wrap
+  html += `</div>`;   // close layout
 
-  container.innerHTML = brosurBuildFrame() + innerHtml;
+  container.innerHTML = html;
   return container;
 }
 
@@ -225,7 +181,7 @@ async function triggerShare() {
     const brosur = createBrosurElement();
     document.body.appendChild(brosur);
 
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 400));
 
     const blob = await brosurElementToBlob(brosur);
     brosur.remove();
@@ -240,11 +196,13 @@ async function triggerShare() {
         text: SHARE_TEXT,
         files: [imageFile]
       });
+      console.log('✅ Share berhasil');
     } else if (navigator.share) {
       await navigator.share({
         title: "Umbrella Guild",
         text: SHARE_TEXT
       });
+      console.log('✅ Share berhasil (tanpa file)');
     } else {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -252,6 +210,7 @@ async function triggerShare() {
       a.download = 'umbrella-brosur.png';
       a.click();
       URL.revokeObjectURL(url);
+      console.log('✅ Brosur didownload');
     }
   } catch (err) {
     console.error('❌ Share error:', err);
