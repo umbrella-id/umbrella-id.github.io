@@ -79,6 +79,12 @@ function preloadTentang() {
   }
 }
 
+function preloadGallery() {
+  if (typeof preloadGalleryData === 'function') {
+    preloadGalleryData();
+  }
+}
+
 // ===== INIT =====
 window.addEventListener('load', () => {
   updateLayout();
@@ -87,6 +93,7 @@ window.addEventListener('load', () => {
   setTimeout(loadBackground, 300);
   setTimeout(preloadAllData, 500);
   setTimeout(preloadTentang, 700); 
+  setTimeout(preloadGallery, 700);
 });
 
 window.addEventListener('resize', updateLayout);
