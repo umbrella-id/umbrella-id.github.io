@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline/Tentang
+ * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline/Tentang/Gallery
  */
 
 let currentPage = 'home';
@@ -61,13 +61,20 @@ function updateButtons() {
     return;
   }
 
-  // Prioritas 5: Gate mode 'change' → BACK
+  // Prioritas 5: Gallery buka → BACK + HOME
+  if (stage && stage.classList.contains('gallery-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
+  // Prioritas 6: Gate mode 'change' → BACK
   if (stage && stage.classList.contains('gate-edit-mode')) {
     ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
     return;
   }
 
-  // Prioritas 6: Normal
+  // Prioritas 7: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -150,14 +157,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 5: Gate buka → close
+      // Prioritas 5: Gallery buka
+      if (stage && stage.classList.contains('gallery-open')) {
+        // Kalau lightbox buka → tutup lightbox dulu
+        const lb = document.getElementById('galleryLightbox');
+        if (lb && lb.classList.contains('open')) {
+          if (typeof closeLightbox === 'function') closeLightbox();
+          return;
+        }
+        // Kalau nggak → tutup gallery, balik ke menu
+        if (typeof closeGalleryModal === 'function') closeGalleryModal();
+        return;
+      }
+
+      // Prioritas 6: Gate buka → close
       const gate = getGate();
       if (gate && gate.classList.contains('open')) {
         if (typeof closeGate === 'function') closeGate();
         return;
       }
 
-      // Prioritas 6: Normal
+      // Prioritas 7: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
         if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -206,11 +226,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 5: Gate buka → non-aktif
+      // Prioritas 5: Gallery buka → tutup + home
+      if (stage && stage.classList.contains('gallery-open')) {
+        if (typeof closeGalleryModal === 'function') closeGalleryModal(true);
+        if (typeof goHome === 'function') goHome();
+        return;
+      }
+
+      // Prioritas 6: Gate buka → non-aktif
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
-      // Prioritas 6: Normal
+      // Prioritas 7: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
       } else {
