@@ -72,8 +72,8 @@
   padding: 20px;
 }
 
-.brosur-logo-wrap::before {
-  content: '';
+/* Glow gelap — sebagai <div> */
+.brosur-logo-glow {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -83,7 +83,7 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.75) 0%,
     rgba(0, 0, 0, 0.5) 40%,
     rgba(0, 0, 0, 0) 70%
   );
@@ -118,14 +118,15 @@
   white-space: nowrap;
 }
 
+/* Judul openmember — putih */
 .brosur-open-header {
   font-size: clamp(66px, 10.5vh, 102px);
-  color: #f5e6c8;
+  color: #ffffff;
   font-weight: 900;
   letter-spacing: 6px;
   text-transform: uppercase;
   text-shadow:
-    0 0 20px rgba(201, 165, 90, 0.6),
+    0 0 20px rgba(255, 255, 255, 0.5),
     0 3px 6px rgba(0, 0, 0, 0.95);
   margin: 6px 0 0;
   max-width: 100%;
@@ -150,7 +151,7 @@
 .brosur-body-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;     /* ← auto height per baris */
+  grid-template-rows: auto auto;
   gap: 12px;
   width: 100%;
   max-width: 760px;
@@ -191,11 +192,11 @@
   flex-shrink: 0;
 }
 
-/* Body profil — TANPA line-clamp */
+/* Body profil — putih */
 .brosur-item-body {
   font-size: 20px;
   line-height: 1.3;
-  color: #e0d5b8;
+  color: #ffffff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
