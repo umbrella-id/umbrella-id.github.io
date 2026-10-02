@@ -73,6 +73,8 @@ function menuClick(type) {
       if (typeof openMailForm === 'function') openMailForm();
     } else if (type === 'info') {
       if (typeof openInfoModal === 'function') openInfoModal();
+    } else if (type === 'tentang') {
+      if (typeof openTentangModal === 'function') openTentangModal();
     } else {
       if (typeof goToPage === 'function') goToPage(type);
     }
