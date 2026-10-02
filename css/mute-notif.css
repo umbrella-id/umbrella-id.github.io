@@ -1,0 +1,59 @@
+/* ==========================================
+   mute-notif.css — Notifikasi Mute
+   Posisi: bawah chat box
+   Z-index: 50 (di bawah chat box = 100)
+   ========================================== */
+
+.mute-notif {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff3333;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow:
+    0 0 10px rgba(255, 51, 51, 0.8),
+    0 0 20px rgba(255, 51, 51, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+  z-index: 50;                   /* ← DI BAWAH chat box (100) */
+  pointer-events: none;
+  display: none;
+  white-space: nowrap;
+  animation: muteNotifPulse 2s infinite ease-in-out;
+}
+
+.mute-notif.show {
+  display: block;
+}
+
+@keyframes muteNotifPulse {
+  0%, 100% {
+    opacity: 0.85;
+    text-shadow:
+      0 0 10px rgba(255, 51, 51, 0.8),
+      0 0 20px rgba(255, 51, 51, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.9);
+  }
+  50% {
+    opacity: 1;
+    text-shadow:
+      0 0 15px rgba(255, 51, 51, 1),
+      0 0 30px rgba(255, 51, 51, 0.6),
+      0 2px 4px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* Sembunyikan saat modal / gate / halaman lain buka */
+.stage.modal-open .mute-notif,
+.stage.gate-first .mute-notif,
+.stage.gate-edit-mode .mute-notif,
+.stage.mail-open .mute-notif,
+.stage.info-open .mute-notif,
+.stage.tentang-open .mute-notif,
+.stage.gallery-open .mute-notif,
+.stage.headline-open .mute-notif {
+  display: none !important;
+}
