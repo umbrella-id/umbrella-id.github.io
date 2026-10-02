@@ -3,11 +3,11 @@
  */
 
 let tentangOpen = false;
-let tentangData = null;      // cache
+let tentangData = null;
 
 const TENTANG_FILE = 'Assets/tentang-kami.txt';
 
-// ===== PRELOAD (dipanggil dari stage.js) =====
+// ===== PRELOAD =====
 async function preloadTentangData() {
   if (tentangData) {
     console.log('✅ Tentang Kami sudah di-cache');
@@ -40,11 +40,9 @@ function openTentangModal() {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Render data
   if (tentangData) {
     body.innerHTML = formatTentangText(tentangData);
   } else {
-    // Belum ada → fetch
     body.innerHTML = '<div class="tentang-loading">Memuat...</div>';
     fetchTentangData();
   }
@@ -60,6 +58,13 @@ function closeTentangModal(skipMenu = false) {
 
   tentangOpen = false;
   overlay.classList.remove('open');
+
+  // 🎯 Kalau mau balik ke menu → tambah modal-open DULU
+  if (!skipMenu && stage) {
+    stage.classList.add('modal-open');
+  }
+
+  // Hapus tentang-open
   if (stage) stage.classList.remove('tentang-open');
 
   if (typeof updateButtons === 'function') updateButtons();
@@ -90,12 +95,6 @@ async function fetchTentangData() {
 }
 
 // ===== FORMAT TEKS =====
-// Support:
-//   # Heading 1
-//   ## Heading 2
-//   ### Heading 3
-//   - List item
-//   (baris kosong) → pisah paragraf
 function formatTentangText(text) {
   if (!text) return '<div class="tentang-empty">Belum ada konten.</div>';
 
@@ -106,13 +105,11 @@ function formatTentangText(text) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
 
-    // Baris kosong → tutup list kalau ada
     if (line === '') {
       if (inList) { html += '</ul>'; inList = false; }
       continue;
     }
 
-    // Heading
     if (line.startsWith('### ')) {
       if (inList) { html += '</ul>'; inList = false; }
       html += `<h3>${escapeTentang(line.substring(4))}</h3>`;
@@ -129,14 +126,12 @@ function formatTentangText(text) {
       continue;
     }
 
-    // List
     if (line.startsWith('- ')) {
       if (!inList) { html += '<ul>'; inList = true; }
       html += `<li>${escapeTentang(line.substring(2))}</li>`;
       continue;
     }
 
-    // Paragraf biasa
     if (inList) { html += '</ul>'; inList = false; }
     html += `<p>${escapeTentang(line)}</p>`;
   }
