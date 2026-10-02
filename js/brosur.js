@@ -117,8 +117,9 @@ function createBrosurElement() {
     </div>
   `;
 
-  // --- BODY (50%) — Grid 2×2 ---
+  // --- BODY (50%) — Grid 2×2 di tengah ---
   html += `<div class="brosur-body">`;
+  html += `<div class="brosur-body-grid">`;
 
   if (profilList.length === 0) {
     for (let i = 0; i < 4; i++) {
@@ -149,6 +150,9 @@ function createBrosurElement() {
       `;
     }
   }
+
+  html += `</div>`;   // close brosur-body-grid
+  html += `</div>`;   // close brosur-body
 
   html += `</div>`;   // close body
 
