@@ -15,7 +15,7 @@
   box-sizing: border-box;
 }
 
-/* ===== LAYER 1: IMAGE (top 25%) ===== */
+/* ===== LAYER 1: IMAGE ===== */
 .brosur-image {
   position: absolute;
   top: 0;
@@ -89,7 +89,7 @@
 }
 
 .brosur-open-header {
-  font-size: clamp(44px, 7vh, 68px);   /* ← lebih besar */
+  font-size: clamp(44px, 7vh, 68px);
   color: #f5e6c8;
   font-weight: 900;
   letter-spacing: 6px;
@@ -106,32 +106,31 @@
   overflow: hidden;
 }
 
-/* ===== BODY (50%) ===== */
+/* ===== BODY (50%) — DI TENGAH ===== */
 .brosur-body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;           /* ← center vertikal */
   padding: 0 100px;
   overflow: hidden;
   box-sizing: border-box;
-  min-height: 0;                 /* ← penting biar flex anak bisa scroll */
 }
 
 .brosur-body-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 720px;
-  height: 100%;                  /* ← penuh tinggi */
+  max-width: 760px;
+  height: auto;                  /* ← sesuai konten */
   box-sizing: border-box;
-  align-items: stretch;          /* ← item penuh tinggi */
+  align-content: center;
 }
 
 .brosur-item {
-  padding: 6px 12px;
+  padding: 14px 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
