@@ -1,4 +1,68 @@
-/* ===== LOGO + GLOW ===== */
+/* ==========================================
+   brosur.css — Brosur Share (1080×1080)
+   ========================================== */
+
+.brosur-container {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 1080px;
+  height: 1080px;
+  background: #1a0f08;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ===== IMAGE ===== */
+.brosur-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 35%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  z-index: 1;
+}
+
+/* ===== FRAME SVG ===== */
+.brosur-frame-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ===== LAYOUT ===== */
+.brosur-layout {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.brosur-header {
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 100px 15px;
+  gap: 4px;
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Logo wrapper + glow */
 .brosur-logo-wrap {
   position: relative;
   display: flex;
@@ -36,10 +100,75 @@
   filter: drop-shadow(0 0 12px rgba(201, 165, 90, 0.7));
 }
 
-/* ===== JUDUL PROFIL ===== */
+.brosur-guild-name {
+  font-size: 42px;
+  font-weight: 900;
+  color: #f0d78c;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 28px rgba(201, 165, 90, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.95);
+  margin: 0;
+  line-height: 1.05;
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brosur-open-header {
+  font-size: clamp(66px, 10.5vh, 102px);
+  color: #f5e6c8;
+  font-weight: 900;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 20px rgba(201, 165, 90, 0.6),
+    0 3px 6px rgba(0, 0, 0, 0.95);
+  margin: 6px 0 0;
+  max-width: 100%;
+  line-height: 1.1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== BODY ===== */
+.brosur-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 100px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.brosur-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;     /* ← auto height per baris */
+  gap: 12px;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  box-sizing: border-box;
+  align-content: center;
+}
+
+.brosur-item {
+  padding: 14px 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .brosur-item h3 {
   color: #f0d78c;
-  font-size: 24px;               /* ← dari 22px */
+  font-size: 24px;
   font-weight: 800;
   margin: 0 0 6px;
   text-transform: uppercase;
@@ -55,23 +184,61 @@
   white-space: nowrap;
 }
 
-/* ===== BODY PROFIL ===== */
-.brosur-item-body {
-  font-size: 20px;               /* ← dari 18px */
-  line-height: 1.3;
-  color: #e0d5b8;
-  flex: 1;
-  overflow: hidden;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+.brosur-item h3::before {
+  content: '◆';
+  color: #c9a55a;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-/* ===== FOOTER TEXT ===== */
+/* Body profil — TANPA line-clamp */
+.brosur-item-body {
+  font-size: 20px;
+  line-height: 1.3;
+  color: #e0d5b8;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.brosur-item-body ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.brosur-item-body li {
+  margin-bottom: 2px;
+  position: relative;
+  padding-left: 16px;
+}
+
+.brosur-item-body li::before {
+  content: '•';
+  color: #c9a55a;
+  position: absolute;
+  left: 0;
+}
+
+.brosur-item-body p {
+  margin: 0 0 3px;
+}
+
+/* ===== FOOTER ===== */
+.brosur-footer {
+  height: 15%;
+  padding: 10px 100px 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .brosur-footer-text {
   color: #e0d5b8;
-  font-size: 20px;               /* ← dari 18px */
+  font-size: 20px;
   line-height: 1.3;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
   max-width: 100%;
@@ -79,4 +246,56 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.brosur-link {
+  color: #f0d78c;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-shadow:
+    0 0 20px rgba(201, 165, 90, 0.6),
+    0 2px 6px rgba(0, 0, 0, 0.95);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ===== TOMBOL SHARE ===== */
+.headline-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 22px;
+  margin-top: 14px;
+  background: linear-gradient(180deg, #c9a55a, #8a6a1f);
+  color: #1a0f08;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  border: 1px solid #f0d78c;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 3px 0 #5a4410,
+    0 6px 14px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.headline-share-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+.headline-share-btn:active {
+  transform: translateY(1px);
+}
+.headline-share-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
