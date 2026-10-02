@@ -141,7 +141,7 @@ function getTextSingkat(body, fallbackJudul, maxChars = 60) {
 // ===== BUKA POPUP =====
 function openHeadlinePopup(type) {
   let data = null;
-  let isOpenmember = false;   // ← DEKLARASI DI SINI
+  let isOpenmember = false;
 
   if (type === 'openmember') {
     data = openmemberData;
@@ -179,12 +179,17 @@ function openHeadlinePopup(type) {
       <div style="text-align: center; margin-top: 20px;">
         <div class="btn-svg headline-share-btn" onclick="triggerShare()">
           <div class="btn-ujung-kiri"></div>
-          <div class="btn-tengah"><span class="btn-teks">BAGIKAN</span></div>
+          <div class="btn-tengah"><span class="btn-teks">BAGIKAN BROSUR</span></div>
           <div class="btn-ujung-kanan"></div>
         </div>
       </div>
     `;
   }
+
+  // 🎯 Tambah class di stage + update tombol
+  const stage = document.getElementById('stage');
+  if (stage) stage.classList.add('headline-open');
+  if (typeof updateButtons === 'function') updateButtons();
 
   overlay.classList.add('open');
   body.scrollTop = 0;
@@ -194,7 +199,13 @@ function openHeadlinePopup(type) {
 function closeHeadlinePopup() {
   const overlay = document.getElementById('headlineOverlay');
   if (!overlay) return;
+
   overlay.classList.remove('open');
+
+  // 🎯 Hapus class dari stage + update tombol
+  const stage = document.getElementById('stage');
+  if (stage) stage.classList.remove('headline-open');
+  if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ===== FORMAT BODY =====
