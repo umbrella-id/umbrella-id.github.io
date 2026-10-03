@@ -1,17 +1,19 @@
 /**
  * mail.js — Mail 2 Arah (User Side)
- * 4 Menu: Belum Dibuka / Sudah Dibaca / Terkirim / Baca Sesuai Urutan
- * Navigasi: pakai tombol menu stage (kiri=BACK, kanan=HOME)
+ * Konsep: Header Modal Dinamis (tanpa sub-header)
  * 
  * Hierarki:
- * Menu Utama (modal overlay) 
- *   → Kotak Surat (grid 2x2)
- *     → List → Detail → Reply
- *     → History
- *     → Compose
+ * Menu Utama (modal overlay)
+ *   → Kotak Surat (header: KOTAK SURAT)
+ *     → Grid 2x2
+ *     → List (header: BELUM DIBUKA / SUDAH DIBACA / TERKIRIM)
+ *     → Detail (header: PESAN)
+ *     → Reply (header: BALAS)
+ *     → History (header: BACA SESUAI URUTAN)
+ *     → Compose (header: KIRIM SURAT BARU)
  */
 
-let mailCurrentView = 'menu'; // 'menu' | 'list' | 'detail' | 'reply' | 'history' | 'compose'
+let mailCurrentView = 'menu';
 let mailCurrentList = [];
 let mailCurrentDetail = null;
 let mailCurrentFilter = 'all';
@@ -19,7 +21,15 @@ let mailCurrentFilter = 'all';
 const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
 
 // ==========================================
-// BUKA MODAL MAIL (Menu Utama / Grid 2x2)
+// SET HEADER MODAL (dinamis)
+// ==========================================
+function setMailHeader(text) {
+  const header = document.querySelector('#mailOverlay .mail-header');
+  if (header) header.innerText = text;
+}
+
+// ==========================================
+// BUKA MODAL MAIL
 // ==========================================
 function openMailModal() {
   const overlay = document.getElementById('mailOverlay');
@@ -37,8 +47,6 @@ function openMailModal() {
 
 // ==========================================
 // TUTUP MODAL MAIL
-// skipMenu = false → balik ke Menu Utama (modal overlay)
-// skipMenu = true  → tidak balik (untuk HOME)
 // ==========================================
 function closeMailModal(skipMenu = false) {
   const overlay = document.getElementById('mailOverlay');
@@ -63,32 +71,27 @@ function closeMailModal(skipMenu = false) {
 }
 
 // ==========================================
-// NAVIGASI BACK (dipanggil tombol kiri stage)
+// NAVIGASI BACK
 // ==========================================
 function mailGoBack() {
   console.log('📬 Mail back from view:', mailCurrentView);
   
   switch (mailCurrentView) {
     case 'menu':
-      // 🎯 Dari grid 2x2 → tutup mail + balik ke Menu Utama
       closeMailModal();
       break;
     case 'list':
-      // Dari list → balik ke grid 2x2
       renderMailMenu();
       break;
     case 'detail':
-      // Dari detail → balik ke list
       openMailList(mailCurrentFilter);
       break;
     case 'reply':
-      // Dari form balas → balik ke detail
       if (mailCurrentDetail) openMailDetail(mailCurrentDetail.rowId);
       else renderMailMenu();
       break;
     case 'history':
     case 'compose':
-      // Dari history/compose → balik ke grid 2x2
       renderMailMenu();
       break;
     default:
@@ -97,10 +100,11 @@ function mailGoBack() {
 }
 
 // ==========================================
-// RENDER MENU UTAMA (Grid 2x2 + Kirim Baru)
+// RENDER MENU (Grid 2x2)
 // ==========================================
 function renderMailMenu() {
   mailCurrentView = 'menu';
+  setMailHeader('📬 KOTAK SURAT');
   
   const container = document.getElementById('mailContent');
   if (!container) return;
@@ -130,30 +134,28 @@ function renderMailMenu() {
     </div>
   `;
   
-  // Update badge unread
   updateMailBadge();
 }
 
 // ==========================================
-// BUKA LIST (Belum Dibuka / Sudah Dibaca / Terkirim)
+// BUKA LIST
 // ==========================================
 async function openMailList(filter) {
   mailCurrentView = 'list';
   mailCurrentFilter = filter;
   
+  // 🎯 Header dinamis
+  const headerLabel = {
+    'unread': '📩 BELUM DIBUKA',
+    'read': '📖 SUDAH DIBACA',
+    'sent': '📤 TERKIRIM'
+  }[filter] || '📬 SURAT';
+  setMailHeader(headerLabel);
+  
   const container = document.getElementById('mailContent');
   if (!container) return;
   
-  const filterLabel = {
-    'unread': '📩 Belum Dibuka',
-    'read': '📖 Sudah Dibaca',
-    'sent': '📤 Terkirim'
-  }[filter] || 'Surat';
-  
   container.innerHTML = `
-    <div class="mail-subheader">
-      <span class="mail-subtitle">${filterLabel}</span>
-    </div>
     <div id="mailListContainer" class="mail-list">
       <div class="mail-loading">Memuat...</div>
     </div>
@@ -224,17 +226,20 @@ function renderMailList(mails, filter) {
 }
 
 // ==========================================
-// BUKA DETAIL PESAN (Pesan Tunggal)
+// BUKA DETAIL PESAN
 // ==========================================
 async function openMailDetail(rowId) {
   mailCurrentView = 'detail';
+  
+  // 🎯 Header dinamis
+  setMailHeader('📄 PESAN');
   
   const mail = mailCurrentList.find(m => m.rowId === rowId);
   if (!mail) return;
   
   mailCurrentDetail = mail;
   
-  // Tandai sudah dibaca (kalau dari admin & UNREAD)
+  // Tandai sudah dibaca
   if (mail.isFromAdmin && mail.status === 'UNREAD') {
     try {
       await fetch(`${GAS_MAIL_URL}?type=mail-read&rowId=${rowId}`);
@@ -253,10 +258,6 @@ async function openMailDetail(rowId) {
   const icon = fromAdmin ? '📤' : '📩';
   
   container.innerHTML = `
-    <div class="mail-subheader">
-      <span class="mail-subtitle">Pesan</span>
-    </div>
-    
     <div class="mail-detail">
       <div class="mail-detail-header">
         <span class="mail-detail-sender">${icon} ${escapeMail(mail.ign)} <small>[${senderRole}]</small></span>
@@ -288,6 +289,9 @@ async function openMailDetail(rowId) {
 function openMailReplyForm(rowId) {
   mailCurrentView = 'reply';
   
+  // 🎯 Header dinamis
+  setMailHeader('✏️ BALAS');
+  
   const mail = mailCurrentList.find(m => m.rowId === rowId);
   if (!mail) return;
   
@@ -295,10 +299,6 @@ function openMailReplyForm(rowId) {
   if (!container) return;
   
   container.innerHTML = `
-    <div class="mail-subheader">
-      <span class="mail-subtitle">Balas</span>
-    </div>
-    
     <div class="mail-compose">
       <div class="mail-compose-context">
         <div class="mail-compose-context-label">Pesan admin:</div>
@@ -395,13 +395,13 @@ function showMailReplyMessage(msg, type = 'error') {
 async function openMailHistory() {
   mailCurrentView = 'history';
   
+  // 🎯 Header dinamis
+  setMailHeader('📋 BACA SESUAI URUTAN');
+  
   const container = document.getElementById('mailContent');
   if (!container) return;
   
   container.innerHTML = `
-    <div class="mail-subheader">
-      <span class="mail-subtitle">📋 Baca Sesuai Urutan</span>
-    </div>
     <div id="mailHistoryContainer" class="mail-history">
       <div class="mail-loading">Memuat...</div>
     </div>
@@ -467,14 +467,13 @@ function renderMailHistory(history) {
 function openMailCompose() {
   mailCurrentView = 'compose';
   
+  // 🎯 Header dinamis
+  setMailHeader('✏️ KIRIM SURAT BARU');
+  
   const container = document.getElementById('mailContent');
   if (!container) return;
   
   container.innerHTML = `
-    <div class="mail-subheader">
-      <span class="mail-subtitle">✏️ Kirim Surat Baru</span>
-    </div>
-    
     <div class="mail-compose">
       <div class="mail-compose-group">
         <label class="mail-label">KATEGORI</label>
@@ -507,7 +506,6 @@ function openMailCompose() {
   
   if (typeof updateButtons === 'function') updateButtons();
   
-  // Set default kategori
   window._mailKategori = 'Umum';
   setTimeout(() => {
     const ta = document.getElementById('mailComposeInput');
@@ -593,7 +591,7 @@ function pilihMailKategori(val) {
 }
 
 // ==========================================
-// BADGE UNREAD COUNT
+// BADGE UNREAD
 // ==========================================
 async function updateMailBadge() {
   const uid = window.myUID;
@@ -650,5 +648,6 @@ window.submitMailCompose = submitMailCompose;
 window.toggleMailKategori = toggleMailKategori;
 window.pilihMailKategori = pilihMailKategori;
 window.updateMailBadge = updateMailBadge;
+window.setMailHeader = setMailHeader;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V4 — Nav Menu Utama)");
+console.log("✅ mail.js loaded (Mail 2 Arah V5 — Header Dinamis)");
