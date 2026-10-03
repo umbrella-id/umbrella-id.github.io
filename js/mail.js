@@ -1,5 +1,5 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V10
+ * mail.js — Mail 2 Arah (User Side) V11
  * 
  * Konsep:
  * - Cache mail di sessionStorage (seperti chat)
@@ -11,6 +11,7 @@
  * - List 3 baris (tanpa icon, dengan tag [ADMIN])
  * - Tombol BALAS hanya di admin terakhir per kategori
  * - Detail menyatu dengan modal (tanpa border)
+ * - Notif icon 📩 di bawah plat nama (overlap)
  */
 
 let mailCurrentView = 'menu';
@@ -102,7 +103,6 @@ function refreshCurrentView() {
   if (mailCurrentView === 'list') {
     applyFilterAndRender(mailCurrentFilter);
   } else if (mailCurrentView === 'detail' && mailCurrentDetail) {
-    // Re-render detail biar tombol BALAS update
     openMailDetail(mailCurrentDetail.rowId);
   }
 }
@@ -353,23 +353,17 @@ function buildMailCardHTML(mail) {
 // CEK: APAKAH INI BALASAN ADMIN TERAKHIR DI KATEGORI INI?
 // ==========================================
 function isLastAdminReplyInCategory(mail) {
-  // Harus dari admin
   if (!mail.isFromAdmin) return false;
   
-  // Cari semua pesan dengan kategori sama
   const sameCategory = mailCache.filter(m => 
     m.category === mail.category
   );
   
   if (sameCategory.length === 0) return false;
   
-  // Sort DESC by timestamp
   sameCategory.sort((a, b) => b.timestamp - a.timestamp);
-  
-  // Cari admin reply terbaru
   const lastAdmin = sameCategory.find(m => m.isFromAdmin);
   
-  // Cek apakah ini = admin terbaru
   return lastAdmin && lastAdmin.rowId === mail.rowId;
 }
 
@@ -385,7 +379,6 @@ function openMailDetail(rowId) {
   
   mailCurrentDetail = mail;
   
-  // Tandai sudah dibaca — LOKAL
   if (mail.isFromAdmin && !isMailReadLocal(rowId)) {
     markMailReadLocal(rowId);
     mail.status = 'READ';
@@ -405,7 +398,6 @@ function openMailDetail(rowId) {
     ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
     : escapeMail(mail.ign);
   
-  // 🎯 Cek apakah ini balasan admin terakhir di kategori
   const showReplyButton = isLastAdminReplyInCategory(mail);
   
   container.innerHTML = `
@@ -734,6 +726,9 @@ function markMailReadLocal(rowId) {
         readList.splice(0, readList.length - 500);
       }
       localStorage.setItem(key, JSON.stringify(readList));
+      
+      // 🎯 Update notif icon (instant)
+      updateMailNotifIcon();
     }
   } catch(e) {}
 }
@@ -746,17 +741,52 @@ function updateBadgeFromCache() {
     m.isFromAdmin && !isMailReadLocal(m.rowId)
   ).length;
   
+  // Update badge (grid menu)
   const badge = document.getElementById('badge-unread');
-  if (!badge) return;
-  
-  if (unreadCount > 0) {
-    badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
-    badge.style.display = 'flex';
-  } else {
-    badge.style.display = 'none';
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
   }
   
+  // 🎯 Update notif icon (plat nama)
+  updateMailNotifIcon();
+  
   console.log('📬 Badge updated:', unreadCount);
+}
+
+// ==========================================
+// 🎯 NOTIF ICON SURAT (di bawah plat nama)
+// ==========================================
+function updateMailNotifIcon() {
+  const hasUnread = mailCache.some(m => 
+    m.isFromAdmin && !isMailReadLocal(m.rowId)
+  );
+  
+  const icon = document.getElementById('mailNotifIcon');
+  if (!icon) return;
+  
+  if (hasUnread) {
+    icon.style.display = 'flex';
+  } else {
+    icon.style.display = 'none';
+  }
+}
+
+// Klik notif → buka Kotak Surat
+function openMailFromNotif() {
+  if (typeof openMailModal === 'function') {
+    // Tutup menu utama dulu (kalau buka)
+    if (typeof closeModal === 'function') closeModal(true);
+    
+    // Buka mail
+    setTimeout(() => {
+      openMailModal();
+    }, 200);
+  }
 }
 
 // ==========================================
@@ -797,5 +827,7 @@ window.isMailReadLocal = isMailReadLocal;
 window.markMailReadLocal = markMailReadLocal;
 window.fetchMailFresh = fetchMailFresh;
 window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
+window.updateMailNotifIcon = updateMailNotifIcon;
+window.openMailFromNotif = openMailFromNotif;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V10 — Last Admin Reply)");
+console.log("✅ mail.js loaded (Mail 2 Arah V11 — Notif Icon 📩)");
