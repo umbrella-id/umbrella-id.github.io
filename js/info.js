@@ -175,18 +175,29 @@ function showInfoDetail(idx) {
 
 // ===== KLIK "SAYA INGIN BERGABUNG" =====
 function infoJoinGuild() {
-  // Set flag: form surat dibuka dari info
-  window._mailFromInfo = true;
-
   // Tutup info (skip menu)
   closeInfoModal(true);
 
-  // Buka form surat dengan kategori Request Join
+  // 🎯 Buka Kotak Surat → Compose dengan kategori Request Join
   setTimeout(() => {
-    if (typeof openMailForm === 'function') {
-      openMailForm('Request Join');
+    if (typeof openMailModal === 'function') {
+      openMailModal();
+      
+      // Tunggu modal terbuka
+      setTimeout(() => {
+        if (typeof openMailCompose === 'function') {
+          openMailCompose();
+          
+          // Set kategori Request Join
+          window._mailKategori = 'Request Join';
+          
+          // Update label dropdown
+          const label = document.getElementById('mailKategoriLabel');
+          if (label) label.innerText = 'Request Join';
+        }
+      }, 200);
     }
-  }, 200);
+  }, 300);
 }
 
 // ===== FORMAT ISI =====
