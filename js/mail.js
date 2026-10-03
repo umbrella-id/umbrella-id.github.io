@@ -1,5 +1,5 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V11
+ * mail.js — Mail 2 Arah (User Side) V12
  * 
  * Konsep:
  * - Cache mail di sessionStorage (seperti chat)
@@ -12,6 +12,7 @@
  * - Tombol BALAS hanya di admin terakhir per kategori
  * - Detail menyatu dengan modal (tanpa border)
  * - Notif icon 📩 di bawah plat nama (overlap)
+ * - Compose: BACK/sukses → balik ke grid 2x2 (atau Info kalau dari Info)
  */
 
 let mailCurrentView = 'menu';
@@ -171,6 +172,9 @@ function closeMailModal(skipMenu = false) {
   mailCurrentList = [];
   mailCurrentDetail = null;
   
+  // 🎯 Reset flag from info
+  window._mailFromInfo = false;
+  
   if (!skipMenu) {
     setTimeout(() => {
       if (typeof openModal === 'function') openModal();
@@ -199,8 +203,20 @@ function mailGoBack() {
       else renderMailMenu();
       break;
     case 'history':
-    case 'compose':
       renderMailMenu();
+      break;
+    case 'compose':
+      // 🎯 Cek apakah dari Info Serikat
+      if (window._mailFromInfo) {
+        window._mailFromInfo = false;
+        closeMailModal(true);
+        setTimeout(() => {
+          if (typeof openInfoModal === 'function') openInfoModal();
+        }, 200);
+      } else {
+        // Normal: balik ke grid 2x2
+        renderMailMenu();
+      }
       break;
     default:
       closeMailModal();
@@ -502,6 +518,8 @@ async function submitMailReply(rowId) {
     if (data.status === 'success') {
       showMailReplyMessage('✅ Balasan terkirim', 'success');
       
+      window._mailFromInfo = false;
+      
       mailStamp = '';
       await fetchMailFresh();
       
@@ -651,9 +669,21 @@ async function submitMailCompose() {
       mailStamp = '';
       await fetchMailFresh();
       
-      setTimeout(() => {
-        openMailList('sent');
-      }, 800);
+      // 🎯 Cek: dari Info atau dari Grid?
+      if (window._mailFromInfo) {
+        window._mailFromInfo = false;
+        setTimeout(() => {
+          closeMailModal(true);
+          setTimeout(() => {
+            if (typeof openInfoModal === 'function') openInfoModal();
+          }, 200);
+        }, 800);
+      } else {
+        // Normal: balik ke grid 2x2
+        setTimeout(() => {
+          renderMailMenu();
+        }, 800);
+      }
     } else {
       showMailComposeMessage('Gagal mengirim', 'error');
       if (btn) {
@@ -727,7 +757,6 @@ function markMailReadLocal(rowId) {
       }
       localStorage.setItem(key, JSON.stringify(readList));
       
-      // 🎯 Update notif icon (instant)
       updateMailNotifIcon();
     }
   } catch(e) {}
@@ -741,7 +770,6 @@ function updateBadgeFromCache() {
     m.isFromAdmin && !isMailReadLocal(m.rowId)
   ).length;
   
-  // Update badge (grid menu)
   const badge = document.getElementById('badge-unread');
   if (badge) {
     if (unreadCount > 0) {
@@ -752,14 +780,13 @@ function updateBadgeFromCache() {
     }
   }
   
-  // 🎯 Update notif icon (plat nama)
   updateMailNotifIcon();
   
   console.log('📬 Badge updated:', unreadCount);
 }
 
 // ==========================================
-// 🎯 NOTIF ICON SURAT (di bawah plat nama)
+// NOTIF ICON SURAT (di bawah plat nama)
 // ==========================================
 function updateMailNotifIcon() {
   const hasUnread = mailCache.some(m => 
@@ -776,13 +803,10 @@ function updateMailNotifIcon() {
   }
 }
 
-// Klik notif → buka Kotak Surat
 function openMailFromNotif() {
   if (typeof openMailModal === 'function') {
-    // Tutup menu utama dulu (kalau buka)
     if (typeof closeModal === 'function') closeModal(true);
     
-    // Buka mail
     setTimeout(() => {
       openMailModal();
     }, 200);
@@ -830,4 +854,4 @@ window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
 window.updateMailNotifIcon = updateMailNotifIcon;
 window.openMailFromNotif = openMailFromNotif;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V11 — Notif Icon 📩)");
+console.log("✅ mail.js loaded (Mail 2 Arah V12 — Back to Grid)");
