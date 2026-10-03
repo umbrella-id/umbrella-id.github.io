@@ -1,5 +1,5 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V9
+ * mail.js — Mail 2 Arah (User Side) V10
  * 
  * Konsep:
  * - Cache mail di sessionStorage (seperti chat)
@@ -9,7 +9,8 @@
  * - Badge dihitung lokal
  * - Header dinamis
  * - List 3 baris (tanpa icon, dengan tag [ADMIN])
- * - Tombol BALAS hanya di pesan masuk, kanan bawah
+ * - Tombol BALAS hanya di admin terakhir per kategori
+ * - Detail menyatu dengan modal (tanpa border)
  */
 
 let mailCurrentView = 'menu';
@@ -84,7 +85,6 @@ async function fetchMailFresh() {
       console.log('🔄 Mail cache updated:', mailCache.length);
       updateBadgeFromCache();
       
-      // Refresh view yang sedang aktif
       refreshCurrentView();
     }
   } catch(e) {
@@ -101,6 +101,9 @@ function refreshCurrentView() {
   
   if (mailCurrentView === 'list') {
     applyFilterAndRender(mailCurrentFilter);
+  } else if (mailCurrentView === 'detail' && mailCurrentDetail) {
+    // Re-render detail biar tombol BALAS update
+    openMailDetail(mailCurrentDetail.rowId);
   }
 }
 
@@ -297,7 +300,7 @@ function applyFilterAndRender(filter) {
 }
 
 // ==========================================
-// RENDER LIST (3 baris, tanpa icon)
+// RENDER LIST (3 baris)
 // ==========================================
 function renderMailList(mails, filter) {
   const container = document.getElementById('mailListContainer');
@@ -330,7 +333,6 @@ function buildMailCardHTML(mail) {
   const preview = escapeMail(mail.message).substring(0, 100) + (mail.message.length > 100 ? '...' : '');
   const fromAdmin = mail.isFromAdmin;
   
-  // 🎯 Tag [ADMIN] atau tanpa tag
   const senderLabel = fromAdmin 
     ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
     : escapeMail(mail.ign);
@@ -348,6 +350,30 @@ function buildMailCardHTML(mail) {
 }
 
 // ==========================================
+// CEK: APAKAH INI BALASAN ADMIN TERAKHIR DI KATEGORI INI?
+// ==========================================
+function isLastAdminReplyInCategory(mail) {
+  // Harus dari admin
+  if (!mail.isFromAdmin) return false;
+  
+  // Cari semua pesan dengan kategori sama
+  const sameCategory = mailCache.filter(m => 
+    m.category === mail.category
+  );
+  
+  if (sameCategory.length === 0) return false;
+  
+  // Sort DESC by timestamp
+  sameCategory.sort((a, b) => b.timestamp - a.timestamp);
+  
+  // Cari admin reply terbaru
+  const lastAdmin = sameCategory.find(m => m.isFromAdmin);
+  
+  // Cek apakah ini = admin terbaru
+  return lastAdmin && lastAdmin.rowId === mail.rowId;
+}
+
+// ==========================================
 // BUKA DETAIL (dari CACHE)
 // ==========================================
 function openMailDetail(rowId) {
@@ -359,7 +385,7 @@ function openMailDetail(rowId) {
   
   mailCurrentDetail = mail;
   
-  // 🎯 Tandai sudah dibaca — LOKAL
+  // Tandai sudah dibaca — LOKAL
   if (mail.isFromAdmin && !isMailReadLocal(rowId)) {
     markMailReadLocal(rowId);
     mail.status = 'READ';
@@ -379,6 +405,9 @@ function openMailDetail(rowId) {
     ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
     : escapeMail(mail.ign);
   
+  // 🎯 Cek apakah ini balasan admin terakhir di kategori
+  const showReplyButton = isLastAdminReplyInCategory(mail);
+  
   container.innerHTML = `
     <div class="mail-detail">
       <div class="mail-detail-header">
@@ -390,7 +419,7 @@ function openMailDetail(rowId) {
       
       <div class="mail-detail-body">${escapeMail(mail.message)}</div>
       
-      ${fromAdmin ? `
+      ${showReplyButton ? `
         <div class="mail-detail-actions">
           <div class="btn-svg" onclick="openMailReplyForm(${mail.rowId})">
             <div class="btn-ujung-kiri"></div>
@@ -514,7 +543,7 @@ function showMailReplyMessage(msg, type = 'error') {
 }
 
 // ==========================================
-// HISTORY (Baca Sesuai Urutan) — 3 baris juga
+// HISTORY (Baca Sesuai Urutan — 3 baris juga)
 // ==========================================
 function openMailHistory() {
   mailCurrentView = 'history';
@@ -525,7 +554,6 @@ function openMailHistory() {
   
   if (typeof updateButtons === 'function') updateButtons();
   
-  // 🎯 Sort ASC dari cache
   const sorted = [...mailCache].sort((a, b) => a.timestamp - b.timestamp);
   renderMailHistory(sorted);
 }
@@ -768,5 +796,6 @@ window.handleMailTrigger = handleMailTrigger;
 window.isMailReadLocal = isMailReadLocal;
 window.markMailReadLocal = markMailReadLocal;
 window.fetchMailFresh = fetchMailFresh;
+window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V9 — List 3 Baris)");
+console.log("✅ mail.js loaded (Mail 2 Arah V10 — Last Admin Reply)");
