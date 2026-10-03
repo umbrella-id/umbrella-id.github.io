@@ -5,7 +5,7 @@
 
 .mail-notif {
   position: absolute;
-  bottom: 5px;                 /* 🎯 dari -10px → 5px (naik 15px) */
+  bottom: 0px;                 
   left: 29px;                  /* 🎯 rata kiri dengan text nama */
   width: 20px;
   height: 20px;
