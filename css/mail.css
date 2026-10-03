@@ -1,5 +1,5 @@
 /* ==========================================
-   mail.css — Form Kirim Surat
+   mail.css — Mail 2 Arah (User Side)
    ========================================== */
 
 .mail-overlay {
@@ -7,7 +7,7 @@
   position: absolute;
   inset: 0;
   z-index: 960;
-  pointer-events: none;       /* ← klik tembus ke belakang */
+  pointer-events: none;
 }
 .mail-overlay.open { display: block; }
 
@@ -19,19 +19,18 @@
   height: 80%;
   transform: translate(-50%, -50%);
   background: rgba(15, 10, 6, 0.7);
-  padding: 0;
-  overflow: visible;
   display: flex;
   flex-direction: column;
-  pointer-events: auto;       /* ← form tetap bisa diklik */
+  pointer-events: auto;
+  padding: 0;
 }
 
 /* Header */
 .mail-header {
   position: relative;
-  padding: 10px 30px;
+  padding: 14px 30px 16px;
   text-align: center;
-  font-size: 13px;               /* ← dari 14px */
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 2px;
   color: #f0d78c;
@@ -51,48 +50,365 @@
   opacity: 0.9;
 }
 
-/* Body form */
-.mail-body {
+/* Konten Utama */
+#mailContent {
   flex: 1;
-  padding: 14px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   overflow-y: auto;
+  padding: 20px 30px 28px;
   position: relative;
   z-index: 2;
 }
-.mail-body::-webkit-scrollbar { width: 4px; }
-.mail-body::-webkit-scrollbar-thumb {
+
+#mailContent::-webkit-scrollbar { width: 4px; }
+#mailContent::-webkit-scrollbar-thumb {
   background: rgba(201, 165, 90, 0.4);
   border-radius: 2px;
 }
 
-/* Label */
-.mail-label {
-  color: #f0d78c;
-  font-size: 10px;               /* ← dari 11px */
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 3px;
+/* ==========================================
+   MENU UTAMA (Grid 2x2)
+   ========================================== */
+.mail-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.mail-group {
+.mail-menu-item {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(201, 165, 90, 0.4);
+  border-radius: 12px;
+  padding: 20px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mail-menu-item:hover {
+  border-color: #f0d78c;
+  background: rgba(201, 165, 90, 0.1);
+  transform: translateY(-2px);
+}
+
+.mail-menu-item:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.mail-menu-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.mail-menu-title {
+  color: #f0d78c;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+.mail-menu-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ff4444;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 12px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.mail-menu-compose {
+  background: linear-gradient(135deg, rgba(201, 165, 90, 0.3), rgba(201, 165, 90, 0.1));
+  border: 1px solid #c9a55a;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  color: #f0d78c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mail-menu-compose:hover {
+  background: rgba(201, 165, 90, 0.3);
+  transform: translateY(-2px);
+}
+
+.mail-menu-compose:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================
+   SUB-HEADER (Kembali + Judul)
+   ========================================== */
+.mail-subheader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(201, 165, 90, 0.2);
+}
+
+.mail-back-btn {
+  background: transparent;
+  border: 1px solid rgba(201, 165, 90, 0.4);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: #f0d78c;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.mail-back-btn:hover {
+  border-color: #f0d78c;
+  background: rgba(201, 165, 90, 0.1);
+}
+
+.mail-subtitle {
+  color: #f0d78c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+/* ==========================================
+   LIST CARD
+   ========================================== */
+.mail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mail-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(201, 165, 90, 0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mail-card:hover {
+  border-color: #c9a55a;
+  background: rgba(201, 165, 90, 0.08);
+  transform: translateY(-1px);
+}
+
+.mail-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.mail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mail-card-sender {
+  color: #f5e6c8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mail-card-status {
+  font-size: 9px;
+  color: #c9a55a;
+  letter-spacing: 0.5px;
+}
+
+.mail-card-category {
+  color: #c9a55a;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.mail-card-preview {
+  color: #f5e6c8;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.85;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.mail-card-time {
+  color: rgba(201, 165, 90, 0.6);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   DETAIL PESAN
+   ========================================== */
+.mail-detail {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(201, 165, 90, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.mail-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.mail-detail-sender {
+  color: #f0d78c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mail-detail-sender small {
+  color: #c9a55a;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.mail-detail-category {
+  color: #c9a55a;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  background: rgba(201, 165, 90, 0.15);
+  border-radius: 12px;
+}
+
+.mail-detail-time {
+  color: rgba(201, 165, 90, 0.6);
+  font-size: 10px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.mail-detail-body {
+  color: #f5e6c8;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #c9a55a;
+  margin-bottom: 16px;
+}
+
+.mail-detail-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================
+   COMPOSE (Form)
+   ========================================== */
+.mail-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mail-compose-context {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid #64748b;
+}
+
+.mail-compose-context-label {
+  color: #c9a55a;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.mail-compose-context-body {
+  color: #f5e6c8;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  opacity: 0.85;
+}
+
+.mail-compose-group {
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
-/* ==========================================
-   KATEGORI
-   ========================================== */
-.mail-kategori-btn {
-  background: #000000;
+.mail-label {
+  color: #f0d78c;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.mail-textarea {
+  width: 100%;
+  background: #000;
   color: #f5e6c8;
-  font-size: 11px;               /* ← dari 12px */
+  font-size: 12px;
   font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 165, 90, 0.3);
+  outline: none;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  transition: border-color 0.15s;
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.mail-textarea:focus {
+  border-color: #c9a55a;
+  box-shadow: 0 0 10px rgba(201, 165, 90, 0.2);
+}
+
+.mail-compose-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Kategori Dropdown */
+.mail-kategori-btn {
+  background: #000;
+  color: #f5e6c8;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -101,9 +417,11 @@
   border: 1px solid rgba(201, 165, 90, 0.3);
   transition: all 0.15s;
 }
+
 .mail-kategori-btn:hover {
   border-color: rgba(201, 165, 90, 0.6);
 }
+
 .mail-kategori-btn::after {
   content: '▼';
   font-size: 9px;
@@ -111,7 +429,6 @@
   margin-left: 8px;
 }
 
-/* Popup list kategori — hitam */
 .mail-kategori-list {
   display: none;
   position: absolute;
@@ -119,81 +436,32 @@
   left: 0;
   right: 0;
   margin-top: 4px;
-  background: #000000;
+  background: #000;
   border: 1px solid rgba(201, 165, 90, 0.4);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 4px 0;
   z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
+
 .mail-kategori-list.open { display: block; }
 
 .mail-kategori-item {
-  padding: 8px 14px;
+  padding: 10px 14px;
   color: #c9a55a;
-  font-size: 11px;               /* ← dari 12px */
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: background 0.15s;
 }
+
 .mail-kategori-item:hover {
   background: rgba(201, 165, 90, 0.15);
 }
 
-/* ==========================================
-   INPUT & TEXTAREA
-   ========================================== */
-.mail-input,
-.mail-textarea {
-  background: #000000;
-  color: #f5e6c8;
-  font-size: 11px;               /* ← dari 12px */
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 4px;
-  border: 1px solid rgba(201, 165, 90, 0.3);
-  outline: none;
-  font-family: inherit;
-  letter-spacing: 0.3px;
-  transition: border-color 0.15s;
-  width: 100%;
-}
-.mail-input:focus,
-.mail-textarea:focus {
-  border-color: rgba(201, 165, 90, 0.7);
-}
-
-.mail-textarea {
-  flex: 1;
-  resize: none;
-  line-height: 1.4;
-  min-height: 100px;
-}
-
-.mail-group.wa-group {
-  display: none;
-}
-.mail-group.wa-group.visible {
-  display: flex;
-}
-
-/* Footer */
-.mail-footer {
-  position: relative;
-  padding: 10px 30px 14px 30px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  z-index: 2;
-}
-
-/* Pesan */
+/* Pesan error/sukses */
 .mail-message {
-  position: absolute;
-  bottom: 55px;
-  left: 30px;
-  right: 30px;
   color: #ff9999;
   font-size: 11px;
   font-weight: 500;
@@ -202,6 +470,81 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  min-height: 16px;
 }
+
 .mail-message.show { opacity: 1; }
 .mail-message.success { color: #99ff99; }
+
+/* ==========================================
+   HISTORY (Baca Sesuai Urutan)
+   ========================================== */
+.mail-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mail-history-card {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid;
+}
+
+.mail-history-card.from-admin {
+  background: rgba(201, 165, 90, 0.08);
+  border-left-color: #c9a55a;
+}
+
+.mail-history-card.from-user {
+  background: rgba(100, 116, 139, 0.1);
+  border-left-color: #64748b;
+}
+
+.mail-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mail-history-header span {
+  color: #f0d78c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mail-history-role {
+  color: #c9a55a;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.mail-history-time {
+  color: rgba(201, 165, 90, 0.6);
+  font-size: 9px;
+  margin-bottom: 6px;
+}
+
+.mail-history-body {
+  color: #f5e6c8;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ==========================================
+   LOADING & EMPTY
+   ========================================== */
+.mail-loading,
+.mail-empty {
+  color: #c9a55a;
+  font-size: 12px;
+  text-align: center;
+  padding: 40px 20px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
