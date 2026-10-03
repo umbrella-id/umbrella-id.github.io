@@ -2,6 +2,13 @@
  * mail.js — Mail 2 Arah (User Side)
  * 4 Menu: Belum Dibuka / Sudah Dibaca / Terkirim / Baca Sesuai Urutan
  * Navigasi: pakai tombol menu stage (kiri=BACK, kanan=HOME)
+ * 
+ * Hierarki:
+ * Menu Utama (modal overlay) 
+ *   → Kotak Surat (grid 2x2)
+ *     → List → Detail → Reply
+ *     → History
+ *     → Compose
  */
 
 let mailCurrentView = 'menu'; // 'menu' | 'list' | 'detail' | 'reply' | 'history' | 'compose'
@@ -12,7 +19,7 @@ let mailCurrentFilter = 'all';
 const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
 
 // ==========================================
-// BUKA MODAL MAIL (Menu Utama)
+// BUKA MODAL MAIL (Menu Utama / Grid 2x2)
 // ==========================================
 function openMailModal() {
   const overlay = document.getElementById('mailOverlay');
@@ -30,6 +37,8 @@ function openMailModal() {
 
 // ==========================================
 // TUTUP MODAL MAIL
+// skipMenu = false → balik ke Menu Utama (modal overlay)
+// skipMenu = true  → tidak balik (untuk HOME)
 // ==========================================
 function closeMailModal(skipMenu = false) {
   const overlay = document.getElementById('mailOverlay');
@@ -44,6 +53,13 @@ function closeMailModal(skipMenu = false) {
   mailCurrentView = 'menu';
   mailCurrentList = [];
   mailCurrentDetail = null;
+  
+  // 🎯 Kalau tidak skipMenu → balik ke Menu Utama
+  if (!skipMenu) {
+    setTimeout(() => {
+      if (typeof openModal === 'function') openModal();
+    }, 150);
+  }
 }
 
 // ==========================================
@@ -54,20 +70,25 @@ function mailGoBack() {
   
   switch (mailCurrentView) {
     case 'menu':
+      // 🎯 Dari grid 2x2 → tutup mail + balik ke Menu Utama
       closeMailModal();
       break;
     case 'list':
+      // Dari list → balik ke grid 2x2
       renderMailMenu();
       break;
     case 'detail':
+      // Dari detail → balik ke list
       openMailList(mailCurrentFilter);
       break;
     case 'reply':
+      // Dari form balas → balik ke detail
       if (mailCurrentDetail) openMailDetail(mailCurrentDetail.rowId);
       else renderMailMenu();
       break;
     case 'history':
     case 'compose':
+      // Dari history/compose → balik ke grid 2x2
       renderMailMenu();
       break;
     default:
@@ -630,4 +651,4 @@ window.toggleMailKategori = toggleMailKategori;
 window.pilihMailKategori = pilihMailKategori;
 window.updateMailBadge = updateMailBadge;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V3 — Nav Stage)");
+console.log("✅ mail.js loaded (Mail 2 Arah V4 — Nav Menu Utama)");
