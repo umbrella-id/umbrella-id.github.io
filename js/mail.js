@@ -1,5 +1,5 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V12
+ * mail.js — Mail 2 Arah (User Side) V13
  * 
  * Konsep:
  * - Cache mail di sessionStorage (seperti chat)
@@ -13,6 +13,7 @@
  * - Detail menyatu dengan modal (tanpa border)
  * - Notif icon 📩 di bawah plat nama (overlap)
  * - Compose: BACK/sukses → balik ke grid 2x2 (atau Info kalau dari Info)
+ * - Reply: BACK/sukses → balik ke grid 2x2
  */
 
 let mailCurrentView = 'menu';
@@ -172,7 +173,6 @@ function closeMailModal(skipMenu = false) {
   mailCurrentList = [];
   mailCurrentDetail = null;
   
-  // 🎯 Reset flag from info
   window._mailFromInfo = false;
   
   if (!skipMenu) {
@@ -206,7 +206,6 @@ function mailGoBack() {
       renderMailMenu();
       break;
     case 'compose':
-      // 🎯 Cek apakah dari Info Serikat
       if (window._mailFromInfo) {
         window._mailFromInfo = false;
         closeMailModal(true);
@@ -214,7 +213,6 @@ function mailGoBack() {
           if (typeof openInfoModal === 'function') openInfoModal();
         }, 200);
       } else {
-        // Normal: balik ke grid 2x2
         renderMailMenu();
       }
       break;
@@ -523,8 +521,9 @@ async function submitMailReply(rowId) {
       mailStamp = '';
       await fetchMailFresh();
       
+      // 🎯 Balik ke grid 2x2
       setTimeout(() => {
-        openMailList('sent');
+        renderMailMenu();
       }, 800);
     } else {
       showMailReplyMessage('Gagal mengirim', 'error');
@@ -669,7 +668,6 @@ async function submitMailCompose() {
       mailStamp = '';
       await fetchMailFresh();
       
-      // 🎯 Cek: dari Info atau dari Grid?
       if (window._mailFromInfo) {
         window._mailFromInfo = false;
         setTimeout(() => {
@@ -679,7 +677,6 @@ async function submitMailCompose() {
           }, 200);
         }, 800);
       } else {
-        // Normal: balik ke grid 2x2
         setTimeout(() => {
           renderMailMenu();
         }, 800);
@@ -854,4 +851,4 @@ window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
 window.updateMailNotifIcon = updateMailNotifIcon;
 window.openMailFromNotif = openMailFromNotif;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V12 — Back to Grid)");
+console.log("✅ mail.js loaded (Mail 2 Arah V13 — Reply Back to Grid)");
