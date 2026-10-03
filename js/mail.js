@@ -1,16 +1,6 @@
 /**
  * mail.js — Mail 2 Arah (User Side)
- * Konsep: Header Modal Dinamis (tanpa sub-header)
- * 
- * Hierarki:
- * Menu Utama (modal overlay)
- *   → Kotak Surat (header: KOTAK SURAT)
- *     → Grid 2x2
- *     → List (header: BELUM DIBUKA / SUDAH DIBACA / TERKIRIM)
- *     → Detail (header: PESAN)
- *     → Reply (header: BALAS)
- *     → History (header: BACA SESUAI URUTAN)
- *     → Compose (header: KIRIM SURAT BARU)
+ * Konsep: Header Dinamis + Grid Menu Horizontal + Tombol SVG
  */
 
 let mailCurrentView = 'menu';
@@ -62,7 +52,6 @@ function closeMailModal(skipMenu = false) {
   mailCurrentList = [];
   mailCurrentDetail = null;
   
-  // 🎯 Kalau tidak skipMenu → balik ke Menu Utama
   if (!skipMenu) {
     setTimeout(() => {
       if (typeof openModal === 'function') openModal();
@@ -100,7 +89,7 @@ function mailGoBack() {
 }
 
 // ==========================================
-// RENDER MENU (Grid 2x2)
+// RENDER MENU (Grid 2x2 Horizontal + Tombol SVG)
 // ==========================================
 function renderMailMenu() {
   mailCurrentView = 'menu';
@@ -112,25 +101,30 @@ function renderMailMenu() {
   container.innerHTML = `
     <div class="mail-menu-grid">
       <div class="mail-menu-item" onclick="openMailList('unread')">
-        <div class="mail-menu-icon">📩</div>
-        <div class="mail-menu-title">Belum Dibuka</div>
+        <span class="mail-menu-icon">📩</span>
+        <span class="mail-menu-title">Belum Dibuka</span>
         <div class="mail-menu-badge" id="badge-unread" style="display:none;">0</div>
       </div>
       <div class="mail-menu-item" onclick="openMailList('read')">
-        <div class="mail-menu-icon">📖</div>
-        <div class="mail-menu-title">Sudah Dibaca</div>
+        <span class="mail-menu-icon">📖</span>
+        <span class="mail-menu-title">Sudah Dibaca</span>
       </div>
       <div class="mail-menu-item" onclick="openMailList('sent')">
-        <div class="mail-menu-icon">📤</div>
-        <div class="mail-menu-title">Terkirim</div>
+        <span class="mail-menu-icon">📤</span>
+        <span class="mail-menu-title">Terkirim</span>
       </div>
       <div class="mail-menu-item" onclick="openMailHistory()">
-        <div class="mail-menu-icon">📋</div>
-        <div class="mail-menu-title">Baca Sesuai Urutan</div>
+        <span class="mail-menu-icon">📋</span>
+        <span class="mail-menu-title">Baca Sesuai Urutan</span>
       </div>
     </div>
-    <div class="mail-menu-compose" onclick="openMailCompose()">
-      ✏️ KIRIM SURAT BARU
+    
+    <div class="mail-compose-btn-wrap">
+      <div class="btn-svg mail-compose-btn" onclick="openMailCompose()">
+        <div class="btn-ujung-kiri"></div>
+        <div class="btn-tengah"><span class="btn-teks">KIRIM SURAT BARU</span></div>
+        <div class="btn-ujung-kanan"></div>
+      </div>
     </div>
   `;
   
@@ -144,7 +138,6 @@ async function openMailList(filter) {
   mailCurrentView = 'list';
   mailCurrentFilter = filter;
   
-  // 🎯 Header dinamis
   const headerLabel = {
     'unread': '📩 BELUM DIBUKA',
     'read': '📖 SUDAH DIBACA',
@@ -230,8 +223,6 @@ function renderMailList(mails, filter) {
 // ==========================================
 async function openMailDetail(rowId) {
   mailCurrentView = 'detail';
-  
-  // 🎯 Header dinamis
   setMailHeader('📄 PESAN');
   
   const mail = mailCurrentList.find(m => m.rowId === rowId);
@@ -239,7 +230,6 @@ async function openMailDetail(rowId) {
   
   mailCurrentDetail = mail;
   
-  // Tandai sudah dibaca
   if (mail.isFromAdmin && mail.status === 'UNREAD') {
     try {
       await fetch(`${GAS_MAIL_URL}?type=mail-read&rowId=${rowId}`);
@@ -270,11 +260,11 @@ async function openMailDetail(rowId) {
       
       ${fromAdmin ? `
         <div class="mail-detail-actions">
-          <button class="btn-svg" onclick="openMailReplyForm(${mail.rowId})">
+          <div class="btn-svg" onclick="openMailReplyForm(${mail.rowId})">
             <div class="btn-ujung-kiri"></div>
             <div class="btn-tengah"><span class="btn-teks">BALAS</span></div>
             <div class="btn-ujung-kanan"></div>
-          </button>
+          </div>
         </div>
       ` : ''}
     </div>
@@ -288,8 +278,6 @@ async function openMailDetail(rowId) {
 // ==========================================
 function openMailReplyForm(rowId) {
   mailCurrentView = 'reply';
-  
-  // 🎯 Header dinamis
   setMailHeader('✏️ BALAS');
   
   const mail = mailCurrentList.find(m => m.rowId === rowId);
@@ -311,11 +299,11 @@ function openMailReplyForm(rowId) {
       </div>
       
       <div class="mail-compose-footer">
-        <button class="btn-svg" onclick="submitMailReply(${rowId})">
+        <div class="btn-svg" onclick="submitMailReply(${rowId})">
           <div class="btn-ujung-kiri"></div>
           <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
           <div class="btn-ujung-kanan"></div>
-        </button>
+        </div>
       </div>
       
       <p class="mail-message" id="mailReplyMessage"></p>
@@ -390,12 +378,10 @@ function showMailReplyMessage(msg, type = 'error') {
 }
 
 // ==========================================
-// HISTORY (Baca Sesuai Urutan)
+// HISTORY
 // ==========================================
 async function openMailHistory() {
   mailCurrentView = 'history';
-  
-  // 🎯 Header dinamis
   setMailHeader('📋 BACA SESUAI URUTAN');
   
   const container = document.getElementById('mailContent');
@@ -466,8 +452,6 @@ function renderMailHistory(history) {
 // ==========================================
 function openMailCompose() {
   mailCurrentView = 'compose';
-  
-  // 🎯 Header dinamis
   setMailHeader('✏️ KIRIM SURAT BARU');
   
   const container = document.getElementById('mailContent');
@@ -493,11 +477,11 @@ function openMailCompose() {
       </div>
       
       <div class="mail-compose-footer">
-        <button class="btn-svg" onclick="submitMailCompose()">
+        <div class="btn-svg" onclick="submitMailCompose()">
           <div class="btn-ujung-kiri"></div>
           <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
           <div class="btn-ujung-kanan"></div>
-        </button>
+        </div>
       </div>
       
       <p class="mail-message" id="mailComposeMessage"></p>
@@ -650,4 +634,4 @@ window.pilihMailKategori = pilihMailKategori;
 window.updateMailBadge = updateMailBadge;
 window.setMailHeader = setMailHeader;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V5 — Header Dinamis)");
+console.log("✅ mail.js loaded (Mail 2 Arah V6 — Grid Horizontal + SVG Button)");
