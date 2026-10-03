@@ -1,5 +1,5 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V8
+ * mail.js — Mail 2 Arah (User Side) V9
  * 
  * Konsep:
  * - Cache mail di sessionStorage (seperti chat)
@@ -8,6 +8,8 @@
  * - Status baca di localStorage
  * - Badge dihitung lokal
  * - Header dinamis
+ * - List 3 baris (tanpa icon, dengan tag [ADMIN])
+ * - Tombol BALAS hanya di pesan masuk, kanan bawah
  */
 
 let mailCurrentView = 'menu';
@@ -100,7 +102,6 @@ function refreshCurrentView() {
   if (mailCurrentView === 'list') {
     applyFilterAndRender(mailCurrentFilter);
   }
-  // View lain (menu, detail) tidak perlu refresh otomatis
 }
 
 // ==========================================
@@ -115,7 +116,6 @@ function handleMailTrigger(lastMailReply) {
   console.log('📬 Mail trigger: ada balasan baru!', lastMailReply);
   localStorage.setItem('mail_last_reply_global', lastMailReply.toString());
   
-  // Debounce: minimal 5 detik antar trigger
   const now = Date.now();
   if (now - mailLastTriggerCheck < 5000) {
     console.log('⏭️ Skip trigger (debounce 5s)');
@@ -123,7 +123,6 @@ function handleMailTrigger(lastMailReply) {
   }
   mailLastTriggerCheck = now;
   
-  // 🎯 Fetch mail baru (update cache)
   fetchMailFresh();
 }
 
@@ -249,7 +248,7 @@ function renderMailMenu() {
 }
 
 // ==========================================
-// BUKA LIST (dari CACHE, tanpa fetch!)
+// BUKA LIST (dari CACHE)
 // ==========================================
 function openMailList(filter) {
   mailCurrentView = 'list';
@@ -271,7 +270,6 @@ function openMailList(filter) {
   
   if (typeof updateButtons === 'function') updateButtons();
   
-  // 🎯 Filter dari cache — INSTANT!
   applyFilterAndRender(filter);
 }
 
@@ -292,7 +290,6 @@ function applyFilterAndRender(filter) {
     filtered = mailCache.filter(m => !m.isFromAdmin);
   }
   
-  // Sort by timestamp DESC
   filtered.sort((a, b) => b.timestamp - a.timestamp);
   
   mailCurrentList = filtered;
@@ -300,7 +297,7 @@ function applyFilterAndRender(filter) {
 }
 
 // ==========================================
-// RENDER LIST
+// RENDER LIST (3 baris, tanpa icon)
 // ==========================================
 function renderMailList(mails, filter) {
   const container = document.getElementById('mailListContainer');
@@ -317,30 +314,41 @@ function renderMailList(mails, filter) {
   
   let html = '';
   for (const mail of mails) {
-    const ts = new Date(mail.timestamp);
-    const tgl = ts.toLocaleDateString('id-ID');
-    const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    const preview = escapeMail(mail.message).substring(0, 60) + (mail.message.length > 60 ? '...' : '');
-    const fromAdmin = mail.isFromAdmin;
-    const icon = fromAdmin ? '📤' : '📩';
-    
-    html += `
-      <div class="mail-card" onclick="openMailDetail(${mail.rowId})">
-        <div class="mail-card-header">
-          <span class="mail-card-sender">${icon} ${escapeMail(mail.ign)}</span>
-        </div>
-        <div class="mail-card-category">${escapeMail(mail.category || 'Umum')}</div>
-        <div class="mail-card-preview">${preview}</div>
-        <div class="mail-card-time">${tgl} ${jam}</div>
-      </div>
-    `;
+    html += buildMailCardHTML(mail);
   }
   
   container.innerHTML = html;
 }
 
 // ==========================================
-// BUKA DETAIL (dari CACHE, tanpa fetch!)
+// BUILD MAIL CARD HTML (3 baris, reusable)
+// ==========================================
+function buildMailCardHTML(mail) {
+  const ts = new Date(mail.timestamp);
+  const tgl = ts.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+  const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const preview = escapeMail(mail.message).substring(0, 100) + (mail.message.length > 100 ? '...' : '');
+  const fromAdmin = mail.isFromAdmin;
+  
+  // 🎯 Tag [ADMIN] atau tanpa tag
+  const senderLabel = fromAdmin 
+    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
+    : escapeMail(mail.ign);
+  
+  return `
+    <div class="mail-card" onclick="openMailDetail(${mail.rowId})">
+      <div class="mail-card-row1">
+        <span class="mail-card-sender">${senderLabel}</span>
+        <span class="mail-card-time">${tgl} ${jam}</span>
+      </div>
+      <div class="mail-card-category">${escapeMail(mail.category || 'Umum')}</div>
+      <div class="mail-card-preview">${preview}</div>
+    </div>
+  `;
+}
+
+// ==========================================
+// BUKA DETAIL (dari CACHE)
 // ==========================================
 function openMailDetail(rowId) {
   mailCurrentView = 'detail';
@@ -351,7 +359,7 @@ function openMailDetail(rowId) {
   
   mailCurrentDetail = mail;
   
-  // 🎯 Tandai sudah dibaca — LOKAL (instant)
+  // 🎯 Tandai sudah dibaca — LOKAL
   if (mail.isFromAdmin && !isMailReadLocal(rowId)) {
     markMailReadLocal(rowId);
     mail.status = 'READ';
@@ -363,16 +371,18 @@ function openMailDetail(rowId) {
   if (!container) return;
   
   const ts = new Date(mail.timestamp);
-  const tgl = ts.toLocaleDateString('id-ID');
+  const tgl = ts.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   const fromAdmin = mail.isFromAdmin;
-  const senderRole = fromAdmin ? 'ADMIN' : 'KAMU';
-  const icon = fromAdmin ? '📤' : '📩';
+  
+  const senderLabel = fromAdmin 
+    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
+    : escapeMail(mail.ign);
   
   container.innerHTML = `
     <div class="mail-detail">
       <div class="mail-detail-header">
-        <span class="mail-detail-sender">${icon} ${escapeMail(mail.ign)} <small>[${senderRole}]</small></span>
+        <span class="mail-detail-sender">${senderLabel}</span>
         <span class="mail-detail-category">${escapeMail(mail.category || 'Umum')}</span>
       </div>
       
@@ -471,7 +481,6 @@ async function submitMailReply(rowId) {
     if (data.status === 'success') {
       showMailReplyMessage('✅ Balasan terkirim', 'success');
       
-      // 🎯 Invalidate cache + fetch fresh
       mailStamp = '';
       await fetchMailFresh();
       
@@ -505,7 +514,7 @@ function showMailReplyMessage(msg, type = 'error') {
 }
 
 // ==========================================
-// HISTORY (dari CACHE, tanpa fetch!)
+// HISTORY (Baca Sesuai Urutan) — 3 baris juga
 // ==========================================
 function openMailHistory() {
   mailCurrentView = 'history';
@@ -516,7 +525,7 @@ function openMailHistory() {
   
   if (typeof updateButtons === 'function') updateButtons();
   
-  // 🎯 Sort dari cache — INSTANT!
+  // 🎯 Sort ASC dari cache
   const sorted = [...mailCache].sort((a, b) => a.timestamp - b.timestamp);
   renderMailHistory(sorted);
 }
@@ -532,23 +541,7 @@ function renderMailHistory(history) {
   
   let html = '<div class="mail-history">';
   for (const msg of history) {
-    const ts = new Date(msg.timestamp);
-    const tgl = ts.toLocaleDateString('id-ID');
-    const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    const fromAdmin = msg.isFromAdmin;
-    const icon = fromAdmin ? '📤' : '📩';
-    const role = fromAdmin ? 'Admin' : 'Kamu';
-    
-    html += `
-      <div class="mail-history-card ${fromAdmin ? 'from-admin' : 'from-user'}">
-        <div class="mail-history-header">
-          <span>${icon} ${escapeMail(msg.ign)}</span>
-          <span class="mail-history-role">[${role}]</span>
-        </div>
-        <div class="mail-history-time">${tgl} ${jam}</div>
-        <div class="mail-history-body">${escapeMail(msg.message)}</div>
-      </div>
-    `;
+    html += buildMailCardHTML(msg);
   }
   html += '</div>';
   
@@ -635,7 +628,6 @@ async function submitMailCompose() {
     if (data.status === 'success') {
       showMailComposeMessage('✅ Surat terkirim', 'success');
       
-      // 🎯 Invalidate cache + fetch fresh
       mailStamp = '';
       await fetchMailFresh();
       
@@ -777,4 +769,4 @@ window.isMailReadLocal = isMailReadLocal;
 window.markMailReadLocal = markMailReadLocal;
 window.fetchMailFresh = fetchMailFresh;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V8 — Cache Lokal)");
+console.log("✅ mail.js loaded (Mail 2 Arah V9 — List 3 Baris)");
