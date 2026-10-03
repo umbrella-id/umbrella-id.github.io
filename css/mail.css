@@ -410,4 +410,113 @@
   right: 0;
   margin-top: 4px;
   background: #000;
-  border: 1px solid rgba(201, 165, 90, 
+  border: 1px solid rgba(201, 165, 90, 0.4);
+  border-radius: 8px;
+  padding: 4px 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.mail-kategori-list.open { display: block; }
+
+.mail-kategori-item {
+  padding: 10px 14px;
+  color: #c9a55a;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mail-kategori-item:hover {
+  background: rgba(201, 165, 90, 0.15);
+}
+
+.mail-message {
+  color: #ff9999;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  min-height: 16px;
+}
+
+.mail-message.show { opacity: 1; }
+.mail-message.success { color: #99ff99; }
+
+/* ==========================================
+   HISTORY
+   ========================================== */
+.mail-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mail-history-card {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid;
+}
+
+.mail-history-card.from-admin {
+  background: rgba(201, 165, 90, 0.08);
+  border-left-color: #c9a55a;
+}
+
+.mail-history-card.from-user {
+  background: rgba(100, 116, 139, 0.1);
+  border-left-color: #64748b;
+}
+
+.mail-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mail-history-header span {
+  color: #f0d78c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mail-history-role {
+  color: #c9a55a;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.mail-history-time {
+  color: rgba(201, 165, 90, 0.6);
+  font-size: 9px;
+  margin-bottom: 6px;
+}
+
+.mail-history-body {
+  color: #f5e6c8;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ==========================================
+   LOADING & EMPTY
+   ========================================== */
+.mail-loading,
+.mail-empty {
+  color: #c9a55a;
+  font-size: 12px;
+  text-align: center;
+  padding: 40px 20px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
