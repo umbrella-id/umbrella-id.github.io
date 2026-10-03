@@ -148,32 +148,16 @@
 }
 
 /* ==========================================
-   SUB-HEADER (Kembali + Judul)
+   SUB-HEADER (Judul saja, tanpa tombol back)
    ========================================== */
 .mail-subheader {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 16px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(201, 165, 90, 0.2);
-}
-
-.mail-back-btn {
-  background: transparent;
-  border: 1px solid rgba(201, 165, 90, 0.4);
-  border-radius: 6px;
-  padding: 4px 10px;
-  color: #f0d78c;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.mail-back-btn:hover {
-  border-color: #f0d78c;
-  background: rgba(201, 165, 90, 0.1);
 }
 
 .mail-subtitle {
