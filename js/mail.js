@@ -1,12 +1,15 @@
 /**
  * mail.js — Mail 2 Arah (User Side)
  * Konsep: Header Dinamis + Grid Menu Horizontal + Tombol SVG
+ * Status baca: LOCALSTORAGE (client-side)
+ * Trigger: Broadcast dari chat sync (lastMailReply)
  */
 
 let mailCurrentView = 'menu';
 let mailCurrentList = [];
 let mailCurrentDetail = null;
 let mailCurrentFilter = 'all';
+let mailLastTriggerCheck = 0; // debounce
 
 const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
 
@@ -132,7 +135,7 @@ function renderMailMenu() {
 }
 
 // ==========================================
-// BUKA LIST
+// BUKA LIST (dengan filter lokal)
 // ==========================================
 async function openMailList(filter) {
   mailCurrentView = 'list';
@@ -158,13 +161,24 @@ async function openMailList(filter) {
   
   try {
     const uid = window.myUID;
-    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=${filter}`;
+    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=all`;
     const res = await fetch(url);
     const data = await res.json();
     
     if (data.status === 'success' && data.mails) {
-      mailCurrentList = data.mails;
-      renderMailList(data.mails, filter);
+      // 🎯 Filter LOKAL berdasarkan view + localStorage
+      let mails = data.mails.filter(m => m.uid === uid);
+      
+      if (filter === 'unread') {
+        mails = mails.filter(m => m.isFromAdmin && !isMailReadLocal(m.rowId));
+      } else if (filter === 'read') {
+        mails = mails.filter(m => m.isFromAdmin && isMailReadLocal(m.rowId));
+      } else if (filter === 'sent') {
+        mails = mails.filter(m => !m.isFromAdmin);
+      }
+      
+      mailCurrentList = mails;
+      renderMailList(mails, filter);
     } else {
       document.getElementById('mailListContainer').innerHTML = 
         '<div class="mail-empty">Gagal memuat</div>';
@@ -200,13 +214,11 @@ function renderMailList(mails, filter) {
     const preview = escapeMail(mail.message).substring(0, 60) + (mail.message.length > 60 ? '...' : '');
     const fromAdmin = mail.isFromAdmin;
     const icon = fromAdmin ? '📤' : '📩';
-    const statusLabel = mail.status === 'UNREAD' ? '🔴 BARU' : (mail.status === 'READ' ? '📖 DIBACA' : '✅ DONE');
     
     html += `
       <div class="mail-card" onclick="openMailDetail(${mail.rowId})">
         <div class="mail-card-header">
           <span class="mail-card-sender">${icon} ${escapeMail(mail.ign)}</span>
-          <span class="mail-card-status">${statusLabel}</span>
         </div>
         <div class="mail-card-category">${escapeMail(mail.category || 'Umum')}</div>
         <div class="mail-card-preview">${preview}</div>
@@ -230,11 +242,11 @@ async function openMailDetail(rowId) {
   
   mailCurrentDetail = mail;
   
-  if (mail.isFromAdmin && mail.status === 'UNREAD') {
-    try {
-      await fetch(`${GAS_MAIL_URL}?type=mail-read&rowId=${rowId}`);
-      mail.status = 'READ';
-    } catch(e) {}
+  // 🎯 Tandai sudah dibaca — LOKAL (instant, tanpa fetch)
+  if (mail.isFromAdmin && !isMailReadLocal(rowId)) {
+    markMailReadLocal(rowId);
+    mail.status = 'READ';
+    console.log('📖 Tandai dibaca (lokal):', rowId);
   }
   
   const container = document.getElementById('mailContent');
@@ -575,29 +587,99 @@ function pilihMailKategori(val) {
 }
 
 // ==========================================
-// BADGE UNREAD
+// LOCAL STORAGE — Status Baca
+// ==========================================
+function isMailReadLocal(rowId) {
+  const uid = window.myUID;
+  if (!uid) return false;
+  const key = `umbrella_mail_read_${uid}`;
+  try {
+    const readList = JSON.parse(localStorage.getItem(key) || '[]');
+    return readList.includes(rowId);
+  } catch(e) {
+    return false;
+  }
+}
+
+function markMailReadLocal(rowId) {
+  const uid = window.myUID;
+  if (!uid) return;
+  const key = `umbrella_mail_read_${uid}`;
+  try {
+    const readList = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!readList.includes(rowId)) {
+      readList.push(rowId);
+      // Batasi 500 terakhir (biar tidak membengkak)
+      if (readList.length > 500) {
+        readList.splice(0, readList.length - 500);
+      }
+      localStorage.setItem(key, JSON.stringify(readList));
+    }
+  } catch(e) {}
+}
+
+// ==========================================
+// BADGE UNREAD COUNT (LOKAL)
 // ==========================================
 async function updateMailBadge() {
   const uid = window.myUID;
   if (!uid) return;
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail-unread-count&uid=${encodeURIComponent(uid)}`;
+    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=all`;
     const res = await fetch(url);
     const data = await res.json();
     
-    if (data.status === 'success') {
+    if (data.status === 'success' && data.mails) {
+      // 🎯 Hitung lokal: pesan dari admin yang belum dibaca
+      const unreadCount = data.mails.filter(m => 
+        m.uid === uid &&
+        m.isFromAdmin && 
+        !isMailReadLocal(m.rowId)
+      ).length;
+      
       const badge = document.getElementById('badge-unread');
       if (badge) {
-        if (data.unread > 0) {
-          badge.innerText = data.unread > 99 ? '99+' : data.unread;
+        if (unreadCount > 0) {
+          badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
           badge.style.display = 'flex';
         } else {
           badge.style.display = 'none';
         }
       }
+      
+      console.log('📬 Badge updated:', unreadCount);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Update badge error:', e);
+  }
+}
+
+// ==========================================
+// BROADCAST TRIGGER — Handle dari Chat Sync
+// ==========================================
+function handleMailTrigger(lastMailReply) {
+  if (!lastMailReply || lastMailReply <= 0) return;
+  
+  const savedReply = parseInt(localStorage.getItem('mail_last_reply_global') || '0');
+  
+  if (lastMailReply > savedReply) {
+    console.log('📬 Mail trigger: ada balasan baru!', lastMailReply);
+    
+    // Update saved DULU (biar tidak trigger berkali-kali)
+    localStorage.setItem('mail_last_reply_global', lastMailReply.toString());
+    
+    // Debounce: minimal 5 detik antar trigger
+    const now = Date.now();
+    if (now - mailLastTriggerCheck < 5000) {
+      console.log('⏭️ Skip trigger (debounce 5s)');
+      return;
+    }
+    mailLastTriggerCheck = now;
+    
+    // Update badge (fetch ringan)
+    updateMailBadge();
+  }
 }
 
 // ==========================================
@@ -633,5 +715,8 @@ window.toggleMailKategori = toggleMailKategori;
 window.pilihMailKategori = pilihMailKategori;
 window.updateMailBadge = updateMailBadge;
 window.setMailHeader = setMailHeader;
+window.handleMailTrigger = handleMailTrigger;
+window.isMailReadLocal = isMailReadLocal;
+window.markMailReadLocal = markMailReadLocal;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V6 — Grid Horizontal + SVG Button)");
+console.log("✅ mail.js loaded (Mail 2 Arah V7 — Broadcast Trigger)");
