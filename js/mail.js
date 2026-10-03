@@ -1,210 +1,318 @@
 /**
- * mail.js — Form Kirim Surat
+ * mail.js — Mail 2 Arah (User Side)
+ * 4 Menu: Belum Dibuka / Sudah Dibaca / Terkirim / Baca Sesuai Urutan
  */
 
-let mailOpen = false;
+let mailCurrentView = 'menu'; // 'menu' | 'list' | 'detail' | 'compose'
+let mailCurrentList = [];
+let mailCurrentDetail = null;
+let mailCurrentFilter = 'all';
 
-const KATEGORI_LABEL = {
-  'Umum': 'Umum / General',
-  'Request Join': 'Request Join',
-  'Saran': 'Saran / Masukan'
-};
+const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
 
-let kategoriTerpilih = 'Umum';
-
-// ===== BUKA FORM =====
-function openMailForm(kategoriAwal = 'Umum') {
+// ==========================================
+// BUKA MODAL MAIL (Menu Utama)
+// ==========================================
+function openMailModal() {
   const overlay = document.getElementById('mailOverlay');
   const stage = document.getElementById('stage');
   if (!overlay) return;
-
-  kategoriTerpilih = kategoriAwal;
-  updateKategoriLabel();
-
-  document.getElementById('mailPesan').value = '';
-  document.getElementById('mailWA').value = '';
-  document.getElementById('mailWA').parentElement.classList.remove('visible');
-  clearMailMessage();
-
-  mailOpen = true;
+  
+  mailCurrentView = 'menu';
   overlay.classList.add('open');
-
   if (stage) stage.classList.add('mail-open');
-  closeKategoriList();
-
-  const waGroup = document.querySelector('.mail-group.wa-group');
-  if (waGroup) {
-    if (kategoriAwal === 'Request Join') {
-      waGroup.classList.add('visible');
-    } else {
-      waGroup.classList.remove('visible');
-    }
-  }
-
+  
   if (typeof updateButtons === 'function') updateButtons();
-
-  setTimeout(() => {
-    const ta = document.getElementById('mailPesan');
-    if (ta) ta.focus();
-  }, 300);
+  
+  renderMailMenu();
+  updateMailBadge();
 }
 
-// ===== TUTUP FORM =====
-function closeMailForm(skipMenu = false) {
+// ==========================================
+// TUTUP MODAL MAIL
+// ==========================================
+function closeMailModal(skipMenu = false) {
   const overlay = document.getElementById('mailOverlay');
   const stage = document.getElementById('stage');
   if (!overlay) return;
-
-  mailOpen = false;
+  
   overlay.classList.remove('open');
-
-  // 🎯 Kalau mau balik ke menu → tambah modal-open DULU
-  if (!skipMenu && stage) {
-    stage.classList.add('modal-open');
-  }
-
-  // Hapus mail-open
   if (stage) stage.classList.remove('mail-open');
-
-  closeKategoriList();
-  clearMailMessage();
-
+  
   if (typeof updateButtons === 'function') updateButtons();
-
-  if (!skipMenu) {
-    setTimeout(() => {
-      if (typeof openModal === 'function') openModal();
-    }, 100);
-  }
+  
+  mailCurrentView = 'menu';
+  mailCurrentList = [];
+  mailCurrentDetail = null;
 }
 
-// ===== KATEGORI =====
-function toggleKategoriList() {
-  const list = document.getElementById('mailKategoriList');
-  if (!list) return;
-  list.classList.toggle('open');
+// ==========================================
+// RENDER MENU UTAMA (Grid 2x2 + Kirim Baru)
+// ==========================================
+function renderMailMenu() {
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="mail-menu-grid">
+      <div class="mail-menu-item" onclick="openMailList('unread')">
+        <div class="mail-menu-icon">📩</div>
+        <div class="mail-menu-title">Belum Dibuka</div>
+        <div class="mail-menu-badge" id="badge-unread" style="display:none;">0</div>
+      </div>
+      <div class="mail-menu-item" onclick="openMailList('read')">
+        <div class="mail-menu-icon">📖</div>
+        <div class="mail-menu-title">Sudah Dibaca</div>
+      </div>
+      <div class="mail-menu-item" onclick="openMailList('sent')">
+        <div class="mail-menu-icon">📤</div>
+        <div class="mail-menu-title">Terkirim</div>
+      </div>
+      <div class="mail-menu-item" onclick="openMailHistory()">
+        <div class="mail-menu-icon">📋</div>
+        <div class="mail-menu-title">Baca Sesuai Urutan</div>
+      </div>
+    </div>
+    <div class="mail-menu-compose" onclick="openMailCompose()">
+      ✏️ KIRIM SURAT BARU
+    </div>
+  `;
 }
 
-function closeKategoriList() {
-  const list = document.getElementById('mailKategoriList');
-  if (list) list.classList.remove('open');
-}
-
-function pilihKategori(val) {
-  kategoriTerpilih = val;
-  updateKategoriLabel();
-  closeKategoriList();
-
-  const waGroup = document.querySelector('.mail-group.wa-group');
-  if (waGroup) {
-    if (val === 'Request Join') {
-      waGroup.classList.add('visible');
+// ==========================================
+// BUKA LIST (Belum Dibuka / Sudah Dibaca / Terkirim)
+// ==========================================
+async function openMailList(filter) {
+  mailCurrentFilter = filter;
+  mailCurrentView = 'list';
+  
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  const filterLabel = {
+    'unread': '📩 Belum Dibuka',
+    'read': '📖 Sudah Dibaca',
+    'sent': '📤 Terkirim'
+  }[filter] || 'Surat';
+  
+  container.innerHTML = `
+    <div class="mail-subheader">
+      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
+      <span class="mail-subtitle">${filterLabel}</span>
+    </div>
+    <div id="mailListContainer" class="mail-list">
+      <div class="mail-loading">Memuat...</div>
+    </div>
+  `;
+  
+  try {
+    const uid = window.myUID;
+    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=${filter}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.status === 'success' && data.mails) {
+      mailCurrentList = data.mails;
+      renderMailList(data.mails, filter);
     } else {
-      waGroup.classList.remove('visible');
+      document.getElementById('mailListContainer').innerHTML = 
+        '<div class="mail-empty">Gagal memuat</div>';
     }
+  } catch(e) {
+    console.error("Mail list error:", e);
+    document.getElementById('mailListContainer').innerHTML = 
+      '<div class="mail-empty">Koneksi gagal</div>';
   }
 }
 
-function updateKategoriLabel() {
-  const el = document.getElementById('mailKategoriLabel');
-  if (el) el.innerText = KATEGORI_LABEL[kategoriTerpilih] || 'Umum';
-}
-
-// ===== PESAN =====
-function showMailMessage(msg, type = 'error') {
-  const el = document.getElementById('mailMessage');
-  if (!el) return;
-  el.innerText = msg;
-  el.classList.remove('success');
-  if (type === 'success') el.classList.add('success');
-  el.classList.add('show');
-}
-
-function clearMailMessage() {
-  const el = document.getElementById('mailMessage');
-  if (!el) return;
-  el.innerText = '';
-  el.classList.remove('show', 'success');
-}
-
-// ===== SANITASI =====
-function sanitasiMail(text) {
-  if (!text) return '';
-  let cleaned = text.replace(/^[=+\-@<>]+/, '');
-  return cleaned;
-}
-
-// ===== KIRIM =====
-async function kirimMail() {
-  const pesanEl = document.getElementById('mailPesan');
-  const waEl = document.getElementById('mailWA');
-  const pesan = pesanEl ? pesanEl.value.trim() : '';
-  const wa = waEl ? waEl.value.trim() : '';
-
-  if (kategoriTerpilih === 'Request Join') {
-    if (!wa) {
-      showMailMessage('Nomor WhatsApp wajib diisi');
-      if (waEl) waEl.focus();
-      return;
-    }
-    if (!/^\d{9,}$/.test(wa)) {
-      showMailMessage('Nomor WhatsApp minimal 9 digit angka');
-      if (waEl) waEl.focus();
-      return;
-    }
-  }
-
-  if (!pesan) {
-    showMailMessage('Pesan tidak boleh kosong');
-    if (pesanEl) pesanEl.focus();
+// ==========================================
+// RENDER LIST
+// ==========================================
+function renderMailList(mails, filter) {
+  const container = document.getElementById('mailListContainer');
+  if (!container) return;
+  
+  if (!mails || mails.length === 0) {
+    let msg = 'Belum ada surat';
+    if (filter === 'unread') msg = 'Belum ada surat baru';
+    else if (filter === 'read') msg = 'Belum ada surat dibaca';
+    else if (filter === 'sent') msg = 'Belum ada surat terkirim';
+    container.innerHTML = `<div class="mail-empty">📭 ${msg}</div>`;
     return;
   }
+  
+  let html = '';
+  for (const mail of mails) {
+    const ts = new Date(mail.timestamp);
+    const tgl = ts.toLocaleDateString('id-ID');
+    const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const preview = escapeMail(mail.message).substring(0, 60) + (mail.message.length > 60 ? '...' : '');
+    const fromAdmin = mail.isFromAdmin;
+    const icon = fromAdmin ? '📤' : '📩';
+    const statusLabel = mail.status === 'UNREAD' ? '🔴 BARU' : (mail.status === 'READ' ? '📖 DIBACA' : '✅ DONE');
+    
+    html += `
+      <div class="mail-card" onclick="openMailDetail(${mail.rowId})">
+        <div class="mail-card-header">
+          <span class="mail-card-sender">${icon} ${escapeMail(mail.ign)}</span>
+          <span class="mail-card-status">${statusLabel}</span>
+        </div>
+        <div class="mail-card-category">${escapeMail(mail.category || 'Umum')}</div>
+        <div class="mail-card-preview">${preview}</div>
+        <div class="mail-card-time">${tgl} ${jam}</div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+}
 
-  if (pesan.length > 1000) {
-    showMailMessage('Pesan maksimal 1000 karakter');
+// ==========================================
+// BUKA DETAIL PESAN (Pesan Tunggal)
+// ==========================================
+async function openMailDetail(rowId) {
+  mailCurrentView = 'detail';
+  
+  const mail = mailCurrentList.find(m => m.rowId === rowId);
+  if (!mail) return;
+  
+  mailCurrentDetail = mail;
+  
+  // Tandai sudah dibaca (kalau dari admin & UNREAD)
+  if (mail.isFromAdmin && mail.status === 'UNREAD') {
+    try {
+      await fetch(`${GAS_MAIL_URL}?type=mail-read&rowId=${rowId}`);
+      mail.status = 'READ';
+    } catch(e) {}
+  }
+  
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  const ts = new Date(mail.timestamp);
+  const tgl = ts.toLocaleDateString('id-ID');
+  const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const fromAdmin = mail.isFromAdmin;
+  const senderRole = fromAdmin ? 'ADMIN' : 'KAMU';
+  const icon = fromAdmin ? '📤' : '📩';
+  
+  container.innerHTML = `
+    <div class="mail-subheader">
+      <button class="mail-back-btn" onclick="openMailList('${mailCurrentFilter}')">← Kembali</button>
+      <span class="mail-subtitle">Pesan</span>
+    </div>
+    
+    <div class="mail-detail">
+      <div class="mail-detail-header">
+        <span class="mail-detail-sender">${icon} ${escapeMail(mail.ign)} <small>[${senderRole}]</small></span>
+        <span class="mail-detail-category">${escapeMail(mail.category || 'Umum')}</span>
+      </div>
+      
+      <div class="mail-detail-time">${tgl} ${jam}</div>
+      
+      <div class="mail-detail-body">${escapeMail(mail.message)}</div>
+      
+      ${fromAdmin ? `
+        <div class="mail-detail-actions">
+          <button class="btn-svg" onclick="openMailReplyForm(${mail.rowId})">
+            <div class="btn-ujung-kiri"></div>
+            <div class="btn-tengah"><span class="btn-teks">BALAS</span></div>
+            <div class="btn-ujung-kanan"></div>
+          </button>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// ==========================================
+// FORM BALAS
+// ==========================================
+function openMailReplyForm(rowId) {
+  const mail = mailCurrentList.find(m => m.rowId === rowId);
+  if (!mail) return;
+  
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="mail-subheader">
+      <button class="mail-back-btn" onclick="openMailDetail(${rowId})">← Kembali</button>
+      <span class="mail-subtitle">Balas</span>
+    </div>
+    
+    <div class="mail-compose">
+      <div class="mail-compose-context">
+        <div class="mail-compose-context-label">Pesan admin:</div>
+        <div class="mail-compose-context-body">${escapeMail(mail.message)}</div>
+      </div>
+      
+      <div class="mail-compose-group">
+        <label class="mail-label">BALASAN ANDA</label>
+        <textarea id="mailReplyInput" class="mail-textarea" placeholder="Tulis balasan..." maxlength="1000"></textarea>
+      </div>
+      
+      <div class="mail-compose-footer">
+        <button class="btn-svg" onclick="submitMailReply(${rowId})">
+          <div class="btn-ujung-kiri"></div>
+          <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
+          <div class="btn-ujung-kanan"></div>
+        </button>
+      </div>
+      
+      <p class="mail-message" id="mailReplyMessage"></p>
+    </div>
+  `;
+  
+  setTimeout(() => {
+    const ta = document.getElementById('mailReplyInput');
+    if (ta) ta.focus();
+  }, 200);
+}
+
+// ==========================================
+// KIRIM BALASAN
+// ==========================================
+async function submitMailReply(rowId) {
+  const input = document.getElementById('mailReplyInput');
+  const reply = input ? input.value.trim() : '';
+  
+  if (!reply) {
+    showMailReplyMessage('Balasan tidak boleh kosong', 'error');
     return;
   }
-
+  
   const uid = window.myUID;
   const ign = window.myIGN;
-  if (!uid || !ign) {
-    showMailMessage('Identitas belum diisi');
-    return;
-  }
-
-  let finalMsg = sanitasiMail(pesan);
-  if (kategoriTerpilih === 'Request Join' && wa) {
-    finalMsg = sanitasiMail(wa) + '\n' + finalMsg;
-  }
-
-  const btn = document.querySelector('.mail-footer .btn-svg');
+  const mail = mailCurrentList.find(m => m.rowId === rowId);
+  const category = mail ? mail.category : 'Umum';
+  
+  const btn = document.querySelector('#mailContent .btn-svg');
   if (btn) {
     btn.style.opacity = '0.6';
     btn.style.pointerEvents = 'none';
   }
-
+  
   try {
-    const res = await API.sendMail(uid, ign, finalMsg, kategoriTerpilih);
-    console.log('✅ Surat terkirim:', res);
-
-    if (res && res.status === 'success') {
-      showMailMessage('Surat berhasil dikirim', 'success');
-
+    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(reply)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.status === 'success') {
+      showMailReplyMessage('✅ Balasan terkirim', 'success');
       setTimeout(() => {
-        window._mailFromInfo = false;   // reset flag
-        closeMailForm(true);
-        if (typeof goHome === 'function') goHome();
+        openMailList('sent');
       }, 800);
     } else {
-      showMailMessage('Gagal mengirim surat');
+      showMailReplyMessage('Gagal mengirim', 'error');
       if (btn) {
         btn.style.opacity = '';
         btn.style.pointerEvents = '';
       }
     }
-  } catch (err) {
-    console.error('❌ Gagal kirim surat:', err);
-    showMailMessage('Koneksi gagal, coba lagi');
+  } catch(e) {
+    console.error("Reply error:", e);
+    showMailReplyMessage('Koneksi gagal', 'error');
     if (btn) {
       btn.style.opacity = '';
       btn.style.pointerEvents = '';
@@ -212,31 +320,272 @@ async function kirimMail() {
   }
 }
 
-// ===== ESC =====
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (mailOpen) {
-      closeMailForm();
+function showMailReplyMessage(msg, type = 'error') {
+  const el = document.getElementById('mailReplyMessage');
+  if (!el) return;
+  el.innerText = msg;
+  el.classList.remove('success', 'error');
+  el.classList.add(type, 'show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ==========================================
+// HISTORY (Baca Sesuai Urutan)
+// ==========================================
+async function openMailHistory() {
+  mailCurrentView = 'detail';
+  
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="mail-subheader">
+      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
+      <span class="mail-subtitle">📋 Baca Sesuai Urutan</span>
+    </div>
+    <div id="mailHistoryContainer" class="mail-history">
+      <div class="mail-loading">Memuat...</div>
+    </div>
+  `;
+  
+  try {
+    const uid = window.myUID;
+    const url = `${GAS_MAIL_URL}?type=mail-history&uid=${encodeURIComponent(uid)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.status === 'success' && data.history) {
+      renderMailHistory(data.history);
+    } else {
+      document.getElementById('mailHistoryContainer').innerHTML = 
+        '<div class="mail-empty">Gagal memuat</div>';
+    }
+  } catch(e) {
+    console.error("History error:", e);
+    document.getElementById('mailHistoryContainer').innerHTML = 
+      '<div class="mail-empty">Koneksi gagal</div>';
+  }
+}
+
+function renderMailHistory(history) {
+  const container = document.getElementById('mailHistoryContainer');
+  if (!container) return;
+  
+  if (!history || history.length === 0) {
+    container.innerHTML = '<div class="mail-empty">📭 Belum ada percakapan</div>';
+    return;
+  }
+  
+  let html = '';
+  for (const msg of history) {
+    const ts = new Date(msg.timestamp);
+    const tgl = ts.toLocaleDateString('id-ID');
+    const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const fromAdmin = msg.isFromAdmin;
+    const icon = fromAdmin ? '📤' : '📩';
+    const role = fromAdmin ? 'Admin' : 'Kamu';
+    
+    html += `
+      <div class="mail-history-card ${fromAdmin ? 'from-admin' : 'from-user'}">
+        <div class="mail-history-header">
+          <span>${icon} ${escapeMail(msg.ign)}</span>
+          <span class="mail-history-role">[${role}]</span>
+        </div>
+        <div class="mail-history-time">${tgl} ${jam}</div>
+        <div class="mail-history-body">${escapeMail(msg.message)}</div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+}
+
+// ==========================================
+// COMPOSE (Kirim Surat Baru)
+// ==========================================
+function openMailCompose() {
+  mailCurrentView = 'compose';
+  
+  const container = document.getElementById('mailContent');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="mail-subheader">
+      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
+      <span class="mail-subtitle">✏️ Kirim Surat Baru</span>
+    </div>
+    
+    <div class="mail-compose">
+      <div class="mail-compose-group">
+        <label class="mail-label">KATEGORI</label>
+        <div class="mail-kategori-btn" onclick="toggleMailKategori()">
+          <span id="mailKategoriLabel">Umum / General</span>
+        </div>
+        <div class="mail-kategori-list" id="mailKategoriList">
+          <div class="mail-kategori-item" onclick="pilihMailKategori('Umum')">Umum / General</div>
+          <div class="mail-kategori-item" onclick="pilihMailKategori('Request Join')">Request Join</div>
+          <div class="mail-kategori-item" onclick="pilihMailKategori('Saran')">Saran / Masukan</div>
+        </div>
+      </div>
+      
+      <div class="mail-compose-group">
+        <label class="mail-label">PESAN</label>
+        <textarea id="mailComposeInput" class="mail-textarea" placeholder="Tulis pesan Anda..." maxlength="1000"></textarea>
+      </div>
+      
+      <div class="mail-compose-footer">
+        <button class="btn-svg" onclick="submitMailCompose()">
+          <div class="btn-ujung-kiri"></div>
+          <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
+          <div class="btn-ujung-kanan"></div>
+        </button>
+      </div>
+      
+      <p class="mail-message" id="mailComposeMessage"></p>
+    </div>
+  `;
+  
+  // Set default kategori
+  window._mailKategori = 'Umum';
+  setTimeout(() => {
+    const ta = document.getElementById('mailComposeInput');
+    if (ta) ta.focus();
+  }, 200);
+}
+
+// ==========================================
+// KIRIM SURAT BARU
+// ==========================================
+async function submitMailCompose() {
+  const input = document.getElementById('mailComposeInput');
+  const pesan = input ? input.value.trim() : '';
+  
+  if (!pesan) {
+    showMailComposeMessage('Pesan tidak boleh kosong', 'error');
+    return;
+  }
+  
+  const uid = window.myUID;
+  const ign = window.myIGN;
+  const category = window._mailKategori || 'Umum';
+  
+  const btn = document.querySelector('#mailContent .btn-svg');
+  if (btn) {
+    btn.style.opacity = '0.6';
+    btn.style.pointerEvents = 'none';
+  }
+  
+  try {
+    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.status === 'success') {
+      showMailComposeMessage('✅ Surat terkirim', 'success');
+      setTimeout(() => {
+        openMailList('sent');
+      }, 800);
+    } else {
+      showMailComposeMessage('Gagal mengirim', 'error');
+      if (btn) {
+        btn.style.opacity = '';
+        btn.style.pointerEvents = '';
+      }
+    }
+  } catch(e) {
+    console.error("Compose error:", e);
+    showMailComposeMessage('Koneksi gagal', 'error');
+    if (btn) {
+      btn.style.opacity = '';
+      btn.style.pointerEvents = '';
     }
   }
-});
+}
 
-// ===== CLOSE KATEGORI SAAT KLIK DI LUAR =====
-document.addEventListener('click', (e) => {
+function showMailComposeMessage(msg, type = 'error') {
+  const el = document.getElementById('mailComposeMessage');
+  if (!el) return;
+  el.innerText = msg;
+  el.classList.remove('success', 'error');
+  el.classList.add(type, 'show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ==========================================
+// KATEGORI DROPDOWN
+// ==========================================
+function toggleMailKategori() {
   const list = document.getElementById('mailKategoriList');
-  const btn = document.querySelector('.mail-kategori-btn');
-  if (!list || !btn) return;
+  if (list) list.classList.toggle('open');
+}
 
-  if (!list.contains(e.target) && !btn.contains(e.target)) {
-    closeKategoriList();
+function pilihMailKategori(val) {
+  window._mailKategori = val;
+  const el = document.getElementById('mailKategoriLabel');
+  if (el) {
+    if (val === 'Umum') el.innerText = 'Umum / General';
+    else if (val === 'Request Join') el.innerText = 'Request Join';
+    else if (val === 'Saran') el.innerText = 'Saran / Masukan';
   }
-});
+  toggleMailKategori();
+}
 
-// ===== EXPOSE =====
-window.openMailForm = openMailForm;
-window.closeMailForm = closeMailForm;
-window.toggleKategoriList = toggleKategoriList;
-window.pilihKategori = pilihKategori;
-window.kirimMail = kirimMail;
+// ==========================================
+// BADGE UNREAD COUNT
+// ==========================================
+async function updateMailBadge() {
+  const uid = window.myUID;
+  if (!uid) return;
+  
+  try {
+    const url = `${GAS_MAIL_URL}?type=mail-unread-count&uid=${encodeURIComponent(uid)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.status === 'success') {
+      const badge = document.getElementById('badge-unread');
+      if (badge) {
+        if (data.unread > 0) {
+          badge.innerText = data.unread > 99 ? '99+' : data.unread;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+  } catch(e) {}
+}
 
-console.log('✅ mail.js loaded');
+// ==========================================
+// ESCAPE HTML
+// ==========================================
+function escapeMail(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    if (m === '"') return '&quot;';
+    if (m === "'") return '&#39;';
+    return m;
+  });
+}
+
+// ==========================================
+// EXPOSE
+// ==========================================
+window.openMailModal = openMailModal;
+window.closeMailModal = closeMailModal;
+window.renderMailMenu = renderMailMenu;
+window.openMailList = openMailList;
+window.openMailDetail = openMailDetail;
+window.openMailReplyForm = openMailReplyForm;
+window.submitMailReply = submitMailReply;
+window.openMailHistory = openMailHistory;
+window.openMailCompose = openMailCompose;
+window.submitMailCompose = submitMailCompose;
+window.toggleMailKategori = toggleMailKategori;
+window.pilihMailKategori = pilihMailKategori;
+window.updateMailBadge = updateMailBadge;
+
+console.log("✅ mail.js loaded (Mail 2 Arah User V2)");
