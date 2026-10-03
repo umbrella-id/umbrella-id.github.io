@@ -1,5 +1,6 @@
 /* ==========================================
-   mail.css — Mail 2 Arah (Header Dinamis + Grid Horizontal)
+   mail.css — Mail 2 Arah V9
+   List 3 baris, tanpa icon, tag [ADMIN]
    ========================================== */
 
 .mail-overlay {
@@ -68,7 +69,7 @@
 }
 
 /* ==========================================
-   MENU UTAMA (Grid 2x2 — Horizontal Layout)
+   MENU UTAMA (Grid 2x2)
    ========================================== */
 .mail-menu-grid {
   display: grid;
@@ -101,14 +102,12 @@
   transform: translateY(0) scale(0.98);
 }
 
-/* 🎯 Icon di samping */
 .mail-menu-icon {
   font-size: 20px;
   flex-shrink: 0;
   line-height: 1;
 }
 
-/* 🎯 Teks di samping icon */
 .mail-menu-title {
   color: #f0d78c;
   font-size: 11px;
@@ -120,7 +119,6 @@
   line-height: 1.2;
 }
 
-/* Badge di pojok kanan atas */
 .mail-menu-badge {
   position: absolute;
   top: 4px;
@@ -159,19 +157,19 @@
 }
 
 /* ==========================================
-   LIST CARD
+   LIST CARD (3 baris, tanpa icon)
    ========================================== */
 .mail-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .mail-card {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(201, 165, 90, 0.3);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -186,49 +184,65 @@
   transform: translateY(0) scale(0.99);
 }
 
-.mail-card-header {
+/* 🎯 Baris 1: pengirim + timestamp */
+.mail-card-row1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
+  margin-bottom: 3px;
 }
 
 .mail-card-sender {
   color: #f5e6c8;
   font-size: 12px;
   font-weight: 700;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mail-card-status {
-  font-size: 9px;
+/* 🎯 Tag [ADMIN] */
+.mail-sender-tag {
   color: #c9a55a;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 0.5px;
+  margin-right: 3px;
 }
 
+.mail-card-time {
+  color: rgba(201, 165, 90, 0.7);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+
+/* 🎯 Baris 2: kategori */
 .mail-card-category {
   color: #c9a55a;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.8px;
-  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
   text-transform: uppercase;
+  opacity: 0.9;
 }
 
+/* 🎯 Baris 3: preview */
 .mail-card-preview {
   color: #f5e6c8;
   font-size: 11px;
   line-height: 1.4;
-  opacity: 0.85;
-  margin-bottom: 6px;
+  opacity: 0.8;
   word-break: break-word;
-}
-
-.mail-card-time {
-  color: rgba(201, 165, 90, 0.6);
-  font-size: 9px;
-  letter-spacing: 0.5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ==========================================
@@ -239,6 +253,9 @@
   border: 1px solid rgba(201, 165, 90, 0.3);
   border-radius: 12px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .mail-detail-header {
@@ -254,12 +271,6 @@
   color: #f0d78c;
   font-size: 13px;
   font-weight: 700;
-}
-
-.mail-detail-sender small {
-  color: #c9a55a;
-  font-size: 9px;
-  font-weight: 500;
 }
 
 .mail-detail-category {
@@ -293,13 +304,16 @@
   margin-bottom: 16px;
 }
 
+/* 🎯 Tombol BALAS: kanan bawah */
 .mail-detail-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 /* ==========================================
-   COMPOSE
+   COMPOSE (Form)
    ========================================== */
 .mail-compose {
   display: flex;
@@ -449,63 +463,12 @@
 .mail-message.success { color: #99ff99; }
 
 /* ==========================================
-   HISTORY
+   HISTORY (Baca Sesuai Urutan — 3 baris juga)
    ========================================== */
 .mail-history {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.mail-history-card {
-  border-radius: 10px;
-  padding: 10px 12px;
-  border-left: 3px solid;
-}
-
-.mail-history-card.from-admin {
-  background: rgba(201, 165, 90, 0.08);
-  border-left-color: #c9a55a;
-}
-
-.mail-history-card.from-user {
-  background: rgba(100, 116, 139, 0.1);
-  border-left-color: #64748b;
-}
-
-.mail-history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
   gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mail-history-header span {
-  color: #f0d78c;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.mail-history-role {
-  color: #c9a55a;
-  font-size: 9px;
-  font-weight: 500;
-}
-
-.mail-history-time {
-  color: rgba(201, 165, 90, 0.6);
-  font-size: 9px;
-  margin-bottom: 6px;
-}
-
-.mail-history-body {
-  color: #f5e6c8;
-  font-size: 11px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 /* ==========================================
