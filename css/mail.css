@@ -1,5 +1,5 @@
 /* ==========================================
-   mail.css — Mail 2 Arah (Header Dinamis)
+   mail.css — Mail 2 Arah (Header Dinamis + Grid Horizontal)
    ========================================== */
 
 .mail-overlay {
@@ -68,24 +68,27 @@
 }
 
 /* ==========================================
-   MENU UTAMA (Grid 2x2)
+   MENU UTAMA (Grid 2x2 — Horizontal Layout)
    ========================================== */
 .mail-menu-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .mail-menu-item {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(201, 165, 90, 0.4);
-  border-radius: 12px;
-  padding: 20px 10px;
-  text-align: center;
+  border-radius: 10px;
+  padding: 14px 14px;
   cursor: pointer;
   transition: all 0.2s;
+  text-align: left;
 }
 
 .mail-menu-item:hover {
@@ -98,55 +101,61 @@
   transform: translateY(0) scale(0.98);
 }
 
+/* 🎯 Icon di samping */
 .mail-menu-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
+/* 🎯 Teks di samping icon */
 .mail-menu-title {
   color: #f0d78c;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  flex: 1;
+  line-height: 1.2;
 }
 
+/* Badge di pojok kanan atas */
 .mail-menu-badge {
   position: absolute;
-  top: 6px;
+  top: 4px;
   right: 6px;
   background: #ff4444;
   color: white;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
-  padding: 2px 7px;
-  border-radius: 12px;
-  min-width: 18px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 16px;
   text-align: center;
 }
 
-.mail-menu-compose {
-  background: linear-gradient(135deg, rgba(201, 165, 90, 0.3), rgba(201, 165, 90, 0.1));
-  border: 1px solid #c9a55a;
-  border-radius: 12px;
-  padding: 14px;
-  text-align: center;
-  color: #f0d78c;
-  font-size: 12px;
-  font-weight: 700;
+/* ==========================================
+   TOMBOL KIRIM SURAT BARU (pakai .btn-svg)
+   ========================================== */
+.mail-compose-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.mail-compose-btn {
+  width: 100%;
+  max-width: 260px;
+}
+
+.mail-compose-btn .btn-tengah {
+  padding: 0 20px;
+}
+
+.mail-compose-btn .btn-teks {
+  font-size: 11px;
   letter-spacing: 1.5px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.mail-menu-compose:hover {
-  background: rgba(201, 165, 90, 0.3);
-  transform: translateY(-2px);
-}
-
-.mail-menu-compose:active {
-  transform: translateY(0) scale(0.98);
 }
 
 /* ==========================================
@@ -365,6 +374,7 @@
   justify-content: flex-end;
 }
 
+/* Kategori Dropdown */
 .mail-kategori-btn {
   background: #000;
   color: #f5e6c8;
@@ -400,113 +410,4 @@
   right: 0;
   margin-top: 4px;
   background: #000;
-  border: 1px solid rgba(201, 165, 90, 0.4);
-  border-radius: 8px;
-  padding: 4px 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-}
-
-.mail-kategori-list.open { display: block; }
-
-.mail-kategori-item {
-  padding: 10px 14px;
-  color: #c9a55a;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.mail-kategori-item:hover {
-  background: rgba(201, 165, 90, 0.15);
-}
-
-.mail-message {
-  color: #ff9999;
-  font-size: 11px;
-  font-weight: 500;
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  min-height: 16px;
-}
-
-.mail-message.show { opacity: 1; }
-.mail-message.success { color: #99ff99; }
-
-/* ==========================================
-   HISTORY
-   ========================================== */
-.mail-history {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.mail-history-card {
-  border-radius: 10px;
-  padding: 10px 12px;
-  border-left: 3px solid;
-}
-
-.mail-history-card.from-admin {
-  background: rgba(201, 165, 90, 0.08);
-  border-left-color: #c9a55a;
-}
-
-.mail-history-card.from-user {
-  background: rgba(100, 116, 139, 0.1);
-  border-left-color: #64748b;
-}
-
-.mail-history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mail-history-header span {
-  color: #f0d78c;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.mail-history-role {
-  color: #c9a55a;
-  font-size: 9px;
-  font-weight: 500;
-}
-
-.mail-history-time {
-  color: rgba(201, 165, 90, 0.6);
-  font-size: 9px;
-  margin-bottom: 6px;
-}
-
-.mail-history-body {
-  color: #f5e6c8;
-  font-size: 11px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-/* ==========================================
-   LOADING & EMPTY
-   ========================================== */
-.mail-loading,
-.mail-empty {
-  color: #c9a55a;
-  font-size: 12px;
-  text-align: center;
-  padding: 40px 20px;
-  letter-spacing: 1px;
-  opacity: 0.8;
-}
+  border: 1px solid rgba(201, 165, 90, 
