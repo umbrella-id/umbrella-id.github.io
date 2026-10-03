@@ -1,6 +1,6 @@
 /* ==========================================
-   mail.css — Mail 2 Arah V9
-   List 3 baris, tanpa icon, tag [ADMIN]
+   mail.css — Mail 2 Arah V10
+   Tombol BALAS di admin terakhir, detail menyatu
    ========================================== */
 
 .mail-overlay {
@@ -134,7 +134,7 @@
 }
 
 /* ==========================================
-   TOMBOL KIRIM SURAT BARU (pakai .btn-svg)
+   TOMBOL KIRIM SURAT BARU
    ========================================== */
 .mail-compose-btn-wrap {
   display: flex;
@@ -184,7 +184,6 @@
   transform: translateY(0) scale(0.99);
 }
 
-/* 🎯 Baris 1: pengirim + timestamp */
 .mail-card-row1 {
   display: flex;
   justify-content: space-between;
@@ -204,7 +203,6 @@
   text-overflow: ellipsis;
 }
 
-/* 🎯 Tag [ADMIN] */
 .mail-sender-tag {
   color: #c9a55a;
   font-size: 10px;
@@ -221,7 +219,6 @@
   font-family: monospace;
 }
 
-/* 🎯 Baris 2: kategori */
 .mail-card-category {
   color: #c9a55a;
   font-size: 10px;
@@ -232,7 +229,6 @@
   opacity: 0.9;
 }
 
-/* 🎯 Baris 3: preview */
 .mail-card-preview {
   color: #f5e6c8;
   font-size: 11px;
@@ -246,16 +242,13 @@
 }
 
 /* ==========================================
-   DETAIL PESAN
+   DETAIL PESAN (MENYATU — TANPA BORDER)
    ========================================== */
 .mail-detail {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(201, 165, 90, 0.3);
-  border-radius: 12px;
-  padding: 16px;
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  padding: 0;
 }
 
 .mail-detail-header {
@@ -287,29 +280,27 @@
 .mail-detail-time {
   color: rgba(201, 165, 90, 0.6);
   font-size: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   letter-spacing: 0.5px;
 }
 
 .mail-detail-body {
   color: #f5e6c8;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  border-left: 3px solid #c9a55a;
+  padding: 0;
   margin-bottom: 16px;
+  flex: 1;
 }
 
-/* 🎯 Tombol BALAS: kanan bawah */
+/* Tombol BALAS: kanan bawah */
 .mail-detail-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
-  padding-top: 8px;
+  padding-top: 12px;
 }
 
 /* ==========================================
@@ -463,7 +454,7 @@
 .mail-message.success { color: #99ff99; }
 
 /* ==========================================
-   HISTORY (Baca Sesuai Urutan — 3 baris juga)
+   HISTORY (Baca Sesuai Urutan)
    ========================================== */
 .mail-history {
   display: flex;
