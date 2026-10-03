@@ -1,5 +1,8 @@
 /**
  * info.js — Modal Info Serikat (dengan tombol join guild)
+ * 
+ * Update: Fix tombol "Join" — sekarang pakai openMailModal + openMailCompose
+ * Update: Flag _mailFromInfo untuk navigasi balik
  */
 
 let infoOpen = false;
@@ -62,12 +65,10 @@ function closeInfoModal(skipMenu = false) {
 
   overlay.classList.remove('open');
 
-  // 🎯 Kalau mau balik ke menu → tambah modal-open DULU
   if (!skipMenu && stage) {
     stage.classList.add('modal-open');
   }
 
-  // Hapus info-open
   if (stage) stage.classList.remove('info-open');
 
   if (typeof updateButtons === 'function') updateButtons();
@@ -117,7 +118,6 @@ function renderInfoList() {
 
   let html = '<div class="info-list">';
 
-  // List profil
   profilList.forEach((item, idx) => {
     const judul = item.Header || 'Tanpa Judul';
     html += `
@@ -175,6 +175,11 @@ function showInfoDetail(idx) {
 
 // ===== KLIK "SAYA INGIN BERGABUNG" =====
 function infoJoinGuild() {
+  console.log('🛡️ Join guild dipilih dari Info Serikat');
+  
+  // 🎯 Set flag: buka mail dari info
+  window._mailFromInfo = true;
+  
   // Tutup info (skip menu)
   closeInfoModal(true);
 
@@ -183,7 +188,7 @@ function infoJoinGuild() {
     if (typeof openMailModal === 'function') {
       openMailModal();
       
-      // Tunggu modal terbuka
+      // Tunggu modal mail terbuka
       setTimeout(() => {
         if (typeof openMailCompose === 'function') {
           openMailCompose();
@@ -196,6 +201,8 @@ function infoJoinGuild() {
           if (label) label.innerText = 'Request Join';
         }
       }, 200);
+    } else {
+      console.warn('⚠️ openMailModal belum siap');
     }
   }, 300);
 }
@@ -263,4 +270,4 @@ window.infoGoBack = infoGoBack;
 window.preloadInfoData = preloadInfoData;
 window.infoJoinGuild = infoJoinGuild;
 
-console.log('✅ info.js loaded');
+console.log("✅ info.js loaded (Info Serikat — Fix Join)");
