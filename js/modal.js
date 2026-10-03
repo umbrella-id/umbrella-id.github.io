@@ -69,8 +69,8 @@ function menuClick(type) {
     // Pindah halaman / buka modal lain
     if (type === 'ganti') {
       if (typeof openGate === 'function') openGate('change');
-    } else if (type === 'kirim') {
-      if (typeof openMailForm === 'function') openMailForm();
+    } else if (type === 'kotak_surat') {
+      if (typeof openMailModal === 'function') openMailModal();
     } else if (type === 'info') {
       if (typeof openInfoModal === 'function') openInfoModal();
     } else if (type === 'tentang') {
