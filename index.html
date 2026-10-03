@@ -198,10 +198,11 @@
         </div>
       </div>
 
-      <!-- ============ FORM KIRIM SURAT ============ -->
+      <!-- ============ MAIL OVERLAY (Mail 2 Arah) ============ -->
       <div class="mail-overlay" id="mailOverlay">
         <div class="mail-modal">
-
+          
+          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -224,45 +225,13 @@
               <div class="pojok"></div>
             </div>
           </div>
-
-          <div class="mail-header">KIRIM SURAT</div>
-
-          <div class="mail-body">
-
-            <div class="mail-group">
-              <label class="mail-label">KATEGORI</label>
-              <div class="mail-kategori-btn" onclick="toggleKategoriList()">
-                <span id="mailKategoriLabel">Umum / General</span>
-              </div>
-              <div class="mail-kategori-list" id="mailKategoriList">
-                <div class="mail-kategori-item" onclick="pilihKategori('Umum')">Umum / General</div>
-                <div class="mail-kategori-item" onclick="pilihKategori('Request Join')">Request Join</div>
-                <div class="mail-kategori-item" onclick="pilihKategori('Saran')">Saran / Masukan</div>
-              </div>
-            </div>
-
-            <div class="mail-group wa-group">
-              <label class="mail-label">NOMOR WHATSAPP</label>
-              <input type="tel" class="mail-input" id="mailWA" placeholder="08xxxxxxxxxx" maxlength="15">
-            </div>
-
-            <div class="mail-group" style="flex:1;">
-              <label class="mail-label">PESAN</label>
-              <textarea class="mail-textarea" id="mailPesan" placeholder="Tulis pesan Anda..." maxlength="1000"></textarea>
-            </div>
-
-          </div>
-
-          <div class="mail-footer">
-            <div class="btn-svg" onclick="kirimMail()">
-              <div class="btn-ujung-kiri"></div>
-              <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
-              <div class="btn-ujung-kanan"></div>
-            </div>
-          </div>
-
-          <p class="mail-message" id="mailMessage"></p>
-
+          
+          <!-- Header -->
+          <div class="mail-header">KOTAK SURAT</div>
+          
+          <!-- Konten Utama (di-render JS) -->
+          <div id="mailContent"></div>
+          
         </div>
       </div>
 
