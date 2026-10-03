@@ -1,6 +1,7 @@
 /**
  * chat.js — Chat Box (Log Only) + Drag + Snap + Sinkronisasi GAS
  * + Notifikasi Mute (mute-notif.js)
+ * + Broadcast trigger mail (lastMailReply)
  * + Fix: guard "sudah di-mute" biar timer tidak reset
  */
 
@@ -69,7 +70,6 @@ function onMove(e) {
   currentChatHeightPct = clamped;
   chatBox.style.height = clamped + '%';
 
-  // Aktifkan scroll kalau >= threshold
   if (clamped > SNAP_THRESHOLD) {
     chatBox.classList.add('maximized');
   } else {
@@ -207,20 +207,15 @@ function renderChatLogs(logs) {
         if (!parsed) return;
         if (!isSystemMessageMasihBerlaku(logs, index)) return;
 
-        // 🎯 Kalau mute/unmute USER SENDIRI → update muteExpiryTime + notif
         if (parsed.uid === window.myUID) {
           if (parsed.type === 'mute') {
-            // 🔍 Cek dulu: apakah sedang dalam masa mute?
             const existingExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
             const now = Date.now();
 
             if (existingExpiry > now) {
-              // Sudah dalam masa mute → SKIP, jangan reset timer
               console.log('⏭️ Sudah di-mute, skip reset (sisa ' + Math.ceil((existingExpiry - now) / 1000) + 's)');
-              // Tapi tetap tampilkan notif
               if (typeof showMuteNotif === 'function') showMuteNotif();
             } else {
-              // Belum di-mute / sudah expired → set expiry baru
               const expiry = now + (parsed.durasi * 60 * 1000);
               localStorage.setItem('umbrella_mute_expiry', expiry.toString());
               console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
@@ -274,18 +269,14 @@ async function syncChat(force = false) {
   const muteExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
   const isMuted = Date.now() < muteExpiry;
 
-  // 🎯 Auto-unlock kalau expired
   if (muteExpiry > 0 && !isMuted) {
     console.log('🔓 Mute expired, auto-unlock');
     localStorage.removeItem('umbrella_mute_expiry');
-
-    // Sembunyikan notif mute
     if (typeof hideMuteNotif === 'function') {
       hideMuteNotif();
     }
   }
 
-  // 🎯 Tampilkan notif mute kalau masih dalam masa mute
   if (isMuted && typeof showMuteNotif === 'function') {
     showMuteNotif();
   }
@@ -293,6 +284,11 @@ async function syncChat(force = false) {
   try {
     const data = await API.getChats(uid, ign, isMuted, muteExpiry);
     if (!data) return;
+
+    // 🎯 Handle broadcast trigger mail (dari GAS 2)
+    if (typeof handleMailTrigger === 'function') {
+      handleMailTrigger(data.lastMailReply || 0);
+    }
 
     const arrayChat = data.logs || [];
     const currentStamp = JSON.stringify(arrayChat);
