@@ -1,14 +1,12 @@
 /* ==========================================
    mail-notif.css — Notif Icon Surat
-   Posisi: bawah plat nama, overlap sedikit
-   Emoji: 📩 (sama seperti menu surat)
+   Posisi: bawah plat nama, rata kiri dengan text nama
    ========================================== */
 
 .mail-notif {
   position: absolute;
-  bottom: -10px;              /* overlap ke bawah plat nama */
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 5px;                 /* 🎯 dari -10px → 5px (naik 15px) */
+  left: 29px;                  /* 🎯 rata kiri dengan text nama */
   width: 20px;
   height: 20px;
   display: flex;
@@ -20,28 +18,25 @@
   cursor: pointer;
   pointer-events: auto;
   
-  /* Glow merah tipis biar kelihatan notif */
   filter: drop-shadow(0 0 4px rgba(255, 68, 68, 0.9))
           drop-shadow(0 0 8px rgba(255, 68, 68, 0.5));
   
   animation: mailNotifPulse 2s infinite ease-in-out;
 }
 
-/* Animasi pulse halus */
 @keyframes mailNotifPulse {
   0%, 100% {
-    transform: translateX(-50%) scale(1);
+    transform: scale(1);
     opacity: 0.9;
   }
   50% {
-    transform: translateX(-50%) scale(1.15);
+    transform: scale(1.15);
     opacity: 1;
   }
 }
 
-/* Efek klik */
 .mail-notif:active {
-  transform: translateX(-50%) scale(0.9);
+  transform: scale(0.9);
   filter: drop-shadow(0 0 6px rgba(255, 68, 68, 1));
 }
 
