@@ -1,9 +1,10 @@
 /**
  * mail.js — Mail 2 Arah (User Side)
  * 4 Menu: Belum Dibuka / Sudah Dibaca / Terkirim / Baca Sesuai Urutan
+ * Navigasi: pakai tombol menu stage (kiri=BACK, kanan=HOME)
  */
 
-let mailCurrentView = 'menu'; // 'menu' | 'list' | 'detail' | 'compose'
+let mailCurrentView = 'menu'; // 'menu' | 'list' | 'detail' | 'reply' | 'history' | 'compose'
 let mailCurrentList = [];
 let mailCurrentDetail = null;
 let mailCurrentFilter = 'all';
@@ -18,7 +19,6 @@ function openMailModal() {
   const stage = document.getElementById('stage');
   if (!overlay) return;
   
-  mailCurrentView = 'menu';
   overlay.classList.add('open');
   if (stage) stage.classList.add('mail-open');
   
@@ -47,9 +47,40 @@ function closeMailModal(skipMenu = false) {
 }
 
 // ==========================================
+// NAVIGASI BACK (dipanggil tombol kiri stage)
+// ==========================================
+function mailGoBack() {
+  console.log('📬 Mail back from view:', mailCurrentView);
+  
+  switch (mailCurrentView) {
+    case 'menu':
+      closeMailModal();
+      break;
+    case 'list':
+      renderMailMenu();
+      break;
+    case 'detail':
+      openMailList(mailCurrentFilter);
+      break;
+    case 'reply':
+      if (mailCurrentDetail) openMailDetail(mailCurrentDetail.rowId);
+      else renderMailMenu();
+      break;
+    case 'history':
+    case 'compose':
+      renderMailMenu();
+      break;
+    default:
+      closeMailModal();
+  }
+}
+
+// ==========================================
 // RENDER MENU UTAMA (Grid 2x2 + Kirim Baru)
 // ==========================================
 function renderMailMenu() {
+  mailCurrentView = 'menu';
+  
   const container = document.getElementById('mailContent');
   if (!container) return;
   
@@ -77,14 +108,17 @@ function renderMailMenu() {
       ✏️ KIRIM SURAT BARU
     </div>
   `;
+  
+  // Update badge unread
+  updateMailBadge();
 }
 
 // ==========================================
 // BUKA LIST (Belum Dibuka / Sudah Dibaca / Terkirim)
 // ==========================================
 async function openMailList(filter) {
-  mailCurrentFilter = filter;
   mailCurrentView = 'list';
+  mailCurrentFilter = filter;
   
   const container = document.getElementById('mailContent');
   if (!container) return;
@@ -97,13 +131,14 @@ async function openMailList(filter) {
   
   container.innerHTML = `
     <div class="mail-subheader">
-      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
       <span class="mail-subtitle">${filterLabel}</span>
     </div>
     <div id="mailListContainer" class="mail-list">
       <div class="mail-loading">Memuat...</div>
     </div>
   `;
+  
+  if (typeof updateButtons === 'function') updateButtons();
   
   try {
     const uid = window.myUID;
@@ -198,7 +233,6 @@ async function openMailDetail(rowId) {
   
   container.innerHTML = `
     <div class="mail-subheader">
-      <button class="mail-back-btn" onclick="openMailList('${mailCurrentFilter}')">← Kembali</button>
       <span class="mail-subtitle">Pesan</span>
     </div>
     
@@ -223,12 +257,16 @@ async function openMailDetail(rowId) {
       ` : ''}
     </div>
   `;
+  
+  if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ==========================================
 // FORM BALAS
 // ==========================================
 function openMailReplyForm(rowId) {
+  mailCurrentView = 'reply';
+  
   const mail = mailCurrentList.find(m => m.rowId === rowId);
   if (!mail) return;
   
@@ -237,7 +275,6 @@ function openMailReplyForm(rowId) {
   
   container.innerHTML = `
     <div class="mail-subheader">
-      <button class="mail-back-btn" onclick="openMailDetail(${rowId})">← Kembali</button>
       <span class="mail-subtitle">Balas</span>
     </div>
     
@@ -263,6 +300,8 @@ function openMailReplyForm(rowId) {
       <p class="mail-message" id="mailReplyMessage"></p>
     </div>
   `;
+  
+  if (typeof updateButtons === 'function') updateButtons();
   
   setTimeout(() => {
     const ta = document.getElementById('mailReplyInput');
@@ -333,20 +372,21 @@ function showMailReplyMessage(msg, type = 'error') {
 // HISTORY (Baca Sesuai Urutan)
 // ==========================================
 async function openMailHistory() {
-  mailCurrentView = 'detail';
+  mailCurrentView = 'history';
   
   const container = document.getElementById('mailContent');
   if (!container) return;
   
   container.innerHTML = `
     <div class="mail-subheader">
-      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
       <span class="mail-subtitle">📋 Baca Sesuai Urutan</span>
     </div>
     <div id="mailHistoryContainer" class="mail-history">
       <div class="mail-loading">Memuat...</div>
     </div>
   `;
+  
+  if (typeof updateButtons === 'function') updateButtons();
   
   try {
     const uid = window.myUID;
@@ -411,7 +451,6 @@ function openMailCompose() {
   
   container.innerHTML = `
     <div class="mail-subheader">
-      <button class="mail-back-btn" onclick="renderMailMenu()">← Kembali</button>
       <span class="mail-subtitle">✏️ Kirim Surat Baru</span>
     </div>
     
@@ -444,6 +483,8 @@ function openMailCompose() {
       <p class="mail-message" id="mailComposeMessage"></p>
     </div>
   `;
+  
+  if (typeof updateButtons === 'function') updateButtons();
   
   // Set default kategori
   window._mailKategori = 'Umum';
@@ -576,6 +617,7 @@ function escapeMail(str) {
 // ==========================================
 window.openMailModal = openMailModal;
 window.closeMailModal = closeMailModal;
+window.mailGoBack = mailGoBack;
 window.renderMailMenu = renderMailMenu;
 window.openMailList = openMailList;
 window.openMailDetail = openMailDetail;
@@ -588,4 +630,4 @@ window.toggleMailKategori = toggleMailKategori;
 window.pilihMailKategori = pilihMailKategori;
 window.updateMailBadge = updateMailBadge;
 
-console.log("✅ mail.js loaded (Mail 2 Arah User V2)");
+console.log("✅ mail.js loaded (Mail 2 Arah V3 — Nav Stage)");
