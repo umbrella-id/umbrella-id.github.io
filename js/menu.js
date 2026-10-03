@@ -1,5 +1,5 @@
 /**
- * menu.js — Tombol Menu + Navigasi State + Handle Gate/Mail/Info/Headline/Tentang/Gallery
+ * menu.js — Tombol Menu + Navigasi State
  */
 
 let currentPage = 'home';
@@ -136,9 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 2: Form surat buka → kembali ke menu
+      // Prioritas 2: Mail buka → navigasi bertingkat
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm();
+        if (typeof mailGoBack === 'function') {
+          mailGoBack();
+        } else if (typeof closeMailModal === 'function') {
+          closeMailModal();
+        }
         return;
       }
 
@@ -159,13 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prioritas 5: Gallery buka
       if (stage && stage.classList.contains('gallery-open')) {
-        // Kalau lightbox buka → tutup lightbox dulu
         const lb = document.getElementById('galleryLightbox');
         if (lb && lb.classList.contains('open')) {
           if (typeof closeLightbox === 'function') closeLightbox();
           return;
         }
-        // Kalau nggak → tutup gallery, balik ke menu
         if (typeof closeGalleryModal === 'function') closeGalleryModal();
         return;
       }
@@ -205,9 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Prioritas 2: Form surat buka → balik ke home
+      // Prioritas 2: Mail buka → tutup + home
       if (stage && stage.classList.contains('mail-open')) {
-        if (typeof closeMailForm === 'function') closeMailForm(true);
+        if (typeof closeMailModal === 'function') closeMailModal(true);
         if (typeof goHome === 'function') goHome();
         return;
       }
