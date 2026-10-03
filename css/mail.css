@@ -1,5 +1,5 @@
 /* ==========================================
-   mail.css — Mail 2 Arah (User Side)
+   mail.css — Mail 2 Arah (Header Dinamis)
    ========================================== */
 
 .mail-overlay {
@@ -25,7 +25,7 @@
   padding: 0;
 }
 
-/* Header */
+/* Header (dinamis) */
 .mail-header {
   position: relative;
   padding: 14px 30px 16px;
@@ -36,6 +36,8 @@
   color: #f0d78c;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   z-index: 2;
+  transition: opacity 0.2s ease;
+  min-height: 46px;
 }
 
 .mail-header::after {
@@ -145,28 +147,6 @@
 
 .mail-menu-compose:active {
   transform: translateY(0) scale(0.98);
-}
-
-/* ==========================================
-   SUB-HEADER (Judul saja, tanpa tombol back)
-   ========================================== */
-.mail-subheader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(201, 165, 90, 0.2);
-}
-
-.mail-subtitle {
-  color: #f0d78c;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
 }
 
 /* ==========================================
@@ -310,7 +290,7 @@
 }
 
 /* ==========================================
-   COMPOSE (Form)
+   COMPOSE
    ========================================== */
 .mail-compose {
   display: flex;
@@ -385,7 +365,6 @@
   justify-content: flex-end;
 }
 
-/* Kategori Dropdown */
 .mail-kategori-btn {
   background: #000;
   color: #f5e6c8;
@@ -444,7 +423,6 @@
   background: rgba(201, 165, 90, 0.15);
 }
 
-/* Pesan error/sukses */
 .mail-message {
   color: #ff9999;
   font-size: 11px;
@@ -461,7 +439,7 @@
 .mail-message.success { color: #99ff99; }
 
 /* ==========================================
-   HISTORY (Baca Sesuai Urutan)
+   HISTORY
    ========================================== */
 .mail-history {
   display: flex;
