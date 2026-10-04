@@ -1,5 +1,10 @@
 /**
- * chat-input.js — Form Tulis Chat
+ * chat-input.js — Form Tulis Chat (V2 — With Rate Limit Handling)
+ * 
+ * Perubahan dari V1:
+ * - Handle response "rate_limited" dari GAS 3
+ * - Tampilkan pesan rate limit yang informatif
+ * - Optimistic UI di-rollback kalau kena limit
  */
 
 // ===== KONFIG =====
@@ -86,7 +91,7 @@ function showChatInputMessage(msg) {
   if (!el) return;
   el.innerText = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
+  setTimeout(() => el.classList.remove('show'), 3500);   // ← dari 2500 → 3500 (biar kebaca)
 }
 
 function clearChatInputMessage() {
@@ -130,27 +135,80 @@ async function kirimChat() {
     return;
   }
 
-  // Optimistic UI
+  // 🎯 OPTIMISTIC UI — simpan referensi DOM biar bisa rollback
   const chatLogs = document.getElementById('chatLogs');
+  let optimisticEl = null;
+
   if (chatLogs) {
-    const d = document.createElement('div');
-    d.className = 'chat-line';
-    d.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(result.text)}</span>`;
-    chatLogs.appendChild(d);
+    optimisticEl = document.createElement('div');
+    optimisticEl.className = 'chat-line';
+    optimisticEl.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(result.text)}</span>`;
+    chatLogs.appendChild(optimisticEl);
     chatLogs.scrollTop = chatLogs.scrollHeight;
   }
 
+  // Tutup form dulu (biar user bisa lihat chat log)
   closeChatInput();
 
   try {
     const res = await API.sendChat(uid, ign, result.text, 'msg');
-    console.log('✅ Chat terkirim:', res);
+    console.log('✅ Chat response:', res);
+
+    // 🎯 HANDLE RATE LIMIT
+    if (res && res.status === 'rate_limited') {
+      // Rollback optimistic UI
+      if (optimisticEl && optimisticEl.parentNode) {
+        optimisticEl.remove();
+      }
+
+      const waitSec = res.retryAfter || 60;
+      const waitMin = Math.ceil(waitSec / 60);
+      const waitMsg = waitSec >= 60 
+        ? `Tunggu sekitar ${waitMin} menit lagi`
+        : `Tunggu sekitar ${waitSec} detik lagi`;
+
+      // Tampilkan via chat system message (biar terlihat user)
+      if (chatLogs) {
+        const sysEl = document.createElement('div');
+        sysEl.className = 'chat-line chat-system';
+        sysEl.innerHTML = `<span class="chat-text">⚠️ Pesan terlalu cepat. ${waitMsg}.</span>`;
+        chatLogs.appendChild(sysEl);
+        chatLogs.scrollTop = chatLogs.scrollHeight;
+      }
+
+      // Toast juga
+      if (typeof showToast === 'function') {
+        showToast(`⚠️ ${waitMsg}`, true);
+      }
+
+      return;
+    }
+
+    // 🎯 SUCCESS — biarkan optimistic UI, sync untuk konfirmasi
     if (typeof syncChat === 'function') {
       setTimeout(() => syncChat(true), 500);
     }
+
   } catch (err) {
     console.error('❌ Gagal kirim chat:', err);
-    showChatInputMessage('Gagal mengirim pesan');
+
+    // Rollback optimistic UI
+    if (optimisticEl && optimisticEl.parentNode) {
+      optimisticEl.remove();
+    }
+
+    // Tampilkan error
+    if (chatLogs) {
+      const sysEl = document.createElement('div');
+      sysEl.className = 'chat-line chat-system';
+      sysEl.innerHTML = `<span class="chat-text">⚠️ Gagal mengirim pesan. Coba lagi.</span>`;
+      chatLogs.appendChild(sysEl);
+      chatLogs.scrollTop = chatLogs.scrollHeight;
+    }
+
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal mengirim pesan', true);
+    }
   }
 }
 
@@ -195,4 +253,4 @@ window.closeChatInput = closeChatInput;
 window.kirimChat = kirimChat;
 window.filterPesan = filterPesan;
 
-console.log('✅ chat-input.js loaded');
+console.log('✅ chat-input.js loaded (V2 — With Rate Limit Handling)');
