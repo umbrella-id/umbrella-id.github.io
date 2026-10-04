@@ -1,19 +1,16 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V13
+ * mail.js — Mail 2 Arah (User Side)
  * 
  * Konsep:
- * - Cache mail di sessionStorage (seperti chat)
+ * - Cache mail di sessionStorage
  * - Fetch HANYA saat initial + trigger
- * - UI semua dari cache (instant)
- * - Status baca di localStorage
+ * - Status baca di localStorage pakai TIMESTAMP (ID unik)
  * - Badge dihitung lokal
  * - Header dinamis
- * - List 3 baris (tanpa icon, dengan tag [ADMIN])
+ * - List 3 baris
  * - Tombol BALAS hanya di admin terakhir per kategori
- * - Detail menyatu dengan modal (tanpa border)
- * - Notif icon 📩 di bawah plat nama (overlap)
- * - Compose: BACK/sukses → balik ke grid 2x2 (atau Info kalau dari Info)
- * - Reply: BACK/sukses → balik ke grid 2x2
+ * - Notif icon 📩 di bawah plat nama
+ * - Compose/Reply: balik ke grid 2x2
  */
 
 let mailCurrentView = 'menu';
@@ -40,6 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchMailFresh();
   }, loaded ? 500 : 100);
 });
+
+// ==========================================
+// 🎯 GET MESSAGE ID (Timestamp)
+// ==========================================
+function getMessageId(mail) {
+  return String(mail.timestamp);
+}
 
 // ==========================================
 // LOAD CACHE
@@ -96,7 +100,7 @@ async function fetchMailFresh() {
 }
 
 // ==========================================
-// REFRESH VIEW (kalau modal mail terbuka)
+// REFRESH VIEW
 // ==========================================
 function refreshCurrentView() {
   const overlay = document.getElementById('mailOverlay');
@@ -105,7 +109,7 @@ function refreshCurrentView() {
   if (mailCurrentView === 'list') {
     applyFilterAndRender(mailCurrentFilter);
   } else if (mailCurrentView === 'detail' && mailCurrentDetail) {
-    openMailDetail(mailCurrentDetail.rowId);
+    openMailDetail(getMessageId(mailCurrentDetail));
   }
 }
 
@@ -132,7 +136,7 @@ function handleMailTrigger(lastMailReply) {
 }
 
 // ==========================================
-// SET HEADER MODAL (dinamis)
+// SET HEADER MODAL
 // ==========================================
 function setMailHeader(text) {
   const header = document.querySelector('#mailOverlay .mail-header');
@@ -199,7 +203,7 @@ function mailGoBack() {
       openMailList(mailCurrentFilter);
       break;
     case 'reply':
-      if (mailCurrentDetail) openMailDetail(mailCurrentDetail.rowId);
+      if (mailCurrentDetail) openMailDetail(getMessageId(mailCurrentDetail));
       else renderMailMenu();
       break;
     case 'history':
@@ -265,7 +269,7 @@ function renderMailMenu() {
 }
 
 // ==========================================
-// BUKA LIST (dari CACHE)
+// BUKA LIST
 // ==========================================
 function openMailList(filter) {
   mailCurrentView = 'list';
@@ -300,9 +304,9 @@ function applyFilterAndRender(filter) {
   let filtered = mailCache;
   
   if (filter === 'unread') {
-    filtered = mailCache.filter(m => m.isFromAdmin && !isMailReadLocal(m.rowId));
+    filtered = mailCache.filter(m => m.isFromAdmin && !isMailReadLocal(getMessageId(m)));
   } else if (filter === 'read') {
-    filtered = mailCache.filter(m => m.isFromAdmin && isMailReadLocal(m.rowId));
+    filtered = mailCache.filter(m => m.isFromAdmin && isMailReadLocal(getMessageId(m)));
   } else if (filter === 'sent') {
     filtered = mailCache.filter(m => !m.isFromAdmin);
   }
@@ -338,7 +342,7 @@ function renderMailList(mails, filter) {
 }
 
 // ==========================================
-// BUILD MAIL CARD HTML (3 baris, reusable)
+// BUILD MAIL CARD HTML
 // ==========================================
 function buildMailCardHTML(mail) {
   const ts = new Date(mail.timestamp);
@@ -352,7 +356,7 @@ function buildMailCardHTML(mail) {
     : escapeMail(mail.ign);
   
   return `
-    <div class="mail-card" onclick="openMailDetail(${mail.rowId})">
+    <div class="mail-card" onclick="openMailDetailById('${getMessageId(mail)}')">
       <div class="mail-card-row1">
         <span class="mail-card-sender">${senderLabel}</span>
         <span class="mail-card-time">${tgl} ${jam}</span>
@@ -364,7 +368,7 @@ function buildMailCardHTML(mail) {
 }
 
 // ==========================================
-// CEK: APAKAH INI BALASAN ADMIN TERAKHIR DI KATEGORI INI?
+// CEK: BALASAN ADMIN TERAKHIR?
 // ==========================================
 function isLastAdminReplyInCategory(mail) {
   if (!mail.isFromAdmin) return false;
@@ -378,25 +382,35 @@ function isLastAdminReplyInCategory(mail) {
   sameCategory.sort((a, b) => b.timestamp - a.timestamp);
   const lastAdmin = sameCategory.find(m => m.isFromAdmin);
   
-  return lastAdmin && lastAdmin.rowId === mail.rowId;
+  return lastAdmin && lastAdmin.timestamp === mail.timestamp;
 }
 
 // ==========================================
-// BUKA DETAIL (dari CACHE)
+// BUKA DETAIL BY ID
 // ==========================================
-function openMailDetail(rowId) {
+function openMailDetailById(messageId) {
+  const mail = mailCache.find(m => getMessageId(m) === messageId);
+  if (!mail) return;
+  openMailDetail(messageId);
+}
+
+// ==========================================
+// BUKA DETAIL
+// ==========================================
+function openMailDetail(messageId) {
   mailCurrentView = 'detail';
   setMailHeader('📄 PESAN');
   
-  const mail = mailCache.find(m => m.rowId === rowId);
+  const mail = mailCache.find(m => getMessageId(m) === messageId);
   if (!mail) return;
   
   mailCurrentDetail = mail;
   
-  if (mail.isFromAdmin && !isMailReadLocal(rowId)) {
-    markMailReadLocal(rowId);
+  // 🎯 Tandai sudah dibaca (pakai timestamp ID)
+  if (mail.isFromAdmin && !isMailReadLocal(messageId)) {
+    markMailReadLocal(messageId);
     mail.status = 'READ';
-    console.log('📖 Tandai dibaca (lokal):', rowId);
+    console.log('📖 Tandai dibaca (lokal):', messageId);
     updateBadgeFromCache();
   }
   
@@ -427,7 +441,7 @@ function openMailDetail(rowId) {
       
       ${showReplyButton ? `
         <div class="mail-detail-actions">
-          <div class="btn-svg" onclick="openMailReplyForm(${mail.rowId})">
+          <div class="btn-svg" onclick="openMailReplyForm('${messageId}')">
             <div class="btn-ujung-kiri"></div>
             <div class="btn-tengah"><span class="btn-teks">BALAS</span></div>
             <div class="btn-ujung-kanan"></div>
@@ -443,11 +457,11 @@ function openMailDetail(rowId) {
 // ==========================================
 // FORM BALAS
 // ==========================================
-function openMailReplyForm(rowId) {
+function openMailReplyForm(messageId) {
   mailCurrentView = 'reply';
   setMailHeader('✏️ BALAS');
   
-  const mail = mailCache.find(m => m.rowId === rowId);
+  const mail = mailCache.find(m => getMessageId(m) === messageId);
   if (!mail) return;
   
   const container = document.getElementById('mailContent');
@@ -466,7 +480,7 @@ function openMailReplyForm(rowId) {
       </div>
       
       <div class="mail-compose-footer">
-        <div class="btn-svg" onclick="submitMailReply(${rowId})">
+        <div class="btn-svg" onclick="submitMailReply('${messageId}')">
           <div class="btn-ujung-kiri"></div>
           <div class="btn-tengah"><span class="btn-teks">KIRIM</span></div>
           <div class="btn-ujung-kanan"></div>
@@ -488,7 +502,7 @@ function openMailReplyForm(rowId) {
 // ==========================================
 // KIRIM BALASAN
 // ==========================================
-async function submitMailReply(rowId) {
+async function submitMailReply(messageId) {
   const input = document.getElementById('mailReplyInput');
   const reply = input ? input.value.trim() : '';
   
@@ -499,7 +513,7 @@ async function submitMailReply(rowId) {
   
   const uid = window.myUID;
   const ign = window.myIGN;
-  const mail = mailCache.find(m => m.rowId === rowId);
+  const mail = mailCache.find(m => getMessageId(m) === messageId);
   const category = mail ? mail.category : 'Umum';
   
   const btn = document.querySelector('#mailContent .btn-svg');
@@ -521,7 +535,6 @@ async function submitMailReply(rowId) {
       mailStamp = '';
       await fetchMailFresh();
       
-      // 🎯 Balik ke grid 2x2
       setTimeout(() => {
         renderMailMenu();
       }, 800);
@@ -552,7 +565,7 @@ function showMailReplyMessage(msg, type = 'error') {
 }
 
 // ==========================================
-// HISTORY (Baca Sesuai Urutan — 3 baris juga)
+// HISTORY
 // ==========================================
 function openMailHistory() {
   mailCurrentView = 'history';
@@ -586,7 +599,7 @@ function renderMailHistory(history) {
 }
 
 // ==========================================
-// COMPOSE (Kirim Surat Baru)
+// COMPOSE
 // ==========================================
 function openMailCompose() {
   mailCurrentView = 'compose';
@@ -708,7 +721,7 @@ function showMailComposeMessage(msg, type = 'error') {
 }
 
 // ==========================================
-// KATEGORI DROPDOWN
+// KATEGORI
 // ==========================================
 function toggleMailKategori() {
   const list = document.getElementById('mailKategoriList');
@@ -727,44 +740,43 @@ function pilihMailKategori(val) {
 }
 
 // ==========================================
-// LOCAL STORAGE — Status Baca
+// LOCAL STORAGE — Status Baca (pakai TIMESTAMP)
 // ==========================================
-function isMailReadLocal(rowId) {
+function isMailReadLocal(messageId) {
   const uid = window.myUID;
   if (!uid) return false;
   const key = `umbrella_mail_read_${uid}`;
   try {
     const readList = JSON.parse(localStorage.getItem(key) || '[]');
-    return readList.includes(rowId);
+    return readList.includes(messageId);
   } catch(e) {
     return false;
   }
 }
 
-function markMailReadLocal(rowId) {
+function markMailReadLocal(messageId) {
   const uid = window.myUID;
   if (!uid) return;
   const key = `umbrella_mail_read_${uid}`;
   try {
     const readList = JSON.parse(localStorage.getItem(key) || '[]');
-    if (!readList.includes(rowId)) {
-      readList.push(rowId);
+    if (!readList.includes(messageId)) {
+      readList.push(messageId);
       if (readList.length > 500) {
         readList.splice(0, readList.length - 500);
       }
       localStorage.setItem(key, JSON.stringify(readList));
-      
       updateMailNotifIcon();
     }
   } catch(e) {}
 }
 
 // ==========================================
-// BADGE dari CACHE (LOKAL)
+// BADGE dari CACHE
 // ==========================================
 function updateBadgeFromCache() {
   const unreadCount = mailCache.filter(m => 
-    m.isFromAdmin && !isMailReadLocal(m.rowId)
+    m.isFromAdmin && !isMailReadLocal(getMessageId(m))
   ).length;
   
   const badge = document.getElementById('badge-unread');
@@ -783,11 +795,11 @@ function updateBadgeFromCache() {
 }
 
 // ==========================================
-// NOTIF ICON SURAT (di bawah plat nama)
+// NOTIF ICON 📩
 // ==========================================
 function updateMailNotifIcon() {
   const hasUnread = mailCache.some(m => 
-    m.isFromAdmin && !isMailReadLocal(m.rowId)
+    m.isFromAdmin && !isMailReadLocal(getMessageId(m))
   );
   
   const icon = document.getElementById('mailNotifIcon');
@@ -834,6 +846,7 @@ window.mailGoBack = mailGoBack;
 window.renderMailMenu = renderMailMenu;
 window.openMailList = openMailList;
 window.openMailDetail = openMailDetail;
+window.openMailDetailById = openMailDetailById;
 window.openMailReplyForm = openMailReplyForm;
 window.submitMailReply = submitMailReply;
 window.openMailHistory = openMailHistory;
@@ -850,5 +863,6 @@ window.fetchMailFresh = fetchMailFresh;
 window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
 window.updateMailNotifIcon = updateMailNotifIcon;
 window.openMailFromNotif = openMailFromNotif;
+window.getMessageId = getMessageId;
 
-console.log("✅ mail.js loaded (Mail 2 Arah V13 — Reply Back to Grid)");
+console.log("✅ mail.js loaded (Mail 2 Arah V14 — Timestamp ID)");
