@@ -1,12 +1,13 @@
 /* ==========================================
    mail-notif.css — Notif Icon Surat
    Posisi: bawah plat nama, rata kiri dengan text nama
+   Glow hitam, selalu tampil selama ada unread
    ========================================== */
 
 .mail-notif {
   position: absolute;
-  bottom: 0px;                 
-  left: 29px;                  /* 🎯 rata kiri dengan text nama */
+  bottom: 5px;
+  left: 29px;
   width: 20px;
   height: 20px;
   display: flex;
@@ -18,8 +19,9 @@
   cursor: pointer;
   pointer-events: auto;
   
-  filter: drop-shadow(0 0 4px rgba(255, 68, 68, 0.9))
-          drop-shadow(0 0 8px rgba(255, 68, 68, 0.5));
+  /* 🎯 Glow hitam, radius kecil */
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9))
+          drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
   
   animation: mailNotifPulse 2s infinite ease-in-out;
 }
@@ -37,14 +39,8 @@
 
 .mail-notif:active {
   transform: scale(0.9);
-  filter: drop-shadow(0 0 6px rgba(255, 68, 68, 1));
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
 }
 
-/* Sembunyikan saat gate / modal / headline buka */
-.stage.gate-first .mail-notif,
-.stage.gate-edit-mode .mail-notif,
-.stage.modal-open .mail-notif,
-.stage.headline-open .mail-notif,
-.stage.mail-open .mail-notif {
-  display: none !important;
-}
+/* 🎯 TIDAK ADA CSS untuk menyembunyikan saat modal buka */
+/* Icon selalu tampil selama ada unread */
