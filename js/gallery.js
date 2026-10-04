@@ -1,10 +1,15 @@
 /**
  * gallery.js — Modal Gallery (Album Foto)
+ * 
+ * Format Body dari GAS (sama dengan dashboard):
+ *   <img src="URL" style="..."><p>Caption</p>
+ * 
+ * Client langsung render HTML-nya (tanpa parsing).
  */
 
 let galleryOpen = false;
-let galleryData = [];       // list foto
-let galleryIndex = 0;       // index foto saat ini di lightbox
+let galleryData = [];
+let galleryIndex = 0;
 let galleryPreloaded = false;
 
 // ===== PRELOAD =====
@@ -33,21 +38,27 @@ async function preloadGalleryData() {
 }
 
 // ===== PARSE ITEM =====
-// Body bisa berisi: URL gambar + keterangan (dipisah baris)
+// Body dari admin berisi HTML: <img src="URL" style="..."><p>Caption</p>
+// Kita ekstrak: URL gambar + caption (text bersih)
 function parseGalleryItem(item) {
   const judul = item.Header || 'Tanpa Judul';
   const body = item.Body || '';
 
-  // Pisah baris
-  const lines = body.split('\n').map(l => l.trim()).filter(l => l !== '');
+  if (!body.trim()) return null;
 
-  if (lines.length === 0) return null;
+  // Ekstrak URL gambar dari <img src="...">
+  const imgMatch = body.match(/<img[^>]*src=["']([^"']+)["']/i);
+  const imgUrl = imgMatch ? imgMatch[1] : '';
 
-  // Baris pertama: URL gambar
-  const imgUrl = lines[0];
+  if (!imgUrl) return null;
 
-  // Sisanya: keterangan
-  const caption = lines.slice(1).join(' ');
+  // Ekstrak caption — hapus semua tag HTML, sisanya text
+  let caption = body
+    .replace(/<img[^>]*>/gi, '')          // hapus tag img
+    .replace(/<\/?p[^>]*>/gi, ' ')        // hapus tag p
+    .replace(/<[^>]+>/g, ' ')             // hapus tag HTML lainnya
+    .replace(/\s+/g, ' ')                 // rapikan spasi
+    .trim();
 
   return {
     judul: judul,
@@ -232,7 +243,7 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const lb = document.getElementById('galleryLightbox');
-    if (lb && lb.classList.contains('open')) return;   // lightbox dulu
+    if (lb && lb.classList.contains('open')) return;
 
     const overlay = document.getElementById('galleryOverlay');
     if (overlay && overlay.classList.contains('open')) {
@@ -250,4 +261,4 @@ window.closeLightbox = closeLightbox;
 window.lightboxPrev = lightboxPrev;
 window.lightboxNext = lightboxNext;
 
-console.log('✅ gallery.js loaded');
+console.log('✅ gallery.js loaded (V2 — HTML Body)');
