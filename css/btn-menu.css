@@ -85,11 +85,6 @@
   display: none !important;
 }
 
-/* Saat info serikat buka — tombol di atas overlay */
-.stage.info-open .btn-wrap {
-  z-index: 970 !important;
-}
-
 /* ==========================================
    Sembunyikan banner saat gate/mail/info buka
    ========================================== */
