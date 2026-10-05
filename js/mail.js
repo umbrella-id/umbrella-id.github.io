@@ -246,7 +246,7 @@ function renderMailMenu() {
     <div class="mail-compose-btn-wrap">
       <div class="btn-svg mail-compose-btn" onclick="openMailCompose()">
         <div class="btn-ujung-kiri"></div>
-        <div class="btn-tengah"><span class="btn-teks">KIRIM SURAT BARU</span></div>
+        <div class="btn-tengah"><span class="btn-teks">KIRIM SURAT</span></div>
         <div class="btn-ujung-kanan"></div>
       </div>
     </div>
@@ -601,7 +601,7 @@ function renderMailHistory(history) {
 // ==========================================
 function openMailCompose() {
   mailCurrentView = 'compose';
-  setMailHeader('✏️ KIRIM SURAT BARU');
+  setMailHeader('KIRIM SURAT');
   
   const container = document.getElementById('mailContent');
   if (!container) return;
