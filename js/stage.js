@@ -45,7 +45,7 @@ function updateLayout() {
 // BACKGROUND LOADER — HEAD + CACHE + JSON
 // ==========================================
 
-const BG_JSON_URL = 'https://raw.githubusercontent.com/umbrella-id/web/main/upload/bg.json';
+const BG_JSON_URL = 'https://raw.githubusercontent.com/umbrella-id/umbrella-id.github.io/main/upload/bg.json';
 const BG_CACHE_KEY = 'umbrella_bg_config';
 const BG_LM_KEY = 'umbrella_bg_last_modified';
 const BG_CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 jam
