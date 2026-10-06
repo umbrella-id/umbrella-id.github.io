@@ -113,7 +113,7 @@ async function loadBackground() {
 function applyBackground(config, bgEl) {
     if (!config) config = { status: 'nonaktif' };
     
-    let bgUrl = 'Assets/Background.png';
+    let bgUrl = '/Assets/Background.png';
     
     if (config.status === 'aktif' && config.data && config.data.startsWith('data:image/')) {
         bgUrl = config.data;
