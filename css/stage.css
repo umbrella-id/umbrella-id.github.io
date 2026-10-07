@@ -53,20 +53,24 @@ html.portrait .rotate-wrapper {
 
 .npc-container {
     position: absolute;
-    top: 25%;                       /* ← plat nama di 25% dari atas */
+    top: 25%;
     left: 50%;
     transform: translate(-50%, 0);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 2px;                       /* ← dari 6px ke 2px (dekatkan) */
     z-index: 5;
     pointer-events: auto;
     user-select: none;
-    /* Biarkan NPC overflow keluar container */
 }
 
-/* Plat nama */
+/* Geser NPC ke kanan 20px */
+.npc-container {
+    margin-left: 20px;              /* ← tambah ini */
+}
+
+/* Plat nama — dengan opacity 80% */
 .npc-name-plate {
     background: #8b5a2b;
     border: 2px solid #5c3a1a;
@@ -86,32 +90,50 @@ html.portrait .rotate-wrapper {
         inset 0 -1px 0 rgba(0, 0, 0, 0.3),
         0 2px 4px rgba(0, 0, 0, 0.5);
     flex-shrink: 0;
+    
+    opacity: 0.8;                   /* ← tambah ini */
 }
 
-/* Maskot NPC — tampil dari pinggang ke atas */
+.npc-name-plate:hover {
+    background: #a06b34;
+    border-color: #7a4a22;
+    transform: translateY(-1px);
+    opacity: 1;                     /* ← full opacity saat hover */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.npc-name-plate:active {
+    transform: translateY(1px) scale(0.97);
+    background: #7a4a22;
+    opacity: 1;
+}
+
+/* Maskot NPC */
 .npc-maskot {
-    height: 280px;                  /* ← tinggi total, bagian bawah keluar viewport */
+    height: 280px;
     width: auto;
     max-width: 220px;
     filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
     opacity: 0;
     transition: opacity 0.6s ease;
     pointer-events: none;
-    margin-top: -6px;
-    /* Tidak perlu overflow: hidden — biarkan keluar */
+    margin-top: -8px;               /* ← tarik NPC lebih dekat ke plat nama */
 }
 
 .npc-maskot.loaded {
     opacity: 1;
 }
 
-/* Sembunyikan NPC saat gate aktif (user baru pertama) */
+/* Sembunyikan NPC saat gate aktif */
 .stage.gate-first .npc-container,
 .stage.gate-edit-mode .npc-container {
     display: none;
 }
 
-/* Sembunyikan NPC saat modal/chat/mail buka — biar tidak ganggu */
+/* Sembunyikan NPC saat modal/chat/mail buka */
 .stage.modal-open .npc-container,
 .stage.mail-open .npc-container,
 .stage.info-open .npc-container,
