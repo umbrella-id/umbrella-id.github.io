@@ -147,6 +147,11 @@ function saveIdentity() {
 
   updateIdentityUI();
   closeGate(true);   // ← SELESAI → skip menu, balik home
+
+  // 🎭 Load NPC setelah gate tutup
+  setTimeout(() => {
+      if (typeof window.loadNpc === 'function') window.loadNpc();
+  }, 500);
 }
 
 // ===== TUTUP GATE =====
@@ -205,6 +210,10 @@ function closeGate(skipMenu = false) {
       }, 100);
     }
   }
+  // 🎭 Load NPC setelah gate tutup
+  setTimeout(() => {
+      if (typeof window.loadNpc === 'function') window.loadNpc();
+  }, 500);
 }
 
 // ===== INISIALISASI =====
