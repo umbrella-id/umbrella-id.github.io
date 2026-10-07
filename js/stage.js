@@ -1,12 +1,13 @@
 /**
- * stage.js — Auto-scale + Orientasi + Background Dinamis V3
+ * stage.js — Auto-scale + Orientasi + Background Dinamis V4
  * 
- * Fitur:
- * - Load bg.json (metadata) + bg-img (binary) — dual fetch
- * - Support multi format: JPEG, PNG, WebP, GIF, AVIF, SVG
- * - Tanpa base64 overhead di storage & client
- * - Cache efisien via version + sessionStorage
- * - SVG aman (dirender sebagai CSS background — JavaScript diblokir)
+ * Perubahan dari V3:
+ * - Fix bug blob URL expired (ERR_FILE_NOT_FOUND)
+ * - Blob URL tidak lagi disimpan di sessionStorage (blob tidak bisa cross-session)
+ * - Selalu fetch bg-img setiap load + create blob baru
+ * - Revoke blob lama untuk cegah memory leak
+ * - Fetch bg-img di-cache browser via ?v=version — tetap cepat
+ * - NPC lazy load tetap ada
  */
 
 function isPortrait() {
@@ -48,8 +49,6 @@ function updateLayout() {
 
 const BG_JSON_URL = 'https://raw.githubusercontent.com/umbrella-id/umbrella-id.github.io/main/upload/bg.json';
 const BG_IMG_URL  = 'https://raw.githubusercontent.com/umbrella-id/umbrella-id.github.io/main/upload/bg-img';
-const BG_VERSION_KEY = 'umbrella_bg_version';
-const BG_BLOB_KEY = 'umbrella_bg_blob_url';
 
 const FORMAT_TO_MIME = {
     'jpeg': 'image/jpeg',
@@ -62,6 +61,9 @@ const FORMAT_TO_MIME = {
     'svg+xml': 'image/svg+xml'
 };
 
+// Global reference untuk blob URL aktif (untuk di-revoke)
+window.__umbrella_current_blob = null;
+
 async function loadBackground() {
     console.log('🎨 Load background...');
     
@@ -69,7 +71,7 @@ async function loadBackground() {
     document.documentElement.style.backgroundColor = '#030208';
     
     try {
-        // 1. Fetch bg.json (kecil, cepat)
+        // 1. Fetch bg.json (metadata)
         const res = await fetch(BG_JSON_URL, { cache: 'no-cache' });
         
         if (!res.ok) throw new Error('bg.json tidak ada');
@@ -83,18 +85,7 @@ async function loadBackground() {
             return;
         }
         
-        // 3. Cek cache (version sama → pakai blob lama)
-        const cachedVersion = sessionStorage.getItem(BG_VERSION_KEY) || '';
-        const cachedBlobUrl = sessionStorage.getItem(BG_BLOB_KEY) || '';
-        
-        if (config.version && String(config.version) === cachedVersion && cachedBlobUrl) {
-            document.documentElement.style.setProperty('--bg-image', `url('${cachedBlobUrl}')`);
-            console.log('📦 Background dari cache (version sama)');
-            if (bgEl) { void bgEl.offsetHeight; bgEl.classList.add('loaded'); }
-            return;
-        }
-        
-        // 4. Fetch binary image
+        // 3. Fetch binary image (SELALU — blob URL tidak bisa cross-session)
         console.log('🔄 Fetch bg-img (binary)...');
         const imgRes = await fetch(BG_IMG_URL + '?v=' + (config.version || Date.now()), { cache: 'no-cache' });
         
@@ -102,16 +93,19 @@ async function loadBackground() {
         
         const rawBlob = await imgRes.blob();
         
-        // 5. Override MIME (GitHub raw kirim application/octet-stream untuk file tanpa ekstensi)
+        // 4. Override MIME (GitHub raw kirim application/octet-stream untuk file tanpa ekstensi)
         const actualMime = FORMAT_TO_MIME[(config.format || '').toLowerCase()] || 'image/jpeg';
         const blob = new Blob([rawBlob], { type: actualMime });
         const blobUrl = URL.createObjectURL(blob);
         
-        // 6. Simpan cache
-        sessionStorage.setItem(BG_VERSION_KEY, String(config.version || ''));
-        sessionStorage.setItem(BG_BLOB_KEY, blobUrl);
+        // 5. Revoke blob lama (kalau ada) — cegah memory leak
+        const oldBlobUrl = window.__umbrella_current_blob;
+        if (oldBlobUrl && oldBlobUrl !== blobUrl) {
+            try { URL.revokeObjectURL(oldBlobUrl); } catch(e) {}
+        }
+        window.__umbrella_current_blob = blobUrl;
         
-        // 7. Apply background
+        // 6. Apply background
         document.documentElement.style.setProperty('--bg-image', `url('${blobUrl}')`);
         console.log('✅ Background custom:', config.format, ((config.size || 0) / 1024).toFixed(0) + 'KB');
         
@@ -176,7 +170,16 @@ function checkAndLoadNpc() {
     }
 }
 
+// ==========================================
+// CLEANUP — Revoke blob saat halaman ditutup
+// ==========================================
 
+window.addEventListener('beforeunload', () => {
+    if (window.__umbrella_current_blob) {
+        try { URL.revokeObjectURL(window.__umbrella_current_blob); } catch(e) {}
+        window.__umbrella_current_blob = null;
+    }
+});
 
 // ==========================================
 // PRELOAD
@@ -207,6 +210,7 @@ window.addEventListener('load', () => {
   setTimeout(preloadAllData, 500);
   setTimeout(preloadTentang, 700);
   setTimeout(preloadGallery, 700);
+  
   // 🎭 NPC: cek dulu, kalau gate tidak aktif → load
   setTimeout(checkAndLoadNpc, 800);
 });
@@ -216,9 +220,7 @@ window.addEventListener('orientationchange', () => setTimeout(updateLayout, 150)
 
 window.isPortrait = isPortrait;
 window.loadBackground = loadBackground;
-
-// Expose untuk dipanggil dari tempat lain (setelah gate tutup)
 window.loadNpc = loadNpc;
 window.checkAndLoadNpc = checkAndLoadNpc;
 
-console.log('✅ stage.js loaded (V3 — Dual File Background + SVG Support)');
+console.log('✅ stage.js loaded (V4 — Blob Fix + NPC)');
