@@ -207,6 +207,8 @@ window.addEventListener('load', () => {
   setTimeout(preloadAllData, 500);
   setTimeout(preloadTentang, 700);
   setTimeout(preloadGallery, 700);
+  // 🎭 NPC: cek dulu, kalau gate tidak aktif → load
+  setTimeout(checkAndLoadNpc, 800);
 });
 
 window.addEventListener('resize', updateLayout);
