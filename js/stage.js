@@ -1,11 +1,12 @@
 /**
- * stage.js — Auto-scale + Orientasi + Background Dinamis (V2)
+ * stage.js — Auto-scale + Orientasi + Background Dinamis V3
  * 
- * Fitur baru:
- * - Load background dari bg.json (dynamic dari admin)
- * - Cek via HEAD + Last-Modified (hemat bandwidth)
- * - Session cache untuk kunjungan berikutnya
- * - Fallback ke default kalau bg.json tidak ada / nonaktif
+ * Fitur:
+ * - Load bg.json (metadata) + bg-img (binary) — dual fetch
+ * - Support multi format: JPEG, PNG, WebP, GIF, AVIF, SVG
+ * - Tanpa base64 overhead di storage & client
+ * - Cache efisien via version + sessionStorage
+ * - SVG aman (dirender sebagai CSS background — JavaScript diblokir)
  */
 
 function isPortrait() {
@@ -42,92 +43,91 @@ function updateLayout() {
 }
 
 // ==========================================
-// BACKGROUND LOADER — HEAD + CACHE + JSON
+// BACKGROUND LOADER — DUAL FILE (JSON + BINARY)
 // ==========================================
 
 const BG_JSON_URL = 'https://raw.githubusercontent.com/umbrella-id/umbrella-id.github.io/main/upload/bg.json';
-const BG_CACHE_KEY = 'umbrella_bg_config';
-const BG_LM_KEY = 'umbrella_bg_last_modified';
-const BG_CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 jam
+const BG_IMG_URL  = 'https://raw.githubusercontent.com/umbrella-id/umbrella-id.github.io/main/upload/bg-img';
+const BG_VERSION_KEY = 'umbrella_bg_version';
+const BG_BLOB_KEY = 'umbrella_bg_blob_url';
+
+const FORMAT_TO_MIME = {
+    'jpeg': 'image/jpeg',
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+    'webp': 'image/webp',
+    'gif': 'image/gif',
+    'avif': 'image/avif',
+    'svg': 'image/svg+xml',
+    'svg+xml': 'image/svg+xml'
+};
 
 async function loadBackground() {
     console.log('🎨 Load background...');
     
     const bgEl = document.querySelector('.bg');
-    
-    // 1. Set placeholder warna (instant, tidak download apapun)
     document.documentElement.style.backgroundColor = '#030208';
     
     try {
-        // 2. HEAD request — cek Last-Modified
-        const headRes = await fetch(BG_JSON_URL, {
-            method: 'HEAD',
-            cache: 'no-cache'
-        });
-        
-        if (!headRes.ok) {
-            throw new Error('bg.json tidak ditemukan');
-        }
-        
-        const lastModified = headRes.headers.get('Last-Modified') || '';
-        const cachedModified = sessionStorage.getItem(BG_LM_KEY) || '';
-        const cachedConfig = sessionStorage.getItem(BG_CACHE_KEY) || '';
-        const cachedTime = parseInt(sessionStorage.getItem('umbrella_bg_time') || '0');
-        
-        // 3. Cek cache: kalau Last-Modified sama & belum expired
-        const isCacheValid = 
-            cachedConfig &&
-            lastModified &&
-            lastModified === cachedModified &&
-            (Date.now() - cachedTime) < BG_CACHE_MAX_AGE;
-        
-        if (isCacheValid) {
-            const config = JSON.parse(cachedConfig);
-            applyBackground(config, bgEl);
-            console.log('📦 Background dari cache');
-            return;
-        }
-        
-        // 4. Fetch full JSON
-        console.log('🔄 Fetch bg.json (fresh)');
+        // 1. Fetch bg.json (kecil, cepat)
         const res = await fetch(BG_JSON_URL, { cache: 'no-cache' });
         
-        if (!res.ok) throw new Error('Fetch bg.json gagal');
+        if (!res.ok) throw new Error('bg.json tidak ada');
         
         const config = await res.json();
         
-        // Simpan di session
-        sessionStorage.setItem(BG_CACHE_KEY, JSON.stringify(config));
-        sessionStorage.setItem(BG_LM_KEY, lastModified);
-        sessionStorage.setItem('umbrella_bg_time', Date.now().toString());
+        // 2. Cek status
+        if (config.status !== 'aktif') {
+            console.log('🎨 Status nonaktif, pakai default');
+            applyDefaultBackground(bgEl);
+            return;
+        }
         
-        applyBackground(config, bgEl);
-        console.log('✅ Background updated dari JSON');
+        // 3. Cek cache (version sama → pakai blob lama)
+        const cachedVersion = sessionStorage.getItem(BG_VERSION_KEY) || '';
+        const cachedBlobUrl = sessionStorage.getItem(BG_BLOB_KEY) || '';
+        
+        if (config.version && String(config.version) === cachedVersion && cachedBlobUrl) {
+            document.documentElement.style.setProperty('--bg-image', `url('${cachedBlobUrl}')`);
+            console.log('📦 Background dari cache (version sama)');
+            if (bgEl) { void bgEl.offsetHeight; bgEl.classList.add('loaded'); }
+            return;
+        }
+        
+        // 4. Fetch binary image
+        console.log('🔄 Fetch bg-img (binary)...');
+        const imgRes = await fetch(BG_IMG_URL + '?v=' + (config.version || Date.now()), { cache: 'no-cache' });
+        
+        if (!imgRes.ok) throw new Error('bg-img tidak ada');
+        
+        const rawBlob = await imgRes.blob();
+        
+        // 5. Override MIME (GitHub raw kirim application/octet-stream untuk file tanpa ekstensi)
+        const actualMime = FORMAT_TO_MIME[(config.format || '').toLowerCase()] || 'image/jpeg';
+        const blob = new Blob([rawBlob], { type: actualMime });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // 6. Simpan cache
+        sessionStorage.setItem(BG_VERSION_KEY, String(config.version || ''));
+        sessionStorage.setItem(BG_BLOB_KEY, blobUrl);
+        
+        // 7. Apply background
+        document.documentElement.style.setProperty('--bg-image', `url('${blobUrl}')`);
+        console.log('✅ Background custom:', config.format, ((config.size || 0) / 1024).toFixed(0) + 'KB');
+        
+        if (bgEl) { void bgEl.offsetHeight; bgEl.classList.add('loaded'); }
         
     } catch(e) {
-        console.warn('⚠️ bg.json gagal, pakai default:', e.message);
-        applyBackground({ status: 'nonaktif' }, bgEl);
+        console.warn('⚠️ bg.json gagal:', e.message);
+        applyDefaultBackground(bgEl);
     }
 }
 
-function applyBackground(config, bgEl) {
-    if (!config) config = { status: 'nonaktif' };
+function applyDefaultBackground(bgEl) {
+    document.documentElement.style.setProperty('--bg-image', `url('/Assets/Background.png')`);
+    console.log('🎨 Pakai background DEFAULT');
     
-    let bgUrl = '/Assets/Background.png';
-    
-    if (config.status === 'aktif' && config.data && config.data.startsWith('data:image/')) {
-        bgUrl = config.data;
-        console.log('🎨 Pakai background CUSTOM');
-    } else {
-        console.log('🎨 Pakai background DEFAULT');
-    }
-    
-    document.documentElement.style.setProperty('--bg-image', `url('${bgUrl}')`);
-    
-    if (bgEl) {
-        void bgEl.offsetHeight;
-        bgEl.classList.add('loaded');
-    }
+    if (bgEl) { void bgEl.offsetHeight; bgEl.classList.add('loaded'); }
 }
 
 // ==========================================
@@ -166,4 +166,4 @@ window.addEventListener('orientationchange', () => setTimeout(updateLayout, 150)
 
 window.isPortrait = isPortrait;
 window.loadBackground = loadBackground;
-console.log('✅ stage.js loaded (V2 — Dynamic Background)');
+console.log('✅ stage.js loaded (V3 — Dual File Background + SVG Support)');
