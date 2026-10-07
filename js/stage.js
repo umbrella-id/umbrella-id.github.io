@@ -131,6 +131,54 @@ function applyDefaultBackground(bgEl) {
 }
 
 // ==========================================
+// NPC / MASKOT — Lazy Load
+// ==========================================
+
+function loadNpc() {
+    const container = document.getElementById('npcContainer');
+    if (!container) return;
+    
+    // Jangan load kalau sudah ada
+    if (container.querySelector('.npc-maskot')) return;
+    
+    // Jangan load saat gate aktif (user baru)
+    const stage = document.getElementById('stage');
+    if (stage && (stage.classList.contains('gate-first') || stage.classList.contains('gate-edit-mode'))) {
+        console.log('⏸️ NPC ditunda — gate aktif');
+        return;
+    }
+    
+    const img = document.createElement('img');
+    img.className = 'npc-maskot';
+    img.alt = 'Umbrella NPC';
+    img.src = 'Assets/NPC.webp';
+    
+    img.onload = () => {
+        img.classList.add('loaded');
+        console.log('✅ NPC loaded');
+    };
+    
+    img.onerror = () => {
+        console.warn('⚠️ NPC gagal load:', img.src);
+        img.remove();
+    };
+    
+    container.appendChild(img);
+}
+
+function checkAndLoadNpc() {
+    const stage = document.getElementById('stage');
+    if (!stage) return;
+    
+    // Load NPC kalau gate tidak aktif
+    if (!stage.classList.contains('gate-first') && !stage.classList.contains('gate-edit-mode')) {
+        loadNpc();
+    }
+}
+
+
+
+// ==========================================
 // PRELOAD
 // ==========================================
 
@@ -166,4 +214,9 @@ window.addEventListener('orientationchange', () => setTimeout(updateLayout, 150)
 
 window.isPortrait = isPortrait;
 window.loadBackground = loadBackground;
+
+// Expose untuk dipanggil dari tempat lain (setelah gate tutup)
+window.loadNpc = loadNpc;
+window.checkAndLoadNpc = checkAndLoadNpc;
+
 console.log('✅ stage.js loaded (V3 — Dual File Background + SVG Support)');
