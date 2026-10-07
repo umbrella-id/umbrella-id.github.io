@@ -53,19 +53,20 @@ html.portrait .rotate-wrapper {
 
 .npc-container {
     position: absolute;
-    top: 50%;
+    top: 25%;                       /* ← plat nama di 25% dari atas */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    z-index: 5;                  /* Di atas bg, di bawah UI */
+    z-index: 5;
     pointer-events: auto;
     user-select: none;
+    /* Biarkan NPC overflow keluar container */
 }
 
-/* Plat nama — seperti NPC di game RPG */
+/* Plat nama */
 .npc-name-plate {
     background: #8b5a2b;
     border: 2px solid #5c3a1a;
@@ -80,38 +81,24 @@ html.portrait .rotate-wrapper {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
     cursor: pointer;
     transition: all 0.15s ease;
-    
-    /* Efek timbul seperti button NPC */
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.15),
         inset 0 -1px 0 rgba(0, 0, 0, 0.3),
         0 2px 4px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
 }
 
-.npc-name-plate:hover {
-    background: #a06b34;
-    border-color: #7a4a22;
-    transform: translateY(-1px);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-        0 3px 6px rgba(0, 0, 0, 0.6);
-}
-
-.npc-name-plate:active {
-    transform: translateY(1px) scale(0.97);
-    background: #7a4a22;
-}
-
-/* Maskot NPC */
+/* Maskot NPC — tampil dari pinggang ke atas */
 .npc-maskot {
-    height: 42%;              /* ~42% tinggi stage (~126px di 300px) */
+    height: 280px;                  /* ← tinggi total, bagian bawah keluar viewport */
     width: auto;
-    max-width: 200px;
+    max-width: 220px;
     filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
     opacity: 0;
     transition: opacity 0.6s ease;
-    pointer-events: none;     /* Klik hanya di plat nama */
+    pointer-events: none;
+    margin-top: -6px;
+    /* Tidak perlu overflow: hidden — biarkan keluar */
 }
 
 .npc-maskot.loaded {
