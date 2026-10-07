@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Umbrella-Toram Online</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -30,15 +30,17 @@
 
     <div class="bg"></div>
 
-    <!-- 🎭 NPC CONTAINER — di atas background, di bawah UI -->
-    <div class="npc-container" id="npcContainer">
-        <div class="npc-name-plate" onclick="openInfoModal()">
-            UMBRELLA
-        </div>
-        <!-- Image di-load dinamis oleh stage.js -->
-    </div>
-
     <div class="stage" id="stage">
+
+      <!-- ============ NPC / MASKOT ============ -->
+      <!-- 🎭 NPC — di dalam stage, di atas background, di bawah UI -->
+      <!-- CSS otomatis hide saat gate aktif (gate-first / gate-edit-mode) -->
+      <div class="npc-container" id="npcContainer">
+          <div class="npc-name-plate" onclick="openInfoModal()">
+              UMBRELLA
+          </div>
+          <!-- Image di-load dinamis oleh stage.js (lazy load) -->
+      </div>
 
       <!-- ============ IDENTITY GATE ============ -->
       <div id="gatekeeper" class="gatekeeper">
@@ -318,8 +320,6 @@
           </div>
 
           <div class="headline-header" id="headlineHeader">Pengumuman</div>
-
-          <!-- 🎯 Tombol close X DIHAPUS — sudah ada tombol BACK & HOME di menu utama -->
 
           <div class="headline-body" id="headlineBody"></div>
 
