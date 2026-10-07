@@ -127,8 +127,8 @@ html.portrait .rotate-wrapper {
     display: none;
 }
 
-/* Sembunyikan NPC saat modal/chat/mail buka */
-.stage.modal-open .npc-container,
+/* Sembunyikan NPC saat MODAL LAIN buka (BUKAN menu) */
+/* Menu tetap tampilkan NPC */
 .stage.mail-open .npc-container,
 .stage.info-open .npc-container,
 .stage.tentang-open .npc-container,
