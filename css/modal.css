@@ -1,5 +1,6 @@
 /* ==========================================
    modal.css — Modal Menu + Bingkai + Tombol SVG
+   V2 — Fix frame-v overlap di modal kecil
    ========================================== */
 
 /* ===== TOMBOL SVG (REUSABLE) ===== */
@@ -70,6 +71,8 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* ===== FRAME H — PANEL HORIZONTAL (atas & bawah) ===== */
 .frame-h {
   position: absolute;
   left: 0;
@@ -80,17 +83,46 @@
 }
 .frame-h.atas  { top: 0; }
 .frame-h.bawah { bottom: 0; }
+
+/* ===== FRAME V — PANEL VERTIKAL (kiri & kanan) — FIX V2 ===== */
+/* Anak (pojok & garis-v) di-absolute supaya tidak overflow
+   saat container height < 48px (contoh: gate input) */
 .frame-v {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
 }
 .frame-v.kiri  { left: 0; }
 .frame-v.kanan { right: 0; }
+
+/* Pojok di dalam frame-v — absolute */
+.frame-v .pojok {
+  position: absolute;
+  left: 0;
+  width: 30px;
+  height: 24px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+.frame-v .pojok:nth-child(1) { top: 0; }       /* pojok atas */
+.frame-v .pojok:nth-child(3) { bottom: 0; }    /* pojok bawah */
+
+/* Garis v — absolute, auto-hide kalau container < 48px
+   (top: 24px + bottom: 24px = minimal 48px untuk muncul) */
+.frame-v .garis-v {
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  width: auto;
+  background: url('../Assets/MODAL-V.svg') no-repeat center center;
+  background-size: 100% 100%;
+  z-index: 1;
+}
+
+/* ===== POJOK (corner ornamen) ===== */
 .pojok {
   width: 30px;
   height: 24px;
@@ -98,13 +130,19 @@
   background: url('../Assets/MODAL-CORNER.svg') no-repeat center center;
   background-size: 100% 100%;
 }
+
+/* ===== TRANSFORM FLIP — frame-h ===== */
 .frame-h.atas .pojok:nth-child(3) { transform: scaleX(-1); }
 .frame-h.bawah .pojok:nth-child(1) { transform: scaleY(-1); }
 .frame-h.bawah .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+
+/* ===== TRANSFORM FLIP — frame-v ===== */
 .frame-v.kiri .pojok:nth-child(3) { transform: scaleY(-1); }
 .frame-v.kanan .pojok:nth-child(1) { transform: scaleX(-1); }
 .frame-v.kanan .pojok:nth-child(3) { transform: scaleX(-1) scaleY(-1); }
+.frame-v.kanan .garis-v { transform: scaleX(-1); }
 
+/* ===== GARIS H (garis horizontal) ===== */
 .garis-h {
   flex-grow: 1;
   height: 100%;
@@ -112,13 +150,6 @@
   background-size: 100% 100%;
 }
 .frame-h.bawah .garis-h { transform: scaleY(-1); }
-.garis-v {
-  flex-grow: 1;
-  width: 100%;
-  background: url('../Assets/MODAL-V.svg') no-repeat center center;
-  background-size: 100% 100%;
-}
-.frame-v.kanan .garis-v { transform: scaleX(-1); }
 
 /* ===== MODAL MENU ===== */
 .modal-overlay {
