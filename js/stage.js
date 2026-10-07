@@ -124,7 +124,7 @@ async function loadBackground() {
 }
 
 function applyDefaultBackground(bgEl) {
-    document.documentElement.style.setProperty('--bg-image', `url('/Assets/Background.png')`);
+    document.documentElement.style.setProperty('--bg-image', `url('/Assets/Background.webp')`);
     console.log('🎨 Pakai background DEFAULT');
     
     if (bgEl) { void bgEl.offsetHeight; bgEl.classList.add('loaded'); }
