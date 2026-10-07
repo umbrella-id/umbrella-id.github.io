@@ -148,8 +148,10 @@ function loadNpc() {
     img.src = 'Assets/NPC.webp';
     
     img.onload = () => {
-        img.classList.add('loaded');
         console.log('✅ NPC loaded');
+        
+        // 🔥 Tandai container ready → plat nama + NPC muncul bersamaan
+        container.classList.add('npc-ready');
     };
     
     img.onerror = () => {
