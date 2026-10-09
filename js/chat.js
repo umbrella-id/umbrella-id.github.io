@@ -2,8 +2,8 @@
  * chat.js — Chat Box (Log Only) + Drag + Snap + Sinkronisasi GAS
  * + Notifikasi Mute (mute-notif.js)
  * + Broadcast trigger mail (lastMailReply)
- * + Fix: guard "sudah di-mute" biar timer tidak reset
- * V2 — With Member Color + Deteksi Admin dari UID
+ * + Render 3 warna berdasarkan prefix UID
+ * V3 — Deteksi Class dari UID Prefix
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -179,24 +179,22 @@ function isSystemMessageMasihBerlaku(logs, index) {
 }
 
 // ==========================================
-// 🎯 DETEKSI CLASS UNTUK RENDER
+// 🎯 DETEKSI CLASS DARI UID PREFIX
 // ==========================================
 function getChatClass(msg) {
   const uid = msg.uid || '';
   
-  // 1. Admin — dari UID prefix ADM_
+  // Admin — UID prefix ADM_
   if (uid.startsWith('ADM_')) {
     return 'admin';
   }
   
-  // 2. Member — dari u_class di localStorage
-  //    (berlaku untuk semua chat, karena 1 device = 1 user)
-  const uClass = localStorage.getItem('u_class');
-  if (uClass === 'member') {
+  // Member — UID prefix M-
+  if (uid.startsWith('M-')) {
     return 'member';
   }
   
-  // 3. Default: guest
+  // Guest — lainnya (G-xxx, U-xxx lama, dll)
   return 'guest';
 }
 
@@ -220,7 +218,6 @@ function renderChatLogs(logs) {
       const msgText = msg.message || '';
       const msgRole = msg.role || '';
 
-      const isAdmin = msgUID.startsWith('ADM_') || msgRole === 'Admin';
       const isDeleted = msgText === '[deleted by admin]';
 
       const d = document.createElement('div');
@@ -265,22 +262,20 @@ function renderChatLogs(logs) {
         d.className = 'chat-line chat-system';
         d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;
       }
-      else if (isAdmin) {
-        // 🎯 Admin — hijau + icon perisai
-        d.className = 'chat-line chat-admin';
-        d.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i> ${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
-      }
       else {
-        // 🎯 Guest / Member — berdasarkan u_class
+        // 🎯 Render berdasarkan prefix UID
         const chatClass = getChatClass(msg);
         
-        if (chatClass === 'member') {
+        if (chatClass === 'admin') {
+          d.className = 'chat-line chat-admin';
+          d.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i> ${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
+        } else if (chatClass === 'member') {
           d.className = 'chat-line chat-member';
+          d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else {
           d.className = 'chat-line';
+          d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         }
-        
-        d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
       }
 
       container.appendChild(d);
@@ -317,7 +312,6 @@ async function syncChat(force = false) {
     const data = await API.getChats(uid, ign, isMuted, muteExpiry);
     if (!data) return;
 
-    // 🎯 Handle broadcast trigger mail (dari GAS 2)
     if (typeof handleMailTrigger === 'function') {
       handleMailTrigger(data.lastMailReply || 0);
     }
@@ -396,4 +390,4 @@ document.addEventListener('visibilitychange', () => {
 // ===== EXPOSE =====
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
-console.log('✅ chat.js loaded (V2 — With Member Color)');
+console.log('✅ chat.js loaded (V3 — Deteksi Class dari UID Prefix)');
