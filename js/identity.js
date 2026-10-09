@@ -1,5 +1,6 @@
 /**
  * identity.js — Identity Gate + UID/IGN + Ganti Nama (Cooldown 24 jam)
+ * V2 — Prefix G- untuk Guest + Sanitasi IGN
  */
 
 // ===== KONFIG =====
@@ -9,7 +10,8 @@ const STORAGE_IGN = 'u_ign';
 const STORAGE_LAST_CHANGE = 'u_ign_changed_at';
 
 // ===== INISIALISASI =====
-window.myUID = localStorage.getItem(STORAGE_UID) || 'U-' + Math.random().toString(36).substring(2, 11);
+// Guest: prefix 'G-'. Member: 'M-xxx' (dari gate web internal).
+window.myUID = localStorage.getItem(STORAGE_UID) || 'G-' + Math.random().toString(36).substring(2, 11);
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
 localStorage.setItem(STORAGE_UID, window.myUID);
 
@@ -37,6 +39,35 @@ function clearGateMessage() {
   el.classList.remove('show', 'success');
 }
 
+// ===== VALIDASI IGN =====
+function sanitizeIGN(raw) {
+  if (!raw) return '';
+  
+  let value = raw.trim();
+  
+  // 1. Hapus karakter berbahaya
+  value = value.replace(/[\[\]]/g, '');         // hapus kurung siku
+  value = value.replace(/^[=+\-@]+/, '');        // hapus prefix formula injection
+  value = value.replace(/\s+/g, ' ').trim();     // normalisasi spasi
+  
+  // 2. Blokir "admin" (case-insensitive)
+  if (/admin/i.test(value)) {
+    return { error: 'Nama tidak boleh mengandung kata "admin"' };
+  }
+  
+  // 3. Potong max 15 char
+  if (value.length > 15) {
+    value = value.substring(0, 15);
+  }
+  
+  // 4. Cek kosong
+  if (value === '') {
+    return { error: 'Nama tidak boleh kosong' };
+  }
+  
+  return { value: value };
+}
+
 // ===== COOLDOWN =====
 function cekCooldownGantiNama() {
   const lastChange = parseInt(localStorage.getItem(STORAGE_LAST_CHANGE)) || 0;
@@ -55,6 +86,12 @@ function formatSisaWaktu(ms) {
   const menit = totalMenit % 60;
   if (jam > 0) return `${jam} jam ${menit} menit`;
   return `${menit} menit`;
+}
+
+// ===== CEK APAKAH MEMBER =====
+function isMember() {
+  const uid = localStorage.getItem('u_uid') || '';
+  return uid.startsWith('M-');
 }
 
 // ===== BUKA GATE =====
@@ -120,25 +157,25 @@ function saveIdentity() {
 
   clearGateMessage();
 
-  let rawValue = input.value.trim();
-  rawValue = rawValue.replace(/^[=+\-@]+/, '');
-
-  if (rawValue === '') {
+  // Validasi via sanitizeIGN
+  const result = sanitizeIGN(input.value);
+  
+  if (result.error) {
     input.focus();
     input.style.color = '#ff6666';
     setTimeout(() => input.style.color = '', 800);
-    showGateMessage('Nama tidak boleh kosong');
+    showGateMessage(result.error);
     return;
   }
 
-  rawValue = rawValue.substring(0, 15);
+  const newIgn = result.value;
 
-  if (gateMode === 'change' && rawValue === window.myIGN) {
+  if (gateMode === 'change' && newIgn === window.myIGN) {
     showGateMessage('Nama baru sama dengan nama lama');
     return;
   }
 
-  window.myIGN = rawValue;
+  window.myIGN = newIgn;
   localStorage.setItem(STORAGE_IGN, window.myIGN);
 
   if (gateMode === 'change') {
@@ -146,7 +183,7 @@ function saveIdentity() {
   }
 
   updateIdentityUI();
-  closeGate(true);   // ← SELESAI → skip menu, balik home
+  closeGate(true);
 
   // 🎭 Load NPC setelah gate tutup
   setTimeout(() => {
@@ -155,14 +192,11 @@ function saveIdentity() {
 }
 
 // ===== TUTUP GATE =====
-// skipMenu = true  → langsung balik home (dari SELESAI)
-// skipMenu = false → balik ke menu (dari tombol BACK)
 function closeGate(skipMenu = false) {
   const gate = document.getElementById('gatekeeper');
   const stage = document.getElementById('stage');
   if (!gate) return;
 
-  // Mode first: wajib isi nama
   if (gateMode === 'first' && !window.myIGN) {
     const input = document.getElementById('gate-input');
     if (input) {
@@ -181,7 +215,6 @@ function closeGate(skipMenu = false) {
   const input = document.getElementById('gate-input');
   if (input) input.disabled = false;
 
-  // 🎯 Kalau edit mode & mau balik ke menu → tambah modal-open DULU
   if (wasEditMode && !skipMenu && stage) {
     stage.classList.add('modal-open');
   }
@@ -192,7 +225,6 @@ function closeGate(skipMenu = false) {
 
   if (typeof updateButtons === 'function') updateButtons();
 
-  // Setelah gate tutup → tampilkan headline
   if (!wasEditMode) {
     if (typeof initHeadlineDisplay === 'function') {
       setTimeout(() => {
@@ -210,7 +242,7 @@ function closeGate(skipMenu = false) {
       }, 100);
     }
   }
-  // 🎭 Load NPC setelah gate tutup
+  
   setTimeout(() => {
       if (typeof window.loadNpc === 'function') window.loadNpc();
   }, 500);
@@ -239,5 +271,7 @@ window.closeGate = closeGate;
 window.updateIdentityUI = updateIdentityUI;
 window.cekCooldownGantiNama = cekCooldownGantiNama;
 window.clearGateMessage = clearGateMessage;
+window.isMember = isMember;
+window.sanitizeIGN = sanitizeIGN;
 
-console.log('✅ identity.js loaded');
+console.log('✅ identity.js loaded (V2 — Prefix G- + Sanitasi IGN)');
