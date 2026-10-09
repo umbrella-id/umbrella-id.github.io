@@ -1,10 +1,6 @@
 /**
- * chat.js — Chat Box (Log Only) + Drag + Snap + Sinkronisasi GAS
- * + Notifikasi Mute (mute-notif.js)
- * + Broadcast trigger mail (lastMailReply)
- * + Render 3 warna berdasarkan prefix UID
- * + Wrapper .chat-inner untuk scroll + rata bawah
- * V5 — Fix Scroll dengan Wrapper
+ * chat.js — Chat Box V6
+ * Fix: auto-scroll saat minimize + drag UX
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -28,6 +24,19 @@ const CHAT_STAMP_KEY = 'umbrella_chat_stamp';
 const POLL_INTERVAL_MS = 4500;
 let chatPollingTimer = null;
 let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
+
+// ==========================================
+// 🎯 AUTO-SCROLL HELPER
+// ==========================================
+function scrollChatToBottom() {
+  const body = document.getElementById('chatLogs');
+  if (!body) return;
+  
+  // Force scroll ke bawah
+  requestAnimationFrame(() => {
+    body.scrollTop = body.scrollHeight;
+  });
+}
 
 // ===== DRAG LOGIC =====
 function getPointer(e) {
@@ -78,6 +87,9 @@ function onMove(e) {
     chatBox.classList.remove('maximized');
   }
 
+  // 🎯 Auto-scroll saat drag (biar chat terbaru tetap kelihatan)
+  scrollChatToBottom();
+
   e.preventDefault();
 }
 
@@ -96,6 +108,9 @@ function onUp() {
     currentChatHeightPct = DEFAULT_PERCENT;
     chatBox.classList.remove('maximized');
   }
+  
+  // 🎯 Auto-scroll setelah drag selesai
+  scrollChatToBottom();
 }
 
 chatDrag.addEventListener('mousedown', onDown);
@@ -212,15 +227,14 @@ function renderChatLogs(logs) {
   const container = document.getElementById('chatLogs');
   if (!container) return;
 
-  // Pastikan wrapper .chat-inner ada
   const inner = ensureChatInner();
   if (!inner) return;
 
-  // Kosongkan konten
   inner.innerHTML = '';
 
   if (!Array.isArray(logs) || logs.length === 0) {
     inner.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
+    scrollChatToBottom();
     return;
   }
 
@@ -298,9 +312,7 @@ function renderChatLogs(logs) {
   });
 
   // 🎯 Auto-scroll ke bawah setelah render
-  requestAnimationFrame(() => {
-    container.scrollTop = container.scrollHeight;
-  });
+  scrollChatToBottom();
 }
 
 // ===== SINKRONISASI CHAT =====
@@ -407,4 +419,5 @@ document.addEventListener('visibilitychange', () => {
 // ===== EXPOSE =====
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
-console.log('✅ chat.js loaded (V5 — Wrapper .chat-inner)');
+window.scrollChatToBottom = scrollChatToBottom;
+console.log('✅ chat.js loaded (V6 — Auto-scroll + Drag Fix)');
