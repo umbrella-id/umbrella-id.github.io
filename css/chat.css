@@ -1,6 +1,6 @@
 /* ==========================================
    chat.css — Chat Box (Log Only)
-   V2 — With Member Color
+   V3 — Fix Scroll Maximize + 3 Warna
    ========================================== */
 
 .chat-box {
@@ -36,6 +36,12 @@
   -webkit-user-select: none;
 }
 
+/* Saat maximize, kecilkan area drag biar tidak menyerobot scroll */
+.chat-box.maximized .chat-drag {
+  height: 14px;
+  top: -7px;
+}
+
 /* ===== AREA LOG CHAT ===== */
 .chat-body {
   flex: 1;
@@ -47,11 +53,15 @@
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   font-size: 13px;
   line-height: 1.35;
+  /* 🎯 Scroll halus + cegah bocor ke parent */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Scroll aktif HANYA saat maximize */
+/* 🔥 SCROLL AKTIF SAAT MAXIMIZE */
 .chat-box.maximized .chat-body {
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .chat-body::-webkit-scrollbar { width: 4px; }
