@@ -1,11 +1,12 @@
 /**
- * chat.js — Chat Box (Log Only) V7
+ * chat.js — Chat Box (Log Only) V8
  * 
- * Fix:
+ * Fix terakhir:
  * - column-reverse untuk rata bawah + scroll mulus
+ * - Auto-scroll ke bawah (scrollTop = 0)
+ * - Minimize reset scroll ke bawah
  * - Hapus "Selamat datang" statis setelah chat load
  * - 3 warna berdasarkan prefix UID
- * - Drag mulus (tanpa auto-scroll di onMove)
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -29,6 +30,19 @@ const CHAT_STAMP_KEY = 'umbrella_chat_stamp';
 const POLL_INTERVAL_MS = 4500;
 let chatPollingTimer = null;
 let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
+
+// ==========================================
+// 🎯 AUTO-SCROLL HELPER
+// Di column-reverse: scrollTop = 0 = PALING BAWAH
+// ==========================================
+function scrollChatToBottom() {
+  const body = document.getElementById('chatLogs');
+  if (!body) return;
+  
+  requestAnimationFrame(() => {
+    body.scrollTop = 0;
+  });
+}
 
 // ===== DRAG LOGIC =====
 function getPointer(e) {
@@ -96,6 +110,11 @@ function onUp() {
     chatBox.style.height = DEFAULT_PERCENT + '%';
     currentChatHeightPct = DEFAULT_PERCENT;
     chatBox.classList.remove('maximized');
+  }
+  
+  // 🎯 Kalau minimize → paksa scroll ke bawah (chat terbaru)
+  if (!chatBox.classList.contains('maximized')) {
+    scrollChatToBottom();
   }
 }
 
@@ -227,6 +246,7 @@ function renderChatLogs(logs) {
 
   if (!Array.isArray(logs) || logs.length === 0) {
     inner.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
+    scrollChatToBottom();
     return;
   }
 
@@ -302,6 +322,9 @@ function renderChatLogs(logs) {
       console.error('Error render chat:', e);
     }
   });
+
+  // 🎯 Auto-scroll ke bawah setelah render (chat terbaru kelihatan)
+  scrollChatToBottom();
 }
 
 // ===== SINKRONISASI CHAT =====
@@ -408,4 +431,5 @@ document.addEventListener('visibilitychange', () => {
 // ===== EXPOSE =====
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
-console.log('✅ chat.js loaded (V7 — Column-reverse + Hapus Welcome)');
+window.scrollChatToBottom = scrollChatToBottom;
+console.log('✅ chat.js loaded (V8 — Auto-scroll Bottom + Minimize Reset)');
