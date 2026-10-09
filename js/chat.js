@@ -3,7 +3,8 @@
  * + Notifikasi Mute (mute-notif.js)
  * + Broadcast trigger mail (lastMailReply)
  * + Render 3 warna berdasarkan prefix UID
- * V3 — Deteksi Class dari UID Prefix
+ * + Wrapper .chat-inner untuk scroll + rata bawah
+ * V5 — Fix Scroll dengan Wrapper
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -184,18 +185,26 @@ function isSystemMessageMasihBerlaku(logs, index) {
 function getChatClass(msg) {
   const uid = msg.uid || '';
   
-  // Admin — UID prefix ADMIN_
-  if (uid.startsWith('ADMIN_')) {
-    return 'admin';
-  }
-  
-  // Member — UID prefix M-
-  if (uid.startsWith('M-')) {
-    return 'member';
-  }
-  
-  // Guest — lainnya (G-xxx, U-xxx lama, dll)
+  if (uid.startsWith('ADMIN_')) return 'admin';
+  if (uid.startsWith('M-')) return 'member';
   return 'guest';
+}
+
+// ==========================================
+// 🎯 PASTIKAN CHAT-INNER ADA
+// ==========================================
+function ensureChatInner() {
+  const container = document.getElementById('chatLogs');
+  if (!container) return null;
+  
+  let inner = container.querySelector('.chat-inner');
+  if (!inner) {
+    inner = document.createElement('div');
+    inner.className = 'chat-inner';
+    container.appendChild(inner);
+  }
+  
+  return inner;
 }
 
 // ===== RENDER LOG =====
@@ -203,12 +212,17 @@ function renderChatLogs(logs) {
   const container = document.getElementById('chatLogs');
   if (!container) return;
 
+  // Pastikan wrapper .chat-inner ada
+  const inner = ensureChatInner();
+  if (!inner) return;
+
+  // Kosongkan konten
+  inner.innerHTML = '';
+
   if (!Array.isArray(logs) || logs.length === 0) {
-    container.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
+    inner.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
     return;
   }
-
-  container.innerHTML = '';
 
   logs.forEach((msg, index) => {
     try {
@@ -263,7 +277,6 @@ function renderChatLogs(logs) {
         d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;
       }
       else {
-        // 🎯 Render berdasarkan prefix UID
         const chatClass = getChatClass(msg);
         
         if (chatClass === 'admin') {
@@ -278,13 +291,16 @@ function renderChatLogs(logs) {
         }
       }
 
-      container.appendChild(d);
+      inner.appendChild(d);
     } catch (e) {
       console.error('Error render chat:', e);
     }
   });
 
-  container.scrollTop = container.scrollHeight;
+  // 🎯 Auto-scroll ke bawah setelah render
+  requestAnimationFrame(() => {
+    container.scrollTop = container.scrollHeight;
+  });
 }
 
 // ===== SINKRONISASI CHAT =====
@@ -370,6 +386,7 @@ function stopPolling() {
 
 // ===== INISIALISASI =====
 document.addEventListener('DOMContentLoaded', () => {
+  ensureChatInner();
   const loaded = loadChatFromCache();
   setTimeout(() => {
     syncChat(true);
@@ -390,4 +407,4 @@ document.addEventListener('visibilitychange', () => {
 // ===== EXPOSE =====
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
-console.log('✅ chat.js loaded (V3 — Deteksi Class dari UID Prefix)');
+console.log('✅ chat.js loaded (V5 — Wrapper .chat-inner)');
