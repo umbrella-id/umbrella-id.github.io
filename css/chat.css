@@ -108,8 +108,8 @@
   font-weight: 700;
 }
 .chat-line.chat-admin .chat-name i {
-  color: #f0d78c;
-  margin-right: 4px;
+  color: #4ade80;
+  margin-right: 0;
   font-size: 11px;
 }
 
