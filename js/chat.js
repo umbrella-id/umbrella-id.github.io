@@ -87,8 +87,8 @@ function onMove(e) {
     chatBox.classList.remove('maximized');
   }
 
-  // 🎯 Auto-scroll saat drag (biar chat terbaru tetap kelihatan)
-  scrollChatToBottom();
+  // ❌ HAPUS scrollChatToBottom() — bikin text bergoyang
+  // Auto-scroll cuma di onUp
 
   e.preventDefault();
 }
