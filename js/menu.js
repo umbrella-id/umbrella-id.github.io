@@ -116,6 +116,25 @@ function goHome() {
   updateButtons();
 }
 
+// ===== CEK APAKAH VERIFIED (akhiran -v) =====
+function isVerifiedUid() {
+  const uid = localStorage.getItem('u_uid') || '';
+  return uid.endsWith('-v');
+}
+
+// ===== UPDATE MODAL MENU (SEMBUNYIKAN GANTI NAMA) =====
+function updateModalMenuItems() {
+  const gantiNamaBtn = document.querySelector('.modal-list-item[onclick*="ganti"]');
+  if (!gantiNamaBtn) return;
+  
+  if (isVerifiedUid()) {
+    gantiNamaBtn.style.display = 'none';
+    console.log('🔒 Menu "Ganti Nama" disembunyikan (verified)');
+  } else {
+    gantiNamaBtn.style.display = '';
+  }
+}
+
 // ===== EVENT LISTENER =====
 document.addEventListener('DOMContentLoaded', () => {
   updatePageClass();
