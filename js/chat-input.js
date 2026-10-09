@@ -1,10 +1,9 @@
 /**
- * chat-input.js — Form Tulis Chat (V2 — With Rate Limit Handling)
+ * chat-input.js — Form Tulis Chat (V3 — Optimistic UI with Class)
  * 
- * Perubahan dari V1:
- * - Handle response "rate_limited" dari GAS 3
- * - Tampilkan pesan rate limit yang informatif
- * - Optimistic UI di-rollback kalau kena limit
+ * Perubahan dari V2:
+ * - Optimistic UI menyesuaikan class (guest/member) berdasarkan prefix UID
+ * - Optimistic UI menampilkan icon perisai kalau admin
  */
 
 // ===== KONFIG =====
@@ -48,16 +47,46 @@ function filterPesan(text) {
   return { ok: true, text: cleaned.trim() };
 }
 
+// ==========================================
+// 🎯 DETEKSI CLASS UNTUK OPTIMISTIC UI
+// ==========================================
+function getMyChatClass() {
+  const uid = window.myUID || '';
+  
+  if (uid.startsWith('ADM_')) return 'admin';
+  if (uid.startsWith('M-')) return 'member';
+  return 'guest';
+}
+
+// ==========================================
+// 🎯 RENDER OPTIMISTIC ELEMENT
+// ==========================================
+function buildOptimisticElement(ign, text) {
+  const chatClass = getMyChatClass();
+  const el = document.createElement('div');
+  
+  if (chatClass === 'admin') {
+    el.className = 'chat-line chat-admin';
+    el.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i> ${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(text)}</span>`;
+  } else if (chatClass === 'member') {
+    el.className = 'chat-line chat-member';
+    el.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(text)}</span>`;
+  } else {
+    el.className = 'chat-line';
+    el.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(text)}</span>`;
+  }
+  
+  return el;
+}
+
 // ===== BUKA FORM =====
 function openChatInput() {
-  // Baca ulang dari localStorage (fresh)
   muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
   const overlay = document.getElementById('chatInputOverlay');
   const input = document.getElementById('chatInputBox');
   if (!overlay || !input) return;
 
-  // Cek mute
   if (muteExpiryTime > 0 && Date.now() < muteExpiryTime) {
     const sisaMs = muteExpiryTime - Date.now();
     const sisaMenit = Math.ceil(sisaMs / 60000);
@@ -91,7 +120,7 @@ function showChatInputMessage(msg) {
   if (!el) return;
   el.innerText = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3500);   // ← dari 2500 → 3500 (biar kebaca)
+  setTimeout(() => el.classList.remove('show'), 3500);
 }
 
 function clearChatInputMessage() {
@@ -103,7 +132,6 @@ function clearChatInputMessage() {
 
 // ===== KIRIM =====
 async function kirimChat() {
-  // 🎯 Cek mute DULU
   muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
   if (muteExpiryTime > 0 && Date.now() < muteExpiryTime) {
     const sisaMenit = Math.ceil((muteExpiryTime - Date.now()) / 60000);
@@ -116,7 +144,6 @@ async function kirimChat() {
 
   const rawText = (input.innerText || '').trim();
 
-  // Kosong → batal
   if (rawText === '') {
     closeChatInput();
     return;
@@ -135,28 +162,23 @@ async function kirimChat() {
     return;
   }
 
-  // 🎯 OPTIMISTIC UI — simpan referensi DOM biar bisa rollback
+  // 🎯 OPTIMISTIC UI — dengan class yang sesuai
   const chatLogs = document.getElementById('chatLogs');
   let optimisticEl = null;
 
   if (chatLogs) {
-    optimisticEl = document.createElement('div');
-    optimisticEl.className = 'chat-line';
-    optimisticEl.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(result.text)}</span>`;
+    optimisticEl = buildOptimisticElement(ign, result.text);
     chatLogs.appendChild(optimisticEl);
     chatLogs.scrollTop = chatLogs.scrollHeight;
   }
 
-  // Tutup form dulu (biar user bisa lihat chat log)
   closeChatInput();
 
   try {
     const res = await API.sendChat(uid, ign, result.text, 'msg');
     console.log('✅ Chat response:', res);
 
-    // 🎯 HANDLE RATE LIMIT
     if (res && res.status === 'rate_limited') {
-      // Rollback optimistic UI
       if (optimisticEl && optimisticEl.parentNode) {
         optimisticEl.remove();
       }
@@ -167,7 +189,6 @@ async function kirimChat() {
         ? `Tunggu sekitar ${waitMin} menit lagi`
         : `Tunggu sekitar ${waitSec} detik lagi`;
 
-      // Tampilkan via chat system message (biar terlihat user)
       if (chatLogs) {
         const sysEl = document.createElement('div');
         sysEl.className = 'chat-line chat-system';
@@ -176,7 +197,6 @@ async function kirimChat() {
         chatLogs.scrollTop = chatLogs.scrollHeight;
       }
 
-      // Toast juga
       if (typeof showToast === 'function') {
         showToast(`⚠️ ${waitMsg}`, true);
       }
@@ -184,7 +204,6 @@ async function kirimChat() {
       return;
     }
 
-    // 🎯 SUCCESS — biarkan optimistic UI, sync untuk konfirmasi
     if (typeof syncChat === 'function') {
       setTimeout(() => syncChat(true), 500);
     }
@@ -192,12 +211,10 @@ async function kirimChat() {
   } catch (err) {
     console.error('❌ Gagal kirim chat:', err);
 
-    // Rollback optimistic UI
     if (optimisticEl && optimisticEl.parentNode) {
       optimisticEl.remove();
     }
 
-    // Tampilkan error
     if (chatLogs) {
       const sysEl = document.createElement('div');
       sysEl.className = 'chat-line chat-system';
@@ -252,5 +269,6 @@ window.openChatInput = openChatInput;
 window.closeChatInput = closeChatInput;
 window.kirimChat = kirimChat;
 window.filterPesan = filterPesan;
+window.getMyChatClass = getMyChatClass;
 
-console.log('✅ chat-input.js loaded (V2 — With Rate Limit Handling)');
+console.log('✅ chat-input.js loaded (V3 — Optimistic UI with Class)');
