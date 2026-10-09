@@ -268,7 +268,7 @@ function renderChatLogs(logs) {
         
         if (chatClass === 'admin') {
           d.className = 'chat-line chat-admin';
-          d.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i> ${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
+          d.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i>${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else if (chatClass === 'member') {
           d.className = 'chat-line chat-member';
           d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
