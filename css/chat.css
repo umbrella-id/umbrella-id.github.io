@@ -1,6 +1,6 @@
 /* ==========================================
    chat.css — Chat Box (Log Only)
-   V6 — Column-reverse + Scrollbar Hidden
+   V7 — Scroll Mati Saat Minimize, Hidup Saat Maximize
    ========================================== */
 
 .chat-box {
@@ -42,14 +42,14 @@
 }
 
 /* ==========================================
-   CHAT BODY — Container Scroll (column-reverse)
+   CHAT BODY — Container Scroll
    ========================================== */
 .chat-body {
   flex: 1;
   display: flex;
-  flex-direction: column-reverse;   /* 🎯 kunci: anak terakhir = tampil atas */
+  flex-direction: column-reverse;
   justify-content: flex-start;
-  overflow-y: auto;
+  overflow-y: hidden;              /* 🎯 default: scroll mati */
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   font-size: 13px;
@@ -60,6 +60,11 @@
   /* 🎯 Sembunyikan scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+/* 🎯 Scroll hidup saat maximize */
+.chat-box.maximized .chat-body {
+  overflow-y: auto;
 }
 
 .chat-body::-webkit-scrollbar {
@@ -73,17 +78,16 @@
    ========================================== */
 .chat-inner {
   display: flex;
-  flex-direction: column;           /* urutan DOM = visual */
+  flex-direction: column;
   flex-shrink: 0;
   width: 100%;
   margin-top: 0;
 }
 
 /* ==========================================
-   WELCOME — Sapaan Loading (Statis HTML)
+   WELCOME — Sapaan Loading
    ========================================== */
 #chatWelcome {
-  /* Anak terakhir .chat-body = tampil paling atas (karena column-reverse) */
   flex-shrink: 0;
 }
 
@@ -113,7 +117,7 @@
    WARNA CHAT
    ========================================== */
 
-/* Guest — putih (default) */
+/* Guest — putih */
 .chat-line .chat-name,
 .chat-line .chat-text {
   color: #ffffff;
