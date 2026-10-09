@@ -11,6 +11,11 @@ function openModal() {
   if (!modalOverlay) return;
 
   clearTimeout(modalTimer);
+  
+  // 🎯 Update menu items tiap kali modal dibuka
+  if (typeof updateModalMenuItems === 'function') {
+    updateModalMenuItems();
+  }
 
   if (chatBox) chatBox.classList.add('shifted');
   if (stage) stage.classList.add('modal-open');   // sembunyikan banner
