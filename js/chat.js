@@ -184,8 +184,8 @@ function isSystemMessageMasihBerlaku(logs, index) {
 function getChatClass(msg) {
   const uid = msg.uid || '';
   
-  // Admin — UID prefix ADM_
-  if (uid.startsWith('ADM_')) {
+  // Admin — UID prefix ADMIN_
+  if (uid.startsWith('ADMIN_')) {
     return 'admin';
   }
   
