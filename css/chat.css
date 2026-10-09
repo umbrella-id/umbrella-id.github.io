@@ -49,15 +49,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;      /* rata bawah kalau tidak overflow */
-  overflow-y: hidden;              /* scroll mati default */
+  /* justify-content: flex-end; ← HAPUS */
+  overflow-y: hidden;
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   font-size: 13px;
   line-height: 1.35;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  /* 🎯 supaya scrollHeight terhitung benar */
   min-height: 0;
 }
 
@@ -79,9 +78,11 @@
 .chat-inner {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;                  /* jangan menyusut */
+  flex-shrink: 0;
   width: 100%;
-  /* Tinggi natural = total konten, biar scrollHeight benar */
+  margin-top: auto;
+  /* 🎯 Pastikan scroll bisa dikontrol */
+  scroll-margin-top: 0;
 }
 
 /* ==========================================
