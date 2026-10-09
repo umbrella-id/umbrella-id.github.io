@@ -1,6 +1,6 @@
 /* ==========================================
    chat.css — Chat Box (Log Only)
-   V4 — Wrapper .chat-inner untuk scroll + rata bawah
+   V5 — Scrollbar Hidden + Smooth Drag
    ========================================== */
 
 .chat-box {
@@ -36,7 +36,6 @@
   -webkit-user-select: none;
 }
 
-/* Saat maximize, kecilkan area drag biar tidak menyerobot scroll */
 .chat-box.maximized .chat-drag {
   height: 14px;
   top: -7px;
@@ -49,7 +48,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* justify-content: flex-end; ← HAPUS */
   overflow-y: hidden;
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
@@ -58,18 +56,21 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
+  /* 🎯 Sembunyikan scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 /* 🔥 SCROLL AKTIF SAAT MAXIMIZE */
 .chat-box.maximized .chat-body {
   overflow-y: auto;
-  scrollbar-width: thin;
 }
 
-.chat-body::-webkit-scrollbar { width: 4px; }
-.chat-body::-webkit-scrollbar-thumb {
-  background: rgba(201, 165, 90, 0.4);
-  border-radius: 2px;
+/* 🎯 Sembunyikan scrollbar webkit */
+.chat-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 /* ==========================================
@@ -81,14 +82,11 @@
   flex-shrink: 0;
   width: 100%;
   margin-top: auto;
-  /* 🎯 Pastikan scroll bisa dikontrol */
-  scroll-margin-top: 0;
 }
 
 /* ==========================================
    GAYA BARIS CHAT
    ========================================== */
-
 .chat-line {
   padding: 1px 0;
   margin: 0;
@@ -112,7 +110,7 @@
    WARNA CHAT
    ========================================== */
 
-/* Guest — putih (default) */
+/* Guest — putih */
 .chat-line .chat-name,
 .chat-line .chat-text {
   color: #ffffff;
@@ -154,7 +152,7 @@
 }
 
 /* ==========================================
-   SAAT GATE AKTIF — Sembunyikan chat box
+   SAAT GATE AKTIF
    ========================================== */
 .stage.gate-first .chat-box,
 .stage.gate-edit-mode .chat-box {
