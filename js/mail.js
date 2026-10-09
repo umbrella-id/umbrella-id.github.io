@@ -1,9 +1,9 @@
 /**
- * mail.js — Mail 2 Arah (User Side) V2 — With Rate Limit Handling
+ * mail.js — Mail 2 Arah (User Side) V3 — Member Kategori Filter
  * 
- * Perubahan dari V1:
- * - Handle response "rate_limited" dari GAS 1
- * - Pesan error yang informatif
+ * Perubahan dari V2:
+ * - Member hanya bisa kategori 'Umum'
+ * - Guest bisa semua kategori (Umum, Request Join, Saran)
  */
 
 let mailCurrentView = 'menu';
@@ -19,6 +19,14 @@ const MAIL_CACHE_KEY = 'umbrella_mail_cache';
 const MAIL_STAMP_KEY = 'umbrella_mail_stamp';
 
 const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
+
+// ==========================================
+// CEK APAKAH MEMBER
+// ==========================================
+function isMember() {
+  const uid = localStorage.getItem('u_uid') || '';
+  return uid.startsWith('M-');
+}
 
 // ==========================================
 // INIT
@@ -512,7 +520,6 @@ async function submitMailReply(messageId) {
     const res = await fetch(url);
     const data = await res.json();
     
-    // 🎯 HANDLE RATE LIMIT
     if (data.status === 'rate_limited') {
       const waitMsg = data.retryAfter 
         ? `Tunggu sekitar ${Math.ceil(data.retryAfter / 60)} menit lagi.`
@@ -606,17 +613,37 @@ function openMailCompose() {
   const container = document.getElementById('mailContent');
   if (!container) return;
   
+  // 🎯 Cek apakah member
+  const member = isMember();
+  
+  // Kategori options
+  let kategoriOptions = '';
+  if (member) {
+    // Member: hanya Umum
+    kategoriOptions = `
+      <div class="mail-kategori-item" onclick="pilihMailKategori('Umum')">Umum / General</div>
+    `;
+  } else {
+    // Guest: semua kategori
+    kategoriOptions = `
+      <div class="mail-kategori-item" onclick="pilihMailKategori('Umum')">Umum / General</div>
+      <div class="mail-kategori-item" onclick="pilihMailKategori('Request Join')">Request Join</div>
+      <div class="mail-kategori-item" onclick="pilihMailKategori('Saran')">Saran / Masukan</div>
+    `;
+  }
+  
+  // Default label kategori
+  const defaultKategoriLabel = member ? 'Umum / General' : 'Umum / General';
+  
   container.innerHTML = `
     <div class="mail-compose">
       <div class="mail-compose-group">
         <label class="mail-label">KATEGORI</label>
         <div class="mail-kategori-btn" onclick="toggleMailKategori()">
-          <span id="mailKategoriLabel">Umum / General</span>
+          <span id="mailKategoriLabel">${defaultKategoriLabel}</span>
         </div>
         <div class="mail-kategori-list" id="mailKategoriList">
-          <div class="mail-kategori-item" onclick="pilihMailKategori('Umum')">Umum / General</div>
-          <div class="mail-kategori-item" onclick="pilihMailKategori('Request Join')">Request Join</div>
-          <div class="mail-kategori-item" onclick="pilihMailKategori('Saran')">Saran / Masukan</div>
+          ${kategoriOptions}
         </div>
       </div>
       
@@ -640,6 +667,7 @@ function openMailCompose() {
   if (typeof updateButtons === 'function') updateButtons();
   
   window._mailKategori = 'Umum';
+  
   setTimeout(() => {
     const ta = document.getElementById('mailComposeInput');
     if (ta) ta.focus();
@@ -673,7 +701,6 @@ async function submitMailCompose() {
     const res = await fetch(url);
     const data = await res.json();
     
-    // 🎯 HANDLE RATE LIMIT
     if (data.status === 'rate_limited') {
       const waitMsg = data.retryAfter 
         ? `Tunggu sekitar ${Math.ceil(data.retryAfter / 60)} menit lagi.`
@@ -873,5 +900,6 @@ window.isLastAdminReplyInCategory = isLastAdminReplyInCategory;
 window.updateMailNotifIcon = updateMailNotifIcon;
 window.openMailFromNotif = openMailFromNotif;
 window.getMessageId = getMessageId;
+window.isMember = isMember;
 
-console.log("✅ mail.js loaded (V2 — With Rate Limit Handling)");
+console.log("✅ mail.js loaded (V3 — Member Kategori Filter)");
