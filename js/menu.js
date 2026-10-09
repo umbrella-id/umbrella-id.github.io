@@ -138,6 +138,7 @@ function updateModalMenuItems() {
 // ===== EVENT LISTENER =====
 document.addEventListener('DOMContentLoaded', () => {
   updatePageClass();
+  updateModalMenuItems();   // ← BARU
 
   const btnKiri = document.getElementById('btnKiri');
   const btnKanan = document.getElementById('btnKanan');
@@ -274,5 +275,7 @@ window.goBack = goBack;
 window.goHome = goHome;
 window.updateButtons = updateButtons;
 window.updatePageClass = updatePageClass;
+window.updateModalMenuItems = updateModalMenuItems;
+window.isVerifiedUid = isVerifiedUid;
 
-console.log('✅ menu.js loaded');
+console.log('✅ menu.js loaded (V2 — Filter Ganti Nama)');
