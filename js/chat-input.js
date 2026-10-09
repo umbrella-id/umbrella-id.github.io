@@ -1,9 +1,9 @@
 /**
- * chat-input.js — Form Tulis Chat (V3 — Optimistic UI with Class)
+ * chat-input.js — Form Tulis Chat (V4 — Hapus Deteksi Admin)
  * 
- * Perubahan dari V2:
- * - Optimistic UI menyesuaikan class (guest/member) berdasarkan prefix UID
- * - Optimistic UI menampilkan icon perisai kalau admin
+ * Perubahan dari V3:
+ * - Hapus deteksi admin (user web publik tidak akan pernah admin)
+ * - Optimistic UI cuma 2 class: member / guest
  */
 
 // ===== KONFIG =====
@@ -49,11 +49,11 @@ function filterPesan(text) {
 
 // ==========================================
 // 🎯 DETEKSI CLASS UNTUK OPTIMISTIC UI
+// (Cuma member / guest — admin tidak relevan)
 // ==========================================
 function getMyChatClass() {
   const uid = window.myUID || '';
   
-  if (uid.startsWith('ADM_')) return 'admin';
   if (uid.startsWith('M-')) return 'member';
   return 'guest';
 }
@@ -65,10 +65,7 @@ function buildOptimisticElement(ign, text) {
   const chatClass = getMyChatClass();
   const el = document.createElement('div');
   
-  if (chatClass === 'admin') {
-    el.className = 'chat-line chat-admin';
-    el.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i> ${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(text)}</span>`;
-  } else if (chatClass === 'member') {
+  if (chatClass === 'member') {
     el.className = 'chat-line chat-member';
     el.innerHTML = `<span class="chat-name">${escapeHtml(ign)} :</span><span class="chat-text"> ${escapeHtml(text)}</span>`;
   } else {
@@ -271,4 +268,4 @@ window.kirimChat = kirimChat;
 window.filterPesan = filterPesan;
 window.getMyChatClass = getMyChatClass;
 
-console.log('✅ chat-input.js loaded (V3 — Optimistic UI with Class)');
+console.log('✅ chat-input.js loaded (V4 — Hapus Deteksi Admin)');
