@@ -116,6 +116,10 @@ function renderInfoList() {
   currentView = 'list';
   currentDetailIndex = -1;
 
+  // 🎯 Cek apakah user sudah jadi member (UID prefix M-)
+  const uid = localStorage.getItem('u_uid') || '';
+  const isMember = uid.startsWith('M-');
+
   let html = '<div class="info-list">';
 
   profilList.forEach((item, idx) => {
@@ -129,14 +133,16 @@ function renderInfoList() {
     `;
   });
 
-  // Tombol Join Guild
-  html += `
-    <div class="info-join-btn" onclick="infoJoinGuild()">
-      <div class="btn-ujung-kiri"></div>
-      <div class="btn-tengah"><span class="btn-teks">Saya Ingin Bergabung</span></div>
-      <div class="btn-ujung-kanan"></div>
-    </div>
-  `;
+  // 🎯 Tombol Join Guild — hanya untuk non-member (guest)
+  if (!isMember) {
+    html += `
+      <div class="info-join-btn" onclick="infoJoinGuild()">
+        <div class="btn-ujung-kiri"></div>
+        <div class="btn-tengah"><span class="btn-teks">Saya Ingin Bergabung</span></div>
+        <div class="btn-ujung-kanan"></div>
+      </div>
+    `;
+  }
 
   html += '</div>';
 
