@@ -1,6 +1,6 @@
 /* ==========================================
    chat.css — Chat Box (Log Only)
-   V3 — Fix Scroll Maximize + 3 Warna
+   V4 — Wrapper .chat-inner untuk scroll + rata bawah
    ========================================== */
 
 .chat-box {
@@ -42,20 +42,23 @@
   top: -7px;
 }
 
-/* ===== AREA LOG CHAT ===== */
+/* ==========================================
+   CHAT BODY — Container Scroll
+   ========================================== */
 .chat-body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  overflow-y: hidden;
+  justify-content: flex-end;      /* rata bawah kalau tidak overflow */
+  overflow-y: hidden;              /* scroll mati default */
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   font-size: 13px;
   line-height: 1.35;
-  /* 🎯 Scroll halus + cegah bocor ke parent */
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  /* 🎯 supaya scrollHeight terhitung benar */
+  min-height: 0;
 }
 
 /* 🔥 SCROLL AKTIF SAAT MAXIMIZE */
@@ -68,6 +71,17 @@
 .chat-body::-webkit-scrollbar-thumb {
   background: rgba(201, 165, 90, 0.4);
   border-radius: 2px;
+}
+
+/* ==========================================
+   CHAT INNER — Konten Chat
+   ========================================== */
+.chat-inner {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;                  /* jangan menyusut */
+  width: 100%;
+  /* Tinggi natural = total konten, biar scrollHeight benar */
 }
 
 /* ==========================================
