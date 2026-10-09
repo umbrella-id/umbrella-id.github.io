@@ -1,6 +1,11 @@
 /**
- * chat.js — Chat Box V6
- * Fix: auto-scroll saat minimize + drag UX
+ * chat.js — Chat Box (Log Only) V7
+ * 
+ * Fix:
+ * - column-reverse untuk rata bawah + scroll mulus
+ * - Hapus "Selamat datang" statis setelah chat load
+ * - 3 warna berdasarkan prefix UID
+ * - Drag mulus (tanpa auto-scroll di onMove)
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -24,19 +29,6 @@ const CHAT_STAMP_KEY = 'umbrella_chat_stamp';
 const POLL_INTERVAL_MS = 4500;
 let chatPollingTimer = null;
 let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
-
-// ==========================================
-// 🎯 AUTO-SCROLL HELPER
-// ==========================================
-function scrollChatToBottom() {
-  const body = document.getElementById('chatLogs');
-  if (!body) return;
-  
-  // Force scroll ke bawah
-  requestAnimationFrame(() => {
-    body.scrollTop = body.scrollHeight;
-  });
-}
 
 // ===== DRAG LOGIC =====
 function getPointer(e) {
@@ -87,9 +79,6 @@ function onMove(e) {
     chatBox.classList.remove('maximized');
   }
 
-  // ❌ HAPUS scrollChatToBottom() — bikin text bergoyang
-  // Auto-scroll cuma di onUp
-
   e.preventDefault();
 }
 
@@ -108,9 +97,6 @@ function onUp() {
     currentChatHeightPct = DEFAULT_PERCENT;
     chatBox.classList.remove('maximized');
   }
-  
-  // 🎯 Auto-scroll setelah drag selesai
-  scrollChatToBottom();
 }
 
 chatDrag.addEventListener('mousedown', onDown);
@@ -216,7 +202,7 @@ function ensureChatInner() {
   if (!inner) {
     inner = document.createElement('div');
     inner.className = 'chat-inner';
-    container.appendChild(inner);
+    container.insertBefore(inner, container.firstChild);
   }
   
   return inner;
@@ -230,11 +216,17 @@ function renderChatLogs(logs) {
   const inner = ensureChatInner();
   if (!inner) return;
 
+  // 🎯 Hapus "Selamat datang" statis dari HTML (cuma untuk loading)
+  const welcomeEl = document.getElementById('chatWelcome');
+  if (welcomeEl) {
+    welcomeEl.remove();
+    console.log('🗑️ "Selamat datang" dihapus dari DOM');
+  }
+
   inner.innerHTML = '';
 
   if (!Array.isArray(logs) || logs.length === 0) {
     inner.innerHTML = '<div class="chat-line chat-system"><span class="chat-text">Belum ada pesan.</span></div>';
-    scrollChatToBottom();
     return;
   }
 
@@ -310,9 +302,6 @@ function renderChatLogs(logs) {
       console.error('Error render chat:', e);
     }
   });
-
-  // 🎯 Auto-scroll ke bawah setelah render
-  scrollChatToBottom();
 }
 
 // ===== SINKRONISASI CHAT =====
@@ -419,5 +408,4 @@ document.addEventListener('visibilitychange', () => {
 // ===== EXPOSE =====
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
-window.scrollChatToBottom = scrollChatToBottom;
-console.log('✅ chat.js loaded (V6 — Auto-scroll + Drag Fix)');
+console.log('✅ chat.js loaded (V7 — Column-reverse + Hapus Welcome)');
