@@ -1,6 +1,6 @@
 /**
  * kaitkan-akun.js — Fitur Kaitkan Akun (Web Publik)
- * Modal HTML statis di stage, toggle via class
+ * Pola: sama dengan modal mail/info/tentang
  */
 
 let isKaitkanPopupOpen = false;
@@ -54,35 +54,31 @@ function openKaitkanAkun() {
         return;
     }
     
-    const overlay = document.getElementById('kaitkanOverlay');
-    if (!overlay) {
-        console.error('Modal kaitkan tidak ditemukan');
-        return;
+    // Tutup modal menu kalau ada
+    if (typeof closeModal === 'function') {
+        closeModal(true);   // skip = true, biar modal-open tetap ada
     }
     
+    const overlay = document.getElementById('kaitkanOverlay');
+    if (!overlay) return;
+    
+    // Reset form
     const waInput = document.getElementById('kaitkanWaInput');
     const kodeInput = document.getElementById('kaitkanKodeInput');
     const msgEl = document.getElementById('kaitkanMessage');
     
-    // Reset form
-    if (waInput) {
-        waInput.value = '';
-        waInput.disabled = false;
-    }
-    if (kodeInput) {
-        kodeInput.value = '';
-        kodeInput.disabled = false;
-    }
+    if (waInput) { waInput.value = ''; waInput.disabled = false; }
+    if (kodeInput) { kodeInput.value = ''; kodeInput.disabled = false; }
     if (msgEl) {
         msgEl.innerText = '';
         msgEl.classList.remove('show', 'error');
     }
     
-    // Hapus notif sukses kalau ada
+    // Hapus notif lama
     const oldNotif = document.getElementById('kaitkanSuccessNotif');
     if (oldNotif) oldNotif.remove();
     
-    // Pastikan tombol ada (kalau sebelumnya di-hide)
+    // Pastikan tombol ada
     const btn = document.getElementById('kaitkanSubmitBtn');
     if (btn) {
         btn.style.display = '';
@@ -90,7 +86,6 @@ function openKaitkanAkun() {
         const btnText = btn.querySelector('.btn-teks');
         if (btnText) btnText.innerText = 'KAITKAN AKUN';
     } else {
-        // Recreate tombol kalau sudah dihapus
         const form = document.querySelector('#kaitkanOverlay .kaitkan-form');
         if (form) {
             const btnHTML = `
@@ -104,14 +99,13 @@ function openKaitkanAkun() {
         }
     }
     
-    // Open
+    // Open — sama seperti modal lain
     overlay.classList.add('open');
     
     const stage = document.getElementById('stage');
     if (stage) stage.classList.add('kaitkan-open');
     
     if (typeof updateButtons === 'function') updateButtons();
-    history.pushState({ kaitkan: true }, null, '#kaitkan');
     
     setTimeout(() => {
         if (waInput) waInput.focus();
@@ -123,19 +117,25 @@ function openKaitkanAkun() {
 // ==========================================
 // TUTUP MODAL
 // ==========================================
-function closeKaitkanAkun() {
+function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
-    if (overlay) overlay.classList.remove('open');
-    
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+    const stage = document.getElementById('stage');
+    
+    if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
+    if (stage) stage.classList.remove('kaitkan-open');
     
     isKaitkanPopupOpen = false;
     
-    const stage = document.getElementById('stage');
-    if (stage) stage.classList.remove('kaitkan-open');
-    
     if (typeof updateButtons === 'function') updateButtons();
+    
+    // Buka modal menu lagi — sama seperti modal lain
+    if (!skipMenu) {
+        setTimeout(() => {
+            if (typeof openModal === 'function') openModal();
+        }, 150);
+    }
 }
 
 // ==========================================
@@ -169,7 +169,6 @@ async function submitKaitkanAkun() {
         return;
     }
     
-    // Loading
     btn.classList.add('loading');
     btn.style.pointerEvents = 'none';
     const btnText = btn.querySelector('.btn-teks');
@@ -237,22 +236,18 @@ function showKaitkanSuccess() {
     if (waInput) waInput.disabled = true;
     if (kodeInput) kodeInput.disabled = true;
     
-    // Sembunyikan tombol
     const btn = document.getElementById('kaitkanSubmitBtn');
     if (btn) btn.style.display = 'none';
     
-    // Bersihkan message
     const msgEl = document.getElementById('kaitkanMessage');
     if (msgEl) {
         msgEl.innerText = '';
         msgEl.classList.remove('show', 'error');
     }
     
-    // Hapus notif lama kalau ada
     const oldNotif = document.getElementById('kaitkanSuccessNotif');
     if (oldNotif) oldNotif.remove();
     
-    // Tambah notif sukses
     const form = document.querySelector('#kaitkanOverlay .kaitkan-form');
     if (form) {
         const notifHTML = `
@@ -272,11 +267,13 @@ async function openAkunSaya() {
     const ign = localStorage.getItem('u_ign') || 'Member';
     const savedKode = localStorage.getItem('u_web_kode') || '';
     
-    const overlay = document.getElementById('kaitkanAkunSayaOverlay');
-    if (!overlay) {
-        console.error('Modal akun saya tidak ditemukan');
-        return;
+    // Tutup modal menu kalau ada
+    if (typeof closeModal === 'function') {
+        closeModal(true);
     }
+    
+    const overlay = document.getElementById('kaitkanAkunSayaOverlay');
+    if (!overlay) return;
     
     // Update isi
     const ignEl = document.getElementById('akunSayaIgn');
@@ -299,7 +296,6 @@ async function openAkunSaya() {
     if (stage) stage.classList.add('kaitkan-open');
     
     if (typeof updateButtons === 'function') updateButtons();
-    history.pushState({ akunSaya: true }, null, '#akun-saya');
     
     isKaitkanPopupOpen = true;
 }
@@ -320,17 +316,6 @@ function escapeHtmlKaitkan(str) {
 }
 
 // ==========================================
-// BACK BUTTON HANDLER
-// ==========================================
-window.addEventListener('popstate', function(e) {
-    if (isKaitkanPopupOpen) {
-        closeKaitkanAkun();
-        e.preventDefault();
-        return;
-    }
-});
-
-// ==========================================
 // EXPOSE
 // ==========================================
 window.openKaitkanAkun = openKaitkanAkun;
@@ -340,4 +325,4 @@ window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Web Publik — HTML statis)');
+console.log('✅ kaitkan-akun.js loaded (Web Publik — pola modal lain)');
