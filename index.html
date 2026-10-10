@@ -462,6 +462,141 @@
         </div>
       </div>
 
+            <!-- ============ MODAL KAITKAN AKUN ============ -->
+      <div class="kaitkan-overlay" id="kaitkanOverlay">
+        <div class="kaitkan-modal">
+          
+          <!-- Bingkai -->
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
+          <!-- Header -->
+          <div class="kaitkan-header">KAITKAN AKUN</div>
+          
+          <!-- Body -->
+          <div class="kaitkan-body">
+            
+            <p class="kaitkan-desc">
+              Kaitkan akun anda untuk mendapatkan menu lainnya
+            </p>
+            
+            <div class="kaitkan-form">
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-phone"></i> NOMOR WA</label>
+                <input type="tel" 
+                       id="kaitkanWaInput" 
+                       placeholder="628xxxxxxxxx"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Gunakan kode negara, bukan nol</small>
+              </div>
+              
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-key"></i> KODE UNIK</label>
+                <input type="tel" 
+                       id="kaitkanKodeInput" 
+                       placeholder="123456"
+                       maxlength="6"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Kode ini diperoleh dari admin</small>
+              </div>
+              
+              <div id="kaitkanMessage" class="kaitkan-message"></div>
+              
+              <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">KAITKAN AKUN</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODAL AKUN SAYA ============ -->
+      <div class="kaitkan-overlay" id="kaitkanAkunSayaOverlay">
+        <div class="kaitkan-modal">
+          
+          <!-- Bingkai -->
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
+          <!-- Header -->
+          <div class="kaitkan-header">AKUN SAYA</div>
+          
+          <!-- Body -->
+          <div class="kaitkan-body">
+            
+            <p class="kaitkan-desc">
+              Akun Anda sudah terkait dengan web.
+            </p>
+            
+            <div class="kaitkan-info-row">
+              <span class="kaitkan-info-label">IGN:</span>
+              <strong class="kaitkan-info-value" id="akunSayaIgn">-</strong>
+            </div>
+            
+            <div class="kaitkan-info-row">
+              <span class="kaitkan-info-label">Status:</span>
+              <strong class="kaitkan-info-value kaitkan-status-verified">✅ Terkait</strong>
+            </div>
+            
+            <div class="kaitkan-kode-box" id="akunSayaKodeBox">
+              <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
+              <div class="kaitkan-kode-value" id="akunSayaKodeValue">-</div>
+            </div>
+            
+            <div class="kaitkan-hint">
+              <i class="fas fa-info-circle"></i>
+              Login device baru: gunakan <strong>nomor WA + kode di atas</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
