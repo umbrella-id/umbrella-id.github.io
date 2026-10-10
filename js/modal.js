@@ -65,33 +65,49 @@ document.addEventListener('keydown', (e) => {
 });
 
 function menuClick(type) {
-  console.log('Menu dipilih:', type);
+    console.log('Menu dipilih:', type);
 
-  // 🎯 closeModal dengan skip=TRUE → modal-open tetap ada
-  closeModal(true);
+    // Tutup modal (skip = true, biar modal-open tetap ada)
+    closeModal(true);
 
-  setTimeout(() => {
-    // Pindah halaman / buka modal lain
-    if (type === 'ganti') {
-      if (typeof openGate === 'function') openGate('change');
-    } else if (type === 'kotak_surat') {
-      if (typeof openMailModal === 'function') openMailModal();
-    } else if (type === 'info') {
-      if (typeof openInfoModal === 'function') openInfoModal();
-    } else if (type === 'tentang') {
-      if (typeof openTentangModal === 'function') openTentangModal();
-    } else if (type === 'gallery') {
-      if (typeof openGalleryModal === 'function') openGalleryModal();
-    } else {
-      if (typeof goToPage === 'function') goToPage(type);
-    }
+    setTimeout(() => {
+        // ==========================================
+        // Handle menu khusus
+        // ==========================================
+        if (type === 'ganti') {
+            if (typeof openGate === 'function') openGate('change');
+        } 
+        else if (type === 'kotak_surat') {
+            if (typeof openMailModal === 'function') openMailModal();
+        } 
+        else if (type === 'info') {
+            if (typeof openInfoModal === 'function') openInfoModal();
+        } 
+        else if (type === 'tentang') {
+            if (typeof openTentangModal === 'function') openTentangModal();
+        } 
+        else if (type === 'gallery') {
+            if (typeof openGalleryModal === 'function') openGalleryModal();
+        }
+        // 🎯 Kaitkan Akun (belum verified)
+        else if (type === 'kaitkan') {
+            if (typeof openKaitkanAkun === 'function') openKaitkanAkun();
+        }
+        // 🎯 Akun Saya (sudah verified)
+        else if (type === 'akun-saya') {
+            if (typeof openAkunSaya === 'function') openAkunSaya();
+        }
+        else {
+            // Default: navigate ke page
+            if (typeof goToPage === 'function') goToPage(type);
+        }
 
-    // 🎯 Sekarang baru hapus modal-open
-    const stage = document.getElementById('stage');
-    if (stage) stage.classList.remove('modal-open');
+        // Sekarang baru hapus modal-open
+        const stage = document.getElementById('stage');
+        if (stage) stage.classList.remove('modal-open');
 
-    if (typeof updateButtons === 'function') updateButtons();
-  }, 400);
+        if (typeof updateButtons === 'function') updateButtons();
+    }, 400);
 }
 
 window.openModal = openModal;
