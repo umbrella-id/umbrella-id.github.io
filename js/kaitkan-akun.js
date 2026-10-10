@@ -1,11 +1,13 @@
 /**
- * kaitkan-akun.js — Fitur Kaitkan Akun untuk Member
+ * kaitkan-akun.js — Fitur Kaitkan Akun (Web Publik)
  * 
  * Fitur:
  * - Cek status akun (verified atau belum)
  * - Popup form kaitkan akun (WA + kode)
- * - Popup sukses (tampil kode + suruh simpan)
+ * - Notif sukses di bawah form
  * - Menu "Akun Saya" setelah verified
+ * 
+ * GAS: GAS 1 (Site Content & Mailbox)
  */
 
 // ==========================================
@@ -14,14 +16,19 @@
 let isKaitkanPopupOpen = false;
 
 // ==========================================
-// CEK STATUS AKUN (verified atau belum)
+// CEK STATUS AKUN
 // ==========================================
 async function cekStatusAkun() {
     const uUid = localStorage.getItem('u_uid') || '';
     if (!uUid) return { hasAccount: false };
     
+    // Cuma cek untuk member (prefix M-)
+    if (!uUid.startsWith('M-')) {
+        return { hasAccount: false };
+    }
+    
     try {
-        const url = buildGas5Url('checkAccountStatus', { uid: uUid });
+        const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uUid)}`;
         const res = await fetch(url);
         const data = await res.json();
         
@@ -37,7 +44,6 @@ async function cekStatusAkun() {
         return data;
     } catch(e) {
         console.error('Cek status akun error:', e);
-        // Fallback: cek dari localStorage
         return {
             hasAccount: uUid.endsWith('-v'),
             webUID: uUid.endsWith('-v') ? uUid : '',
@@ -52,17 +58,23 @@ async function cekStatusAkun() {
 function openKaitkanAkun() {
     const uid = localStorage.getItem('u_uid') || '';
     
-    // Cek dulu — kalau sudah verified, jangan buka form
+    // Kalau sudah verified, buka "Akun Saya"
     if (uid.endsWith('-v')) {
         openAkunSaya();
+        return;
+    }
+    
+    // Kalau bukan member, tidak boleh
+    if (!uid.startsWith('M-')) {
+        if (typeof showToast === 'function') {
+            showToast('Hanya member yang bisa kaitkan akun', true);
+        }
         return;
     }
     
     const popupHTML = `
         <div class="kaitkan-overlay" id="kaitkanOverlay">
             <div class="kaitkan-popup">
-                <button class="kaitkan-close" onclick="closeKaitkanAkun()">✕</button>
-                
                 <div class="kaitkan-header">
                     <div class="kaitkan-icon">
                         <i class="fas fa-link"></i>
@@ -119,10 +131,8 @@ function openKaitkanAkun() {
     document.body.insertAdjacentHTML('beforeend', popupHTML);
     isKaitkanPopupOpen = true;
     
-    // Push state untuk back button
     history.pushState({ kaitkan: true }, null, '#kaitkan');
     
-    // Focus input
     setTimeout(() => {
         const input = document.getElementById('kaitkanWaInput');
         if (input) input.focus();
@@ -130,7 +140,7 @@ function openKaitkanAkun() {
 }
 
 // ==========================================
-// TUTUP POPUP KAITKAN AKUN
+// TUTUP POPUP
 // ==========================================
 function closeKaitkanAkun() {
     const overlay = document.getElementById('kaitkanOverlay');
@@ -151,7 +161,6 @@ async function submitKaitkanAkun() {
     let wa = waInput.value.trim().replace(/\D/g, '');
     let kode = kodeInput.value.trim();
     
-    // Validasi
     if (!wa || wa.length < 10) {
         showKaitkanMessage('Masukkan nomor WA lengkap (min 10 digit)', true);
         waInput.focus();
@@ -170,13 +179,12 @@ async function submitKaitkanAkun() {
         return;
     }
     
-    // Loading
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
     showKaitkanMessage('');
     
     try {
-        const url = `${UM_CONFIG.GAS5_URL}?action=activateAccount&uid=${encodeURIComponent(uid)}&wa=${encodeURIComponent(wa)}&code=${encodeURIComponent(kode)}`;
+        const url = `${GAS.MAIN}?action=activateAccount&uid=${encodeURIComponent(uid)}&wa=${encodeURIComponent(wa)}&code=${encodeURIComponent(kode)}`;
         const res = await fetch(url);
         const data = await res.json();
         
@@ -186,18 +194,20 @@ async function submitKaitkanAkun() {
             // Update localStorage
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_web_uid', data.webUID);
-            localStorage.setItem('u_web_kode', kode);  // ← simpan kode
+            localStorage.setItem('u_web_kode', kode);
             window.myUID = data.webUID;
             
-            // Tutup form, buka popup sukses
-            closeKaitkanAkun();
-            setTimeout(() => {
-                showKaitkanSukses(data.webUID, data.ign || localStorage.getItem('u_ign'), kode);
-            }, 300);
+            // Update UI nama
+            if (typeof updateIdentityUI === 'function') {
+                updateIdentityUI();
+            }
             
-            // Rebuild menu
-            if (typeof buildMenu === 'function') {
-                setTimeout(() => buildMenu(), 500);
+            // Update tampilan modal
+            showKaitkanSuccessInModal();
+            
+            // Rebuild menu (untuk update "Kaitkan Akun" → "Akun Saya")
+            if (typeof updateModalMenuItems === 'function') {
+                setTimeout(() => updateModalMenuItems(), 500);
             }
         } else {
             showKaitkanMessage(data.message || 'Gagal mengaitkan akun', true);
@@ -227,85 +237,51 @@ function showKaitkanMessage(msg, isError = false) {
 }
 
 // ==========================================
-// POPUP SUKSES (tampil kode + suruh simpan)
+// SUKSES — Form disabled, tombol hilang, notif muncul
 // ==========================================
-function showKaitkanSukses(webUID, ign, kode) {
-    const popupHTML = `
-        <div class="kaitkan-overlay" id="kaitkanOverlay">
-            <div class="kaitkan-popup kaitkan-sukses">
-                <div class="kaitkan-header">
-                    <div class="kaitkan-icon kaitkan-icon-sukses">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h2>Akun Berhasil Dikaitkan!</h2>
-                </div>
-                
-                <div class="kaitkan-sukses-info">
-                    <div class="kaitkan-sukses-row">
-                        <span>IGN:</span>
-                        <strong>${escapeHtmlKaitkan(ign)}</strong>
-                    </div>
-                </div>
-                
-                <div class="kaitkan-sukses-box">
-                    <div class="kaitkan-sukses-label">🔑 Kode Akses Anda</div>
-                    <div class="kaitkan-sukses-value">${escapeHtmlKaitkan(kode)}</div>
-                    <button class="kaitkan-copy-btn" onclick="copyKodeAkses('${escapeHtmlKaitkan(kode)}')">
-                        <i class="fas fa-copy"></i> Copy Kode
-                    </button>
-                </div>
-                
-                <div class="kaitkan-sukses-warning">
-                    <div class="kaitkan-sukses-warning-title">
-                        <i class="fas fa-exclamation-triangle"></i> PENTING!
-                    </div>
-                    <div class="kaitkan-sukses-warning-body">
-                        <strong>Simpan kode ini!</strong><br>
-                        Gunakan untuk login di device lain (bersama nomor WA Anda).<br>
-                        Jika lupa, minta kode baru ke admin.
-                    </div>
-                </div>
-                
-                <button class="kaitkan-btn" onclick="closeKaitkanAkun()">
-                    <i class="fas fa-check"></i> SAYA SUDAH SIMPAN
-                </button>
+function showKaitkanSuccessInModal() {
+    // 1. Disable input WA & kode
+    const waInput = document.getElementById('kaitkanWaInput');
+    const kodeInput = document.getElementById('kaitkanKodeInput');
+    
+    if (waInput) {
+        waInput.disabled = true;
+        waInput.style.opacity = '0.6';
+        waInput.style.cursor = 'not-allowed';
+    }
+    if (kodeInput) {
+        kodeInput.disabled = true;
+        kodeInput.style.opacity = '0.6';
+        kodeInput.style.cursor = 'not-allowed';
+    }
+    
+    // 2. Hapus tombol "KAITKAN AKUN"
+    const btn = document.getElementById('kaitkanSubmitBtn');
+    if (btn) btn.remove();
+    
+    // 3. Hapus pesan error/info kalau ada
+    const msgEl = document.getElementById('kaitkanMessage');
+    if (msgEl) msgEl.remove();
+    
+    // 4. Tambah notif sukses di bawah form
+    const form = document.querySelector('.kaitkan-form');
+    if (form) {
+        const notifHTML = `
+            <div class="kaitkan-success-notif" id="kaitkanSuccessNotif">
+                <i class="fas fa-check-circle"></i>
+                Akun Berhasil Dikaitkan, simpan kode akses anda!
             </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', popupHTML);
-    isKaitkanPopupOpen = true;
-    
-    history.pushState({ kaitkanSukses: true }, null, '#kaitkan-sukses');
-}
-
-// ==========================================
-// COPY KODE AKSES
-// ==========================================
-function copyKodeAkses(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text)
-            .then(() => showKaitkanToast('✅ Kode dicopy'))
-            .catch(() => fallbackCopyKodeAkses(text));
-    } else {
-        fallbackCopyKodeAkses(text);
+        `;
+        form.insertAdjacentHTML('beforeend', notifHTML);
+        
+        // Scroll ke notif
+        setTimeout(() => {
+            const notifEl = document.getElementById('kaitkanSuccessNotif');
+            if (notifEl) {
+                notifEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, 100);
     }
-}
-
-function fallbackCopyKodeAkses(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        document.execCommand('copy');
-        showKaitkanToast('✅ Kode dicopy');
-    } catch(e) {
-        showKaitkanToast('❌ Gagal copy', true);
-    }
-    document.body.removeChild(textarea);
 }
 
 // ==========================================
@@ -321,9 +297,6 @@ async function openAkunSaya() {
             <div class="kaitkan-sukses-box">
                 <div class="kaitkan-sukses-label">🔑 Kode Akses Anda</div>
                 <div class="kaitkan-sukses-value">${escapeHtmlKaitkan(savedKode)}</div>
-                <button class="kaitkan-copy-btn" onclick="copyKodeAkses('${escapeHtmlKaitkan(savedKode)}')">
-                    <i class="fas fa-copy"></i> Copy Kode
-                </button>
             </div>
         `;
     } else {
@@ -341,8 +314,6 @@ async function openAkunSaya() {
     const popupHTML = `
         <div class="kaitkan-overlay" id="kaitkanOverlay">
             <div class="kaitkan-popup">
-                <button class="kaitkan-close" onclick="closeKaitkanAkun()">✕</button>
-                
                 <div class="kaitkan-header">
                     <div class="kaitkan-icon kaitkan-icon-sukses">
                         <i class="fas fa-user-check"></i>
@@ -368,10 +339,6 @@ async function openAkunSaya() {
                     <i class="fas fa-info-circle"></i>
                     Login device baru: gunakan <strong>nomor WA + kode di atas</strong>.
                 </div>
-                
-                <button class="kaitkan-btn" onclick="closeKaitkanAkun()">
-                    <i class="fas fa-times"></i> TUTUP
-                </button>
             </div>
         </div>
     `;
@@ -397,16 +364,6 @@ function escapeHtmlKaitkan(str) {
     });
 }
 
-function showKaitkanToast(msg, isError = false) {
-    const toast = document.getElementById('toastMessage');
-    if (!toast) return;
-    
-    toast.innerText = msg;
-    toast.style.borderColor = isError ? '#ff4444' : 'var(--color-primary)';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
 // ==========================================
 // BACK BUTTON HANDLER
 // ==========================================
@@ -429,8 +386,7 @@ window.openKaitkanAkun = openKaitkanAkun;
 window.closeKaitkanAkun = closeKaitkanAkun;
 window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
-window.copyKodeAkses = copyKodeAkses;
 window.cekStatusAkun = cekStatusAkun;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded');
+console.log('✅ kaitkan-akun.js loaded (Web Publik)');
