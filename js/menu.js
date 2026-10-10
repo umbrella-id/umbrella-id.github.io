@@ -288,9 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
   
-          // 🎯 Prioritas BARU: Modal Kaitkan buka → close + home
+          // 🎯 Prioritas 6: Kaitkan Akun → close + home
           if (stage && stage.classList.contains('kaitkan-open')) {
-              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
+              if (typeof closeKaitkanAkun === 'function') {
+                  closeKaitkanAkun(true);  // skipMenu = true, jangan buka menu
+              }
               if (typeof goHome === 'function') goHome();
               return;
           }
