@@ -74,6 +74,13 @@ function updateButtons() {
     return;
   }
 
+  // 🎯 Prioritas BARU: Modal Kaitkan buka → BACK + HOME
+  if (stage && stage.classList.contains('kaitkan-open')) {
+    ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+    ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+    return;
+  }
+
   // Prioritas 7: Normal
   const modalOverlay = getModalOverlay();
   const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
@@ -252,6 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Prioritas BARU: Modal Kaitkan buka
+      if (stage && stage.classList.contains('kaitkan-open')) {
+          if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
+          return;
+      }
+
       // Prioritas 7: Normal
       if (currentPage === 'home') {
         const modalOverlay = getModalOverlay();
@@ -312,6 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const gate = getGate();
       if (gate && gate.classList.contains('open')) return;
 
+      // Prioritas BARU: Modal Kaitkan buka → close + home
+      if (stage && stage.classList.contains('kaitkan-open')) {
+          if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
+          if (typeof goHome === 'function') goHome();
+          return;
+      }
+      
       // Prioritas 7: Normal
       if (currentPage === 'home') {
         if (typeof openChatInput === 'function') openChatInput();
