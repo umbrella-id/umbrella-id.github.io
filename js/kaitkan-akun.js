@@ -1,11 +1,8 @@
 /**
  * kaitkan-akun.js — Fitur Kaitkan Akun (Web Publik)
- * Gaya: konsisten dengan modal web publik (mail/info/tentang)
+ * Style: konsisten dengan mail/info/tentang
  */
 
-// ==========================================
-// STATE
-// ==========================================
 let isKaitkanPopupOpen = false;
 
 // ==========================================
@@ -14,10 +11,7 @@ let isKaitkanPopupOpen = false;
 async function cekStatusAkun() {
     const uUid = localStorage.getItem('u_uid') || '';
     if (!uUid) return { hasAccount: false };
-    
-    if (!uUid.startsWith('M-')) {
-        return { hasAccount: false };
-    }
+    if (!uUid.startsWith('M-')) return { hasAccount: false };
     
     try {
         const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uUid)}`;
@@ -27,7 +21,6 @@ async function cekStatusAkun() {
         console.log('📊 checkAccountStatus:', data);
         
         if (data.hasAccount && data.webUID && data.webUID !== uUid) {
-            console.log('🔄 Auto-sync u_uid dari server:', data.webUID);
             localStorage.setItem('u_uid', data.webUID);
             window.myUID = data.webUID;
         }
@@ -44,7 +37,7 @@ async function cekStatusAkun() {
 }
 
 // ==========================================
-// BUKA POPUP FORM KAITKAN AKUN
+// BUKA MODAL KAITKAN AKUN
 // ==========================================
 function openKaitkanAkun() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -61,11 +54,19 @@ function openKaitkanAkun() {
         return;
     }
     
-    // Update header modal global
-    const modalHeader = document.querySelector('#kaitkanOverlay .kaitkan-modal-header');
+    // Hapus dulu kalau ada (anti double)
+    const existing = document.getElementById('kaitkanOverlay');
+    if (existing) existing.remove();
     
-    const popupHTML = `
-        <div class="kaitkan-overlay open" id="kaitkanOverlay">
+    // 🎯 Modal di-inject KE DALAM STAGE (bukan body)
+    const stage = document.getElementById('stage');
+    if (!stage) {
+        console.error('Stage tidak ditemukan');
+        return;
+    }
+    
+    const modalHTML = `
+        <div class="kaitkan-overlay" id="kaitkanOverlay">
             <div class="kaitkan-modal">
                 
                 <!-- Bingkai ornamen -->
@@ -93,44 +94,29 @@ function openKaitkanAkun() {
                 </div>
                 
                 <!-- Header -->
-                <div class="kaitkan-modal-header">KAITKAN AKUN</div>
+                <div class="kaitkan-header">KAITKAN AKUN</div>
                 
                 <!-- Body -->
-                <div class="kaitkan-modal-body" id="kaitkanModalBody">
-                    
-                    <div class="kaitkan-icon-wrap">
-                        <i class="fas fa-link"></i>
-                    </div>
+                <div class="kaitkan-body">
                     
                     <p class="kaitkan-desc">
-                        Kaitkan akun agar bisa login dari device lain tanpa verifikasi ulang.
+                        Kaitkan akun anda untuk mendapatkan menu lainnya
                     </p>
-                    
-                    <div class="kaitkan-info">
-                        <div class="kaitkan-info-title">
-                            <i class="fas fa-info-circle"></i> Cara Mendapat Kode
-                        </div>
-                        <ol class="kaitkan-info-list">
-                            <li>Hubungi admin via WA / DM / game</li>
-                            <li>Konfirmasi identitas Anda</li>
-                            <li>Admin akan kirimkan kode unik</li>
-                        </ol>
-                    </div>
                     
                     <div class="kaitkan-form">
                         <div class="kaitkan-form-group">
-                            <label><i class="fas fa-phone"></i> Nomor WA</label>
+                            <label><i class="fas fa-phone"></i> NOMOR WA</label>
                             <input type="tel" 
                                    id="kaitkanWaInput" 
-                                   placeholder="628123456789"
+                                   placeholder="628xxxxxxxxx"
                                    inputmode="numeric"
                                    pattern="[0-9]*"
                                    autocomplete="off">
-                            <small>Gunakan nomor yang terdaftar di member list</small>
+                            <small>Gunakan kode negara, bukan nol</small>
                         </div>
                         
                         <div class="kaitkan-form-group">
-                            <label><i class="fas fa-key"></i> Kode Unik</label>
+                            <label><i class="fas fa-key"></i> KODE UNIK</label>
                             <input type="tel" 
                                    id="kaitkanKodeInput" 
                                    placeholder="123456"
@@ -138,12 +124,11 @@ function openKaitkanAkun() {
                                    inputmode="numeric"
                                    pattern="[0-9]*"
                                    autocomplete="off">
-                            <small>6 digit dari admin</small>
+                            <small>Kode ini diperoleh dari admin</small>
                         </div>
                         
                         <div id="kaitkanMessage" class="kaitkan-message"></div>
                         
-                        <!-- Tombol pakai btn-svg -->
                         <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
                             <div class="btn-ujung-kiri"></div>
                             <div class="btn-tengah"><span class="btn-teks">KAITKAN AKUN</span></div>
@@ -155,15 +140,25 @@ function openKaitkanAkun() {
         </div>
     `;
     
-    document.body.insertAdjacentHTML('beforeend', popupHTML);
+    // 🎯 Inject ke stage (bukan body)
+    stage.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Open dengan animasi
+    setTimeout(() => {
+        const overlay = document.getElementById('kaitkanOverlay');
+        if (overlay) overlay.classList.add('open');
+    }, 20);
+    
     isKaitkanPopupOpen = true;
     
-    history.pushState({ kaitkan: true }, null, '#kaitkan');
+    // Class di stage
+    stage.classList.add('kaitkan-open');
     
-    // Update tombol menu stage (back + home)
-    const stage = document.getElementById('stage');
-    if (stage) stage.classList.add('kaitkan-open');
+    // Update tombol menu
     if (typeof updateButtons === 'function') updateButtons();
+    
+    // Push history
+    history.pushState({ kaitkan: true }, null, '#kaitkan');
     
     setTimeout(() => {
         const input = document.getElementById('kaitkanWaInput');
@@ -172,21 +167,25 @@ function openKaitkanAkun() {
 }
 
 // ==========================================
-// TUTUP POPUP
+// TUTUP MODAL
 // ==========================================
 function closeKaitkanAkun() {
     const overlay = document.getElementById('kaitkanOverlay');
-    if (overlay) overlay.remove();
+    if (overlay) {
+        overlay.classList.remove('open');
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
     isKaitkanPopupOpen = false;
     
-    // Hapus class dari stage
     const stage = document.getElementById('stage');
     if (stage) stage.classList.remove('kaitkan-open');
     if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ==========================================
-// SUBMIT KAITKAN AKUN
+// SUBMIT
 // ==========================================
 async function submitKaitkanAkun() {
     const waInput = document.getElementById('kaitkanWaInput');
@@ -216,7 +215,6 @@ async function submitKaitkanAkun() {
         return;
     }
     
-    // Loading state
     btn.classList.add('loading');
     btn.style.pointerEvents = 'none';
     const btnText = btn.querySelector('.btn-teks');
@@ -231,7 +229,6 @@ async function submitKaitkanAkun() {
         console.log('📡 activateAccount response:', data);
         
         if (data.success) {
-            // Update localStorage
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_web_uid', data.webUID);
             localStorage.setItem('u_web_kode', kode);
@@ -241,7 +238,7 @@ async function submitKaitkanAkun() {
                 updateIdentityUI();
             }
             
-            showKaitkanSuccessInModal();
+            showKaitkanSuccess();
             
             if (typeof updateModalMenuItems === 'function') {
                 setTimeout(() => updateModalMenuItems(), 500);
@@ -262,7 +259,7 @@ async function submitKaitkanAkun() {
 }
 
 // ==========================================
-// PESAN ERROR/INFO
+// PESAN
 // ==========================================
 function showKaitkanMessage(msg, isError = false) {
     const el = document.getElementById('kaitkanMessage');
@@ -276,25 +273,21 @@ function showKaitkanMessage(msg, isError = false) {
 }
 
 // ==========================================
-// SUKSES — Form disabled, tombol hilang, notif muncul
+// SUKSES
 // ==========================================
-function showKaitkanSuccessInModal() {
-    // 1. Disable input
+function showKaitkanSuccess() {
     const waInput = document.getElementById('kaitkanWaInput');
     const kodeInput = document.getElementById('kaitkanKodeInput');
     
     if (waInput) waInput.disabled = true;
     if (kodeInput) kodeInput.disabled = true;
     
-    // 2. Hapus tombol submit
     const btn = document.getElementById('kaitkanSubmitBtn');
     if (btn) btn.remove();
     
-    // 3. Hapus pesan error
     const msgEl = document.getElementById('kaitkanMessage');
     if (msgEl) msgEl.remove();
     
-    // 4. Tambah notif sukses (style chat system message)
     const form = document.querySelector('.kaitkan-form');
     if (form) {
         const notifHTML = `
@@ -304,33 +297,34 @@ function showKaitkanSuccessInModal() {
             </div>
         `;
         form.insertAdjacentHTML('beforeend', notifHTML);
-        
-        setTimeout(() => {
-            const notifEl = document.getElementById('kaitkanSuccessNotif');
-            if (notifEl) notifEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 100);
     }
 }
 
 // ==========================================
-// POPUP AKUN SAYA
+// AKUN SAYA
 // ==========================================
 async function openAkunSaya() {
     const ign = localStorage.getItem('u_ign') || 'Member';
     const savedKode = localStorage.getItem('u_web_kode') || '';
     
+    const existing = document.getElementById('kaitkanOverlay');
+    if (existing) existing.remove();
+    
+    const stage = document.getElementById('stage');
+    if (!stage) return;
+    
     let kodeSectionHTML = '';
     if (savedKode) {
         kodeSectionHTML = `
             <div class="kaitkan-kode-box">
-                <div class="kaitkan-kode-label">🔑 Kode Akses Anda</div>
+                <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
                 <div class="kaitkan-kode-value">${escapeHtmlKaitkan(savedKode)}</div>
             </div>
         `;
     } else {
         kodeSectionHTML = `
             <div class="kaitkan-kode-box kaitkan-kode-box-empty">
-                <div class="kaitkan-kode-label">🔑 Kode Akses</div>
+                <div class="kaitkan-kode-label">KODE AKSES</div>
                 <div class="kaitkan-kode-empty">
                     Kode tidak tersimpan di device ini.<br>
                     Minta kode baru ke admin jika perlu login device lain.
@@ -339,8 +333,8 @@ async function openAkunSaya() {
         `;
     }
     
-    const popupHTML = `
-        <div class="kaitkan-overlay open" id="kaitkanOverlay">
+    const modalHTML = `
+        <div class="kaitkan-overlay" id="kaitkanOverlay">
             <div class="kaitkan-modal">
                 
                 <div class="modal-frame">
@@ -366,13 +360,9 @@ async function openAkunSaya() {
                     </div>
                 </div>
                 
-                <div class="kaitkan-modal-header">AKUN SAYA</div>
+                <div class="kaitkan-header">AKUN SAYA</div>
                 
-                <div class="kaitkan-modal-body">
-                    
-                    <div class="kaitkan-icon-wrap kaitkan-icon-success">
-                        <i class="fas fa-user-check"></i>
-                    </div>
+                <div class="kaitkan-body">
                     
                     <p class="kaitkan-desc">Akun Anda sudah terkait dengan web.</p>
                     
@@ -397,13 +387,17 @@ async function openAkunSaya() {
         </div>
     `;
     
-    document.body.insertAdjacentHTML('beforeend', popupHTML);
+    stage.insertAdjacentHTML('beforeend', modalHTML);
+    
+    setTimeout(() => {
+        const overlay = document.getElementById('kaitkanOverlay');
+        if (overlay) overlay.classList.add('open');
+    }, 20);
+    
     isKaitkanPopupOpen = true;
+    stage.classList.add('kaitkan-open');
     
-    const stage = document.getElementById('stage');
-    if (stage) stage.classList.add('kaitkan-open');
     if (typeof updateButtons === 'function') updateButtons();
-    
     history.pushState({ akunSaya: true }, null, '#akun-saya');
 }
 
@@ -443,4 +437,4 @@ window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Web Publik — konsisten tema)');
+console.log('✅ kaitkan-akun.js loaded (Web Publik — konsisten modal lain)');
