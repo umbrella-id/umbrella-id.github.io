@@ -234,13 +234,32 @@ function closeGate(skipMenu = false) {
   }
 
   if (wasEditMode) {
-    if (skipMenu) {
-      if (typeof goHome === 'function') goHome();
-    } else {
+      if (skipMenu) {
+          if (typeof goHome === 'function') goHome();
+      } else {
+          setTimeout(() => {
+              if (typeof openModal === 'function') openModal();
+          }, 100);
+      }
+  }
+  
+  // 🎯 Cek status akun (untuk member)
+  // Biar menu "Kaitkan Akun" / "Akun Saya" akurat
+  if (typeof cekStatusAkun === 'function') {
       setTimeout(() => {
-        if (typeof openModal === 'function') openModal();
-      }, 100);
-    }
+          cekStatusAkun().then(result => {
+              console.log('📊 Status akun:', result);
+              if (result.hasAccount && result.webUID) {
+                  const currentUid = localStorage.getItem('u_uid');
+                  if (result.webUID !== currentUid) {
+                      console.log('🔄 Rebuild menu karena UID sync');
+                      if (typeof updateModalMenuItems === 'function') {
+                          updateModalMenuItems();
+                      }
+                  }
+              }
+          });
+      }, 600);
   }
   
   setTimeout(() => {
