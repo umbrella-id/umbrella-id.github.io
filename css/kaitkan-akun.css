@@ -5,7 +5,7 @@
 
 .kaitkan-overlay {
     display: none;
-    position: absolute;              /* ← absolute, bukan fixed */
+    position: absolute;
     inset: 0;
     z-index: 960;
     pointer-events: none;
@@ -15,7 +15,7 @@
     display: block;
 }
 
-/* Modal — full-size seperti mail/info */
+/* Modal — full-size seperti mail/info/tentang */
 .kaitkan-modal {
     position: absolute;
     top: 50%;
@@ -23,7 +23,7 @@
     width: 70%;
     height: 80%;
     transform: translate(-50%, -50%);
-    background: rgba(15, 10, 6, 0.7);   /* ← sama dengan mail/info */
+    background: rgba(15, 10, 6, 0.7);
     display: flex;
     flex-direction: column;
     pointer-events: auto;
@@ -117,11 +117,11 @@
 
 .kaitkan-form-group input {
     width: 100%;
-    background: #ffffff;              /* ← PUTIH */
+    background: #ffffff;
     border: 1px solid rgba(201, 165, 90, 0.6);
     border-radius: 4px;
     padding: 10px 14px;
-    color: #000000;                   /* ← hitam */
+    color: #000000;
     font-size: 0.9rem;
     font-family: inherit;
     transition: all 0.2s;
@@ -197,7 +197,7 @@
 }
 
 /* ==========================================
-   NOTIF SUKSES (gaya chat system)
+   NOTIF SUKSES
    ========================================== */
 .kaitkan-success-notif {
     margin-top: 16px;
@@ -290,14 +290,6 @@
     word-break: break-all;
 }
 
-.kaitkan-kode-empty {
-    color: #c9a55a;
-    font-size: 0.72rem;
-    line-height: 1.5;
-    padding: 8px 0;
-    opacity: 0.8;
-}
-
 .kaitkan-hint {
     width: 100%;
     max-width: 380px;
@@ -320,11 +312,6 @@
    RESPONSIVE
    ========================================== */
 @media (max-width: 768px) {
-    .kaitkan-modal {
-        width: 85%;
-        height: 85%;
-    }
-    
     .kaitkan-body {
         padding: 16px 20px 24px;
     }
