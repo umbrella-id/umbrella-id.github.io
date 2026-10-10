@@ -1,0 +1,428 @@
+/* ==========================================
+   KAITKAN AKUN — Popup & Form
+   ========================================== */
+
+.kaitkan-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 14, 26, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeInKaitkan 0.25s ease;
+}
+
+@keyframes fadeInKaitkan {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.kaitkan-popup {
+    max-width: 420px;
+    width: 100%;
+    background: var(--bg-solid-form);
+    border: 1px solid var(--border-line);
+    border-radius: 16px;
+    padding: 24px 22px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUpKaitkan 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes slideUpKaitkan {
+    from { transform: translateY(30px) scale(0.96); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.kaitkan-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: 0.2s;
+    line-height: 1;
+}
+
+.kaitkan-close:hover {
+    color: var(--color-primary);
+    transform: rotate(90deg);
+}
+
+/* Header */
+.kaitkan-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.kaitkan-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05));
+    border: 1px solid var(--color-primary);
+    border-radius: 50%;
+    color: var(--color-primary);
+    font-size: 26px;
+}
+
+.kaitkan-icon-sukses {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.05));
+    border-color: #4ade80;
+    color: #4ade80;
+}
+
+.kaitkan-header h2 {
+    font-size: 1.15rem;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.kaitkan-header p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Info Box */
+.kaitkan-info {
+    background: rgba(168, 85, 247, 0.08);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+}
+
+.kaitkan-info-title {
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.kaitkan-info-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 0.7rem;
+    color: var(--text-main);
+    line-height: 1.7;
+}
+
+.kaitkan-info-list li {
+    margin-bottom: 2px;
+}
+
+/* Form */
+.kaitkan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.kaitkan-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.kaitkan-form-group label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.kaitkan-form-group label i {
+    color: var(--color-primary);
+    margin-right: 4px;
+    width: 14px;
+}
+
+.kaitkan-form-group input {
+    width: 100%;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: white;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    outline: none;
+    letter-spacing: 1px;
+}
+
+.kaitkan-form-group input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.kaitkan-form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.kaitkan-form-group small {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+/* Message */
+.kaitkan-message {
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: none;
+    line-height: 1.4;
+}
+
+.kaitkan-message.show {
+    display: block;
+}
+
+.kaitkan-message.error {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff8888;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+.kaitkan-message.success {
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+/* Submit Button */
+.kaitkan-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    margin-top: 4px;
+}
+
+.kaitkan-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.kaitkan-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.kaitkan-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================
+   POPUP SUKSES
+   ========================================== */
+
+.kaitkan-sukses-info {
+    background: var(--bg-dark);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+}
+
+.kaitkan-sukses-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 4px 0;
+}
+
+.kaitkan-sukses-row span {
+    color: var(--text-muted);
+}
+
+.kaitkan-sukses-row strong {
+    color: white;
+    font-weight: 700;
+}
+
+.kaitkan-sukses-box {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.02));
+    border: 1px solid #4ade80;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.kaitkan-sukses-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.kaitkan-sukses-value {
+    font-family: monospace;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #4ade80;
+    letter-spacing: 6px;
+    margin-bottom: 12px;
+    user-select: all;
+    word-break: break-all;
+}
+
+.kaitkan-copy-btn {
+    background: #4ade80;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    color: #0b0e1a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+}
+
+.kaitkan-copy-btn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+}
+
+.kaitkan-copy-btn:active {
+    transform: scale(0.97);
+}
+
+/* Warning Box */
+.kaitkan-sukses-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+
+.kaitkan-sukses-warning-title {
+    color: #f59e0b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.kaitkan-sukses-warning-body {
+    color: var(--text-main);
+    font-size: 0.7rem;
+    line-height: 1.6;
+}
+
+.kaitkan-sukses-warning-body strong {
+    color: #f59e0b;
+}
+
+/* Hint Box */
+.kaitkan-sukses-hint {
+    background: rgba(168, 85, 247, 0.08);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    color: var(--text-main);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.kaitkan-sukses-hint i {
+    color: var(--color-primary);
+    margin-right: 4px;
+}
+
+/* Empty state untuk kode tidak tersimpan */
+.kaitkan-sukses-box-empty {
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px dashed rgba(100, 116, 139, 0.5);
+}
+
+.kaitkan-sukses-empty-text {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    line-height: 1.5;
+    padding: 8px 0;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 480px) {
+    .kaitkan-overlay {
+        padding: 12px;
+    }
+    
+    .kaitkan-popup {
+        padding: 20px 18px;
+        border-radius: 14px;
+    }
+    
+    .kaitkan-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+    
+    .kaitkan-header h2 {
+        font-size: 1.05rem;
+    }
+    
+    .kaitkan-header p {
+        font-size: 0.7rem;
+    }
+    
+    .kaitkan-sukses-value {
+        font-size: 1.3rem;
+        letter-spacing: 4px;
+    }
+    
+    .kaitkan-btn {
+        padding: 12px;
+        font-size: 0.75rem;
+    }
+}
