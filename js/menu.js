@@ -210,12 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
   
-          // 🎯 Prioritas BARU: Modal Kaitkan buka
-          if (stage && stage.classList.contains('kaitkan-open')) {
-              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
-              return;
-          }
-  
           // Prioritas 1: Headline
           if (stage && stage.classList.contains('headline-open')) {
               if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
@@ -258,14 +252,22 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 6: Gate
+          // 🎯 Prioritas 6: Kaitkan Akun (BARU — tiru pola di atas)
+          if (stage && stage.classList.contains('kaitkan-open')) {
+              if (typeof closeKaitkanAkun === 'function') {
+                  closeKaitkanAkun();
+              }
+              return;
+          }
+  
+          // Prioritas 7: Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) {
               if (typeof closeGate === 'function') closeGate();
               return;
           }
   
-          // Prioritas 7: Normal
+          // Prioritas 8: Normal
           if (currentPage === 'home') {
               const modalOverlay = getModalOverlay();
               if (modalOverlay && modalOverlay.classList.contains('open')) {
