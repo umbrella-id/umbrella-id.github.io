@@ -197,6 +197,14 @@ function closeGate(skipMenu = false) {
   const stage = document.getElementById('stage');
   if (!gate) return;
 
+  // Reset login state kalau ada
+  if (typeof loginModalPreviousState !== 'undefined') {
+      // Bisa diakses karena var global
+      if (window.loginModalPreviousState) {
+          window.loginModalPreviousState = null;
+      }
+  }
+
   if (gateMode === 'first' && !window.myIGN) {
     const input = document.getElementById('gate-input');
     if (input) {
@@ -242,6 +250,7 @@ function closeGate(skipMenu = false) {
           }, 100);
       }
   }
+
   
   // 🎯 Cek status akun (untuk member)
   // Biar menu "Kaitkan Akun" / "Akun Saya" akurat
