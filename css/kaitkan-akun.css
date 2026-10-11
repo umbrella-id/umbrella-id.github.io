@@ -361,6 +361,7 @@
 }
 
 .login-modal {
+    position: relative;          /* ← TAMBAH */
     max-width: 360px;
     width: 100%;
     background: rgba(15, 10, 6, 0.95);
