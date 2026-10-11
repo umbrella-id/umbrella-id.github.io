@@ -1,6 +1,5 @@
 /**
- * kaitkan-akun.js — Fitur Verifikasi Akun (Web Publik)
- * Modal HTML statis, toggle via class
+ * kaitkan-akun.js — Fitur Verifikasi Akun & Login (Web Publik)
  */
 
 let isKaitkanPopupOpen = false;
@@ -61,7 +60,6 @@ function openKaitkanAkun() {
     const overlay = document.getElementById('kaitkanOverlay');
     if (!overlay) return;
     
-    // Reset form
     const waInput = document.getElementById('kaitkanWaInput');
     const kodeInput = document.getElementById('kaitkanKodeInput');
     const msgEl = document.getElementById('kaitkanMessage');
@@ -104,11 +102,16 @@ function openKaitkanAkun() {
 function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+    const overlayLogin = document.getElementById('loginMemberOverlay');
     const stage = document.getElementById('stage');
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
-    if (stage) stage.classList.remove('kaitkan-open');
+    if (overlayLogin) overlayLogin.classList.remove('open');
+    if (stage) {
+        stage.classList.remove('kaitkan-open');
+        stage.classList.remove('login-open');
+    }
     
     isKaitkanPopupOpen = false;
     
@@ -122,7 +125,7 @@ function closeKaitkanAkun(skipMenu = false) {
 }
 
 // ==========================================
-// SUBMIT
+// SUBMIT VERIFIKASI
 // ==========================================
 async function submitKaitkanAkun() {
     const waInput = document.getElementById('kaitkanWaInput');
@@ -289,6 +292,139 @@ async function openAkunSaya() {
 }
 
 // ==========================================
+// 🎯 BUKA MODAL LOGIN
+// ==========================================
+function openLoginModal() {
+    const overlay = document.getElementById('loginMemberOverlay');
+    if (!overlay) return;
+    
+    const waInput = document.getElementById('loginMemberWa');
+    const kodeInput = document.getElementById('loginMemberKode');
+    const msgEl = document.getElementById('loginMemberMessage');
+    
+    if (waInput) waInput.value = '';
+    if (kodeInput) kodeInput.value = '';
+    if (msgEl) {
+        msgEl.innerText = '';
+        msgEl.classList.remove('show', 'error');
+    }
+    
+    const btn = document.getElementById('loginMemberSubmitBtn');
+    if (btn) {
+        btn.style.pointerEvents = '';
+        const btnText = btn.querySelector('.btn-teks');
+        if (btnText) btnText.innerText = 'LOGIN';
+    }
+    
+    overlay.classList.add('open');
+    
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.add('login-open');
+    
+    if (typeof updateButtons === 'function') updateButtons();
+    
+    setTimeout(() => {
+        if (waInput) waInput.focus();
+    }, 300);
+    
+    isKaitkanPopupOpen = true;
+}
+
+// ==========================================
+// 🎯 SUBMIT LOGIN
+// ==========================================
+async function submitLoginModal() {
+    const waInput = document.getElementById('loginMemberWa');
+    const kodeInput = document.getElementById('loginMemberKode');
+    const btn = document.getElementById('loginMemberSubmitBtn');
+    
+    if (!waInput || !kodeInput || !btn) return;
+    
+    let wa = waInput.value.trim().replace(/\D/g, '');
+    let kode = kodeInput.value.trim();
+    
+    if (!wa || wa.length < 10) {
+        showLoginMemberMessage('Masukkan nomor WA lengkap', true);
+        waInput.focus();
+        return;
+    }
+    
+    if (!kode || kode.length !== 6) {
+        showLoginMemberMessage('Masukkan kode 6 digit', true);
+        kodeInput.focus();
+        return;
+    }
+    
+    btn.style.pointerEvents = 'none';
+    const btnText = btn.querySelector('.btn-teks');
+    if (btnText) btnText.innerText = 'MEMPROSES...';
+    showLoginMemberMessage('');
+    
+    try {
+        const url = `${GAS.MAIN}?action=loginVerified&wa=${encodeURIComponent(wa)}&code=${encodeURIComponent(kode)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        console.log('📡 loginVerified:', data);
+        
+        if (data.success) {
+            localStorage.setItem('u_uid', data.webUID);
+            localStorage.setItem('u_ign', data.ign);
+            localStorage.setItem('u_web_uid', data.webUID);
+            localStorage.setItem('u_web_kode', kode);
+            localStorage.setItem('u_class', 'member');
+            
+            window.myUID = data.webUID;
+            window.myIGN = data.ign;
+            
+            if (typeof updateIdentityUI === 'function') {
+                updateIdentityUI();
+            }
+            
+            showLoginMemberMessage('✅ Login berhasil!', false, true);
+            
+            setTimeout(() => {
+                closeKaitkanAkun(true);
+                
+                // Tutup gate (kalau buka)
+                if (typeof closeGate === 'function') {
+                    closeGate(true);
+                }
+                
+                // Rebuild menu
+                if (typeof buildMenu === 'function') {
+                    setTimeout(() => buildMenu(), 300);
+                }
+                
+                // Cek status akun
+                if (typeof cekStatusAkun === 'function') {
+                    setTimeout(() => cekStatusAkun(), 500);
+                }
+            }, 800);
+        } else {
+            showLoginMemberMessage(data.message || 'Login gagal', true);
+            btn.style.pointerEvents = '';
+            if (btnText) btnText.innerText = 'LOGIN';
+        }
+    } catch(e) {
+        console.error('Login error:', e);
+        showLoginMemberMessage('Koneksi gagal. Coba lagi.', true);
+        btn.style.pointerEvents = '';
+        if (btnText) btnText.innerText = 'LOGIN';
+    }
+}
+
+function showLoginMemberMessage(msg, isError = false, isSuccess = false) {
+    const el = document.getElementById('loginMemberMessage');
+    if (!el) return;
+    
+    el.innerText = msg || '';
+    el.classList.remove('error', 'success');
+    if (isError) el.classList.add('error');
+    if (isSuccess) el.classList.add('success');
+}
+
+// ==========================================
 // UTILITY
 // ==========================================
 function escapeHtmlKaitkan(str) {
@@ -311,6 +447,8 @@ window.closeKaitkanAkun = closeKaitkanAkun;
 window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
+window.openLoginModal = openLoginModal;
+window.submitLoginModal = submitLoginModal;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Verifikasi Akun)');
+console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login)');
