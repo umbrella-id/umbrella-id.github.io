@@ -312,3 +312,35 @@
         letter-spacing: 4px;
     }
 }
+
+/* ==========================================
+   TOMBOL KEMBALI DI MODAL
+   ========================================== */
+.kaitkan-back-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(201, 165, 90, 0.15);
+    border: 1px solid rgba(201, 165, 90, 0.4);
+    border-radius: 6px;
+    color: #f0d78c;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.kaitkan-back-btn:hover {
+    background: rgba(201, 165, 90, 0.3);
+    border-color: #f0d78c;
+    transform: scale(1.05);
+}
+
+.kaitkan-back-btn:active {
+    transform: scale(0.95);
+}
