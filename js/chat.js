@@ -228,6 +228,7 @@ function ensureChatInner() {
 }
 
 // ===== RENDER LOG =====
+// ===== RENDER LOG =====
 function renderChatLogs(logs) {
   const container = document.getElementById('chatLogs');
   if (!container) return;
@@ -235,11 +236,10 @@ function renderChatLogs(logs) {
   const inner = ensureChatInner();
   if (!inner) return;
 
-  // 🎯 Hapus "Selamat datang" statis dari HTML (cuma untuk loading)
+  // Hapus "Selamat datang" statis
   const welcomeEl = document.getElementById('chatWelcome');
   if (welcomeEl) {
     welcomeEl.remove();
-    console.log('🗑️ "Selamat datang" dihapus dari DOM');
   }
 
   inner.innerHTML = '';
@@ -256,7 +256,6 @@ function renderChatLogs(logs) {
       const msgUID = msg.uid || '';
       const msgName = msg.username || 'Anon';
       const msgText = msg.message || '';
-      const msgRole = msg.role || '';
 
       const isDeleted = msgText === '[deleted by admin]';
 
@@ -273,7 +272,7 @@ function renderChatLogs(logs) {
             const now = Date.now();
 
             if (existingExpiry > now) {
-              console.log('⏭️ Sudah di-mute, skip reset (sisa ' + Math.ceil((existingExpiry - now) / 1000) + 's)');
+              console.log('⏭️ Sudah di-mute, skip reset');
               if (typeof showMuteNotif === 'function') showMuteNotif();
             } else {
               const expiry = now + (parsed.durasi * 60 * 1000);
@@ -303,15 +302,23 @@ function renderChatLogs(logs) {
         d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;
       }
       else {
+        // ==========================================
+        // 🎯 RENDER CHAT BIASA + BADGE VERIFIED
+        // ==========================================
         const chatClass = getChatClass(msg);
+        const isVerified = msgUID.endsWith('-v');
+        const badge = isVerified ? '<i class="fas fa-check-circle chat-verified-badge"></i>' : '';
         
         if (chatClass === 'admin') {
+          // Admin — sama seperti member verified (badge centang)
           d.className = 'chat-line chat-admin';
-          d.innerHTML = `<span class="chat-name"><i class="fas fa-shield-halved"></i>${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
+          d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}${badge} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else if (chatClass === 'member') {
+          // Member — badge kalau verified
           d.className = 'chat-line chat-member';
-          d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
+          d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}${badge} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else {
+          // Guest — tanpa badge
           d.className = 'chat-line';
           d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         }
@@ -323,7 +330,7 @@ function renderChatLogs(logs) {
     }
   });
 
-  // 🎯 Auto-scroll ke bawah setelah render (chat terbaru kelihatan)
+  // Auto-scroll ke bawah
   scrollChatToBottom();
 }
 
