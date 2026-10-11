@@ -326,12 +326,22 @@ function openLoginModal() {
 }
 
 // ==========================================
-// 🎯 TUTUP MODAL LOGIN
+// 🎯 HANDLE TOMBOL BACK — Dipanggil dari menu.js
 // ==========================================
-function closeLoginModal() {
+function handleLoginModalBack() {
     const overlay = document.getElementById('loginMemberOverlay');
-    if (overlay) overlay.classList.remove('open');
+    if (!overlay) return false;
+    
+    // Kalau modal login terbuka → tutup
+    if (overlay.classList.contains('open')) {
+        closeLoginModal();
+        return true;  // handled
+    }
+    
+    return false;  // tidak handled
 }
+
+window.handleLoginModalBack = handleLoginModalBack;
 
 // ==========================================
 // 🎯 SUBMIT LOGIN
