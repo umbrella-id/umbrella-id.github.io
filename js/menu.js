@@ -132,16 +132,14 @@ function isVerifiedUid() {
 // ==========================================
 // 🎯 UPDATE MODAL MENU ITEMS
 // - Sembunyikan "Ganti Nama" untuk verified
-// - Tambah/update menu "Kaitkan Akun" / "Akun Saya"
+// - Tambah/update menu "Verifikasi Akun" / "Akun Saya"
 // ==========================================
 function updateModalMenuItems() {
     const uid = localStorage.getItem('u_uid') || '';
     const isMember = uid.startsWith('M-');
     const isVerified = uid.endsWith('-v');
     
-    // ==========================================
-    // 1. Sembunyikan "Ganti Nama" untuk verified
-    // ==========================================
+    // Sembunyikan "Ganti Nama" untuk verified
     const gantiNamaBtn = document.querySelector('.modal-list-item[onclick*="ganti"]');
     if (gantiNamaBtn) {
         if (isVerified) {
@@ -151,23 +149,19 @@ function updateModalMenuItems() {
         }
     }
     
-    // ==========================================
-    // 2. Handle menu "Kaitkan Akun" / "Akun Saya"
-    // ==========================================
+    // Handle menu "Verifikasi Akun" / "Akun Saya"
     let kaitkanBtn = document.getElementById('menuKaitkanAkun');
     
     if (!isMember) {
-        // Bukan member → hapus menu kalau ada
         if (kaitkanBtn) kaitkanBtn.remove();
         return;
     }
     
-    // Kalau member → tampilkan menu (buat kalau belum ada)
     if (!kaitkanBtn) {
         const modalContent = document.querySelector('.modal-content');
         if (!modalContent) return;
         
-        const label = isVerified ? 'Akun Saya' : 'Kaitkan Akun';
+        const label = isVerified ? 'Akun Saya' : 'Verifikasi Akun';
         const action = isVerified ? 'akun-saya' : 'kaitkan';
         
         const kaitkanHTML = `
@@ -178,7 +172,6 @@ function updateModalMenuItems() {
             </div>
         `;
         
-        // Sisipkan sebelum tombol "Tentang Kami"
         const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
         if (tentangBtn) {
             tentangBtn.insertAdjacentHTML('beforebegin', kaitkanHTML);
@@ -186,10 +179,9 @@ function updateModalMenuItems() {
             modalContent.insertAdjacentHTML('beforeend', kaitkanHTML);
         }
     } else {
-        // Update label & onclick kalau sudah ada
         const label = kaitkanBtn.querySelector('.btn-teks');
         if (label) {
-            label.innerText = isVerified ? 'Akun Saya' : 'Kaitkan Akun';
+            label.innerText = isVerified ? 'Akun Saya' : 'Verifikasi Akun';
         }
         kaitkanBtn.setAttribute('onclick', `menuClick('${isVerified ? 'akun-saya' : 'kaitkan'}')`);
     }
