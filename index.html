@@ -44,6 +44,12 @@
       <div id="gatekeeper" class="gatekeeper">
         <div class="gate-overlay"></div>
 
+        <!-- 🎯 Tombol Login di Pojok -->
+        <button class="gate-login-btn" id="gateLoginBtn" onclick="openLoginModal()">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>LOGIN</span>
+        </button>
+
         <div class="gate-content">
           <p class="gate-label">Masukan Nama Anda</p>
 
@@ -323,6 +329,73 @@
             <p class="kaitkan-save-text">
                 Simpan kode ini untuk login
             </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODAL LOGIN MEMBER ============ -->
+      <div class="kaitkan-overlay" id="loginMemberOverlay">
+        <div class="kaitkan-modal">
+          
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
+          <div class="kaitkan-header">LOGIN MEMBER</div>
+          
+          <div class="kaitkan-body">
+            
+            <div class="kaitkan-form">
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-phone"></i> NOMOR WA</label>
+                <input type="tel" 
+                       id="loginMemberWa" 
+                       placeholder="628xxxxxxxxx"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Nomor WA yang terdaftar</small>
+              </div>
+              
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-key"></i> KODE AKSES</label>
+                <input type="tel" 
+                       id="loginMemberKode" 
+                       placeholder="123456"
+                       maxlength="6"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Kode akses dari verifikasi</small>
+              </div>
+              
+              <div id="loginMemberMessage" class="kaitkan-message"></div>
+              
+              <div class="btn-svg kaitkan-submit-btn" id="loginMemberSubmitBtn" onclick="submitLoginModal()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">LOGIN</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
