@@ -3,7 +3,6 @@
  */
 
 let isKaitkanPopupOpen = false;
-let loginModalPreviousState = null;  // ← BARU
 
 // ==========================================
 // CEK STATUS AKUN
@@ -98,21 +97,16 @@ function openKaitkanAkun() {
 }
 
 // ==========================================
-// TUTUP MODAL
+// TUTUP MODAL VERIFIKASI / AKUN SAYA
 // ==========================================
 function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
-    const overlayLogin = document.getElementById('loginMemberOverlay');
     const stage = document.getElementById('stage');
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
-    if (overlayLogin) overlayLogin.classList.remove('open');
-    if (stage) {
-        stage.classList.remove('kaitkan-open');
-        stage.classList.remove('login-open');
-    }
+    if (stage) stage.classList.remove('kaitkan-open');
     
     isKaitkanPopupOpen = false;
     
@@ -293,26 +287,17 @@ async function openAkunSaya() {
 }
 
 // ==========================================
-// 🎯 BUKA MODAL LOGIN
+// 🎯 TOGGLE MODAL LOGIN
 // ==========================================
 function openLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
     
-    // 🎯 Simpan state sebelumnya
-    const stage = document.getElementById('stage');
-    const gate = document.getElementById('gatekeeper');
-    const modalOverlay = document.getElementById('modalOverlay');
-    
-    loginModalPreviousState = {
-        gateOpen: gate && gate.classList.contains('open'),
-        gateMode: gate && stage ? 
-            (stage.classList.contains('gate-first') ? 'first' : 
-             stage.classList.contains('gate-edit-mode') ? 'edit' : 'none') : 'none',
-        modalMenuOpen: modalOverlay && modalOverlay.classList.contains('open')
-    };
-    
-    console.log('📌 Previous state:', loginModalPreviousState);
+    // TOGGLE: kalau sudah buka → tutup
+    if (overlay.classList.contains('open')) {
+        closeLoginModal();
+        return;
+    }
     
     // Reset form
     const waInput = document.getElementById('loginMemberWa');
@@ -323,7 +308,7 @@ function openLoginModal() {
     if (kodeInput) kodeInput.value = '';
     if (msgEl) {
         msgEl.innerText = '';
-        msgEl.classList.remove('show', 'error');
+        msgEl.classList.remove('show', 'error', 'success');
     }
     
     const btn = document.getElementById('loginMemberSubmitBtn');
@@ -335,53 +320,17 @@ function openLoginModal() {
     
     overlay.classList.add('open');
     
-    if (stage) stage.classList.add('login-open');
-    
-    if (typeof updateButtons === 'function') updateButtons();
-    
     setTimeout(() => {
         if (waInput) waInput.focus();
     }, 300);
-    
-    isKaitkanPopupOpen = true;
 }
 
 // ==========================================
-// 🎯 TUTUP MODAL LOGIN — Kembali ke State Sebelumnya
+// 🎯 TUTUP MODAL LOGIN
 // ==========================================
-function closeLoginModal(skipReturn = false) {
+function closeLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (overlay) overlay.classList.remove('open');
-    
-    const stage = document.getElementById('stage');
-    if (stage) stage.classList.remove('login-open');
-    
-    isKaitkanPopupOpen = false;
-    
-    if (typeof updateButtons === 'function') updateButtons();
-    
-    // 🎯 Kembali ke state sebelumnya
-    if (!skipReturn && loginModalPreviousState) {
-        setTimeout(() => {
-            if (loginModalPreviousState.gateOpen) {
-                // Gate sebelumnya buka → buka lagi gate
-                const gate = document.getElementById('gatekeeper');
-                if (gate) gate.classList.add('open');
-                
-                // Rebuild UI gate
-                if (loginModalPreviousState.gateMode === 'first') {
-                    if (stage) stage.classList.add('gate-first');
-                } else if (loginModalPreviousState.gateMode === 'edit') {
-                    if (stage) stage.classList.add('gate-edit-mode');
-                }
-            } else if (loginModalPreviousState.modalMenuOpen) {
-                // Modal menu sebelumnya buka → buka lagi
-                if (typeof openModal === 'function') openModal();
-            }
-        }, 100);
-    }
-    
-    loginModalPreviousState = null;
 }
 
 // ==========================================
@@ -436,24 +385,18 @@ async function submitLoginModal() {
             }
             
             showLoginMemberMessage('✅ Login berhasil!', false, true);
-
-            // Reset previous state (karena login sukses, tidak perlu kembali)
-            loginModalPreviousState = null;
             
             setTimeout(() => {
-                closeKaitkanAkun(true);
+                closeLoginModal();
                 
-                // Tutup gate (kalau buka)
                 if (typeof closeGate === 'function') {
                     closeGate(true);
                 }
                 
-                // Rebuild menu
                 if (typeof buildMenu === 'function') {
                     setTimeout(() => buildMenu(), 300);
                 }
                 
-                // Cek status akun
                 if (typeof cekStatusAkun === 'function') {
                     setTimeout(() => cekStatusAkun(), 500);
                 }
@@ -505,8 +448,8 @@ window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
 window.openLoginModal = openLoginModal;
-window.submitLoginModal = submitLoginModal;
 window.closeLoginModal = closeLoginModal;
+window.submitLoginModal = submitLoginModal;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
 console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login)');
