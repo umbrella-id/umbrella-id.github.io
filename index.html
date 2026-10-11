@@ -8,7 +8,6 @@
 
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/stage.css">
-<link rel="stylesheet" href="css/kaitkan-akun.css">
 <link rel="stylesheet" href="css/exit-confirm.css">
 <link rel="stylesheet" href="css/btn-menu.css">
 <link rel="stylesheet" href="css/plat-nama.css">
@@ -24,6 +23,7 @@
 <link rel="stylesheet" href="css/brosur.css">
 <link rel="stylesheet" href="css/tentang.css">
 <link rel="stylesheet" href="css/gallery.css">
+<link rel="stylesheet" href="css/kaitkan-akun.css">
 </head>
 <body>
 
@@ -34,13 +34,10 @@
     <div class="stage" id="stage">
 
       <!-- ============ NPC / MASKOT ============ -->
-      <!-- 🎭 NPC — di dalam stage, di atas background, di bawah UI -->
-      <!-- CSS otomatis hide saat gate aktif (gate-first / gate-edit-mode) -->
       <div class="npc-container" id="npcContainer">
           <div class="npc-name-plate" onclick="openInfoModal()">
               UMBRELLA
           </div>
-          <!-- Image di-load dinamis oleh stage.js (lazy load) -->
       </div>
 
       <!-- ============ IDENTITY GATE ============ -->
@@ -211,11 +208,10 @@
         </div>
       </div>
 
-      <!-- ============ MAIL OVERLAY (Mail 2 Arah) ============ -->
-      <div class="mail-overlay" id="mailOverlay">
-        <div class="mail-modal">
+      <!-- ============ MODAL VERIFIKASI AKUN ============ -->
+      <div class="kaitkan-overlay" id="kaitkanOverlay">
+        <div class="kaitkan-modal">
           
-          <!-- Bingkai -->
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -239,19 +235,132 @@
             </div>
           </div>
           
-          <!-- Header -->
+          <div class="kaitkan-header">VERIFIKASI AKUN</div>
+          
+          <div class="kaitkan-body">
+            
+            <div class="kaitkan-form">
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-phone"></i> NOMOR WA</label>
+                <input type="tel" 
+                       id="kaitkanWaInput" 
+                       placeholder="628xxxxxxxxx"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Gunakan kode negara, bukan nol</small>
+              </div>
+              
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-key"></i> KODE UNIK</label>
+                <input type="tel" 
+                       id="kaitkanKodeInput" 
+                       placeholder="123456"
+                       maxlength="6"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="off">
+                <small>Kode ini diperoleh dari admin</small>
+              </div>
+              
+              <div id="kaitkanMessage" class="kaitkan-message"></div>
+              
+              <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODAL AKUN SAYA ============ -->
+      <div class="kaitkan-overlay" id="kaitkanAkunSayaOverlay">
+        <div class="kaitkan-modal">
+          
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
+          <div class="kaitkan-header">AKUN SAYA</div>
+          
+          <div class="kaitkan-body">
+            
+            <p class="kaitkan-desc">
+                Akun Anda sudah terverifikasi
+            </p>
+            
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">IGN:</span>
+                <strong class="kaitkan-info-value" id="akunSayaIgn">-</strong>
+            </div>
+            
+            <div class="kaitkan-kode-box" id="akunSayaKodeBox">
+                <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
+                <div class="kaitkan-kode-value" id="akunSayaKodeValue">-</div>
+            </div>
+            
+            <p class="kaitkan-save-text">
+                Simpan kode ini untuk login
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MAIL OVERLAY ============ -->
+      <div class="mail-overlay" id="mailOverlay">
+        <div class="mail-modal">
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
           <div class="mail-header">KOTAK SURAT</div>
-          
-          <!-- Konten Utama (di-render JS) -->
           <div id="mailContent"></div>
-          
         </div>
       </div>
 
       <!-- ============ MODAL INFO SERIKAT ============ -->
       <div class="info-overlay" id="infoOverlay">
         <div class="info-modal">
-
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -286,7 +395,6 @@
               <div class="info-loading">Memuat data...</div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -296,7 +404,6 @@
       <!-- ============ HEADLINE POPUP ============ -->
       <div class="headline-overlay" id="headlineOverlay">
         <div class="headline-popup">
-
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -321,16 +428,13 @@
           </div>
 
           <div class="headline-header" id="headlineHeader">Pengumuman</div>
-
           <div class="headline-body" id="headlineBody"></div>
-
         </div>
       </div>
 
       <!-- ============ MODAL TENTANG KAMI ============ -->
       <div class="tentang-overlay" id="tentangOverlay">
         <div class="tentang-modal">
-
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -360,14 +464,12 @@
           </div>
 
           <div class="tentang-body" id="tentangBody"></div>
-
         </div>
       </div>
 
       <!-- ============ MODAL GALLERY ============ -->
       <div class="gallery-overlay" id="galleryOverlay">
         <div class="gallery-modal">
-
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -392,9 +494,7 @@
           </div>
 
           <div class="gallery-header">GALLERY</div>
-
           <div class="gallery-body" id="galleryBody"></div>
-
         </div>
       </div>
 
@@ -402,14 +502,11 @@
       <div class="gallery-lightbox" id="galleryLightbox">
         <button class="gallery-lb-close" onclick="closeLightbox()">×</button>
         <div class="gallery-lb-counter" id="galleryLbCounter">1 / 1</div>
-
         <img class="gallery-lb-img" id="galleryLbImg" src="" alt="">
-
         <div class="gallery-lb-info">
           <div class="gallery-lb-title" id="galleryLbTitle"></div>
           <div class="gallery-lb-caption" id="galleryLbCaption"></div>
         </div>
-
         <div class="gallery-lb-nav prev" onclick="lightboxPrev()">◀</div>
         <div class="gallery-lb-nav next" onclick="lightboxNext()">▶</div>
       </div>
@@ -417,7 +514,6 @@
       <!-- ============ POPUP KONFIRMASI KELUAR ============ -->
       <div class="exit-overlay" id="exitOverlay">
         <div class="exit-modal">
-
           <div class="modal-frame">
             <div class="frame-h atas">
               <div class="pojok"></div>
@@ -444,7 +540,6 @@
           <div class="exit-text">Yakin ingin keluar dari halaman?</div>
 
           <div class="exit-actions">
-
             <div class="btn-svg btn-tidak" onclick="batalKeluar()">
               <div class="btn-ujung-kiri"></div>
               <div class="btn-tengah"><span class="btn-teks">TIDAK</span></div>
@@ -456,141 +551,13 @@
               <div class="btn-tengah"><span class="btn-teks">YA</span></div>
               <div class="btn-ujung-kanan"></div>
             </div>
-
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ============ MODAL KAITKAN AKUN ============ -->
-      <div class="kaitkan-overlay" id="kaitkanOverlay">
-        <div class="kaitkan-modal">
-          
-          <!-- Bingkai -->
-          <div class="modal-frame">
-            <div class="frame-h atas">
-              <div class="pojok"></div>
-              <div class="garis-h"></div>
-              <div class="pojok"></div>
-            </div>
-            <div class="frame-h bawah">
-              <div class="pojok"></div>
-              <div class="garis-h"></div>
-              <div class="pojok"></div>
-            </div>
-            <div class="frame-v kiri">
-              <div class="pojok"></div>
-              <div class="garis-v"></div>
-              <div class="pojok"></div>
-            </div>
-            <div class="frame-v kanan">
-              <div class="pojok"></div>
-              <div class="garis-v"></div>
-              <div class="pojok"></div>
-            </div>
-          </div>
-          
-          <!-- Header -->
-          <div class="kaitkan-header">KAITKAN AKUN</div>
-          
-          <!-- Body -->
-          <div class="kaitkan-body">
-            <div class="kaitkan-form">
-              <div class="kaitkan-form-group">
-                <label><i class="fas fa-phone"></i> NOMOR WA</label>
-                <input type="tel" 
-                       id="kaitkanWaInput" 
-                       placeholder="628xxxxxxxxx"
-                       inputmode="numeric"
-                       pattern="[0-9]*"
-                       autocomplete="off">
-                <small>Gunakan kode negara, bukan nol</small>
-              </div>
-              
-              <div class="kaitkan-form-group">
-                <label><i class="fas fa-key"></i> KODE UNIK</label>
-                <input type="tel" 
-                       id="kaitkanKodeInput" 
-                       placeholder="123456"
-                       maxlength="6"
-                       inputmode="numeric"
-                       pattern="[0-9]*"
-                       autocomplete="off">
-                <small>Kode ini diperoleh dari admin</small>
-              </div>
-              
-              <div id="kaitkanMessage" class="kaitkan-message"></div>
-              
-              <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
-                <div class="btn-ujung-kiri"></div>
-                <div class="btn-tengah"><span class="btn-teks">KAITKAN AKUN</span></div>
-                <div class="btn-ujung-kanan"></div>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
-
-      <!-- ============ MODAL AKUN SAYA ============ -->
-      <div class="kaitkan-overlay" id="kaitkanAkunSayaOverlay">
-          <div class="kaitkan-modal">
-              
-              <!-- Bingkai ornamen -->
-              <div class="modal-frame">
-                  <div class="frame-h atas">
-                      <div class="pojok"></div>
-                      <div class="garis-h"></div>
-                      <div class="pojok"></div>
-                  </div>
-                  <div class="frame-h bawah">
-                      <div class="pojok"></div>
-                      <div class="garis-h"></div>
-                      <div class="pojok"></div>
-                  </div>
-                  <div class="frame-v kiri">
-                      <div class="pojok"></div>
-                      <div class="garis-v"></div>
-                      <div class="pojok"></div>
-                  </div>
-                  <div class="frame-v kanan">
-                      <div class="pojok"></div>
-                      <div class="garis-v"></div>
-                      <div class="pojok"></div>
-                  </div>
-              </div>
-              
-              <!-- Header -->
-              <div class="kaitkan-header">AKUN SAYA</div>
-              
-              <!-- Body -->
-              <div class="kaitkan-body">
-                  
-                  <p class="kaitkan-desc">
-                      Akun Anda sudah terverifikasi.
-                  </p>
-                  
-                  <div class="kaitkan-info-row">
-                      <span class="kaitkan-info-label">IGN:</span>
-                      <strong class="kaitkan-info-value" id="akunSayaIgn">-</strong>
-                  </div>
-                  
-                  <div class="kaitkan-kode-box" id="akunSayaKodeBox">
-                      <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
-                      <div class="kaitkan-kode-value" id="akunSayaKodeValue">-</div>
-                  </div>
-                  
-                  <p class="kaitkan-save-text">
-                      Simpan kode ini untuk login
-                  </p>
-              </div>
-          </div>
       </div>
 
     </div>
-
   </div>
 
-  <!-- ============ SCRIPT ============ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="js/exit-confirm.js"></script>
   <script src="js/api.js"></script>
@@ -598,7 +565,6 @@
   <script src="js/identity.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/modal.js"></script>
-  <script src="js/kaitkan-akun.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/chat-input.js"></script>
   <script src="js/mute-notif.js"></script>
@@ -608,6 +574,7 @@
   <script src="js/brosur.js"></script>
   <script src="js/tentang.js"></script>
   <script src="js/gallery.js"></script>
+  <script src="js/kaitkan-akun.js"></script>
 
 </body>
 </html>
