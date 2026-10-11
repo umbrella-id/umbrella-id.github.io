@@ -153,30 +153,32 @@
 
 /* ==========================================
    BADGE VERIFIED DI CHAT
-   Kecil, konsisten di semua konteks
+   Model: fa-check-circle (solid), kecil & elegan
    ========================================== */
 .chat-verified-badge {
     display: inline-block;
     color: #4ade80;
-    font-size: 8px !important;
+    font-size: 0.55em !important;    /* ← kecil dari font, proporsional */
     line-height: 1 !important;
     margin-left: 3px;
     vertical-align: middle;
-    filter: drop-shadow(0 0 2px rgba(74, 222, 128, 0.4));
+    filter: drop-shadow(0 0 2px rgba(74, 222, 128, 0.5));
     position: relative;
     top: -1px;
 }
 
-/* Override — pastikan konsisten di admin */
-.chat-line.chat-admin .chat-verified-badge {
-    font-size: 8px !important;
-    line-height: 1 !important;
-    font-weight: normal !important;
+/* Pastikan solid, bukan outline */
+.chat-verified-badge::before {
+    content: '\f058';                /* ← kode unicode fa-check-circle */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;                /* ← 900 = solid */
+    font-style: normal;
 }
 
-/* Override — pastikan konsisten di member */
+/* Pastikan konsisten di admin & member */
+.chat-line.chat-admin .chat-verified-badge,
 .chat-line.chat-member .chat-verified-badge {
-    font-size: 8px !important;
+    font-size: 0.55em !important;
     line-height: 1 !important;
     font-weight: normal !important;
 }
