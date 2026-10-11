@@ -435,6 +435,24 @@ function showLoginMemberMessage(msg, isError = false, isSuccess = false) {
 }
 
 // ==========================================
+// 🎯 HANDLE TOMBOL BACK — Modal Login
+// ==========================================
+function handleLoginModalBack() {
+    const overlay = document.getElementById('loginMemberOverlay');
+    if (!overlay) return false;
+    
+    // Kalau modal login terbuka → tutup
+    if (overlay.classList.contains('open')) {
+        closeLoginModal();
+        return true;  // handled
+    }
+    
+    return false;
+}
+
+window.handleLoginModalBack = handleLoginModalBack;
+
+// ==========================================
 // UTILITY
 // ==========================================
 function escapeHtmlKaitkan(str) {
