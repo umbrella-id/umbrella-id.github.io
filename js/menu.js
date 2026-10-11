@@ -74,6 +74,13 @@ function updateButtons() {
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
+  
+    // 🎯 Prioritas: Login modal buka → BACK + HOME
+    if (stage && stage.classList.contains('login-open')) {
+        ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+        ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
+        return;
+    }
 
     // Prioritas 7: Gate edit
     if (stage && stage.classList.contains('gate-edit-mode')) {
@@ -244,11 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // 🎯 Prioritas 6: Kaitkan Akun (BARU — tiru pola di atas)
+          // Prioritas 6: Kaitkan Akun (BARU — tiru pola di atas)
           if (stage && stage.classList.contains('kaitkan-open')) {
               if (typeof closeKaitkanAkun === 'function') {
                   closeKaitkanAkun();
               }
+              return;
+          }
+        
+          // 🎯 Prioritas: Login modal buka
+          if (stage && stage.classList.contains('login-open')) {
+              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
               return;
           }
   
@@ -327,7 +340,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Prioritas 6: Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) return;
-  
+
+          // 🎯 Prioritas: Login modal buka → close + home
+          if (stage && stage.classList.contains('login-open')) {
+              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun(true);
+              if (typeof goHome === 'function') goHome();
+              return;
+          }
+        
           // Prioritas 7: Normal
           if (currentPage === 'home') {
               if (typeof openChatInput === 'function') openChatInput();
