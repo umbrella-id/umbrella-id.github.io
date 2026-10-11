@@ -307,7 +307,7 @@ function renderChatLogs(logs) {
         // ==========================================
         const chatClass = getChatClass(msg);
         const isVerified = msgUID.endsWith('-v') || chatClass === 'admin';
-        const badge = isVerified ? '<i class="fas fa-check-circle chat-verified-badge"></i>' : '';
+        const badge = isVerified ? '<span class="chat-verified-badge"></span>' : '';
         
         if (chatClass === 'admin') {
           // Admin — sama seperti member verified (badge centang)
