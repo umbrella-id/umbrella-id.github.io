@@ -1,6 +1,6 @@
 /* ==========================================
    chat.css — Chat Box (Log Only)
-   V7 — Scroll Mati Saat Minimize, Hidup Saat Maximize
+   V8 — Badge Verified Fixed Size
    ========================================== */
 
 .chat-box {
@@ -49,7 +49,7 @@
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
-  overflow-y: hidden;              /* 🎯 default: scroll mati */
+  overflow-y: hidden;
   padding: 6px 10px;
   font-family: 'Optima', 'Optima LT', 'Segoe UI', Candara, sans-serif;
   font-size: 13px;
@@ -57,12 +57,10 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
-  /* 🎯 Sembunyikan scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-/* 🎯 Scroll hidup saat maximize */
 .chat-box.maximized .chat-body {
   overflow-y: auto;
 }
@@ -129,28 +127,13 @@
   color: #4ade80;
 }
 
-/* BADGE VERIFIED DI CHAT */
-.chat-verified-badge {
-    display: inline-block;
-    color: #4ade80;
-    font-size: 0.7em;
-    margin-left: 4px;
-    vertical-align: middle;
-    filter: drop-shadow(0 0 3px rgba(74, 222, 128, 0.5));
-}
-
-/* Admin — hijau + icon perisai */
+/* Admin — hijau + bold */
 .chat-line.chat-admin .chat-name,
 .chat-line.chat-admin .chat-text {
   color: #4ade80;
 }
 .chat-line.chat-admin .chat-name {
   font-weight: 700;
-}
-.chat-line.chat-admin .chat-name i {
-  color: #4ade80;
-  margin-right: 0;
-  font-size: 11px;
 }
 
 /* ===== SYSTEM MESSAGE ===== */
@@ -166,6 +149,36 @@
   line-height: 1.35;
   font-family: inherit;
   letter-spacing: normal;
+}
+
+/* ==========================================
+   BADGE VERIFIED DI CHAT
+   Kecil, konsisten di semua konteks
+   ========================================== */
+.chat-verified-badge {
+    display: inline-block;
+    color: #4ade80;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    margin-left: 3px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 2px rgba(74, 222, 128, 0.4));
+    position: relative;
+    top: -1px;
+}
+
+/* Override — pastikan konsisten di admin */
+.chat-line.chat-admin .chat-verified-badge {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    font-weight: normal !important;
+}
+
+/* Override — pastikan konsisten di member */
+.chat-line.chat-member .chat-verified-badge {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    font-weight: normal !important;
 }
 
 /* ==========================================
