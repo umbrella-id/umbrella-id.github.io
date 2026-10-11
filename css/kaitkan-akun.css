@@ -1,6 +1,7 @@
 /* ==========================================
    KAITKAN AKUN — Web Publik
    Konsisten dengan mail/info/tentang
+   Layout compact biar muat tanpa scroll
    ========================================== */
 
 .kaitkan-overlay {
@@ -30,12 +31,12 @@
     padding: 0;
 }
 
-/* Header — seperti mail-header */
+/* Header */
 .kaitkan-header {
     position: relative;
-    padding: 14px 30px 16px;
+    padding: 12px 30px 14px;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 2px;
     color: #f0d78c;
@@ -56,11 +57,11 @@
     opacity: 0.9;
 }
 
-/* Body */
+/* Body — compact, muat tanpa scroll */
 .kaitkan-body {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 30px 28px;
+    padding: 16px 30px 16px;
     position: relative;
     z-index: 2;
     display: flex;
@@ -79,9 +80,9 @@
 .kaitkan-desc {
     text-align: center;
     color: #f5e6c8;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-bottom: 24px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 16px;
     max-width: 90%;
     letter-spacing: 0.3px;
 }
@@ -89,10 +90,10 @@
 /* Form */
 .kaitkan-form {
     width: 100%;
-    max-width: 380px;
+    max-width: 360px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 12px;
 }
 
 .kaitkan-form-group {
@@ -101,9 +102,9 @@
 }
 
 .kaitkan-form-group label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #f0d78c;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     letter-spacing: 0.8px;
     font-weight: 600;
     text-transform: uppercase;
@@ -112,22 +113,25 @@
 .kaitkan-form-group label i {
     color: #c9a55a;
     margin-right: 4px;
-    width: 14px;
+    width: 12px;
+    font-size: 0.7rem;
 }
 
+/* Input — compact */
 .kaitkan-form-group input {
     width: 100%;
     background: #ffffff;
     border: 1px solid rgba(201, 165, 90, 0.6);
     border-radius: 4px;
-    padding: 10px 14px;
+    padding: 7px 12px;
     color: #000000;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-family: inherit;
     transition: all 0.2s;
     outline: none;
     letter-spacing: 0.5px;
     font-weight: 500;
+    line-height: 1.3;
 }
 
 .kaitkan-form-group input:focus {
@@ -148,22 +152,23 @@
 }
 
 .kaitkan-form-group small {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     color: #c9a55a;
-    margin-top: 5px;
+    margin-top: 3px;
     display: block;
     opacity: 0.85;
     letter-spacing: 0.3px;
+    line-height: 1.3;
 }
 
 /* Message */
 .kaitkan-message {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     text-align: center;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
     display: none;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 .kaitkan-message.show { display: block; }
@@ -174,20 +179,20 @@
     border: 1px solid rgba(255, 68, 68, 0.4);
 }
 
-/* Tombol submit */
+/* Tombol submit — compact */
 .kaitkan-submit-btn {
-    margin-top: 8px;
+    margin-top: 4px;
     width: 100%;
     justify-content: center;
-    height: 32px !important;
+    height: 30px !important;
 }
 
 .kaitkan-submit-btn .btn-tengah {
-    padding: 0 30px;
+    padding: 0 24px;
 }
 
 .kaitkan-submit-btn .btn-teks {
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2px;
 }
 
@@ -200,12 +205,12 @@
    NOTIF SUKSES
    ========================================== */
 .kaitkan-success-notif {
-    margin-top: 16px;
-    padding: 10px 16px;
+    margin-top: 12px;
+    padding: 8px 14px;
     background: rgba(100, 116, 139, 0.2);
     border-radius: 20px;
     color: #4ade80;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 500;
     font-style: italic;
     text-align: center;
@@ -213,12 +218,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     animation: kaitkanSuccessIn 0.4s ease;
 }
 
 .kaitkan-success-notif i {
-    font-size: 1rem;
+    font-size: 0.9rem;
     flex-shrink: 0;
 }
 
@@ -228,27 +233,27 @@
 }
 
 /* ==========================================
-   AKUN SAYA
+   AKUN SAYA — compact
    ========================================== */
 .kaitkan-info-row {
     width: 100%;
-    max-width: 380px;
+    max-width: 360px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 6px 0;
     border-bottom: 1px solid rgba(201, 165, 90, 0.2);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .kaitkan-info-label {
     color: #c9a55a;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
 }
 
 .kaitkan-info-value {
     color: #f5e6c8;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
@@ -258,13 +263,13 @@
 
 .kaitkan-kode-box {
     width: 100%;
-    max-width: 380px;
+    max-width: 360px;
     background: rgba(74, 222, 128, 0.08);
     border: 1px solid rgba(74, 222, 128, 0.4);
     border-radius: 4px;
-    padding: 16px;
+    padding: 12px;
     text-align: center;
-    margin: 16px 0;
+    margin: 10px 0;
 }
 
 .kaitkan-kode-box-empty {
@@ -273,34 +278,34 @@
 }
 
 .kaitkan-kode-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: #c9a55a;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .kaitkan-kode-value {
     font-family: monospace;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: bold;
     color: #4ade80;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     user-select: all;
     word-break: break-all;
 }
 
 .kaitkan-hint {
     width: 100%;
-    max-width: 380px;
+    max-width: 360px;
     background: rgba(201, 165, 90, 0.08);
     border-left: 3px solid #c9a55a;
     border-radius: 4px;
-    padding: 10px 14px;
-    font-size: 0.72rem;
+    padding: 8px 12px;
+    font-size: 0.68rem;
     color: #f5e6c8;
-    line-height: 1.5;
-    margin-top: 8px;
+    line-height: 1.4;
+    margin-top: 6px;
 }
 
 .kaitkan-hint i {
@@ -313,11 +318,11 @@
    ========================================== */
 @media (max-width: 768px) {
     .kaitkan-body {
-        padding: 16px 20px 24px;
+        padding: 12px 20px 12px;
     }
     
     .kaitkan-kode-value {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         letter-spacing: 4px;
     }
 }
