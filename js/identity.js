@@ -10,12 +10,11 @@ const STORAGE_IGN = 'u_ign';
 const STORAGE_LAST_CHANGE = 'u_ign_changed_at';
 
 // ===== INISIALISASI =====
-// Guest: prefix 'G-'. Member: 'M-xxx' (dari gate web internal).
 window.myUID = localStorage.getItem(STORAGE_UID) || 'G-' + Math.random().toString(36).substring(2, 11);
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
 localStorage.setItem(STORAGE_UID, window.myUID);
 
-let gateMode = 'first';   // 'first' | 'change'
+let gateMode = 'first';
 
 // ===== UI =====
 function updateIdentityUI() {
@@ -45,22 +44,18 @@ function sanitizeIGN(raw) {
   
   let value = raw.trim();
   
-  // 1. Hapus karakter berbahaya
-  value = value.replace(/[\[\]]/g, '');         // hapus kurung siku
-  value = value.replace(/^[=+\-@]+/, '');        // hapus prefix formula injection
-  value = value.replace(/\s+/g, ' ').trim();     // normalisasi spasi
+  value = value.replace(/[\[\]]/g, '');
+  value = value.replace(/^[=+\-@]+/, '');
+  value = value.replace(/\s+/g, ' ').trim();
   
-  // 2. Blokir "admin" (case-insensitive)
   if (/admin/i.test(value)) {
     return { error: 'Nama tidak boleh mengandung kata "admin"' };
   }
   
-  // 3. Potong max 15 char
   if (value.length > 15) {
     value = value.substring(0, 15);
   }
   
-  // 4. Cek kosong
   if (value === '') {
     return { error: 'Nama tidak boleh kosong' };
   }
@@ -106,7 +101,6 @@ function openGate(mode = 'first') {
 
   clearGateMessage();
 
-  // Kelola class di stage
   if (stage) {
     stage.classList.remove('gate-first', 'gate-edit-mode');
 
@@ -157,7 +151,6 @@ function saveIdentity() {
 
   clearGateMessage();
 
-  // Validasi via sanitizeIGN
   const result = sanitizeIGN(input.value);
   
   if (result.error) {
@@ -185,7 +178,6 @@ function saveIdentity() {
   updateIdentityUI();
   closeGate(true);
 
-  // 🎭 Load NPC setelah gate tutup
   setTimeout(() => {
       if (typeof window.loadNpc === 'function') window.loadNpc();
   }, 500);
@@ -199,7 +191,6 @@ function closeGate(skipMenu = false) {
 
   // Reset login state kalau ada
   if (typeof loginModalPreviousState !== 'undefined') {
-      // Bisa diakses karena var global
       if (window.loginModalPreviousState) {
           window.loginModalPreviousState = null;
       }
@@ -251,9 +242,6 @@ function closeGate(skipMenu = false) {
       }
   }
 
-  
-  // 🎯 Cek status akun (untuk member)
-  // Biar menu "Kaitkan Akun" / "Akun Saya" akurat
   if (typeof cekStatusAkun === 'function') {
       setTimeout(() => {
           cekStatusAkun().then(result => {
