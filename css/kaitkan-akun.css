@@ -322,6 +322,19 @@
 }
 
 /* ==========================================
+   SAVE TEXT (Akun Saya)
+   ========================================== */
+.kaitkan-save-text {
+    text-align: center;
+    color: #c9a55a;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    margin-top: 10px;
+    letter-spacing: 0.3px;
+    font-style: italic;
+}
+
+/* ==========================================
    RESPONSIVE
    ========================================== */
 @media (max-width: 768px) {
