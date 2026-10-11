@@ -68,15 +68,8 @@ function updateButtons() {
         return;
     }
 
-    // 🎯 Prioritas 6: Kaitkan Akun (BARU)
+    // Prioritas 6: Kaitkan Akun
     if (stage && stage.classList.contains('kaitkan-open')) {
-        ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
-        ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
-        return;
-    }
-  
-    // 🎯 Prioritas: Login modal buka → BACK + HOME
-    if (stage && stage.classList.contains('login-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
@@ -130,16 +123,14 @@ function goHome() {
   updateButtons();
 }
 
-// ===== CEK APAKAH VERIFIED (akhiran -v) =====
+// ===== CEK APAKAH VERIFIED =====
 function isVerifiedUid() {
   const uid = localStorage.getItem('u_uid') || '';
   return uid.endsWith('-v');
 }
 
 // ==========================================
-// 🎯 UPDATE MODAL MENU ITEMS
-// - Sembunyikan "Ganti Nama" untuk verified
-// - Tambah/update menu "Verifikasi Akun" / "Akun Saya"
+// UPDATE MODAL MENU ITEMS
 // ==========================================
 function updateModalMenuItems() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -197,7 +188,7 @@ function updateModalMenuItems() {
 // ===== EVENT LISTENER =====
 document.addEventListener('DOMContentLoaded', () => {
   updatePageClass();
-  updateModalMenuItems();   // ← BARU
+  updateModalMenuItems();
 
   const btnKiri = document.getElementById('btnKiri');
   const btnKanan = document.getElementById('btnKanan');
@@ -251,17 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 6: Kaitkan Akun (BARU — tiru pola di atas)
+          // Prioritas 6: Kaitkan Akun
           if (stage && stage.classList.contains('kaitkan-open')) {
               if (typeof closeKaitkanAkun === 'function') {
                   closeKaitkanAkun();
               }
-              return;
-          }
-        
-          // 🎯 Prioritas: Login modal buka → close + kembali ke state sebelumnya
-          if (stage && stage.classList.contains('login-open')) {
-              if (typeof closeLoginModal === 'function') closeLoginModal();
               return;
           }
   
@@ -292,15 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.target.closest('.plat-nama')) return;
   
           const stage = document.getElementById('stage');
-  
-          // 🎯 Prioritas 6: Kaitkan Akun → close + home
-          if (stage && stage.classList.contains('kaitkan-open')) {
-              if (typeof closeKaitkanAkun === 'function') {
-                  closeKaitkanAkun(true);  // skipMenu = true, jangan buka menu
-              }
-              if (typeof goHome === 'function') goHome();
-              return;
-          }
   
           // Prioritas 1: Headline
           if (stage && stage.classList.contains('headline-open')) {
@@ -337,18 +313,20 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 6: Gate
-          const gate = getGate();
-          if (gate && gate.classList.contains('open')) return;
-
-          // 🎯 Prioritas: Login modal buka → close + home
-          if (stage && stage.classList.contains('login-open')) {
-              if (typeof closeLoginModal === 'function') closeLoginModal(true);
+          // Prioritas 6: Kaitkan Akun
+          if (stage && stage.classList.contains('kaitkan-open')) {
+              if (typeof closeKaitkanAkun === 'function') {
+                  closeKaitkanAkun(true);
+              }
               if (typeof goHome === 'function') goHome();
               return;
           }
-        
-          // Prioritas 7: Normal
+  
+          // Prioritas 7: Gate
+          const gate = getGate();
+          if (gate && gate.classList.contains('open')) return;
+  
+          // Prioritas 8: Normal
           if (currentPage === 'home') {
               if (typeof openChatInput === 'function') openChatInput();
           } else {
