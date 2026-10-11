@@ -1,6 +1,6 @@
 /**
- * kaitkan-akun.js — Fitur Kaitkan Akun (Web Publik)
- * Pola: sama dengan modal mail/info/tentang
+ * kaitkan-akun.js — Fitur Verifikasi Akun (Web Publik)
+ * Modal HTML statis, toggle via class
  */
 
 let isKaitkanPopupOpen = false;
@@ -37,7 +37,7 @@ async function cekStatusAkun() {
 }
 
 // ==========================================
-// BUKA MODAL KAITKAN AKUN
+// BUKA MODAL VERIFIKASI
 // ==========================================
 function openKaitkanAkun() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -49,14 +49,13 @@ function openKaitkanAkun() {
     
     if (!uid.startsWith('M-')) {
         if (typeof showToast === 'function') {
-            showToast('Hanya member yang bisa kaitkan akun', true);
+            showToast('Hanya member yang bisa verifikasi akun', true);
         }
         return;
     }
     
-    // Tutup modal menu kalau ada
     if (typeof closeModal === 'function') {
-        closeModal(true);   // skip = true, biar modal-open tetap ada
+        closeModal(true);
     }
     
     const overlay = document.getElementById('kaitkanOverlay');
@@ -74,32 +73,17 @@ function openKaitkanAkun() {
         msgEl.classList.remove('show', 'error');
     }
     
-    // Hapus notif lama
     const oldNotif = document.getElementById('kaitkanSuccessNotif');
     if (oldNotif) oldNotif.remove();
     
-    // Pastikan tombol ada
     const btn = document.getElementById('kaitkanSubmitBtn');
     if (btn) {
         btn.style.display = '';
         btn.classList.remove('loading');
         const btnText = btn.querySelector('.btn-teks');
-        if (btnText) btnText.innerText = 'KAITKAN AKUN';
-    } else {
-        const form = document.querySelector('#kaitkanOverlay .kaitkan-form');
-        if (form) {
-            const btnHTML = `
-                <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
-                    <div class="btn-ujung-kiri"></div>
-                    <div class="btn-tengah"><span class="btn-teks">KAITKAN AKUN</span></div>
-                    <div class="btn-ujung-kanan"></div>
-                </div>
-            `;
-            form.insertAdjacentHTML('beforeend', btnHTML);
-        }
+        if (btnText) btnText.innerText = 'VERIFIKASI';
     }
     
-    // Open — sama seperti modal lain
     overlay.classList.add('open');
     
     const stage = document.getElementById('stage');
@@ -130,7 +114,6 @@ function closeKaitkanAkun(skipMenu = false) {
     
     if (typeof updateButtons === 'function') updateButtons();
     
-    // Buka modal menu lagi — sama seperti modal lain
     if (!skipMenu) {
         setTimeout(() => {
             if (typeof openModal === 'function') openModal();
@@ -186,6 +169,13 @@ async function submitKaitkanAkun() {
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_web_uid', data.webUID);
             localStorage.setItem('u_web_kode', kode);
+            
+            if (data.ign) {
+                localStorage.setItem('u_ign', data.ign);
+                window.myIGN = data.ign;
+                console.log('✅ IGN diupdate dari database:', data.ign);
+            }
+            
             window.myUID = data.webUID;
             
             if (typeof updateIdentityUI === 'function') {
@@ -198,17 +188,17 @@ async function submitKaitkanAkun() {
                 setTimeout(() => updateModalMenuItems(), 500);
             }
         } else {
-            showKaitkanMessage(data.message || 'Gagal mengaitkan akun', true);
+            showKaitkanMessage(data.message || 'Gagal verifikasi akun', true);
             btn.classList.remove('loading');
             btn.style.pointerEvents = '';
-            if (btnText) btnText.innerText = 'KAITKAN AKUN';
+            if (btnText) btnText.innerText = 'VERIFIKASI';
         }
     } catch(e) {
-        console.error('Submit kaitkan error:', e);
+        console.error('Submit verifikasi error:', e);
         showKaitkanMessage('Koneksi gagal. Coba lagi.', true);
         btn.classList.remove('loading');
         btn.style.pointerEvents = '';
-        if (btnText) btnText.innerText = 'KAITKAN AKUN';
+        if (btnText) btnText.innerText = 'VERIFIKASI';
     }
 }
 
@@ -253,7 +243,7 @@ function showKaitkanSuccess() {
         const notifHTML = `
             <div class="kaitkan-success-notif" id="kaitkanSuccessNotif">
                 <i class="fas fa-check-circle"></i>
-                Akun Berhasil Dikaitkan, simpan kode akses anda!
+                Akun Berhasil Diverifikasi, simpan kode akses anda!
             </div>
         `;
         form.insertAdjacentHTML('beforeend', notifHTML);
@@ -267,7 +257,6 @@ async function openAkunSaya() {
     const ign = localStorage.getItem('u_ign') || 'Member';
     const savedKode = localStorage.getItem('u_web_kode') || '';
     
-    // Tutup modal menu kalau ada
     if (typeof closeModal === 'function') {
         closeModal(true);
     }
@@ -275,7 +264,6 @@ async function openAkunSaya() {
     const overlay = document.getElementById('kaitkanAkunSayaOverlay');
     if (!overlay) return;
     
-    // Update isi
     const ignEl = document.getElementById('akunSayaIgn');
     if (ignEl) ignEl.innerText = ign;
     
@@ -325,4 +313,4 @@ window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Web Publik — pola modal lain)');
+console.log('✅ kaitkan-akun.js loaded (Verifikasi Akun)');
