@@ -259,9 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
         
-          // 🎯 Prioritas: Login modal buka
+          // 🎯 Prioritas: Login modal buka → close + kembali ke state sebelumnya
           if (stage && stage.classList.contains('login-open')) {
-              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
+              if (typeof closeLoginModal === 'function') closeLoginModal();
               return;
           }
   
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // 🎯 Prioritas: Login modal buka → close + home
           if (stage && stage.classList.contains('login-open')) {
-              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun(true);
+              if (typeof closeLoginModal === 'function') closeLoginModal(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
