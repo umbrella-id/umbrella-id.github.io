@@ -306,7 +306,7 @@ function renderChatLogs(logs) {
         // 🎯 RENDER CHAT BIASA + BADGE VERIFIED
         // ==========================================
         const chatClass = getChatClass(msg);
-        const isVerified = msgUID.endsWith('-v');
+        const isVerified = msgUID.endsWith('-v') || chatClass === 'admin';
         const badge = isVerified ? '<i class="fas fa-check-circle chat-verified-badge"></i>' : '';
         
         if (chatClass === 'admin') {
