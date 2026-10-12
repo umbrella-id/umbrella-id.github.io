@@ -289,15 +289,23 @@ async function openAkunSaya() {
 // ==========================================
 // 🎯 TOGGLE MODAL LOGIN
 // ==========================================
-function openLoginModal() {
+function toggleLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
     
-    // TOGGLE: kalau sudah buka → tutup
     if (overlay.classList.contains('open')) {
         closeLoginModal();
-        return;
+    } else {
+        openLoginModal();
     }
+}
+
+// ==========================================
+// 🎯 BUKA MODAL LOGIN
+// ==========================================
+function openLoginModal() {
+    const overlay = document.getElementById('loginMemberOverlay');
+    if (!overlay) return;
     
     // Reset form
     const waInput = document.getElementById('loginMemberWa');
@@ -320,28 +328,42 @@ function openLoginModal() {
     
     overlay.classList.add('open');
     
+    // 🎯 Ganti teks tombol gate → "TUTUP"
+    updateGateLoginBtn(true);
+    
     setTimeout(() => {
         if (waInput) waInput.focus();
     }, 300);
 }
 
 // ==========================================
-// 🎯 HANDLE TOMBOL BACK — Dipanggil dari menu.js
+// 🎯 TUTUP MODAL LOGIN
 // ==========================================
-function handleLoginModalBack() {
+function closeLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
-    if (!overlay) return false;
+    if (overlay) overlay.classList.remove('open');
     
-    // Kalau modal login terbuka → tutup
-    if (overlay.classList.contains('open')) {
-        closeLoginModal();
-        return true;  // handled
-    }
-    
-    return false;  // tidak handled
+    // 🎯 Ganti teks tombol gate → "LOGIN"
+    updateGateLoginBtn(false);
 }
 
-window.handleLoginModalBack = handleLoginModalBack;
+// ==========================================
+// 🎯 UPDATE TEKS TOMBOL GATE LOGIN
+// ==========================================
+function updateGateLoginBtn(isOpen) {
+    const btnText = document.getElementById('gateLoginBtnText');
+    const btnIcon = document.querySelector('#gateLoginBtn i');
+    
+    if (!btnText) return;
+    
+    if (isOpen) {
+        btnText.innerText = 'TUTUP';
+        if (btnIcon) btnIcon.className = 'fas fa-times';
+    } else {
+        btnText.innerText = 'LOGIN';
+        if (btnIcon) btnIcon.className = 'fas fa-sign-in-alt';
+    }
+}
 
 // ==========================================
 // 🎯 SUBMIT LOGIN
@@ -441,16 +463,25 @@ function handleLoginModalBack() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return false;
     
-    // Kalau modal login terbuka → tutup
     if (overlay.classList.contains('open')) {
         closeLoginModal();
-        return true;  // handled
+        return true;
     }
     
     return false;
 }
 
-window.handleLoginModalBack = handleLoginModalBack;
+// ==========================================
+// 🎯 EVENT LISTENER: Klik Overlay → Close Modal
+// ==========================================
+document.addEventListener('click', function(e) {
+    const overlay = document.getElementById('loginMemberOverlay');
+    if (!overlay) return;
+    
+    if (overlay.classList.contains('open') && e.target === overlay) {
+        closeLoginModal();
+    }
+});
 
 // ==========================================
 // UTILITY
@@ -475,9 +506,11 @@ window.closeKaitkanAkun = closeKaitkanAkun;
 window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
 window.cekStatusAkun = cekStatusAkun;
+window.toggleLoginModal = toggleLoginModal;
 window.openLoginModal = openLoginModal;
 window.closeLoginModal = closeLoginModal;
 window.submitLoginModal = submitLoginModal;
+window.handleLoginModalBack = handleLoginModalBack;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login)');
+console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login Toggle)');
