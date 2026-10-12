@@ -68,7 +68,7 @@ function updateButtons() {
         return;
     }
 
-    // Prioritas 6: Kaitkan Akun
+    // Prioritas 6: Kaitkan Akun (Verifikasi / Akun Saya)
     if (stage && stage.classList.contains('kaitkan-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
@@ -130,14 +130,20 @@ function isVerifiedUid() {
 }
 
 // ==========================================
-// UPDATE MODAL MENU ITEMS
+// 🎯 UPDATE MODAL MENU ITEMS
+// - Guest: menu "Logout Guest"
+// - Member: menu "Akun Saya" (verifikasi & logout di dalam)
+// - Verified: "Ganti Nama" hidden
 // ==========================================
 function updateModalMenuItems() {
     const uid = localStorage.getItem('u_uid') || '';
+    const isGuest = uid.startsWith('G-');
     const isMember = uid.startsWith('M-');
     const isVerified = uid.endsWith('-v');
     
-    // Sembunyikan "Ganti Nama" untuk verified
+    // ==========================================
+    // 1. Sembunyikan "Ganti Nama" untuk verified
+    // ==========================================
     const gantiNamaBtn = document.querySelector('.modal-list-item[onclick*="ganti"]');
     if (gantiNamaBtn) {
         if (isVerified) {
@@ -147,41 +153,62 @@ function updateModalMenuItems() {
         }
     }
     
-    // Handle menu "Verifikasi Akun" / "Akun Saya"
-    let kaitkanBtn = document.getElementById('menuKaitkanAkun');
+    // ==========================================
+    // 2. Menu "Akun Saya" — HANYA member
+    // ==========================================
+    let akunSayaBtn = document.getElementById('menuAkunSaya');
     
-    if (!isMember) {
-        if (kaitkanBtn) kaitkanBtn.remove();
-        return;
-    }
-    
-    if (!kaitkanBtn) {
-        const modalContent = document.querySelector('.modal-content');
-        if (!modalContent) return;
-        
-        const label = isVerified ? 'Akun Saya' : 'Verifikasi Akun';
-        const action = isVerified ? 'akun-saya' : 'kaitkan';
-        
-        const kaitkanHTML = `
-            <div class="btn-svg modal-list-item" id="menuKaitkanAkun" onclick="menuClick('${action}')">
-                <div class="btn-ujung-kiri"></div>
-                <div class="btn-tengah"><span class="btn-teks">${label}</span></div>
-                <div class="btn-ujung-kanan"></div>
-            </div>
-        `;
-        
-        const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
-        if (tentangBtn) {
-            tentangBtn.insertAdjacentHTML('beforebegin', kaitkanHTML);
-        } else {
-            modalContent.insertAdjacentHTML('beforeend', kaitkanHTML);
+    if (isMember) {
+        if (!akunSayaBtn) {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                const akunSayaHTML = `
+                    <div class="btn-svg modal-list-item" id="menuAkunSaya" onclick="menuClick('akun-saya')">
+                        <div class="btn-ujung-kiri"></div>
+                        <div class="btn-tengah"><span class="btn-teks">Akun Saya</span></div>
+                        <div class="btn-ujung-kanan"></div>
+                    </div>
+                `;
+                
+                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
+                if (tentangBtn) {
+                    tentangBtn.insertAdjacentHTML('beforebegin', akunSayaHTML);
+                } else {
+                    modalContent.insertAdjacentHTML('beforeend', akunSayaHTML);
+                }
+            }
         }
     } else {
-        const label = kaitkanBtn.querySelector('.btn-teks');
-        if (label) {
-            label.innerText = isVerified ? 'Akun Saya' : 'Verifikasi Akun';
+        if (akunSayaBtn) akunSayaBtn.remove();
+    }
+    
+    // ==========================================
+    // 3. Menu "Logout Guest" — HANYA guest
+    // ==========================================
+    let logoutGuestBtn = document.getElementById('menuLogoutGuest');
+    
+    if (isGuest) {
+        if (!logoutGuestBtn) {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                const logoutGuestHTML = `
+                    <div class="btn-svg modal-list-item" id="menuLogoutGuest" onclick="menuClick('logout-guest')">
+                        <div class="btn-ujung-kiri"></div>
+                        <div class="btn-tengah"><span class="btn-teks">Logout Guest</span></div>
+                        <div class="btn-ujung-kanan"></div>
+                    </div>
+                `;
+                
+                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
+                if (tentangBtn) {
+                    tentangBtn.insertAdjacentHTML('beforebegin', logoutGuestHTML);
+                } else {
+                    modalContent.insertAdjacentHTML('beforeend', logoutGuestHTML);
+                }
+            }
         }
-        kaitkanBtn.setAttribute('onclick', `menuClick('${isVerified ? 'akun-saya' : 'kaitkan'}')`);
+    } else {
+        if (logoutGuestBtn) logoutGuestBtn.remove();
     }
 }
 
@@ -247,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 6: Kaitkan Akun
+          // Prioritas 6: Kaitkan Akun (Verifikasi / Akun Saya)
           if (stage && stage.classList.contains('kaitkan-open')) {
               if (typeof closeKaitkanAkun === 'function') {
                   closeKaitkanAkun();
@@ -350,4 +377,4 @@ window.updatePageClass = updatePageClass;
 window.updateModalMenuItems = updateModalMenuItems;
 window.isVerifiedUid = isVerifiedUid;
 
-console.log('✅ menu.js loaded (V2 — Filter Ganti Nama)');
+console.log('✅ menu.js loaded (V3 — Logout Situasional)');
