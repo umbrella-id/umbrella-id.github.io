@@ -12,13 +12,12 @@ function openModal() {
 
   clearTimeout(modalTimer);
   
-  // 🎯 Update menu items tiap kali modal dibuka
   if (typeof updateModalMenuItems === 'function') {
     updateModalMenuItems();
   }
 
   if (chatBox) chatBox.classList.add('shifted');
-  if (stage) stage.classList.add('modal-open');   // sembunyikan banner
+  if (stage) stage.classList.add('modal-open');
 
   modalTimer = setTimeout(() => {
     modalOverlay.classList.add('open');
@@ -33,8 +32,6 @@ function openModal() {
   }, 220);
 }
 
-// skipModalOpenClass = true → JANGAN hapus modal-open
-//                       (untuk transisi ke halaman/modal lain)
 function closeModal(skipModalOpenClass = false) {
   const modalOverlay = document.getElementById('modalOverlay');
   const chatBox = document.getElementById('chatBox');
@@ -48,7 +45,6 @@ function closeModal(skipModalOpenClass = false) {
     modalOverlay.classList.remove('open');
     if (chatBox) chatBox.classList.remove('shifted');
 
-    // 🎯 Cuma hapus modal-open kalau tidak skip
     if (stage && !skipModalOpenClass) {
       stage.classList.remove('modal-open');
     }
@@ -65,49 +61,47 @@ document.addEventListener('keydown', (e) => {
 });
 
 function menuClick(type) {
-    console.log('Menu dipilih:', type);
+  console.log('Menu dipilih:', type);
 
-    // Tutup modal (skip = true, biar modal-open tetap ada)
-    closeModal(true);
+  closeModal(true);
 
-    setTimeout(() => {
-        // ==========================================
-        // Handle menu khusus
-        // ==========================================
-        if (type === 'ganti') {
-            if (typeof openGate === 'function') openGate('change');
-        } 
-        else if (type === 'kotak_surat') {
-            if (typeof openMailModal === 'function') openMailModal();
-        } 
-        else if (type === 'info') {
-            if (typeof openInfoModal === 'function') openInfoModal();
-        } 
-        else if (type === 'tentang') {
-            if (typeof openTentangModal === 'function') openTentangModal();
-        } 
-        else if (type === 'gallery') {
-            if (typeof openGalleryModal === 'function') openGalleryModal();
-        }
-        // 🎯 Kaitkan Akun (belum verified)
-        else if (type === 'kaitkan') {
-            if (typeof openKaitkanAkun === 'function') openKaitkanAkun();
-        }
-        // 🎯 Akun Saya (sudah verified)
-        else if (type === 'akun-saya') {
-            if (typeof openAkunSaya === 'function') openAkunSaya();
-        }
-        else {
-            // Default: navigate ke page
-            if (typeof goToPage === 'function') goToPage(type);
-        }
+  setTimeout(() => {
+    // ==========================================
+    // Menu khusus
+    // ==========================================
+    if (type === 'ganti') {
+      if (typeof openGate === 'function') openGate('change');
+    } 
+    else if (type === 'kotak_surat') {
+      if (typeof openMailModal === 'function') openMailModal();
+    } 
+    else if (type === 'info') {
+      if (typeof openInfoModal === 'function') openInfoModal();
+    } 
+    else if (type === 'tentang') {
+      if (typeof openTentangModal === 'function') openTentangModal();
+    } 
+    else if (type === 'gallery') {
+      if (typeof openGalleryModal === 'function') openGalleryModal();
+    }
+    // 🎯 Akun Saya (untuk member)
+    else if (type === 'akun-saya') {
+      if (typeof openAkunSaya === 'function') openAkunSaya();
+    }
+    // 🎯 Logout Guest (untuk guest)
+    else if (type === 'logout-guest') {
+      if (typeof logoutAccount === 'function') logoutAccount();
+    }
+    else {
+      if (typeof goToPage === 'function') goToPage(type);
+    }
 
-        // Sekarang baru hapus modal-open
-        const stage = document.getElementById('stage');
-        if (stage) stage.classList.remove('modal-open');
+    // Hapus modal-open
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.remove('modal-open');
 
-        if (typeof updateButtons === 'function') updateButtons();
-    }, 400);
+    if (typeof updateButtons === 'function') updateButtons();
+  }, 400);
 }
 
 window.openModal = openModal;
