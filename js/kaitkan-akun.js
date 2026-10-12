@@ -1,5 +1,5 @@
 /**
- * kaitkan-akun.js — Fitur Verifikasi Akun & Login (Web Publik)
+ * kaitkan-akun.js — Fitur Verifikasi Akun, Login, & Logout (Web Publik)
  */
 
 let isKaitkanPopupOpen = false;
@@ -249,11 +249,13 @@ function showKaitkanSuccess() {
 }
 
 // ==========================================
-// AKUN SAYA
+// 🎯 AKUN SAYA — Dynamic Content
 // ==========================================
 async function openAkunSaya() {
+    const uid = localStorage.getItem('u_uid') || '';
     const ign = localStorage.getItem('u_ign') || 'Member';
     const savedKode = localStorage.getItem('u_web_kode') || '';
+    const isVerified = uid.endsWith('-v');
     
     if (typeof closeModal === 'function') {
         closeModal(true);
@@ -262,18 +264,66 @@ async function openAkunSaya() {
     const overlay = document.getElementById('kaitkanAkunSayaOverlay');
     if (!overlay) return;
     
-    const ignEl = document.getElementById('akunSayaIgn');
-    if (ignEl) ignEl.innerText = ign;
+    const bodyEl = overlay.querySelector('.kaitkan-body');
+    if (!bodyEl) return;
     
-    const kodeValueEl = document.getElementById('akunSayaKodeValue');
-    const kodeBoxEl = document.getElementById('akunSayaKodeBox');
-    
-    if (savedKode) {
-        if (kodeValueEl) kodeValueEl.innerText = savedKode;
-        if (kodeBoxEl) kodeBoxEl.classList.remove('kaitkan-kode-box-empty');
+    if (isVerified) {
+        // ==========================================
+        // VERIFIED
+        // ==========================================
+        bodyEl.innerHTML = `
+            <p class="kaitkan-desc">Akun Anda sudah terverifikasi</p>
+            
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">IGN:</span>
+                <strong class="kaitkan-info-value">${escapeHtmlKaitkan(ign)}</strong>
+            </div>
+            
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">Status:</span>
+                <strong class="kaitkan-info-value" style="color:#4ade80;">✅ Terverifikasi</strong>
+            </div>
+            
+            <div class="kaitkan-kode-box" id="akunSayaKodeBox">
+                <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
+                <div class="kaitkan-kode-value" id="akunSayaKodeValue">${savedKode ? escapeHtmlKaitkan(savedKode) : '—'}</div>
+            </div>
+            
+            <p class="kaitkan-save-text">Simpan kode ini untuk login</p>
+            
+            <button class="kaitkan-logout-btn" onclick="logoutAccount()">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+        `;
     } else {
-        if (kodeValueEl) kodeValueEl.innerText = '—';
-        if (kodeBoxEl) kodeBoxEl.classList.add('kaitkan-kode-box-empty');
+        // ==========================================
+        // BELUM VERIFIED
+        // ==========================================
+        bodyEl.innerHTML = `
+            <p class="kaitkan-desc">Akun Anda belum diverifikasi</p>
+            
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">IGN:</span>
+                <strong class="kaitkan-info-value">${escapeHtmlKaitkan(ign)}</strong>
+            </div>
+            
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">Status:</span>
+                <strong class="kaitkan-info-value" style="color:#f59e0b;">❌ Belum Verifikasi</strong>
+            </div>
+            
+            <p class="kaitkan-verify-hint">
+                Verifikasi akun untuk mendapatkan akses penuh dan bisa login dari device lain.
+            </p>
+            
+            <button class="kaitkan-verify-btn" onclick="openVerifikasiFromAkun()">
+                <i class="fas fa-key"></i> VERIFIKASI AKUN
+            </button>
+            
+            <button class="kaitkan-logout-btn" onclick="logoutAccount()">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+        `;
     }
     
     overlay.classList.add('open');
@@ -284,6 +334,18 @@ async function openAkunSaya() {
     if (typeof updateButtons === 'function') updateButtons();
     
     isKaitkanPopupOpen = true;
+}
+
+// ==========================================
+// 🎯 BUKA VERIFIKASI DARI AKUN SAYA
+// ==========================================
+function openVerifikasiFromAkun() {
+    const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+    if (overlayAkun) overlayAkun.classList.remove('open');
+    
+    setTimeout(() => {
+        openKaitkanAkun();
+    }, 200);
 }
 
 // ==========================================
@@ -307,7 +369,6 @@ function openLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
     
-    // Reset form
     const waInput = document.getElementById('loginMemberWa');
     const kodeInput = document.getElementById('loginMemberKode');
     const msgEl = document.getElementById('loginMemberMessage');
@@ -328,7 +389,6 @@ function openLoginModal() {
     
     overlay.classList.add('open');
     
-    // 🎯 Ganti teks tombol gate → "TUTUP"
     updateGateLoginBtn(true);
     
     setTimeout(() => {
@@ -343,7 +403,6 @@ function closeLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (overlay) overlay.classList.remove('open');
     
-    // 🎯 Ganti teks tombol gate → "LOGIN"
     updateGateLoginBtn(false);
 }
 
@@ -484,6 +543,95 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
+// 🎯 LOGOUT — Deteksi tipe user
+// ==========================================
+function logoutAccount() {
+    const uid = localStorage.getItem('u_uid') || '';
+    const isGuest = uid.startsWith('G-');
+    const isMember = uid.startsWith('M-');
+    
+    if (isMember) {
+        // Member → logout penuh
+        if (typeof showConfirmModal === 'function') {
+            showConfirmModal(
+                'Logout dari akun ini?<br><br>Anda akan keluar dan menjadi guest baru.',
+                () => executeLogoutMember()
+            );
+        } else {
+            if (confirm('Logout dari akun ini?')) executeLogoutMember();
+        }
+    } else if (isGuest) {
+        // Guest → reset data
+        if (typeof showConfirmModal === 'function') {
+            showConfirmModal(
+                'Reset data guest?<br><br>Chat & surat Anda akan dihapus, IGN direset ke nama random.',
+                () => executeLogoutGuest()
+            );
+        } else {
+            if (confirm('Reset data guest?')) executeLogoutGuest();
+        }
+    }
+}
+
+// ==========================================
+// 🎯 LOGOUT MEMBER
+// ==========================================
+function executeLogoutMember() {
+    localStorage.removeItem('u_uid');
+    localStorage.removeItem('u_ign');
+    localStorage.removeItem('u_web_uid');
+    localStorage.removeItem('u_web_kode');
+    localStorage.removeItem('u_class');
+    localStorage.removeItem('u_ign_changed_at');
+    
+    clearUmbrellaSession();
+    
+    if (typeof showToast === 'function') {
+        showToast('✅ Logout berhasil');
+    }
+    
+    setTimeout(() => {
+        location.reload();
+    }, 500);
+}
+
+// ==========================================
+// 🎯 LOGOUT GUEST
+// ==========================================
+function executeLogoutGuest() {
+    const randomIgn = 'Guest-' + Math.random().toString(36).substring(2, 6);
+    localStorage.setItem('u_ign', randomIgn);
+    
+    // ⚠️ TIDAK hapus: u_uid, u_ign_changed_at
+    
+    clearUmbrellaSession();
+    
+    window.myIGN = randomIgn;
+    if (typeof updateIdentityUI === 'function') {
+        updateIdentityUI();
+    }
+    
+    if (typeof showToast === 'function') {
+        showToast('✅ Data reset, IGN baru: ' + randomIgn);
+    }
+    
+    setTimeout(() => {
+        location.reload();
+    }, 800);
+}
+
+// ==========================================
+// 🎯 HELPER
+// ==========================================
+function clearUmbrellaSession() {
+    Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('umbrella_')) {
+            sessionStorage.removeItem(key);
+        }
+    });
+}
+
+// ==========================================
 // UTILITY
 // ==========================================
 function escapeHtmlKaitkan(str) {
@@ -505,12 +653,16 @@ window.openKaitkanAkun = openKaitkanAkun;
 window.closeKaitkanAkun = closeKaitkanAkun;
 window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
+window.openVerifikasiFromAkun = openVerifikasiFromAkun;
 window.cekStatusAkun = cekStatusAkun;
 window.toggleLoginModal = toggleLoginModal;
 window.openLoginModal = openLoginModal;
 window.closeLoginModal = closeLoginModal;
 window.submitLoginModal = submitLoginModal;
 window.handleLoginModalBack = handleLoginModalBack;
+window.logoutAccount = logoutAccount;
+window.executeLogoutMember = executeLogoutMember;
+window.executeLogoutGuest = executeLogoutGuest;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login Toggle)');
+console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login + Logout)');
