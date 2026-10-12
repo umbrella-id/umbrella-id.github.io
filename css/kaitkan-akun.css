@@ -512,11 +512,21 @@
 
 /* ==========================================
    TOMBOL DANGER (Logout Guest) — MERAH
+   Pakai SVG merah custom
    ========================================== */
-.modal-list-item.btn-danger .btn-ujung-kiri,
-.modal-list-item.btn-danger .btn-tengah,
+.modal-list-item.btn-danger .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.modal-list-item.btn-danger .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
 .modal-list-item.btn-danger .btn-ujung-kanan {
-    filter: hue-rotate(-40deg) saturate(1.8) brightness(0.85);
+    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
 }
 
 /* Responsive */
