@@ -33,55 +33,49 @@ function updateButtons() {
 
     const stage = document.getElementById('stage');
 
-    // Prioritas 1: Headline popup
+    // Prioritas 1-6: Modal lain
     if (stage && stage.classList.contains('headline-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 2: Mail
     if (stage && stage.classList.contains('mail-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 3: Info
     if (stage && stage.classList.contains('info-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 4: Tentang
     if (stage && stage.classList.contains('tentang-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 5: Gallery
     if (stage && stage.classList.contains('gallery-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 6: Kaitkan Akun (Verifikasi / Akun Saya)
     if (stage && stage.classList.contains('kaitkan-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
         return;
     }
 
-    // Prioritas 7: Gate edit
     if (stage && stage.classList.contains('gate-edit-mode')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         return;
     }
 
-    // Prioritas 8: Normal
+    // Normal
     const modalOverlay = getModalOverlay();
     const modalOpen = modalOverlay && modalOverlay.classList.contains('open');
 
@@ -104,7 +98,6 @@ function goToPage(pageName) {
   pageHistory.push(pageName);
   updatePageClass();
   updateButtons();
-  console.log('Pindah ke halaman:', pageName);
 }
 
 function goBack() {
@@ -123,7 +116,7 @@ function goHome() {
   updateButtons();
 }
 
-// ===== CEK APAKAH VERIFIED =====
+// ===== CEK VERIFIED =====
 function isVerifiedUid() {
   const uid = localStorage.getItem('u_uid') || '';
   return uid.endsWith('-v');
@@ -131,30 +124,52 @@ function isVerifiedUid() {
 
 // ==========================================
 // 🎯 UPDATE MODAL MENU ITEMS
-// - Guest: menu "Logout Guest"
-// - Member: menu "Akun Saya" (verifikasi & logout di dalam)
-// - Verified: "Ganti Nama" hidden
+// - Guest: menu "Logout" (tombol merah)
+// - Member: menu "Akun Saya"
+// - Tidak ada "Ganti Nama"
 // ==========================================
 function updateModalMenuItems() {
     const uid = localStorage.getItem('u_uid') || '';
-    const isGuest = uid.startsWith('G-');
+    const isGuest = uid.startsWith('G-') || !uid;
     const isMember = uid.startsWith('M-');
-    const isVerified = uid.endsWith('-v');
     
     // ==========================================
-    // 1. Sembunyikan "Ganti Nama" untuk verified
+    // 1. Hapus "Ganti Nama" (kalau ada, dari HTML lama)
     // ==========================================
     const gantiNamaBtn = document.querySelector('.modal-list-item[onclick*="ganti"]');
-    if (gantiNamaBtn) {
-        if (isVerified) {
-            gantiNamaBtn.style.display = 'none';
-        } else {
-            gantiNamaBtn.style.display = '';
+    if (gantiNamaBtn) gantiNamaBtn.remove();
+    
+    // ==========================================
+    // 2. Menu "Logout" — HANYA guest (merah)
+    // ==========================================
+    let logoutBtn = document.getElementById('menuLogout');
+    
+    if (isGuest) {
+        if (!logoutBtn) {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                const logoutHTML = `
+                    <div class="btn-svg modal-list-item btn-danger" id="menuLogout" onclick="menuClick('logout')">
+                        <div class="btn-ujung-kiri"></div>
+                        <div class="btn-tengah"><span class="btn-teks">Logout</span></div>
+                        <div class="btn-ujung-kanan"></div>
+                    </div>
+                `;
+                
+                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
+                if (tentangBtn) {
+                    tentangBtn.insertAdjacentHTML('beforebegin', logoutHTML);
+                } else {
+                    modalContent.insertAdjacentHTML('beforeend', logoutHTML);
+                }
+            }
         }
+    } else {
+        if (logoutBtn) logoutBtn.remove();
     }
     
     // ==========================================
-    // 2. Menu "Akun Saya" — HANYA member
+    // 3. Menu "Akun Saya" — HANYA member
     // ==========================================
     let akunSayaBtn = document.getElementById('menuAkunSaya');
     
@@ -181,35 +196,6 @@ function updateModalMenuItems() {
     } else {
         if (akunSayaBtn) akunSayaBtn.remove();
     }
-    
-    // ==========================================
-    // 3. Menu "Logout Guest" — HANYA guest
-    // ==========================================
-    let logoutGuestBtn = document.getElementById('menuLogoutGuest');
-    
-    if (isGuest) {
-        if (!logoutGuestBtn) {
-            const modalContent = document.querySelector('.modal-content');
-            if (modalContent) {
-                const logoutGuestHTML = `
-                    <div class="btn-svg modal-list-item" id="menuLogoutGuest" onclick="menuClick('logout-guest')">
-                        <div class="btn-ujung-kiri"></div>
-                        <div class="btn-tengah"><span class="btn-teks">Logout Guest</span></div>
-                        <div class="btn-ujung-kanan"></div>
-                    </div>
-                `;
-                
-                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
-                if (tentangBtn) {
-                    tentangBtn.insertAdjacentHTML('beforebegin', logoutGuestHTML);
-                } else {
-                    modalContent.insertAdjacentHTML('beforeend', logoutGuestHTML);
-                }
-            }
-        }
-    } else {
-        if (logoutGuestBtn) logoutGuestBtn.remove();
-    }
 }
 
 // ===== EVENT LISTENER =====
@@ -227,18 +213,16 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
           
-          // 🎯 PRIORITAS PALING ATAS: Modal Login (kalau buka)
+          // 🎯 PRIORITAS PALING ATAS: Modal Login
           if (typeof handleLoginModalBack === 'function' && handleLoginModalBack()) {
               return;
           }
   
-          // Prioritas 1: Headline
           if (stage && stage.classList.contains('headline-open')) {
               if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
               return;
           }
   
-          // Prioritas 2: Mail
           if (stage && stage.classList.contains('mail-open')) {
               if (typeof mailGoBack === 'function') {
                   mailGoBack();
@@ -248,22 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 3: Info
           if (stage && stage.classList.contains('info-open')) {
-              if (typeof infoGoBack === 'function' && infoGoBack()) {
-                  return;
-              }
+              if (typeof infoGoBack === 'function' && infoGoBack()) return;
               if (typeof closeInfoModal === 'function') closeInfoModal();
               return;
           }
   
-          // Prioritas 4: Tentang
           if (stage && stage.classList.contains('tentang-open')) {
               if (typeof closeTentangModal === 'function') closeTentangModal();
               return;
           }
   
-          // Prioritas 5: Gallery
           if (stage && stage.classList.contains('gallery-open')) {
               const lb = document.getElementById('galleryLightbox');
               if (lb && lb.classList.contains('open')) {
@@ -274,22 +253,17 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 6: Kaitkan Akun (Verifikasi / Akun Saya)
           if (stage && stage.classList.contains('kaitkan-open')) {
-              if (typeof closeKaitkanAkun === 'function') {
-                  closeKaitkanAkun();
-              }
+              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun();
               return;
           }
   
-          // Prioritas 7: Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) {
               if (typeof closeGate === 'function') closeGate();
               return;
           }
   
-          // Prioritas 8: Normal
           if (currentPage === 'home') {
               const modalOverlay = getModalOverlay();
               if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -310,55 +284,45 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
   
-          // Prioritas 1: Headline
           if (stage && stage.classList.contains('headline-open')) {
               if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 2: Mail
           if (stage && stage.classList.contains('mail-open')) {
               if (typeof closeMailModal === 'function') closeMailModal(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 3: Info
           if (stage && stage.classList.contains('info-open')) {
               if (typeof closeInfoModal === 'function') closeInfoModal(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 4: Tentang
           if (stage && stage.classList.contains('tentang-open')) {
               if (typeof closeTentangModal === 'function') closeTentangModal(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 5: Gallery
           if (stage && stage.classList.contains('gallery-open')) {
               if (typeof closeGalleryModal === 'function') closeGalleryModal(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 6: Kaitkan Akun
           if (stage && stage.classList.contains('kaitkan-open')) {
-              if (typeof closeKaitkanAkun === 'function') {
-                  closeKaitkanAkun(true);
-              }
+              if (typeof closeKaitkanAkun === 'function') closeKaitkanAkun(true);
               if (typeof goHome === 'function') goHome();
               return;
           }
   
-          // Prioritas 7: Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) return;
   
-          // Prioritas 8: Normal
           if (currentPage === 'home') {
               if (typeof openChatInput === 'function') openChatInput();
           } else {
@@ -377,4 +341,4 @@ window.updatePageClass = updatePageClass;
 window.updateModalMenuItems = updateModalMenuItems;
 window.isVerifiedUid = isVerifiedUid;
 
-console.log('✅ menu.js loaded (V3 — Logout Situasional)');
+console.log('✅ menu.js loaded (V4 — Menu Situasional)');
