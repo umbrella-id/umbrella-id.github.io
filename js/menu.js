@@ -140,7 +140,7 @@ function updateModalMenuItems() {
     if (gantiNamaBtn) gantiNamaBtn.remove();
     
     // ==========================================
-    // 2. Menu "Logout" — HANYA guest (merah)
+    // 2. Menu "Logout" — HANYA guest (merah, TERAKHIR)
     // ==========================================
     let logoutBtn = document.getElementById('menuLogout');
     
@@ -156,12 +156,8 @@ function updateModalMenuItems() {
                     </div>
                 `;
                 
-                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
-                if (tentangBtn) {
-                    tentangBtn.insertAdjacentHTML('beforebegin', logoutHTML);
-                } else {
-                    modalContent.insertAdjacentHTML('beforeend', logoutHTML);
-                }
+                // 🎯 Tambahkan di PALING AKHIR (setelah Gallery)
+                modalContent.insertAdjacentHTML('beforeend', logoutHTML);
             }
         }
     } else {
@@ -169,7 +165,7 @@ function updateModalMenuItems() {
     }
     
     // ==========================================
-    // 3. Menu "Akun Saya" — HANYA member
+    // 3. Menu "Akun Saya" — HANYA member (TERAKHIR)
     // ==========================================
     let akunSayaBtn = document.getElementById('menuAkunSaya');
     
@@ -185,12 +181,8 @@ function updateModalMenuItems() {
                     </div>
                 `;
                 
-                const tentangBtn = modalContent.querySelector('.modal-list-item[onclick*="tentang"]');
-                if (tentangBtn) {
-                    tentangBtn.insertAdjacentHTML('beforebegin', akunSayaHTML);
-                } else {
-                    modalContent.insertAdjacentHTML('beforeend', akunSayaHTML);
-                }
+                // 🎯 Tambahkan di PALING AKHIR (setelah Gallery)
+                modalContent.insertAdjacentHTML('beforeend', akunSayaHTML);
             }
         }
     } else {
