@@ -1,5 +1,5 @@
 /**
- * modal.js — Modal Menu Logic
+ * modal.js — Modal Menu Logic 
  */
 
 let modalTimer = null;
