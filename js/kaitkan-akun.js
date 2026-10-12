@@ -1,5 +1,5 @@
 /**
- * kaitkan-akun.js — Fitur Verifikasi Akun, Login, & Logout (Web Publik)
+ * kaitkan-akun.js — Fitur Verifikasi Akun, Login, & Logout
  */
 
 let isKaitkanPopupOpen = false;
@@ -17,8 +17,6 @@ async function cekStatusAkun() {
         const res = await fetch(url);
         const data = await res.json();
         
-        console.log('📊 checkAccountStatus:', data);
-        
         if (data.hasAccount && data.webUID && data.webUID !== uUid) {
             localStorage.setItem('u_uid', data.webUID);
             window.myUID = data.webUID;
@@ -26,7 +24,6 @@ async function cekStatusAkun() {
         
         return data;
     } catch(e) {
-        console.error('Cek status akun error:', e);
         return {
             hasAccount: uUid.endsWith('-v'),
             webUID: uUid.endsWith('-v') ? uUid : '',
@@ -66,10 +63,7 @@ function openKaitkanAkun() {
     
     if (waInput) { waInput.value = ''; waInput.disabled = false; }
     if (kodeInput) { kodeInput.value = ''; kodeInput.disabled = false; }
-    if (msgEl) {
-        msgEl.innerText = '';
-        msgEl.classList.remove('show', 'error');
-    }
+    if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error'); }
     
     const oldNotif = document.getElementById('kaitkanSuccessNotif');
     if (oldNotif) oldNotif.remove();
@@ -97,7 +91,7 @@ function openKaitkanAkun() {
 }
 
 // ==========================================
-// TUTUP MODAL VERIFIKASI / AKUN SAYA
+// TUTUP MODAL VERIFIKASI
 // ==========================================
 function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
@@ -161,8 +155,6 @@ async function submitKaitkanAkun() {
         const res = await fetch(url);
         const data = await res.json();
         
-        console.log('📡 activateAccount response:', data);
-        
         if (data.success) {
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_web_uid', data.webUID);
@@ -171,14 +163,11 @@ async function submitKaitkanAkun() {
             if (data.ign) {
                 localStorage.setItem('u_ign', data.ign);
                 window.myIGN = data.ign;
-                console.log('✅ IGN diupdate dari database:', data.ign);
             }
             
             window.myUID = data.webUID;
             
-            if (typeof updateIdentityUI === 'function') {
-                updateIdentityUI();
-            }
+            if (typeof updateIdentityUI === 'function') updateIdentityUI();
             
             showKaitkanSuccess();
             
@@ -192,7 +181,6 @@ async function submitKaitkanAkun() {
             if (btnText) btnText.innerText = 'VERIFIKASI';
         }
     } catch(e) {
-        console.error('Submit verifikasi error:', e);
         showKaitkanMessage('Koneksi gagal. Coba lagi.', true);
         btn.classList.remove('loading');
         btn.style.pointerEvents = '';
@@ -228,10 +216,7 @@ function showKaitkanSuccess() {
     if (btn) btn.style.display = 'none';
     
     const msgEl = document.getElementById('kaitkanMessage');
-    if (msgEl) {
-        msgEl.innerText = '';
-        msgEl.classList.remove('show', 'error');
-    }
+    if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error'); }
     
     const oldNotif = document.getElementById('kaitkanSuccessNotif');
     if (oldNotif) oldNotif.remove();
@@ -257,9 +242,7 @@ async function openAkunSaya() {
     const savedKode = localStorage.getItem('u_web_kode') || '';
     const isVerified = uid.endsWith('-v');
     
-    if (typeof closeModal === 'function') {
-        closeModal(true);
-    }
+    if (typeof closeModal === 'function') closeModal(true);
     
     const overlay = document.getElementById('kaitkanAkunSayaOverlay');
     if (!overlay) return;
@@ -268,9 +251,6 @@ async function openAkunSaya() {
     if (!bodyEl) return;
     
     if (isVerified) {
-        // ==========================================
-        // VERIFIED
-        // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda sudah terverifikasi</p>
             
@@ -296,9 +276,6 @@ async function openAkunSaya() {
             </button>
         `;
     } else {
-        // ==========================================
-        // BELUM VERIFIED
-        // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda belum diverifikasi</p>
             
@@ -375,10 +352,7 @@ function openLoginModal() {
     
     if (waInput) waInput.value = '';
     if (kodeInput) kodeInput.value = '';
-    if (msgEl) {
-        msgEl.innerText = '';
-        msgEl.classList.remove('show', 'error', 'success');
-    }
+    if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error', 'success'); }
     
     const btn = document.getElementById('loginMemberSubmitBtn');
     if (btn) {
@@ -459,8 +433,6 @@ async function submitLoginModal() {
         const res = await fetch(url);
         const data = await res.json();
         
-        console.log('📡 loginVerified:', data);
-        
         if (data.success) {
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_ign', data.ign);
@@ -471,26 +443,15 @@ async function submitLoginModal() {
             window.myUID = data.webUID;
             window.myIGN = data.ign;
             
-            if (typeof updateIdentityUI === 'function') {
-                updateIdentityUI();
-            }
+            if (typeof updateIdentityUI === 'function') updateIdentityUI();
             
             showLoginMemberMessage('✅ Login berhasil!', false, true);
             
             setTimeout(() => {
                 closeLoginModal();
-                
-                if (typeof closeGate === 'function') {
-                    closeGate(true);
-                }
-                
-                if (typeof buildMenu === 'function') {
-                    setTimeout(() => buildMenu(), 300);
-                }
-                
-                if (typeof cekStatusAkun === 'function') {
-                    setTimeout(() => cekStatusAkun(), 500);
-                }
+                if (typeof closeGate === 'function') closeGate(true);
+                if (typeof buildMenu === 'function') setTimeout(() => buildMenu(), 300);
+                if (typeof cekStatusAkun === 'function') setTimeout(() => cekStatusAkun(), 500);
             }, 800);
         } else {
             showLoginMemberMessage(data.message || 'Login gagal', true);
@@ -498,7 +459,6 @@ async function submitLoginModal() {
             if (btnText) btnText.innerText = 'LOGIN';
         }
     } catch(e) {
-        console.error('Login error:', e);
         showLoginMemberMessage('Koneksi gagal. Coba lagi.', true);
         btn.style.pointerEvents = '';
         if (btnText) btnText.innerText = 'LOGIN';
@@ -530,9 +490,7 @@ function handleLoginModalBack() {
     return false;
 }
 
-// ==========================================
-// 🎯 EVENT LISTENER: Klik Overlay → Close Modal
-// ==========================================
+// Event listener klik overlay
 document.addEventListener('click', function(e) {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
@@ -543,15 +501,14 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// 🎯 LOGOUT — Deteksi tipe user
+// 🎯 LOGOUT
 // ==========================================
 function logoutAccount() {
     const uid = localStorage.getItem('u_uid') || '';
-    const isGuest = uid.startsWith('G-');
+    const isGuest = uid.startsWith('G-') || !uid;
     const isMember = uid.startsWith('M-');
     
     if (isMember) {
-        // Member → logout penuh
         if (typeof showConfirmModal === 'function') {
             showConfirmModal(
                 'Logout dari akun ini?<br><br>Anda akan keluar dan menjadi guest baru.',
@@ -561,16 +518,31 @@ function logoutAccount() {
             if (confirm('Logout dari akun ini?')) executeLogoutMember();
         }
     } else if (isGuest) {
-        // Guest → reset data
         if (typeof showConfirmModal === 'function') {
             showConfirmModal(
-                'Reset data guest?<br><br>Chat & surat Anda akan dihapus, IGN direset ke nama random.',
+                'Logout dari akun guest?<br><br>Anda akan diminta memasukkan nama baru.',
                 () => executeLogoutGuest()
             );
         } else {
-            if (confirm('Reset data guest?')) executeLogoutGuest();
+            if (confirm('Logout dari akun guest?')) executeLogoutGuest();
         }
     }
+}
+
+// ==========================================
+// 🎯 LOGOUT GUEST
+// ==========================================
+function executeLogoutGuest() {
+    localStorage.setItem('u_ign', '');
+    clearUmbrellaSession();
+    
+    window.myIGN = '';
+    
+    if (typeof showToast === 'function') showToast('✅ Logout berhasil');
+    
+    setTimeout(() => {
+        location.reload();
+    }, 500);
 }
 
 // ==========================================
@@ -586,38 +558,11 @@ function executeLogoutMember() {
     
     clearUmbrellaSession();
     
-    if (typeof showToast === 'function') {
-        showToast('✅ Logout berhasil');
-    }
+    if (typeof showToast === 'function') showToast('✅ Logout berhasil');
     
     setTimeout(() => {
         location.reload();
     }, 500);
-}
-
-// ==========================================
-// 🎯 LOGOUT GUEST
-// ==========================================
-function executeLogoutGuest() {
-    const randomIgn = 'Guest-' + Math.random().toString(36).substring(2, 6);
-    localStorage.setItem('u_ign', randomIgn);
-    
-    // ⚠️ TIDAK hapus: u_uid, u_ign_changed_at
-    
-    clearUmbrellaSession();
-    
-    window.myIGN = randomIgn;
-    if (typeof updateIdentityUI === 'function') {
-        updateIdentityUI();
-    }
-    
-    if (typeof showToast === 'function') {
-        showToast('✅ Data reset, IGN baru: ' + randomIgn);
-    }
-    
-    setTimeout(() => {
-        location.reload();
-    }, 800);
 }
 
 // ==========================================
@@ -665,4 +610,4 @@ window.executeLogoutMember = executeLogoutMember;
 window.executeLogoutGuest = executeLogoutGuest;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (Verifikasi + Login + Logout)');
+console.log('✅ kaitkan-akun.js loaded (V2 — Menu Situasional)');
