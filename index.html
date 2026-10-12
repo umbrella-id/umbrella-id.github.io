@@ -44,7 +44,6 @@
       <div id="gatekeeper" class="gatekeeper">
         <div class="gate-overlay"></div>
 
-        <!-- 🎯 Tombol Login (toggle) -->
         <button class="gate-login-btn" id="gateLoginBtn" onclick="toggleLoginModal()">
           <i class="fas fa-sign-in-alt"></i>
           <span id="gateLoginBtnText">LOGIN</span>
@@ -89,11 +88,10 @@
           </div>
         </div>
 
-        <!-- 🎯 MODAL LOGIN (di atas overlay gate) -->
+        <!-- MODAL LOGIN -->
         <div class="login-modal-overlay" id="loginMemberOverlay">
           <div class="login-modal">
             
-            <!-- Bingkai ornamen -->
             <div class="modal-frame">
               <div class="frame-h atas">
                 <div class="pojok"></div>
@@ -261,11 +259,6 @@
               <div class="btn-tengah"><span class="btn-teks">Kotak Surat</span></div>
               <div class="btn-ujung-kanan"></div>
             </div>
-            <div class="btn-svg modal-list-item" onclick="menuClick('ganti')">
-              <div class="btn-ujung-kiri"></div>
-              <div class="btn-tengah"><span class="btn-teks">Ganti Nama</span></div>
-              <div class="btn-ujung-kanan"></div>
-            </div>
             <div class="btn-svg modal-list-item" onclick="menuClick('tentang')">
               <div class="btn-ujung-kiri"></div>
               <div class="btn-tengah"><span class="btn-teks">Tentang Kami</span></div>
@@ -377,24 +370,7 @@
           <div class="kaitkan-header">AKUN SAYA</div>
           
           <div class="kaitkan-body">
-            
-            <p class="kaitkan-desc">
-                Akun Anda sudah terverifikasi
-            </p>
-            
-            <div class="kaitkan-info-row">
-                <span class="kaitkan-info-label">IGN:</span>
-                <strong class="kaitkan-info-value" id="akunSayaIgn">-</strong>
-            </div>
-            
-            <div class="kaitkan-kode-box" id="akunSayaKodeBox">
-                <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
-                <div class="kaitkan-kode-value" id="akunSayaKodeValue">-</div>
-            </div>
-            
-            <p class="kaitkan-save-text">
-                Simpan kode ini untuk login
-            </p>
+            <!-- Content dinamis — di-render JS -->
           </div>
         </div>
       </div>
