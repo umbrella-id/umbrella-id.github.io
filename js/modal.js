@@ -66,13 +66,7 @@ function menuClick(type) {
   closeModal(true);
 
   setTimeout(() => {
-    // ==========================================
-    // Menu khusus
-    // ==========================================
-    if (type === 'ganti') {
-      if (typeof openGate === 'function') openGate('change');
-    } 
-    else if (type === 'kotak_surat') {
+    if (type === 'kotak_surat') {
       if (typeof openMailModal === 'function') openMailModal();
     } 
     else if (type === 'info') {
@@ -84,19 +78,18 @@ function menuClick(type) {
     else if (type === 'gallery') {
       if (typeof openGalleryModal === 'function') openGalleryModal();
     }
-    // 🎯 Akun Saya (untuk member)
+    // 🎯 Akun Saya (member)
     else if (type === 'akun-saya') {
       if (typeof openAkunSaya === 'function') openAkunSaya();
     }
-    // 🎯 Logout Guest (untuk guest)
-    else if (type === 'logout-guest') {
+    // 🎯 Logout (guest)
+    else if (type === 'logout') {
       if (typeof logoutAccount === 'function') logoutAccount();
     }
     else {
       if (typeof goToPage === 'function') goToPage(type);
     }
 
-    // Hapus modal-open
     const stage = document.getElementById('stage');
     if (stage) stage.classList.remove('modal-open');
 
