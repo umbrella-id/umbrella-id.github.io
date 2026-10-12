@@ -10,11 +10,8 @@
     pointer-events: none;
 }
 
-.kaitkan-overlay.open {
-    display: block;
-}
+.kaitkan-overlay.open { display: block; }
 
-/* Modal */
 .kaitkan-modal {
     position: absolute;
     top: 50%;
@@ -29,7 +26,6 @@
     padding: 0;
 }
 
-/* Header */
 .kaitkan-header {
     position: relative;
     padding: 14px 30px 16px;
@@ -55,7 +51,6 @@
     opacity: 0.9;
 }
 
-/* Body */
 .kaitkan-body {
     flex: 1;
     overflow-y: auto;
@@ -74,7 +69,6 @@
     border-radius: 2px;
 }
 
-/* Deskripsi */
 .kaitkan-desc {
     text-align: center;
     color: #f5e6c8;
@@ -82,10 +76,8 @@
     line-height: 1.4;
     margin-bottom: 14px;
     max-width: 90%;
-    letter-spacing: 0.3px;
 }
 
-/* Form */
 .kaitkan-form {
     width: 100%;
     max-width: 350px;
@@ -136,10 +128,7 @@
     box-shadow: 0 0 8px rgba(201, 165, 90, 0.4);
 }
 
-.kaitkan-form-group input::placeholder {
-    color: rgba(0, 0, 0, 0.35);
-    letter-spacing: 0.3px;
-}
+.kaitkan-form-group input::placeholder { color: rgba(0, 0, 0, 0.35); }
 
 .kaitkan-form-group input:disabled {
     background: rgba(240, 240, 240, 0.9);
@@ -154,11 +143,9 @@
     margin-top: 2px;
     display: block;
     opacity: 0.85;
-    letter-spacing: 0.2px;
     line-height: 1.2;
 }
 
-/* Message */
 .kaitkan-message {
     font-size: 0.68rem;
     text-align: center;
@@ -176,7 +163,6 @@
     border: 1px solid rgba(255, 68, 68, 0.4);
 }
 
-/* Tombol submit */
 .kaitkan-submit-btn {
     margin-top: 2px;
     width: 100%;
@@ -184,9 +170,7 @@
     height: 28px !important;
 }
 
-.kaitkan-submit-btn .btn-tengah {
-    padding: 0 22px;
-}
+.kaitkan-submit-btn .btn-tengah { padding: 0 22px; }
 
 .kaitkan-submit-btn .btn-teks {
     font-size: 10.5px;
@@ -198,7 +182,6 @@
     cursor: wait;
 }
 
-/* Notif Sukses */
 .kaitkan-success-notif {
     margin-top: 10px;
     padding: 7px 14px;
@@ -227,7 +210,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Akun Saya */
 .kaitkan-info-row {
     width: 100%;
     max-width: 350px;
@@ -290,46 +272,10 @@
     font-size: 0.66rem;
     line-height: 1.4;
     margin-top: 10px;
-    letter-spacing: 0.3px;
     font-style: italic;
     opacity: 0.9;
 }
 
-/* ==========================================
-   TOMBOL LOGOUT
-   ========================================== */
-.kaitkan-logout-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-top: 16px;
-    padding: 8px 18px;
-    background: rgba(255, 68, 68, 0.15);
-    border: 1px solid rgba(255, 68, 68, 0.5);
-    border-radius: 6px;
-    color: #ff8888;
-    font-family: inherit;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.kaitkan-logout-btn:hover {
-    background: rgba(255, 68, 68, 0.25);
-    border-color: #ff4444;
-    color: #ff6666;
-}
-
-.kaitkan-logout-btn:active {
-    transform: scale(0.97);
-}
-
-/* ==========================================
-   HINT & TOMBOL VERIFIKASI (di Akun Saya)
-   ========================================== */
 .kaitkan-verify-hint {
     text-align: center;
     color: #c9a55a;
@@ -362,16 +308,38 @@
 .kaitkan-verify-btn:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(201, 165, 90, 0.4);
 }
 
-.kaitkan-verify-btn:active {
-    transform: translateY(0) scale(0.97);
+.kaitkan-verify-btn:active { transform: translateY(0) scale(0.97); }
+
+.kaitkan-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 8px 18px;
+    background: rgba(255, 68, 68, 0.15);
+    border: 1px solid rgba(255, 68, 68, 0.5);
+    border-radius: 6px;
+    color: #ff8888;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-/* ==========================================
-   TOMBOL LOGIN DI GATE
-   ========================================== */
+.kaitkan-logout-btn:hover {
+    background: rgba(255, 68, 68, 0.25);
+    border-color: #ff4444;
+    color: #ff6666;
+}
+
+.kaitkan-logout-btn:active { transform: scale(0.97); }
+
+/* Tombol Login Gate */
 .gate-login-btn {
     position: absolute;
     top: 20px;
@@ -397,26 +365,12 @@
     text-shadow: none;
 }
 
-.gate-login-btn i {
-    font-size: 0.85rem;
-}
+.gate-login-btn i { font-size: 0.85rem; }
+.gate-login-btn:hover { color: #ffffff; }
+.gate-login-btn:active { opacity: 0.7; }
+.gate-login-btn:focus { outline: none; box-shadow: none; }
 
-.gate-login-btn:hover {
-    color: #ffffff;
-}
-
-.gate-login-btn:active {
-    opacity: 0.7;
-}
-
-.gate-login-btn:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* ==========================================
-   MODAL LOGIN — di atas overlay gate
-   ========================================== */
+/* Modal Login */
 .login-modal-overlay {
     display: none;
     position: absolute;
@@ -430,9 +384,7 @@
     cursor: pointer;
 }
 
-.login-modal-overlay.open {
-    display: flex;
-}
+.login-modal-overlay.open { display: flex; }
 
 @keyframes fadeInLoginModal {
     from { opacity: 0; }
@@ -521,10 +473,6 @@
     box-shadow: 0 0 8px rgba(201, 165, 90, 0.4);
 }
 
-.login-modal-group input::placeholder {
-    color: rgba(0, 0, 0, 0.35);
-}
-
 .login-modal-message {
     font-size: 0.66rem;
     text-align: center;
@@ -555,42 +503,28 @@
     height: 30px !important;
 }
 
-.login-modal-btn .btn-tengah {
-    padding: 0 24px;
-}
+.login-modal-btn .btn-tengah { padding: 0 24px; }
 
 .login-modal-btn .btn-teks {
     font-size: 10.5px;
     letter-spacing: 2px;
 }
 
+/* ==========================================
+   TOMBOL DANGER (Logout Guest) — MERAH
+   ========================================== */
+.modal-list-item.btn-danger .btn-ujung-kiri,
+.modal-list-item.btn-danger .btn-tengah,
+.modal-list-item.btn-danger .btn-ujung-kanan {
+    filter: hue-rotate(-40deg) saturate(1.8) brightness(0.85);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-    .kaitkan-body {
-        padding: 10px 20px 10px;
-    }
-    
-    .kaitkan-header {
-        padding: 10px 20px 12px;
-        font-size: 12px;
-    }
-    
-    .kaitkan-kode-value {
-        font-size: 1.15rem;
-        letter-spacing: 4px;
-    }
-    
-    .login-modal {
-        padding: 18px 16px;
-    }
-    
-    .login-modal-header {
-        font-size: 0.92rem;
-    }
-    
-    .gate-login-btn {
-        top: 12px;
-        right: 12px;
-        font-size: 0.68rem;
-    }
+    .kaitkan-body { padding: 10px 20px 10px; }
+    .kaitkan-header { padding: 10px 20px 12px; font-size: 12px; }
+    .kaitkan-kode-value { font-size: 1.15rem; letter-spacing: 4px; }
+    .login-modal { padding: 18px 16px; }
+    .login-modal-header { font-size: 0.92rem; }
+    .gate-login-btn { top: 12px; right: 12px; font-size: 0.68rem; }
 }
