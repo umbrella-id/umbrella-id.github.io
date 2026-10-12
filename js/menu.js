@@ -199,6 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.target.closest('.plat-nama')) return;
   
           const stage = document.getElementById('stage');
+          
+          // 🎯 PRIORITAS PALING ATAS: Modal Login (kalau buka)
+          if (typeof handleLoginModalBack === 'function' && handleLoginModalBack()) {
+              return;
+          }
   
           // Prioritas 1: Headline
           if (stage && stage.classList.contains('headline-open')) {
@@ -250,19 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
-          // Prioritas 7: Modal Login (kalau buka) → tutup dulu
-          if (typeof handleLoginModalBack === 'function' && handleLoginModalBack()) {
-              return;
-          }
-          
-          // Prioritas 8: Gate
+          // Prioritas 7: Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) {
               if (typeof closeGate === 'function') closeGate();
               return;
           }
   
-          // Prioritas 9: Normal
+          // Prioritas 8: Normal
           if (currentPage === 'home') {
               const modalOverlay = getModalOverlay();
               if (modalOverlay && modalOverlay.classList.contains('open')) {
