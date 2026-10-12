@@ -297,6 +297,7 @@
 
 /* ==========================================
    TOMBOL LOGIN DI GATE — SIMPLE (tanpa bg/glow)
+   z-index di atas modal login (tidak ketutup)
    ========================================== */
 .gate-login-btn {
     position: absolute;
@@ -319,7 +320,7 @@
     letter-spacing: 1.2px;
     cursor: pointer;
     transition: color 0.2s;
-    z-index: 10;
+    z-index: 1001;
     text-shadow: none;
 }
 
@@ -369,7 +370,7 @@
 
 /* Modal Login — dengan bingkai ornamen */
 .login-modal {
-    position: relative;           /* ← penting untuk bingkai */
+    position: relative;
     max-width: 360px;
     width: 100%;
     background: rgba(15, 10, 6, 0.95);
