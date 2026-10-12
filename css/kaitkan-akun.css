@@ -296,8 +296,81 @@
 }
 
 /* ==========================================
-   TOMBOL LOGIN DI GATE — SIMPLE (tanpa bg/glow)
-   z-index di atas modal login (tidak ketutup)
+   TOMBOL LOGOUT
+   ========================================== */
+.kaitkan-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 8px 18px;
+    background: rgba(255, 68, 68, 0.15);
+    border: 1px solid rgba(255, 68, 68, 0.5);
+    border-radius: 6px;
+    color: #ff8888;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kaitkan-logout-btn:hover {
+    background: rgba(255, 68, 68, 0.25);
+    border-color: #ff4444;
+    color: #ff6666;
+}
+
+.kaitkan-logout-btn:active {
+    transform: scale(0.97);
+}
+
+/* ==========================================
+   HINT & TOMBOL VERIFIKASI (di Akun Saya)
+   ========================================== */
+.kaitkan-verify-hint {
+    text-align: center;
+    color: #c9a55a;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    margin: 14px 0 12px;
+    max-width: 320px;
+    opacity: 0.9;
+}
+
+.kaitkan-verify-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #c9a55a, #8b6914);
+    border: none;
+    border-radius: 6px;
+    color: #1a0f08;
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(201, 165, 90, 0.3);
+}
+
+.kaitkan-verify-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(201, 165, 90, 0.4);
+}
+
+.kaitkan-verify-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+/* ==========================================
+   TOMBOL LOGIN DI GATE
    ========================================== */
 .gate-login-btn {
     position: absolute;
@@ -349,6 +422,7 @@
     position: absolute;
     inset: 0;
     z-index: 970;
+    background: rgba(0, 0, 0, 0.2);
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -365,7 +439,6 @@
     to { opacity: 1; }
 }
 
-/* Modal Login — dengan bingkai ornamen */
 .login-modal {
     position: relative;
     max-width: 360px;
