@@ -44,10 +44,10 @@
       <div id="gatekeeper" class="gatekeeper">
         <div class="gate-overlay"></div>
 
-        <!-- 🎯 Tombol Login (simple, ikon + teks) -->
-        <button class="gate-login-btn" id="gateLoginBtn" onclick="openLoginModal()">
+        <!-- 🎯 Tombol Login (toggle) -->
+        <button class="gate-login-btn" id="gateLoginBtn" onclick="toggleLoginModal()">
           <i class="fas fa-sign-in-alt"></i>
-          <span>LOGIN</span>
+          <span id="gateLoginBtnText">LOGIN</span>
         </button>
 
         <div class="gate-content">
@@ -90,10 +90,10 @@
         </div>
 
         <!-- 🎯 MODAL LOGIN (di atas overlay gate) -->
-        <div class="login-modal-overlay" id="loginMemberOverlay" onclick="if(event.target===this) closeLoginModal()">
+        <div class="login-modal-overlay" id="loginMemberOverlay">
           <div class="login-modal">
             
-            <!-- 🎯 Bingkai ornamen -->
+            <!-- Bingkai ornamen -->
             <div class="modal-frame">
               <div class="frame-h atas">
                 <div class="pojok"></div>
