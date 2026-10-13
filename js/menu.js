@@ -1,5 +1,6 @@
 /**
- * menu.js — Tombol Menu + Navigasi State
+ * menu.js — Tombol Menu + Navigasi State (V5)
+ * + Chat Maximized → Tombol Kiri Back
  */
 
 let currentPage = 'home';
@@ -33,7 +34,16 @@ function updateButtons() {
 
     const stage = document.getElementById('stage');
 
-    // Prioritas 1-6: Modal lain
+    // ==========================================
+    // 🎯 PRIORITAS PALING ATAS: Chat Maximized
+    // ==========================================
+    if (typeof isChatMaximized === 'function' && isChatMaximized()) {
+        ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
+        ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-CHAT.svg" alt="">';
+        return;
+    }
+
+    // Prioritas: Modal lain
     if (stage && stage.classList.contains('headline-open')) {
         ikonKiri.innerHTML = '<img src="Assets/SVG_ICON-BACK.svg" alt="">';
         ikonKanan.innerHTML = '<img src="Assets/SVG_ICON-HOME.svg" alt="">';
@@ -123,25 +133,18 @@ function isVerifiedUid() {
 }
 
 // ==========================================
-// 🎯 UPDATE MODAL MENU ITEMS
-// - Guest: menu "Logout" (tombol merah)
-// - Member: menu "Akun Saya"
-// - Tidak ada "Ganti Nama"
+// UPDATE MODAL MENU ITEMS
 // ==========================================
 function updateModalMenuItems() {
     const uid = localStorage.getItem('u_uid') || '';
     const isGuest = uid.startsWith('G-') || !uid;
     const isMember = uid.startsWith('M-');
     
-    // ==========================================
-    // 1. Hapus "Ganti Nama" (kalau ada, dari HTML lama)
-    // ==========================================
+    // Hapus "Ganti Nama" (kalau ada)
     const gantiNamaBtn = document.querySelector('.modal-list-item[onclick*="ganti"]');
     if (gantiNamaBtn) gantiNamaBtn.remove();
     
-    // ==========================================
-    // 2. Menu "Logout" — HANYA guest (merah, TERAKHIR)
-    // ==========================================
+    // Menu "Logout" — guest
     let logoutBtn = document.getElementById('menuLogout');
     
     if (isGuest) {
@@ -155,8 +158,6 @@ function updateModalMenuItems() {
                         <div class="btn-ujung-kanan"></div>
                     </div>
                 `;
-                
-                // 🎯 Tambahkan di PALING AKHIR (setelah Gallery)
                 modalContent.insertAdjacentHTML('beforeend', logoutHTML);
             }
         }
@@ -164,9 +165,7 @@ function updateModalMenuItems() {
         if (logoutBtn) logoutBtn.remove();
     }
     
-    // ==========================================
-    // 3. Menu "Akun Saya" — HANYA member (TERAKHIR)
-    // ==========================================
+    // Menu "Akun Saya" — member
     let akunSayaBtn = document.getElementById('menuAkunSaya');
     
     if (isMember) {
@@ -180,8 +179,6 @@ function updateModalMenuItems() {
                         <div class="btn-ujung-kanan"></div>
                     </div>
                 `;
-                
-                // 🎯 Tambahkan di PALING AKHIR (setelah Gallery)
                 modalContent.insertAdjacentHTML('beforeend', akunSayaHTML);
             }
         }
@@ -205,11 +202,20 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
           
-          // 🎯 PRIORITAS PALING ATAS: Modal Login
+          // ==========================================
+          // 🎯 PRIORITAS PALING ATAS: Chat Maximized
+          // ==========================================
+          if (typeof isChatMaximized === 'function' && isChatMaximized()) {
+              if (typeof minimizeChatBox === 'function') minimizeChatBox();
+              return;
+          }
+          
+          // Prioritas: Modal Login
           if (typeof handleLoginModalBack === 'function' && handleLoginModalBack()) {
               return;
           }
   
+          // Prioritas: Modal lain
           if (stage && stage.classList.contains('headline-open')) {
               if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
               return;
@@ -250,12 +256,14 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
           }
   
+          // Gate
           const gate = getGate();
           if (gate && gate.classList.contains('open')) {
               if (typeof closeGate === 'function') closeGate();
               return;
           }
   
+          // Normal
           if (currentPage === 'home') {
               const modalOverlay = getModalOverlay();
               if (modalOverlay && modalOverlay.classList.contains('open')) {
@@ -276,6 +284,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
           const stage = document.getElementById('stage');
   
+          // 🎯 Prioritas: Chat Maximized → tetapkan
+          if (typeof isChatMaximized === 'function' && isChatMaximized()) {
+              // Tombol kanan saat chat maximized → tetap buka chat input
+              if (typeof openChatInput === 'function') openChatInput();
+              return;
+          }
+  
+          // Prioritas: Modal lain
           if (stage && stage.classList.contains('headline-open')) {
               if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
               if (typeof goHome === 'function') goHome();
@@ -315,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const gate = getGate();
           if (gate && gate.classList.contains('open')) return;
   
+          // Normal
           if (currentPage === 'home') {
               if (typeof openChatInput === 'function') openChatInput();
           } else {
@@ -333,4 +350,4 @@ window.updatePageClass = updatePageClass;
 window.updateModalMenuItems = updateModalMenuItems;
 window.isVerifiedUid = isVerifiedUid;
 
-console.log('✅ menu.js loaded (V4 — Menu Situasional)');
+console.log('✅ menu.js loaded (V5 — Chat Maximized Back)');
