@@ -72,8 +72,8 @@
 .kaitkan-desc {
     text-align: center;
     color: #f5e6c8;
-    font-size: 0.75rem;
-    line-height: 1.4;
+    font-size: 0.8rem;
+    line-height: 1.5;
     margin-bottom: 14px;
     max-width: 90%;
 }
@@ -510,10 +510,7 @@
     letter-spacing: 2px;
 }
 
-/* ==========================================
-   TOMBOL DANGER (Logout Guest) — MERAH
-   Pakai SVG merah custom
-   ========================================== */
+/* Tombol DANGER (Logout Guest) — MERAH */
 .modal-list-item.btn-danger .btn-ujung-kiri {
     background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
     background-size: 100% 100% !important;
@@ -529,6 +526,51 @@
     background-size: 100% 100% !important;
 }
 
+/* ==========================================
+   MODAL KONFIRMASI LOGOUT
+   ========================================== */
+.logout-confirm-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 340px;
+    justify-content: center;
+}
+
+.logout-confirm-actions .btn-svg {
+    flex: 1;
+    justify-content: center;
+    height: 32px !important;
+}
+
+.logout-confirm-actions .btn-tengah {
+    padding: 0 16px;
+}
+
+.logout-confirm-actions .btn-teks {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+}
+
+/* Tombol YES — Merah */
+.logout-confirm-yes .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.logout-confirm-yes .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.logout-confirm-yes .btn-ujung-kanan {
+    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+/* Tombol BATAL — Biru (default, tidak perlu override) */
+
 /* Responsive */
 @media (max-width: 768px) {
     .kaitkan-body { padding: 10px 20px 10px; }
@@ -537,4 +579,13 @@
     .login-modal { padding: 18px 16px; }
     .login-modal-header { font-size: 0.92rem; }
     .gate-login-btn { top: 12px; right: 12px; font-size: 0.68rem; }
+    
+    .logout-confirm-actions {
+        max-width: 100%;
+        gap: 8px;
+    }
+    .logout-confirm-actions .btn-teks {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
 }
