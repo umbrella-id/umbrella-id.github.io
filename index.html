@@ -375,6 +375,62 @@
         </div>
       </div>
 
+      <!-- ============ MODAL KONFIRMASI LOGOUT ============ -->
+      <div class="kaitkan-overlay" id="logoutConfirmOverlay">
+        <div class="kaitkan-modal">
+          
+          <div class="modal-frame">
+            <div class="frame-h atas">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-h bawah">
+              <div class="pojok"></div>
+              <div class="garis-h"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kiri">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+            <div class="frame-v kanan">
+              <div class="pojok"></div>
+              <div class="garis-v"></div>
+              <div class="pojok"></div>
+            </div>
+          </div>
+          
+          <div class="kaitkan-header">LOGOUT</div>
+          
+          <div class="kaitkan-body">
+            
+            <p class="kaitkan-desc">
+              Yakin ingin logout?
+            </p>
+            
+            <div class="logout-confirm-actions">
+              
+              <!-- 🎯 Tombol BATAL — BIRU -->
+              <div class="btn-svg logout-confirm-no" onclick="closeLogoutConfirm()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">BATAL</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+              
+              <!-- 🎯 Tombol YA, LOGOUT — MERAH -->
+              <div class="btn-svg logout-confirm-yes" onclick="confirmLogoutYes()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">YA, LOGOUT</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ============ MAIL OVERLAY ============ -->
       <div class="mail-overlay" id="mailOverlay">
         <div class="mail-modal">
