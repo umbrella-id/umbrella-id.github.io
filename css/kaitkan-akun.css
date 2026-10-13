@@ -72,10 +72,11 @@
 .kaitkan-desc {
     text-align: center;
     color: #f5e6c8;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    margin-bottom: 14px;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    margin-bottom: 10px;
     max-width: 90%;
+    letter-spacing: 0.3px;
 }
 
 .kaitkan-form {
@@ -216,9 +217,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0;
+    padding: 3px 0;
     border-bottom: 1px solid rgba(201, 165, 90, 0.2);
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 
 .kaitkan-info-label {
@@ -270,8 +271,9 @@
     text-align: center;
     color: #c9a55a;
     font-size: 0.66rem;
-    line-height: 1.4;
-    margin-top: 10px;
+    line-height: 1.35;
+    margin-top: 6px;
+    letter-spacing: 0.3px;
     font-style: italic;
     opacity: 0.9;
 }
@@ -280,8 +282,8 @@
     text-align: center;
     color: #c9a55a;
     font-size: 0.7rem;
-    line-height: 1.5;
-    margin: 14px 0 12px;
+    line-height: 1.35;
+    margin: 8px 0;
     max-width: 320px;
     opacity: 0.9;
 }
