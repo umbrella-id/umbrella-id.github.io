@@ -69,6 +69,9 @@
     border-radius: 2px;
 }
 
+/* ==========================================
+   DESKRIPSI
+   ========================================== */
 .kaitkan-desc {
     text-align: center;
     color: #f5e6c8;
@@ -79,12 +82,15 @@
     letter-spacing: 0.3px;
 }
 
+/* ==========================================
+   FORM
+   ========================================== */
 .kaitkan-form {
     width: 100%;
     max-width: 350px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .kaitkan-form-group {
@@ -147,6 +153,35 @@
     line-height: 1.2;
 }
 
+/* ==========================================
+   TOMBOL SUBMIT VERIFIKASI — UKURAN TETAP
+   ========================================== */
+.kaitkan-submit-btn {
+    margin-top: 8px;
+    align-self: center;
+    min-width: 140px;
+    justify-content: center;
+    height: 30px !important;
+    width: auto;
+}
+
+.kaitkan-submit-btn .btn-tengah {
+    padding: 0 20px;
+}
+
+.kaitkan-submit-btn .btn-teks {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+}
+
+.kaitkan-submit-btn.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* ==========================================
+   MESSAGE
+   ========================================== */
 .kaitkan-message {
     font-size: 0.68rem;
     text-align: center;
@@ -164,25 +199,9 @@
     border: 1px solid rgba(255, 68, 68, 0.4);
 }
 
-.kaitkan-submit-btn {
-    margin-top: 2px;
-    width: 100%;
-    justify-content: center;
-    height: 28px !important;
-}
-
-.kaitkan-submit-btn .btn-tengah { padding: 0 22px; }
-
-.kaitkan-submit-btn .btn-teks {
-    font-size: 10.5px;
-    letter-spacing: 1.8px;
-}
-
-.kaitkan-submit-btn.loading {
-    opacity: 0.7;
-    cursor: wait;
-}
-
+/* ==========================================
+   NOTIF SUKSES
+   ========================================== */
 .kaitkan-success-notif {
     margin-top: 10px;
     padding: 7px 14px;
@@ -211,6 +230,9 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ==========================================
+   INFO ROW (IGN, STATUS, KODE)
+   ========================================== */
 .kaitkan-info-row {
     width: 100%;
     max-width: 350px;
@@ -233,6 +255,9 @@
     font-weight: 600;
 }
 
+/* ==========================================
+   KODE BOX (JIKA DIPAKAI)
+   ========================================== */
 .kaitkan-kode-box {
     width: 100%;
     max-width: 350px;
@@ -267,6 +292,9 @@
     word-break: break-all;
 }
 
+/* ==========================================
+   HINT
+   ========================================== */
 .kaitkan-save-text {
     text-align: center;
     color: #c9a55a;
@@ -288,60 +316,71 @@
     opacity: 0.9;
 }
 
-.kaitkan-verify-btn {
-    display: inline-flex;
-    align-items: center;
+/* ==========================================
+   TOMBOL ROW (AKUN SAYA) — UKURAN TETAP
+   ========================================== */
+.akun-btn-row {
+    width: 100%;
+    display: flex;
+    gap: 10px;
     justify-content: center;
-    gap: 6px;
-    padding: 10px 24px;
-    background: linear-gradient(135deg, #c9a55a, #8b6914);
-    border: none;
-    border-radius: 6px;
-    color: #1a0f08;
-    font-family: inherit;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(201, 165, 90, 0.3);
-}
-
-.kaitkan-verify-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-}
-
-.kaitkan-verify-btn:active { transform: translateY(0) scale(0.97); }
-
-.kaitkan-logout-btn {
-    display: inline-flex;
     align-items: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.akun-btn-row .btn-svg {
+    flex: 0 0 auto;
+    min-width: 120px;
     justify-content: center;
-    gap: 6px;
-    margin-top: 16px;
-    padding: 8px 18px;
-    background: rgba(255, 68, 68, 0.15);
-    border: 1px solid rgba(255, 68, 68, 0.5);
-    border-radius: 6px;
-    color: #ff8888;
-    font-family: inherit;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
+    height: 30px !important;
+    padding: 0 16px;
 }
 
-.kaitkan-logout-btn:hover {
-    background: rgba(255, 68, 68, 0.25);
-    border-color: #ff4444;
-    color: #ff6666;
+.akun-btn-row .btn-tengah {
+    padding: 0 16px;
 }
 
-.kaitkan-logout-btn:active { transform: scale(0.97); }
+.akun-btn-row .btn-teks {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+}
 
-/* Tombol Login Gate */
+/* Tombol Verifikasi — Hijau */
+.akun-btn-verify .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-verify .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-verify .btn-ujung-kanan {
+    background: url('../Assets/SVG_BTN-R-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+/* Tombol Logout — Merah */
+.akun-btn-logout .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-logout .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-logout .btn-ujung-kanan {
+    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+/* ==========================================
+   TOMBOL LOGIN DI GATE
+   ========================================== */
 .gate-login-btn {
     position: absolute;
     top: 20px;
@@ -372,7 +411,9 @@
 .gate-login-btn:active { opacity: 0.7; }
 .gate-login-btn:focus { outline: none; box-shadow: none; }
 
-/* Modal Login */
+/* ==========================================
+   MODAL LOGIN
+   ========================================== */
 .login-modal-overlay {
     display: none;
     position: absolute;
@@ -512,7 +553,9 @@
     letter-spacing: 2px;
 }
 
-/* Tombol DANGER (Logout Guest) — MERAH */
+/* ==========================================
+   TOMBOL DANGER (Logout Guest) — MERAH
+   ========================================== */
 .modal-list-item.btn-danger .btn-ujung-kiri {
     background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
     background-size: 100% 100% !important;
@@ -538,16 +581,19 @@
     width: 100%;
     max-width: 340px;
     justify-content: center;
+    align-items: center;
 }
 
 .logout-confirm-actions .btn-svg {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: 110px;
     justify-content: center;
-    height: 32px !important;
+    height: 30px !important;
+    padding: 0 14px;
 }
 
 .logout-confirm-actions .btn-tengah {
-    padding: 0 16px;
+    padding: 0 14px;
 }
 
 .logout-confirm-actions .btn-teks {
@@ -573,7 +619,9 @@
 
 /* Tombol BATAL — Biru (default, tidak perlu override) */
 
-/* Responsive */
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
 @media (max-width: 768px) {
     .kaitkan-body { padding: 10px 20px 10px; }
     .kaitkan-header { padding: 10px 20px 12px; font-size: 12px; }
@@ -586,88 +634,51 @@
         max-width: 100%;
         gap: 8px;
     }
+    .logout-confirm-actions .btn-svg {
+        min-width: 100px;
+    }
     .logout-confirm-actions .btn-teks {
         font-size: 10px;
         letter-spacing: 1px;
     }
-}
-
-/* ==========================================
-   AKUN SAYA — Tombol Row (Ukuran Tetap)
-   ========================================== */
-.akun-btn-row {
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
-
-/* 🎯 Tombol ukuran tetap — tidak stretch */
-.akun-btn-row .btn-svg {
-    flex: 0 0 auto;              /* ← tidak stretch */
-    min-width: 120px;             /* ← lebar minimum */
-    justify-content: center;
-    height: 30px !important;
-    padding: 0 16px;              /* ← padding kiri-kanan */
-}
-
-.akun-btn-row .btn-tengah {
-    padding: 0 16px;
-}
-
-.akun-btn-row .btn-teks {
-    font-size: 10.5px;
-    letter-spacing: 1.5px;
-}
-
-/* Tombol Verifikasi — Hijau */
-.akun-btn-verify .btn-ujung-kiri {
-    background: url('../Assets/SVG_BTN-L-GREEN.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.akun-btn-verify .btn-tengah {
-    background: url('../Assets/SVG_BTN-M-GREEN.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.akun-btn-verify .btn-ujung-kanan {
-    background: url('../Assets/SVG_BTN-R-GREEN.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-/* Tombol Logout — Merah */
-.akun-btn-logout .btn-ujung-kiri {
-    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.akun-btn-logout .btn-tengah {
-    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.akun-btn-logout .btn-ujung-kanan {
-    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
+    
     .akun-btn-row {
         gap: 8px;
     }
-    
     .akun-btn-row .btn-svg {
         min-width: 100px;
         height: 28px !important;
     }
-    
     .akun-btn-row .btn-teks {
         font-size: 10px;
         letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 480px) {
+    .kaitkan-submit-btn {
+        min-width: 120px;
+        height: 28px !important;
+    }
+    .kaitkan-submit-btn .btn-teks {
+        font-size: 10px;
+        letter-spacing: 1.2px;
+    }
+    
+    .logout-confirm-actions .btn-svg {
+        min-width: 90px;
+        height: 28px !important;
+    }
+    .logout-confirm-actions .btn-teks {
+        font-size: 9.5px;
+        letter-spacing: 0.8px;
+    }
+    
+    .akun-btn-row .btn-svg {
+        min-width: 90px;
+    }
+    .akun-btn-row .btn-teks {
+        font-size: 9.5px;
+        letter-spacing: 0.8px;
     }
 }
