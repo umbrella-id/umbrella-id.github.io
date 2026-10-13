@@ -243,6 +243,9 @@ function showKaitkanSuccess() {
 // ==========================================
 // 🎯 AKUN SAYA — Style Lama + Fix Kode & Tombol
 // ==========================================
+// ==========================================
+// 🎯 AKUN SAYA — Ukuran Tombol Tetap
+// ==========================================
 async function openAkunSaya() {
     const uid = localStorage.getItem('u_uid') || '';
     const ign = localStorage.getItem('u_ign') || 'Member';
@@ -259,7 +262,7 @@ async function openAkunSaya() {
     
     if (isVerified) {
         // ==========================================
-        // VERIFIED
+        // VERIFIED — 1 tombol
         // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda sudah terverifikasi</p>
@@ -291,7 +294,7 @@ async function openAkunSaya() {
         `;
     } else {
         // ==========================================
-        // BELUM VERIFIED
+        // BELUM VERIFIED — 2 tombol
         // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda belum diverifikasi</p>
