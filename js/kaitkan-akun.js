@@ -94,10 +94,12 @@ function openKaitkanAkun() {
 function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+    const overlayLogout = document.getElementById('logoutConfirmOverlay');
     const stage = document.getElementById('stage');
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
+    if (overlayLogout) overlayLogout.classList.remove('open');  // 🎯 TAMBAH
     if (stage) stage.classList.remove('kaitkan-open');
     
     isKaitkanPopupOpen = false;
@@ -507,8 +509,18 @@ function logoutAccount() {
         return;
     }
     
+    // Tutup modal menu (kalau terbuka)
     if (typeof closeModal === 'function') closeModal(true);
     
+    // 🎯 Tutup modal Akun Saya (kalau terbuka)
+    const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+    if (overlayAkun) overlayAkun.classList.remove('open');
+    
+    // Tutup modal Verifikasi (kalau terbuka)
+    const overlayVerif = document.getElementById('kaitkanOverlay');
+    if (overlayVerif) overlayVerif.classList.remove('open');
+    
+    // Buka modal konfirmasi logout
     overlay.classList.add('open');
     
     const stage = document.getElementById('stage');
