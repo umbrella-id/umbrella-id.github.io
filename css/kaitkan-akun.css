@@ -591,27 +591,29 @@
 }
 
 /* ==========================================
-   AKUN SAYA — Tombol Row (1 Baris)
+   AKUN SAYA — Tombol Row (Ukuran Tetap)
    ========================================== */
 .akun-btn-row {
     width: 100%;
-    max-width: 350px;
     display: flex;
     gap: 10px;
     justify-content: center;
     align-items: center;
-    margin-top: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
 }
 
+/* 🎯 Tombol ukuran tetap — tidak stretch */
 .akun-btn-row .btn-svg {
-    flex: 1;
+    flex: 0 0 auto;              /* ← tidak stretch */
+    min-width: 120px;             /* ← lebar minimum */
     justify-content: center;
-    height: 32px !important;
-    min-width: 0;
+    height: 30px !important;
+    padding: 0 16px;              /* ← padding kiri-kanan */
 }
 
 .akun-btn-row .btn-tengah {
-    padding: 0 12px;
+    padding: 0 16px;
 }
 
 .akun-btn-row .btn-teks {
@@ -655,6 +657,11 @@
 @media (max-width: 480px) {
     .akun-btn-row {
         gap: 8px;
+    }
+    
+    .akun-btn-row .btn-svg {
+        min-width: 100px;
+        height: 28px !important;
     }
     
     .akun-btn-row .btn-teks {
