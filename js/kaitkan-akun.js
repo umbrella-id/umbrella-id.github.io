@@ -310,7 +310,7 @@ async function openAkunSaya() {
             </div>
             
             <p class="kaitkan-verify-hint">
-                Verifikasi akun untuk mendapatkan akses penuh dan bisa login dari device lain.
+                Verifikasi akun diperlukan untuk login multi device.
             </p>
             
             <div class="akun-btn-row">
