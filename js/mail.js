@@ -161,28 +161,33 @@ function openMailModal() {
 // TUTUP MODAL MAIL
 // ==========================================
 function closeMailModal(skipMenu = false) {
-  const overlay = document.getElementById('mailOverlay');
-  const stage = document.getElementById('stage');
-  if (!overlay) return;
-  
-  overlay.classList.remove('open');
-  if (stage) stage.classList.remove('mail-open');
-  
-  if (typeof updateButtons === 'function') updateButtons();
-  
-  mailCurrentView = 'menu';
-  mailCurrentList = [];
-  mailCurrentDetail = null;
-  
-  window._mailFromInfo = false;
-  
-  if (!skipMenu) {
-    setTimeout(() => {
-      if (typeof openModal === 'function') openModal();
-    }, 150);
-  }
+    const overlay = document.getElementById('mailOverlay');
+    const stage = document.getElementById('stage');
+    if (!overlay) return;
+    
+    overlay.classList.remove('open');
+    
+    // 🎯 Set 'modal-open' DULU
+    if (!skipMenu && stage) {
+        stage.classList.add('modal-open');
+    }
+    
+    if (stage) stage.classList.remove('mail-open');
+    
+    if (typeof updateButtons === 'function') updateButtons();
+    
+    mailCurrentView = 'menu';
+    mailCurrentList = [];
+    mailCurrentDetail = null;
+    
+    window._mailFromInfo = false;
+    
+    if (!skipMenu) {
+        setTimeout(() => {
+            if (typeof openModal === 'function') openModal();
+        }, 150);
+    }
 }
-
 // ==========================================
 // NAVIGASI BACK
 // ==========================================
