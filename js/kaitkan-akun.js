@@ -241,7 +241,7 @@ function showKaitkanSuccess() {
 }
 
 // ==========================================
-// 🎯 AKUN SAYA — Dynamic Content
+// 🎯 AKUN SAYA — Style Lama + Fix Kode & Tombol
 // ==========================================
 async function openAkunSaya() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -258,6 +258,9 @@ async function openAkunSaya() {
     if (!bodyEl) return;
     
     if (isVerified) {
+        // ==========================================
+        // VERIFIED
+        // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda sudah terverifikasi</p>
             
@@ -268,21 +271,28 @@ async function openAkunSaya() {
             
             <div class="kaitkan-info-row">
                 <span class="kaitkan-info-label">Status:</span>
-                <strong class="kaitkan-info-value" style="color:#4ade80;">✅ Terverifikasi</strong>
+                <strong class="kaitkan-info-value" style="color:#4ade80;">Terverifikasi</strong>
             </div>
             
-            <div class="kaitkan-kode-box" id="akunSayaKodeBox">
-                <div class="kaitkan-kode-label">KODE AKSES ANDA</div>
-                <div class="kaitkan-kode-value" id="akunSayaKodeValue">${savedKode ? escapeHtmlKaitkan(savedKode) : '—'}</div>
+            <div class="kaitkan-info-row">
+                <span class="kaitkan-info-label">Kode:</span>
+                <strong class="kaitkan-info-value" style="color:#4ade80; font-family:monospace; letter-spacing:3px;">${savedKode ? escapeHtmlKaitkan(savedKode) : '—'}</strong>
             </div>
             
             <p class="kaitkan-save-text">Simpan kode ini untuk login</p>
             
-            <button class="kaitkan-logout-btn" onclick="logoutAccount()">
-                <i class="fas fa-sign-out-alt"></i> LOGOUT
-            </button>
+            <div class="akun-btn-row">
+                <div class="btn-svg akun-btn-logout" onclick="logoutAccount()">
+                    <div class="btn-ujung-kiri"></div>
+                    <div class="btn-tengah"><span class="btn-teks">LOGOUT</span></div>
+                    <div class="btn-ujung-kanan"></div>
+                </div>
+            </div>
         `;
     } else {
+        // ==========================================
+        // BELUM VERIFIED
+        // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda belum diverifikasi</p>
             
@@ -293,20 +303,26 @@ async function openAkunSaya() {
             
             <div class="kaitkan-info-row">
                 <span class="kaitkan-info-label">Status:</span>
-                <strong class="kaitkan-info-value" style="color:#f59e0b;">❌ Belum Verifikasi</strong>
+                <strong class="kaitkan-info-value" style="color:#f59e0b;">Belum Verifikasi</strong>
             </div>
             
             <p class="kaitkan-verify-hint">
                 Verifikasi akun untuk mendapatkan akses penuh dan bisa login dari device lain.
             </p>
             
-            <button class="kaitkan-verify-btn" onclick="openVerifikasiFromAkun()">
-                <i class="fas fa-key"></i> VERIFIKASI AKUN
-            </button>
-            
-            <button class="kaitkan-logout-btn" onclick="logoutAccount()">
-                <i class="fas fa-sign-out-alt"></i> LOGOUT
-            </button>
+            <div class="akun-btn-row">
+                <div class="btn-svg akun-btn-verify" onclick="openVerifikasiFromAkun()">
+                    <div class="btn-ujung-kiri"></div>
+                    <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
+                    <div class="btn-ujung-kanan"></div>
+                </div>
+                
+                <div class="btn-svg akun-btn-logout" onclick="logoutAccount()">
+                    <div class="btn-ujung-kiri"></div>
+                    <div class="btn-tengah"><span class="btn-teks">LOGOUT</span></div>
+                    <div class="btn-ujung-kanan"></div>
+                </div>
+            </div>
         `;
     }
     
