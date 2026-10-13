@@ -1,12 +1,6 @@
 /**
- * chat.js — Chat Box (Log Only) V8
- * 
- * Fix terakhir:
- * - column-reverse untuk rata bawah + scroll mulus
- * - Auto-scroll ke bawah (scrollTop = 0)
- * - Minimize reset scroll ke bawah
- * - Hapus "Selamat datang" statis setelah chat load
- * - 3 warna berdasarkan prefix UID
+ * chat.js — Chat Box (Log Only) V9
+ * + Tombol Kiri untuk Minimize saat Maximized
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -33,7 +27,6 @@ let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
 
 // ==========================================
 // 🎯 AUTO-SCROLL HELPER
-// Di column-reverse: scrollTop = 0 = PALING BAWAH
 // ==========================================
 function scrollChatToBottom() {
   const body = document.getElementById('chatLogs');
@@ -42,6 +35,33 @@ function scrollChatToBottom() {
   requestAnimationFrame(() => {
     body.scrollTop = 0;
   });
+}
+
+// ==========================================
+// 🎯 CEK CHAT MAXIMIZED
+// ==========================================
+function isChatMaximized() {
+    return chatBox && chatBox.classList.contains('maximized');
+}
+
+// ==========================================
+// 🎯 MINIMIZE CHAT BOX
+// ==========================================
+function minimizeChatBox() {
+    if (!chatBox) return;
+    
+    // Set ke default height
+    chatBox.style.height = DEFAULT_PERCENT + '%';
+    currentChatHeightPct = DEFAULT_PERCENT;
+    chatBox.classList.remove('maximized');
+    
+    // Scroll ke bawah
+    scrollChatToBottom();
+    
+    // Update tombol menu
+    if (typeof updateButtons === 'function') updateButtons();
+    
+    console.log('📉 Chat minimized');
 }
 
 // ===== DRAG LOGIC =====
@@ -112,7 +132,9 @@ function onUp() {
     chatBox.classList.remove('maximized');
   }
   
-  // 🎯 Kalau minimize → paksa scroll ke bawah (chat terbaru)
+  // 🎯 Update tombol menu
+  if (typeof updateButtons === 'function') updateButtons();
+  
   if (!chatBox.classList.contains('maximized')) {
     scrollChatToBottom();
   }
@@ -228,7 +250,6 @@ function ensureChatInner() {
 }
 
 // ===== RENDER LOG =====
-// ===== RENDER LOG =====
 function renderChatLogs(logs) {
   const container = document.getElementById('chatLogs');
   if (!container) return;
@@ -236,7 +257,6 @@ function renderChatLogs(logs) {
   const inner = ensureChatInner();
   if (!inner) return;
 
-  // Hapus "Selamat datang" statis
   const welcomeEl = document.getElementById('chatWelcome');
   if (welcomeEl) {
     welcomeEl.remove();
@@ -256,6 +276,7 @@ function renderChatLogs(logs) {
       const msgUID = msg.uid || '';
       const msgName = msg.username || 'Anon';
       const msgText = msg.message || '';
+      const msgRole = msg.role || '';
 
       const isDeleted = msgText === '[deleted by admin]';
 
@@ -302,23 +323,17 @@ function renderChatLogs(logs) {
         d.innerHTML = `<span class="chat-text">Sebuah pesan dihapus oleh admin</span>`;
       }
       else {
-        // ==========================================
-        // 🎯 RENDER CHAT BIASA + BADGE VERIFIED
-        // ==========================================
         const chatClass = getChatClass(msg);
         const isVerified = msgUID.endsWith('-v') || chatClass === 'admin';
-        const badge = isVerified ? '<span class="chat-verified-badge"></span>' : '';
+        const badge = isVerified ? '<i class="fas fa-check-circle chat-verified-badge"></i>' : '';
         
         if (chatClass === 'admin') {
-          // Admin — sama seperti member verified (badge centang)
           d.className = 'chat-line chat-admin';
           d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}${badge} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else if (chatClass === 'member') {
-          // Member — badge kalau verified
           d.className = 'chat-line chat-member';
           d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)}${badge} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         } else {
-          // Guest — tanpa badge
           d.className = 'chat-line';
           d.innerHTML = `<span class="chat-name">${escapeHtml(msgName)} :</span><span class="chat-text"> ${escapeHtml(msgText)}</span>`;
         }
@@ -330,7 +345,6 @@ function renderChatLogs(logs) {
     }
   });
 
-  // Auto-scroll ke bawah
   scrollChatToBottom();
 }
 
@@ -439,4 +453,7 @@ document.addEventListener('visibilitychange', () => {
 window.syncChat = syncChat;
 window.renderChatLogs = renderChatLogs;
 window.scrollChatToBottom = scrollChatToBottom;
-console.log('✅ chat.js loaded (V8 — Auto-scroll Bottom + Minimize Reset)');
+window.isChatMaximized = isChatMaximized;
+window.minimizeChatBox = minimizeChatBox;
+
+console.log('✅ chat.js loaded (V9 — Tombol Kiri Minimize)');
