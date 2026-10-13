@@ -589,3 +589,76 @@
         letter-spacing: 1px;
     }
 }
+
+/* ==========================================
+   AKUN SAYA — Tombol Row (1 Baris)
+   ========================================== */
+.akun-btn-row {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.akun-btn-row .btn-svg {
+    flex: 1;
+    justify-content: center;
+    height: 32px !important;
+    min-width: 0;
+}
+
+.akun-btn-row .btn-tengah {
+    padding: 0 12px;
+}
+
+.akun-btn-row .btn-teks {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+}
+
+/* Tombol Verifikasi — Hijau */
+.akun-btn-verify .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-verify .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-verify .btn-ujung-kanan {
+    background: url('../Assets/SVG_BTN-R-GREEN.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+/* Tombol Logout — Merah */
+.akun-btn-logout .btn-ujung-kiri {
+    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-logout .btn-tengah {
+    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+.akun-btn-logout .btn-ujung-kanan {
+    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
+    background-size: 100% 100% !important;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .akun-btn-row {
+        gap: 8px;
+    }
+    
+    .akun-btn-row .btn-teks {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+}
