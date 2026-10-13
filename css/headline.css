@@ -25,7 +25,10 @@
 .stage.gate-edit-mode .headline-banner-container,
 .stage.mail-open .headline-banner-container,
 .stage.info-open .headline-banner-container,
-.stage.tentang-open .headline-banner-container {
+.stage.tentang-open .headline-banner-container,
+.stage.gallery-open .headline-banner-container,
+.stage.kaitkan-open .headline-banner-container,
+.stage.headline-open .headline-banner-container {
   display: none !important;
 }
 
