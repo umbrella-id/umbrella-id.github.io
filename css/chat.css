@@ -184,16 +184,10 @@
 }
 
 /* ==========================================
-   SEMBUNYIKAN CHAT BOX SAAT MODAL KONTEN BUKA
+   SAAT GATE AKTIF
    ========================================== */
 .stage.gate-first .chat-box,
-.stage.gate-edit-mode .chat-box,
-.stage.mail-open .chat-box,
-.stage.info-open .chat-box,
-.stage.tentang-open .chat-box,
-.stage.gallery-open .chat-box,
-.stage.headline-open .chat-box,
-.stage.kaitkan-open .chat-box {
+.stage.gate-edit-mode .chat-box {
   display: none !important;
 }
 
