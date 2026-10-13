@@ -50,9 +50,7 @@ function openKaitkanAkun() {
         return;
     }
     
-    if (typeof closeModal === 'function') {
-        closeModal(true);
-    }
+    if (typeof closeModal === 'function') closeModal(true);
     
     const overlay = document.getElementById('kaitkanOverlay');
     if (!overlay) return;
@@ -490,7 +488,6 @@ function handleLoginModalBack() {
     return false;
 }
 
-// Event listener klik overlay
 document.addEventListener('click', function(e) {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
@@ -501,32 +498,57 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// 🎯 LOGOUT
+// 🎯 LOGOUT — Modal Konfirmasi
 // ==========================================
 function logoutAccount() {
+    const overlay = document.getElementById('logoutConfirmOverlay');
+    if (!overlay) {
+        console.warn('Modal logout tidak ditemukan');
+        return;
+    }
+    
+    if (typeof closeModal === 'function') closeModal(true);
+    
+    overlay.classList.add('open');
+    
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.add('kaitkan-open');
+    
+    if (typeof updateButtons === 'function') updateButtons();
+    
+    isKaitkanPopupOpen = true;
+}
+
+// ==========================================
+// 🎯 KONFIRMASI LOGOUT — YES
+// ==========================================
+function confirmLogoutYes() {
     const uid = localStorage.getItem('u_uid') || '';
     const isGuest = uid.startsWith('G-') || !uid;
     const isMember = uid.startsWith('M-');
     
+    closeLogoutConfirm();
+    
     if (isMember) {
-        if (typeof showConfirmModal === 'function') {
-            showConfirmModal(
-                'Logout dari akun ini?<br><br>Anda akan keluar dan menjadi guest baru.',
-                () => executeLogoutMember()
-            );
-        } else {
-            if (confirm('Logout dari akun ini?')) executeLogoutMember();
-        }
+        executeLogoutMember();
     } else if (isGuest) {
-        if (typeof showConfirmModal === 'function') {
-            showConfirmModal(
-                'Logout dari akun guest?<br><br>Anda akan diminta memasukkan nama baru.',
-                () => executeLogoutGuest()
-            );
-        } else {
-            if (confirm('Logout dari akun guest?')) executeLogoutGuest();
-        }
+        executeLogoutGuest();
     }
+}
+
+// ==========================================
+// 🎯 TUTUP MODAL KONFIRMASI LOGOUT
+// ==========================================
+function closeLogoutConfirm(skipMenu = false) {
+    const overlay = document.getElementById('logoutConfirmOverlay');
+    if (overlay) overlay.classList.remove('open');
+    
+    isKaitkanPopupOpen = false;
+    
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.remove('kaitkan-open');
+    
+    if (typeof updateButtons === 'function') updateButtons();
 }
 
 // ==========================================
@@ -606,8 +628,10 @@ window.closeLoginModal = closeLoginModal;
 window.submitLoginModal = submitLoginModal;
 window.handleLoginModalBack = handleLoginModalBack;
 window.logoutAccount = logoutAccount;
+window.confirmLogoutYes = confirmLogoutYes;
+window.closeLogoutConfirm = closeLogoutConfirm;
 window.executeLogoutMember = executeLogoutMember;
 window.executeLogoutGuest = executeLogoutGuest;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 
-console.log('✅ kaitkan-akun.js loaded (V2 — Menu Situasional)');
+console.log('✅ kaitkan-akun.js loaded (V3 — Modal Konfirmasi Logout)');
