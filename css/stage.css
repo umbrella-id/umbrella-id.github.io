@@ -138,7 +138,7 @@ html.portrait .rotate-wrapper {
 .stage.tentang-open .npc-container,
 .stage.gallery-open .npc-container,
 .stage.headline-open .npc-container,
-.stage.headline-open .npc-container {
+.stage.kaitkan-open .npc-container {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
