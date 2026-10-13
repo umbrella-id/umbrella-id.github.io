@@ -99,7 +99,14 @@ function closeKaitkanAkun(skipMenu = false) {
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
-    if (overlayLogout) overlayLogout.classList.remove('open');  // 🎯 TAMBAH
+    if (overlayLogout) overlayLogout.classList.remove('open');
+    
+    // 🎯 Set 'modal-open' DULU (sebelum remove 'kaitkan-open')
+    // Biar banner mini tidak flicker di transisi
+    if (!skipMenu && stage) {
+        stage.classList.add('modal-open');
+    }
+    
     if (stage) stage.classList.remove('kaitkan-open');
     
     isKaitkanPopupOpen = false;
