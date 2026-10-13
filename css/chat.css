@@ -184,9 +184,32 @@
 }
 
 /* ==========================================
-   SAAT GATE AKTIF
+   SEMBUNYIKAN CHAT BOX SAAT MODAL KONTEN BUKA
    ========================================== */
 .stage.gate-first .chat-box,
-.stage.gate-edit-mode .chat-box {
+.stage.gate-edit-mode .chat-box,
+.stage.mail-open .chat-box,
+.stage.info-open .chat-box,
+.stage.tentang-open .chat-box,
+.stage.gallery-open .chat-box,
+.stage.headline-open .chat-box,
+.stage.kaitkan-open .chat-box {
   display: none !important;
+}
+
+/* ==========================================
+   🎯 SAAT MODAL MENU BUKA — CHAT MINIMIZE
+   Paksa height default (matikan maximize)
+   ========================================== */
+.stage.modal-open .chat-box {
+  height: 22% !important;
+  transition: height 0.3s ease;
+}
+
+.stage.modal-open .chat-box .chat-body {
+  overflow-y: hidden;
+}
+
+.stage.modal-open .chat-box.maximized .chat-body {
+  overflow-y: hidden;
 }
