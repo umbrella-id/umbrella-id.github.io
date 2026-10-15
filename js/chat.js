@@ -1,6 +1,6 @@
 /**
- * chat.js — Chat Box (Log Only) V9
- * + Tombol Kiri untuk Minimize saat Maximized
+ * chat.js — Chat Box (Log Only) V10
+ * + Deteksi admin pakai prefix 'ADM-'
  */
 
 const chatBox = document.getElementById('chatBox');
@@ -50,15 +50,12 @@ function isChatMaximized() {
 function minimizeChatBox() {
     if (!chatBox) return;
     
-    // Set ke default height
     chatBox.style.height = DEFAULT_PERCENT + '%';
     currentChatHeightPct = DEFAULT_PERCENT;
     chatBox.classList.remove('maximized');
     
-    // Scroll ke bawah
     scrollChatToBottom();
     
-    // Update tombol menu
     if (typeof updateButtons === 'function') updateButtons();
     
     console.log('📉 Chat minimized');
@@ -132,7 +129,6 @@ function onUp() {
     chatBox.classList.remove('maximized');
   }
   
-  // 🎯 Update tombol menu
   if (typeof updateButtons === 'function') updateButtons();
   
   if (!chatBox.classList.contains('maximized')) {
@@ -223,12 +219,18 @@ function isSystemMessageMasihBerlaku(logs, index) {
 
 // ==========================================
 // 🎯 DETEKSI CLASS DARI UID PREFIX
+// V10: Update untuk deteksi 'ADM-' (migrasi dari 'ADMIN_')
 // ==========================================
 function getChatClass(msg) {
   const uid = msg.uid || '';
   
-  if (uid.startsWith('ADMIN_')) return 'admin';
+  // 🎯 Deteksi admin: prefix 'ADM-' (format baru) atau 'ADMIN_' (format lama)
+  if (uid.startsWith('ADM-') || uid.startsWith('ADMIN_')) return 'admin';
+  
+  // Deteksi member: prefix 'M-'
   if (uid.startsWith('M-')) return 'member';
+  
+  // Sisanya = guest
   return 'guest';
 }
 
@@ -456,4 +458,4 @@ window.scrollChatToBottom = scrollChatToBottom;
 window.isChatMaximized = isChatMaximized;
 window.minimizeChatBox = minimizeChatBox;
 
-console.log('✅ chat.js loaded (V9 — Tombol Kiri Minimize)');
+console.log('✅ chat.js loaded (V10 — Prefix ADM- support)');
