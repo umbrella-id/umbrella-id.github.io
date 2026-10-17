@@ -2,6 +2,9 @@
    KAITKAN AKUN — Web Publik
    ========================================== */
 
+/* ==========================================
+   OVERLAY & MODAL
+   ========================================== */
 .kaitkan-overlay {
     display: none;
     position: absolute;
@@ -26,9 +29,12 @@
     padding: 0;
 }
 
+/* ==========================================
+   HEADER
+   ========================================== */
 .kaitkan-header {
     position: relative;
-    padding: 14px 30px 16px;
+    padding: 10px 20px 12px;
     text-align: center;
     font-size: 14px;
     font-weight: 600;
@@ -51,16 +57,19 @@
     opacity: 0.9;
 }
 
+/* ==========================================
+   BODY (SCROLLABLE)
+   ========================================== */
 .kaitkan-body {
     flex: 1;
     overflow-y: auto;
-    padding: 14px 30px 14px;
+    padding: 8px 20px 10px;
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .kaitkan-body::-webkit-scrollbar { width: 4px; }
@@ -90,19 +99,20 @@
     max-width: 350px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .kaitkan-form-group {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .kaitkan-form-group label {
     font-size: 0.62rem;
     color: #f0d78c;
-    margin-bottom: 3px;
-    letter-spacing: 0.7px;
+    margin-bottom: 2px;
+    letter-spacing: 0.6px;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -111,7 +121,7 @@
     color: #c9a55a;
     margin-right: 3px;
     width: 11px;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
 }
 
 .kaitkan-form-group input {
@@ -127,7 +137,7 @@
     outline: none;
     letter-spacing: 0.5px;
     font-weight: 500;
-    line-height: 1.25;
+    line-height: 1.2;
 }
 
 .kaitkan-form-group input:focus {
@@ -152,29 +162,102 @@
     opacity: 0.85;
     line-height: 1.2;
 }
+
 /* ==========================================
-   HINT VERIFIKASI
+   HINT ICON (DI SAMPING LABEL)
    ========================================== */
-.kaitkan-verify-hint {
-    text-align: left;
-    color: #c9a55a;
-    font-size: 0.68rem;
-    line-height: 1.5;
-    margin: 12px 0 0;
-    padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    border-left: 3px solid #c9a55a;
+.hint-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(201, 165, 90, 0.3);
+    color: #f0d78c;
+    font-size: 0.55rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: all 0.2s;
+    border: 1px solid #c9a55a;
+    text-transform: none;
+    letter-spacing: 0;
+    vertical-align: middle;
 }
 
-.kaitkan-verify-hint strong {
+.hint-icon:hover {
+    background: rgba(201, 165, 90, 0.6);
+    transform: scale(1.1);
+}
+
+.hint-icon:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================
+   HINT BOX (MUNCUL SAAT KLIK ?)
+   ========================================== */
+.verify-hint-box {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    border-left: 2px solid #c9a55a;
+    font-size: 0.6rem;
+    color: #c9a55a;
+    line-height: 1.4;
+}
+
+.verify-hint-box strong {
     color: #f0d78c;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    font-size: 0.62rem;
 }
 
 /* ==========================================
-   TOMBOL SUBMIT VERIFIKASI — UKURAN TETAP
+   INFO MEMBER (TAHAP 2)
+   ========================================== */
+.verify-member-info {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.7rem;
+    color: #4ade80;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.verify-member-info i {
+    margin-right: 4px;
+}
+
+.verify-member-info strong {
+    color: #f0d78c;
+}
+
+/* ==========================================
+   TOMBOL BACK (TAHAP 2)
+   ========================================== */
+.verify-back-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.65rem;
+    cursor: pointer;
+    margin-top: 6px;
+    padding: 4px 8px;
+    text-decoration: underline;
+}
+
+.verify-back-btn:hover {
+    color: #f0d78c;
+}
+
+/* ==========================================
+   TOMBOL SUBMIT
    ========================================== */
 .kaitkan-submit-btn {
     margin-top: 8px;
@@ -200,7 +283,7 @@
 }
 
 /* ==========================================
-   MESSAGE
+   PESAN ERROR/SUKSES
    ========================================== */
 .kaitkan-message {
     font-size: 0.68rem;
@@ -217,6 +300,12 @@
     background: rgba(255, 68, 68, 0.15);
     color: #ff8888;
     border: 1px solid rgba(255, 68, 68, 0.4);
+}
+
+.kaitkan-message.success {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.4);
 }
 
 /* ==========================================
@@ -251,7 +340,7 @@
 }
 
 /* ==========================================
-   INFO ROW (IGN, STATUS, KODE)
+   INFO ROW (AKUN SAYA)
    ========================================== */
 .kaitkan-info-row {
     width: 100%;
@@ -276,44 +365,7 @@
 }
 
 /* ==========================================
-   KODE BOX (JIKA DIPAKAI)
-   ========================================== */
-.kaitkan-kode-box {
-    width: 100%;
-    max-width: 350px;
-    background: rgba(74, 222, 128, 0.08);
-    border: 1px solid rgba(74, 222, 128, 0.4);
-    border-radius: 4px;
-    padding: 11px;
-    text-align: center;
-    margin: 9px 0;
-}
-
-.kaitkan-kode-box-empty {
-    background: rgba(100, 116, 139, 0.1);
-    border: 1px dashed rgba(201, 165, 90, 0.4);
-}
-
-.kaitkan-kode-label {
-    font-size: 0.56rem;
-    color: #c9a55a;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-}
-
-.kaitkan-kode-value {
-    font-family: monospace;
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #4ade80;
-    letter-spacing: 5px;
-    user-select: all;
-    word-break: break-all;
-}
-
-/* ==========================================
-   HINT
+   HINT TEXT (AKUN SAYA)
    ========================================== */
 .kaitkan-save-text {
     text-align: center;
@@ -337,7 +389,7 @@
 }
 
 /* ==========================================
-   TOMBOL ROW (AKUN SAYA) — UKURAN TETAP
+   TOMBOL ROW (AKUN SAYA)
    ========================================== */
 .akun-btn-row {
     width: 100%;
@@ -366,7 +418,6 @@
     letter-spacing: 1.5px;
 }
 
-/* Tombol Verifikasi — Hijau */
 .akun-btn-verify .btn-ujung-kiri {
     background: url('../Assets/SVG_BTN-L-GREEN.svg') no-repeat center center !important;
     background-size: 100% 100% !important;
@@ -382,7 +433,6 @@
     background-size: 100% 100% !important;
 }
 
-/* Tombol Logout — Merah */
 .akun-btn-logout .btn-ujung-kiri {
     background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
     background-size: 100% 100% !important;
@@ -399,7 +449,7 @@
 }
 
 /* ==========================================
-   TOMBOL LOGIN DI GATE
+   LOGIN MODAL (di gate)
    ========================================== */
 .gate-login-btn {
     position: absolute;
@@ -431,9 +481,6 @@
 .gate-login-btn:active { opacity: 0.7; }
 .gate-login-btn:focus { outline: none; box-shadow: none; }
 
-/* ==========================================
-   MODAL LOGIN
-   ========================================== */
 .login-modal-overlay {
     display: none;
     position: absolute;
@@ -574,25 +621,7 @@
 }
 
 /* ==========================================
-   TOMBOL DANGER (Logout Guest) — MERAH
-   ========================================== */
-.modal-list-item.btn-danger .btn-ujung-kiri {
-    background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.modal-list-item.btn-danger .btn-tengah {
-    background: url('../Assets/SVG_BTN-M-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-.modal-list-item.btn-danger .btn-ujung-kanan {
-    background: url('../Assets/SVG_BTN-R-RED.svg') no-repeat center center !important;
-    background-size: 100% 100% !important;
-}
-
-/* ==========================================
-   MODAL KONFIRMASI LOGOUT
+   KONFIRMASI LOGOUT
    ========================================== */
 .logout-confirm-actions {
     display: flex;
@@ -621,7 +650,6 @@
     letter-spacing: 1.5px;
 }
 
-/* Tombol YES — Merah */
 .logout-confirm-yes .btn-ujung-kiri {
     background: url('../Assets/SVG_BTN-L-RED.svg') no-repeat center center !important;
     background-size: 100% 100% !important;
@@ -637,15 +665,12 @@
     background-size: 100% 100% !important;
 }
 
-/* Tombol BATAL — Biru (default, tidak perlu override) */
-
 /* ==========================================
    RESPONSIVE
    ========================================== */
 @media (max-width: 768px) {
-    .kaitkan-body { padding: 10px 20px 10px; }
-    .kaitkan-header { padding: 10px 20px 12px; font-size: 12px; }
-    .kaitkan-kode-value { font-size: 1.15rem; letter-spacing: 4px; }
+    .kaitkan-body { padding: 8px 16px 10px; }
+    .kaitkan-header { padding: 8px 16px 10px; font-size: 12px; }
     .login-modal { padding: 18px 16px; }
     .login-modal-header { font-size: 0.92rem; }
     .gate-login-btn { top: 12px; right: 12px; font-size: 0.68rem; }
