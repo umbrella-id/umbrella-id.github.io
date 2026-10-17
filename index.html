@@ -305,36 +305,56 @@
           <div class="kaitkan-body">
             
             <div class="kaitkan-form">
+              
+              <!-- KODE VERIFIKASI -->
               <div class="kaitkan-form-group">
-                <label><i class="fas fa-phone"></i> NOMOR WA</label>
-                <input type="tel" 
-                       id="kaitkanWaInput" 
-                       placeholder="628xxxxxxxxx"
-                       inputmode="numeric"
-                       pattern="[0-9]*"
+                <label><i class="fas fa-key"></i> KODE VERIFIKASI</label>
+                <input type="text" 
+                       id="verifyCodeInput" 
+                       placeholder="A7K9M2P4"
+                       maxlength="8"
                        autocomplete="off">
-                <small>Gunakan kode negara, bukan nol</small>
+                <small>Kode 8 karakter dari admin</small>
               </div>
               
+              <!-- ID LOGIN -->
               <div class="kaitkan-form-group">
-                <label><i class="fas fa-key"></i> KODE UNIK</label>
-                <input type="tel" 
-                       id="kaitkanKodeInput" 
-                       placeholder="123456"
-                       maxlength="6"
-                       inputmode="numeric"
-                       pattern="[0-9]*"
+                <label><i class="fas fa-user"></i> ID LOGIN</label>
+                <input type="text" 
+                       id="verifyIdLoginInput" 
+                       placeholder="budi"
                        autocomplete="off">
-                <small>Kode ini diperoleh dari admin</small>
+                <small>Minimal 3 karakter, huruf/angka/underscore</small>
               </div>
               
+              <!-- PASSWORD -->
+              <div class="kaitkan-form-group">
+                <label><i class="fas fa-lock"></i> PASSWORD</label>
+                <input type="password" 
+                       id="verifyPasswordInput" 
+                       placeholder="••••••••"
+                       autocomplete="new-password">
+                <small>Minimal 6 karakter</small>
+              </div>
+              
+              <!-- PESAN -->
               <div id="kaitkanMessage" class="kaitkan-message"></div>
               
+              <!-- TOMBOL VERIFIKASI -->
               <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
                 <div class="btn-ujung-kiri"></div>
                 <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
                 <div class="btn-ujung-kanan"></div>
               </div>
+              
+              <!-- HINT -->
+              <p class="kaitkan-verify-hint">
+                ❓ <strong>Cara dapat kode:</strong><br>
+                1. Hubungi admin via WA grup<br>
+                2. Admin kirim kode ke WA pribadi Anda<br>
+                3. Masukkan kode di sini
+              </p>
+              
             </div>
           </div>
         </div>
