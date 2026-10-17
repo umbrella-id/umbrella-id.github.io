@@ -36,55 +36,69 @@ async function cekStatusAkun() {
 // BUKA MODAL VERIFIKASI
 // ==========================================
 function openKaitkanAkun() {
-  const uid = localStorage.getItem('u_uid') || '';
-  
-  // Kalau sudah verified, buka Akun Saya
-  if (uid.endsWith('-v')) {
-    openAkunSaya();
-    return;
-  }
-  
-  if (typeof closeModal === 'function') closeModal(true);
-  
-  const overlay = document.getElementById('kaitkanOverlay');
-  if (!overlay) return;
-  
-  // Reset form
-  const codeInput = document.getElementById('verifyCodeInput');
-  const idLoginInput = document.getElementById('verifyIdLoginInput');
-  const passwordInput = document.getElementById('verifyPasswordInput');
-  const msgEl = document.getElementById('kaitkanMessage');
-  
-  if (codeInput) { codeInput.value = ''; codeInput.disabled = false; }
-  if (idLoginInput) { idLoginInput.value = ''; idLoginInput.disabled = false; }
-  if (passwordInput) { passwordInput.value = ''; passwordInput.disabled = false; }
-  if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error'); }
-  
-  // Hapus notif sukses lama
-  const oldNotif = document.getElementById('kaitkanSuccessNotif');
-  if (oldNotif) oldNotif.remove();
-  
-  // Reset button
-  const btn = document.getElementById('kaitkanSubmitBtn');
-  if (btn) {
-    btn.style.display = '';
-    btn.classList.remove('loading');
-    const btnText = btn.querySelector('.btn-teks');
-    if (btnText) btnText.innerText = 'VERIFIKASI';
-  }
-  
-  overlay.classList.add('open');
-  
-  const stage = document.getElementById('stage');
-  if (stage) stage.classList.add('kaitkan-open');
-  
-  if (typeof updateButtons === 'function') updateButtons();
-  
-  setTimeout(() => {
-    if (codeInput) codeInput.focus();
-  }, 300);
-  
-  isKaitkanPopupOpen = true;
+    const uid = localStorage.getItem('u_uid') || '';
+    
+    if (uid.endsWith('-v')) {
+        openAkunSaya();
+        return;
+    }
+    
+    if (typeof closeModal === 'function') closeModal(true);
+    
+    const overlay = document.getElementById('kaitkanOverlay');
+    if (!overlay) return;
+    
+    // Reset ke Tahap 1
+    backToStage1();
+    
+    const codeInput = document.getElementById('verifyCodeInput');
+    const idInput = document.getElementById('verifyIdLoginInput');
+    const pwInput = document.getElementById('verifyPasswordInput');
+    const hint = document.getElementById('verifyHint');
+    
+    if (codeInput) { codeInput.value = ''; codeInput.disabled = false; }
+    if (idInput) { idInput.value = ''; idInput.disabled = false; }
+    if (pwInput) { pwInput.value = ''; pwInput.disabled = false; }
+    if (hint) hint.style.display = 'none';
+    
+    showVerifyMessage(1, '');
+    showVerifyMessage(2, '');
+    
+    const oldNotif = document.getElementById('kaitkanSuccessNotif');
+    if (oldNotif) oldNotif.remove();
+    
+    // Reset button Tahap 1
+    const btn1 = document.getElementById('verifyStage1Btn');
+    if (btn1) {
+        btn1.style.display = '';
+        btn1.classList.remove('loading');
+        btn1.style.pointerEvents = '';
+        const btnText = btn1.querySelector('.btn-teks');
+        if (btnText) btnText.innerText = 'VERIFIKASI';
+    }
+    
+    // Reset button Tahap 2
+    const btn2 = document.getElementById('verifyStage2Btn');
+    if (btn2) {
+        btn2.style.display = '';
+        btn2.classList.remove('loading');
+        btn2.style.pointerEvents = '';
+        const btnText = btn2.querySelector('.btn-teks');
+        if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
+    }
+    
+    overlay.classList.add('open');
+    
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.add('kaitkan-open');
+    
+    if (typeof updateButtons === 'function') updateButtons();
+    
+    setTimeout(() => {
+        if (codeInput) codeInput.focus();
+    }, 300);
+    
+    isKaitkanPopupOpen = true;
 }
 
 // ==========================================
@@ -120,92 +134,187 @@ function closeKaitkanAkun(skipMenu = false) {
 }
 
 // ==========================================
-// SUBMIT VERIFIKASI
+// 🎯 TAHAP 1: VERIFIKASI KODE
 // ==========================================
-async function submitKaitkanAkun() {
-  const codeInput = document.getElementById('verifyCodeInput');
-  const idLoginInput = document.getElementById('verifyIdLoginInput');
-  const passwordInput = document.getElementById('verifyPasswordInput');
-  const btn = document.getElementById('kaitkanSubmitBtn');
-  
-  if (!codeInput || !idLoginInput || !passwordInput || !btn) return;
-  
-  const code = codeInput.value.trim();
-  const idLogin = idLoginInput.value.trim();
-  const password = passwordInput.value;
-  
-  // Validasi
-  if (!code || code.length !== 8) {
-    showKaitkanMessage('Kode verifikasi harus 8 karakter', true);
-    codeInput.focus();
-    return;
-  }
-  
-  if (!idLogin || idLogin.length < 3) {
-    showKaitkanMessage('ID Login minimal 3 karakter', true);
-    idLoginInput.focus();
-    return;
-  }
-  
-  if (!/^[a-zA-Z0-9_]+$/.test(idLogin)) {
-    showKaitkanMessage('ID Login hanya boleh huruf, angka, underscore', true);
-    idLoginInput.focus();
-    return;
-  }
-  
-  if (!password || password.length < 6) {
-    showKaitkanMessage('Password minimal 6 karakter', true);
-    passwordInput.focus();
-    return;
-  }
-  
-  // Loading
-  btn.classList.add('loading');
-  btn.style.pointerEvents = 'none';
-  const btnText = btn.querySelector('.btn-teks');
-  if (btnText) btnText.innerText = 'MEMPROSES...';
-  showKaitkanMessage('');
-  
-  try {
-    const url = `${GAS.MAIN}?action=activateAccount&code=${encodeURIComponent(code)}&idLogin=${encodeURIComponent(idLogin)}&password=${encodeURIComponent(password)}`;
-    const res = await fetch(url);
-    const data = await res.json();
+async function submitStage1() {
+    const codeInput = document.getElementById('verifyCodeInput');
+    const btn = document.getElementById('verifyStage1Btn');
+    const msgEl = document.getElementById('verifyMessage1');
     
-    if (data.success) {
-      // Simpan UID verified
-      localStorage.setItem('u_uid', data.webUID);
-      localStorage.setItem('u_web_uid', data.webUID);
-      localStorage.setItem('u_class', 'member');
-      
-      if (data.ign) {
-        localStorage.setItem('u_ign', data.ign);
-        window.myIGN = data.ign;
-      }
-      
-      window.myUID = data.webUID;
-      
-      if (typeof updateIdentityUI === 'function') updateIdentityUI();
-      
-      showKaitkanSuccess();
-      
-      // Update menu
-      if (typeof updateModalMenuItems === 'function') {
-        setTimeout(() => updateModalMenuItems(), 500);
-      }
-      
-    } else {
-      showKaitkanMessage(data.message || 'Gagal verifikasi akun', true);
-      btn.classList.remove('loading');
-      btn.style.pointerEvents = '';
-      if (btnText) btnText.innerText = 'VERIFIKASI';
+    if (!codeInput) return;
+    
+    const code = codeInput.value.trim();
+    
+    if (!code || code.length !== 8) {
+        showVerifyMessage(1, 'Kode verifikasi harus 8 karakter', true);
+        codeInput.focus();
+        return;
     }
-  } catch(e) {
-    console.error('Submit verification error:', e);
-    showKaitkanMessage('Koneksi gagal. Coba lagi.', true);
-    btn.classList.remove('loading');
-    btn.style.pointerEvents = '';
-    if (btnText) btnText.innerText = 'VERIFIKASI';
-  }
+    
+    btn.classList.add('loading');
+    btn.style.pointerEvents = 'none';
+    const btnText = btn.querySelector('.btn-teks');
+    if (btnText) btnText.innerText = 'MEMPROSES...';
+    showVerifyMessage(1, '');
+    
+    try {
+        const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        if (data.success) {
+            // Simpan sementara
+            window._verifyUid = data.uid;
+            window._verifyIgn = data.ign;
+            window._verifyCode = code;
+            
+            // Pindah ke tahap 2
+            showStage2(data.ign);
+        } else {
+            showVerifyMessage(1, data.message || 'Kode verifikasi salah', true);
+            btn.classList.remove('loading');
+            btn.style.pointerEvents = '';
+            if (btnText) btnText.innerText = 'VERIFIKASI';
+        }
+    } catch(e) {
+        console.error('Verify code error:', e);
+        showVerifyMessage(1, 'Koneksi gagal. Coba lagi.', true);
+        btn.classList.remove('loading');
+        btn.style.pointerEvents = '';
+        if (btnText) btnText.innerText = 'VERIFIKASI';
+    }
+}
+
+// ==========================================
+// 🎯 TAHAP 2: SIMPAN ID + PASSWORD
+// ==========================================
+async function submitStage2() {
+    const idInput = document.getElementById('verifyIdLoginInput');
+    const pwInput = document.getElementById('verifyPasswordInput');
+    const btn = document.getElementById('verifyStage2Btn');
+    
+    if (!idInput || !pwInput || !btn) return;
+    
+    const idLogin = idInput.value.trim();
+    const password = pwInput.value;
+    
+    if (!idLogin || idLogin.length < 3) {
+        showVerifyMessage(2, 'ID Login minimal 3 karakter', true);
+        idInput.focus();
+        return;
+    }
+    
+    if (!/^[a-zA-Z0-9_]+$/.test(idLogin)) {
+        showVerifyMessage(2, 'ID Login hanya boleh huruf, angka, underscore', true);
+        idInput.focus();
+        return;
+    }
+    
+    if (!password || password.length < 6) {
+        showVerifyMessage(2, 'Password minimal 6 karakter', true);
+        pwInput.focus();
+        return;
+    }
+    
+    btn.classList.add('loading');
+    btn.style.pointerEvents = 'none';
+    const btnText = btn.querySelector('.btn-teks');
+    if (btnText) btnText.innerText = 'MENYIMPAN...';
+    showVerifyMessage(2, '');
+    
+    try {
+        const url = `${GAS.MAIN}?action=completeActivation&uid=${encodeURIComponent(window._verifyUid)}&code=${encodeURIComponent(window._verifyCode)}&idLogin=${encodeURIComponent(idLogin)}&password=${encodeURIComponent(password)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        if (data.success) {
+            // Simpan UID verified
+            localStorage.setItem('u_uid', data.webUID);
+            localStorage.setItem('u_web_uid', data.webUID);
+            localStorage.setItem('u_class', 'member');
+            
+            if (data.ign) {
+                localStorage.setItem('u_ign', data.ign);
+                window.myIGN = data.ign;
+            }
+            
+            window.myUID = data.webUID;
+            
+            if (typeof updateIdentityUI === 'function') updateIdentityUI();
+            
+            showKaitkanSuccess();
+            
+            if (typeof updateModalMenuItems === 'function') {
+                setTimeout(() => updateModalMenuItems(), 500);
+            }
+        } else {
+            showVerifyMessage(2, data.message || 'Gagal menyimpan', true);
+            btn.classList.remove('loading');
+            btn.style.pointerEvents = '';
+            if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
+        }
+    } catch(e) {
+        console.error('Complete activation error:', e);
+        showVerifyMessage(2, 'Koneksi gagal. Coba lagi.', true);
+        btn.classList.remove('loading');
+        btn.style.pointerEvents = '';
+        if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
+    }
+}
+
+// ==========================================
+// 🎯 PINDAH KE TAHAP 2
+// ==========================================
+function showStage2(ign) {
+    document.getElementById('verifyStage1').style.display = 'none';
+    document.getElementById('verifyStage2').style.display = 'flex';
+    
+    const memberIgnEl = document.getElementById('verifyMemberIgn');
+    if (memberIgnEl) memberIgnEl.textContent = ign;
+    
+    const idInput = document.getElementById('verifyIdLoginInput');
+    if (idInput) idInput.focus();
+}
+
+// ==========================================
+// 🎯 KEMBALI KE TAHAP 1
+// ==========================================
+function backToStage1() {
+    document.getElementById('verifyStage2').style.display = 'none';
+    document.getElementById('verifyStage1').style.display = 'flex';
+    
+    const codeInput = document.getElementById('verifyCodeInput');
+    if (codeInput) codeInput.focus();
+}
+
+// ==========================================
+// 🎯 TOGGLE HINT
+// ==========================================
+function toggleHint() {
+    const hint = document.getElementById('verifyHint');
+    if (!hint) return;
+    
+    if (hint.style.display === 'none' || !hint.style.display) {
+        hint.style.display = 'block';
+    } else {
+        hint.style.display = 'none';
+    }
+}
+
+// ==========================================
+// 🎯 PESAN ERROR
+// ==========================================
+function showVerifyMessage(stage, msg, isError = false) {
+    const el = document.getElementById(`verifyMessage${stage}`);
+    if (!el) return;
+    
+    el.innerText = msg || '';
+    el.classList.remove('error', 'show');
+    
+    if (msg) {
+        el.classList.add('show');
+        if (isError) el.classList.add('error');
+    }
 }
 
 // ==========================================
@@ -226,40 +335,28 @@ function showKaitkanMessage(msg, isError = false) {
 // SUKSES
 // ==========================================
 function showKaitkanSuccess() {
-  const codeInput = document.getElementById('verifyCodeInput');
-  const idLoginInput = document.getElementById('verifyIdLoginInput');
-  const passwordInput = document.getElementById('verifyPasswordInput');
-  
-  if (codeInput) codeInput.disabled = true;
-  if (idLoginInput) idLoginInput.disabled = true;
-  if (passwordInput) passwordInput.disabled = true;
-  
-  const btn = document.getElementById('kaitkanSubmitBtn');
-  if (btn) btn.style.display = 'none';
-  
-  const msgEl = document.getElementById('kaitkanMessage');
-  if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error'); }
-  
-  const oldNotif = document.getElementById('kaitkanSuccessNotif');
-  if (oldNotif) oldNotif.remove();
-  
-  const form = document.querySelector('#kaitkanOverlay .kaitkan-form');
-  if (form) {
-    const notifHTML = `
-      <div class="kaitkan-success-notif" id="kaitkanSuccessNotif">
-        <i class="fas fa-check-circle"></i>
-        Akun berhasil diverifikasi! Badge hijau + centang aktif.
-      </div>
-    `;
-    form.insertAdjacentHTML('beforeend', notifHTML);
-  }
-  
-  // Auto-close setelah 2 detik
-  setTimeout(() => {
-    if (typeof closeKaitkanAkun === 'function') {
-      closeKaitkanAkun(true);
+    document.getElementById('verifyStage1').style.display = 'none';
+    document.getElementById('verifyStage2').style.display = 'none';
+    
+    const oldNotif = document.getElementById('kaitkanSuccessNotif');
+    if (oldNotif) oldNotif.remove();
+    
+    const body = document.querySelector('#kaitkanOverlay .kaitkan-body');
+    if (body) {
+        const notifHTML = `
+            <div class="kaitkan-success-notif" id="kaitkanSuccessNotif">
+                <i class="fas fa-check-circle"></i>
+                Akun berhasil diverifikasi! Badge hijau + centang aktif.
+            </div>
+        `;
+        body.insertAdjacentHTML('beforeend', notifHTML);
     }
-  }, 2000);
+    
+    setTimeout(() => {
+        if (typeof closeKaitkanAkun === 'function') {
+            closeKaitkanAkun(true);
+        }
+    }, 2000);
 }
 
 // ==========================================
