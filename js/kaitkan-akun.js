@@ -139,11 +139,11 @@ function closeKaitkanAkun(skipMenu = false) {
 async function submitStage1() {
     const codeInput = document.getElementById('verifyCodeInput');
     const btn = document.getElementById('verifyStage1Btn');
-    const msgEl = document.getElementById('verifyMessage1');
     
-    if (!codeInput) return;
+    if (!codeInput || !btn) return;
     
-    const code = codeInput.value.trim();
+    // Uppercase + trim
+    const code = codeInput.value.trim().toUpperCase();
     
     if (!code || code.length !== 8) {
         showVerifyMessage(1, 'Kode verifikasi harus 8 karakter', true);
@@ -163,13 +163,13 @@ async function submitStage1() {
         const data = await res.json();
         
         if (data.success) {
-            // Simpan sementara
-            window._verifyUid = data.uid;
-            window._verifyIgn = data.ign;
-            window._verifyCode = code;
+            // Simpan untuk Tahap 2
+            window._verifyUid = data.uid;      // U_xxxx — jangkar
+            window._verifyNama = data.nama;    // ign — display
+            window._verifyCode = code;         // untuk debug / fallback
             
-            // Pindah ke tahap 2
-            showStage2(data.ign);
+            // Pindah ke Tahap 2
+            showStage2(data.nama);
         } else {
             showVerifyMessage(1, data.message || 'Kode verifikasi salah', true);
             btn.classList.remove('loading');
@@ -198,21 +198,37 @@ async function submitStage2() {
     const idLogin = idInput.value.trim();
     const password = pwInput.value;
     
+    // Validasi input
     if (!idLogin || idLogin.length < 3) {
         showVerifyMessage(2, 'ID Login minimal 3 karakter', true);
         idInput.focus();
         return;
     }
-    
     if (!/^[a-zA-Z0-9_]+$/.test(idLogin)) {
         showVerifyMessage(2, 'ID Login hanya boleh huruf, angka, underscore', true);
         idInput.focus();
         return;
     }
-    
     if (!password || password.length < 6) {
         showVerifyMessage(2, 'Password minimal 6 karakter', true);
         pwInput.focus();
+        return;
+    }
+    
+    // Validasi prasyarat: harus punya M-xxxxx
+    const localUid = localStorage.getItem('u_uid') || '';
+    if (!localUid.startsWith('M-') || localUid.endsWith('-v')) {
+        showVerifyMessage(2, 
+            '⚠️ Sesi tidak valid. Buka Web Internal dulu untuk verifikasi gate.', 
+            true
+        );
+        return;
+    }
+    
+    // Validasi jangkar uid ada
+    if (!window._verifyUid) {
+        showVerifyMessage(2, 'Sesi verifikasi habis. Ulangi dari awal.', true);
+        backToStage1();
         return;
     }
     
@@ -223,17 +239,17 @@ async function submitStage2() {
     showVerifyMessage(2, '');
     
     try {
-        // 🎯 AMBIL LOCAL UID DARI GATE
-        const localUid = localStorage.getItem('u_uid') || '';
-
-        // 🎯 GUNAKAN action=activateAccount (Sesuaikan dengan GAS 1 yang baru kita buat)
-        const url = `${GAS.MAIN}?action=activateAccount&code=${encodeURIComponent(window._verifyCode)}&idLogin=${encodeURIComponent(idLogin)}&password=${encodeURIComponent(password)}&localUid=${encodeURIComponent(localUid)}`;
+        const url = `${GAS.MAIN}?action=activateAccount` +
+            `&uid=${encodeURIComponent(window._verifyUid)}` +
+            `&idLogin=${encodeURIComponent(idLogin)}` +
+            `&password=${encodeURIComponent(password)}` +
+            `&localUid=${encodeURIComponent(localUid)}`;
         
         const res = await fetch(url);
         const data = await res.json();
         
         if (data.success) {
-            // Simpan UID verified
+            // Update identity
             localStorage.setItem('u_uid', data.webUID);
             localStorage.setItem('u_web_uid', data.webUID);
             localStorage.setItem('u_class', 'member');
@@ -242,11 +258,14 @@ async function submitStage2() {
                 localStorage.setItem('u_ign', data.ign);
                 window.myIGN = data.ign;
             }
-            
             window.myUID = data.webUID;
             
-            if (typeof updateIdentityUI === 'function') updateIdentityUI();
+            // Clear sementara
+            window._verifyUid = null;
+            window._verifyNama = null;
+            window._verifyCode = null;
             
+            if (typeof updateIdentityUI === 'function') updateIdentityUI();
             showKaitkanSuccess();
             
             if (typeof updateModalMenuItems === 'function') {
@@ -259,7 +278,7 @@ async function submitStage2() {
             if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
         }
     } catch(e) {
-        console.error('Complete activation error:', e);
+        console.error('Activate error:', e);
         showVerifyMessage(2, 'Koneksi gagal. Coba lagi.', true);
         btn.classList.remove('loading');
         btn.style.pointerEvents = '';
