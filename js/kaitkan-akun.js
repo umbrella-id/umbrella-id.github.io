@@ -223,7 +223,12 @@ async function submitStage2() {
     showVerifyMessage(2, '');
     
     try {
-        const url = `${GAS.MAIN}?action=completeActivation&uid=${encodeURIComponent(window._verifyUid)}&code=${encodeURIComponent(window._verifyCode)}&idLogin=${encodeURIComponent(idLogin)}&password=${encodeURIComponent(password)}`;
+        // 🎯 AMBIL LOCAL UID DARI GATE
+        const localUid = localStorage.getItem('u_uid') || '';
+
+        // 🎯 GUNAKAN action=activateAccount (Sesuaikan dengan GAS 1 yang baru kita buat)
+        const url = `${GAS.MAIN}?action=activateAccount&code=${encodeURIComponent(window._verifyCode)}&idLogin=${encodeURIComponent(idLogin)}&password=${encodeURIComponent(password)}&localUid=${encodeURIComponent(localUid)}`;
+        
         const res = await fetch(url);
         const data = await res.json();
         
