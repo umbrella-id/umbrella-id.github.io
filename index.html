@@ -304,20 +304,49 @@
           
           <div class="kaitkan-body">
             
-            <div class="kaitkan-form">
+            <!-- ========================================== -->
+            <!-- TAHAP 1: KODE VERIFIKASI -->
+            <!-- ========================================== -->
+            <div id="verifyStage1" class="kaitkan-form">
               
-              <!-- KODE VERIFIKASI -->
               <div class="kaitkan-form-group">
-                <label><i class="fas fa-key"></i> KODE VERIFIKASI</label>
+                <label>
+                  <i class="fas fa-key"></i> KODE VERIFIKASI
+                  <span class="hint-icon" onclick="toggleHint()" title="Cara dapat kode">?</span>
+                </label>
                 <input type="text" 
                        id="verifyCodeInput" 
                        placeholder="A7K9M2P4"
                        maxlength="8"
                        autocomplete="off">
-                <small>Kode 8 karakter dari admin</small>
+                <div id="verifyHint" class="verify-hint-box" style="display: none;">
+                  <strong>❓ Cara dapat kode:</strong><br>
+                  1. Hubungi admin via WA grup<br>
+                  2. Admin kirim kode ke WA pribadi Anda<br>
+                  3. Masukkan kode di sini
+                </div>
               </div>
               
-              <!-- ID LOGIN -->
+              <div id="verifyMessage1" class="kaitkan-message"></div>
+              
+              <div class="btn-svg kaitkan-submit-btn" id="verifyStage1Btn" onclick="submitStage1()">
+                <div class="btn-ujung-kiri"></div>
+                <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
+                <div class="btn-ujung-kanan"></div>
+              </div>
+              
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- TAHAP 2: ID LOGIN + PASSWORD -->
+            <!-- ========================================== -->
+            <div id="verifyStage2" class="kaitkan-form" style="display: none;">
+              
+              <div class="verify-member-info">
+                <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                Kode valid! Member: <strong id="verifyMemberIgn">-</strong>
+              </div>
+              
               <div class="kaitkan-form-group">
                 <label><i class="fas fa-user"></i> ID LOGIN</label>
                 <input type="text" 
@@ -327,7 +356,6 @@
                 <small>Minimal 3 karakter, huruf/angka/underscore</small>
               </div>
               
-              <!-- PASSWORD -->
               <div class="kaitkan-form-group">
                 <label><i class="fas fa-lock"></i> PASSWORD</label>
                 <input type="password" 
@@ -337,25 +365,20 @@
                 <small>Minimal 6 karakter</small>
               </div>
               
-              <!-- PESAN -->
-              <div id="kaitkanMessage" class="kaitkan-message"></div>
+              <div id="verifyMessage2" class="kaitkan-message"></div>
               
-              <!-- TOMBOL VERIFIKASI -->
-              <div class="btn-svg kaitkan-submit-btn" id="kaitkanSubmitBtn" onclick="submitKaitkanAkun()">
+              <div class="btn-svg kaitkan-submit-btn" id="verifyStage2Btn" onclick="submitStage2()">
                 <div class="btn-ujung-kiri"></div>
-                <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
+                <div class="btn-tengah"><span class="btn-teks">SIMPAN & LOGIN</span></div>
                 <div class="btn-ujung-kanan"></div>
               </div>
               
-              <!-- HINT -->
-              <p class="kaitkan-verify-hint">
-                ❓ <strong>Cara dapat kode:</strong><br>
-                1. Hubungi admin via WA grup<br>
-                2. Admin kirim kode ke WA pribadi Anda<br>
-                3. Masukkan kode di sini
-              </p>
+              <button class="verify-back-btn" onclick="backToStage1()">
+                ← Kembali
+              </button>
               
             </div>
+            
           </div>
         </div>
       </div>
