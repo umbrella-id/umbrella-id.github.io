@@ -901,25 +901,6 @@ function showLupaMessage(stage, msg, isError = false) {
   }
 }
 
-function backToLupaStage1() {
-  document.getElementById('loginViewLupaStep2').style.display = 'none';
-  document.getElementById('loginViewLupaStep1').style.display = 'flex';
-  
-  // Reset field step 2
-  document.getElementById('lupaIdLoginInput').value = '';
-  document.getElementById('lupaPasswordInput').value = '';
-  document.getElementById('lupaConfirmInput').value = '';
-  
-  window._lupaUid = null;
-  window._lupaCode = null;
-  
-  showLupaMessage(2, '');
-  
-  setTimeout(() => {
-    const input = document.getElementById('lupaCodeInput');
-    if (input) input.focus();
-  }, 100);
-}
 async function submitLupaStage1() {
   const codeInput = document.getElementById('lupaCodeInput');
   const btn = document.getElementById('lupaStage1Btn');
@@ -1282,7 +1263,6 @@ window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 window.openLupaPassword = openLupaPassword;
 window.submitLupaStage1 = submitLupaStage1;
 window.submitLupaStage2 = submitLupaStage2;
-window.backToLupaStage1 = backToLupaStage1;
 window.openChangePasswordForm = openChangePasswordForm;
 window.closeChangePasswordForm = closeChangePasswordForm;
 window.submitChangePassword = submitChangePassword;
