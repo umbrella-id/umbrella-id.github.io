@@ -108,14 +108,12 @@ function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
     const overlayLogout = document.getElementById('logoutConfirmOverlay');
-    const overlayLupa = document.getElementById('lupaPasswordOverlay');
     const overlayChange = document.getElementById('changePasswordOverlay');
     const stage = document.getElementById('stage');
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
     if (overlayLogout) overlayLogout.classList.remove('open');
-    if (overlayLupa) overlayLupa.classList.remove('open');
     if (overlayChange) overlayChange.classList.remove('open');
     
     if (!skipMenu && stage) {
@@ -533,6 +531,11 @@ function openLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
     
+    // 🎯 Selalu buka di view login
+    document.getElementById('loginViewLogin').style.display = 'flex';
+    document.getElementById('loginViewLupaStep1').style.display = 'none';
+    document.getElementById('loginViewLupaStep2').style.display = 'none';
+    
     const idInput = document.getElementById('loginMemberIdLogin');
     const pwInput = document.getElementById('loginMemberPassword');
     const msgEl = document.getElementById('loginMemberMessage');
@@ -824,13 +827,12 @@ function escapeHtmlKaitkan(str) {
 // FASE 4: LUPA PASSWORD
 // ==========================================
 function openLupaPassword() {
-  closeLoginModal();
+  // Ganti view di dalam modal login — bukan buka modal baru
+  document.getElementById('loginViewLogin').style.display = 'none';
+  document.getElementById('loginViewLupaStep1').style.display = 'flex';
+  document.getElementById('loginViewLupaStep2').style.display = 'none';
   
-  const overlay = document.getElementById('lupaPasswordOverlay');
-  if (!overlay) return;
-  
-  backToLupaStage1();
-  
+  // Reset fields
   document.getElementById('lupaCodeInput').value = '';
   document.getElementById('lupaIdLoginInput').value = '';
   document.getElementById('lupaPasswordInput').value = '';
@@ -840,44 +842,50 @@ function openLupaPassword() {
   showLupaMessage(1, '');
   showLupaMessage(2, '');
   
+  window._lupaUid = null;
+  window._lupaCode = null;
+  
+  // Reset tombol
   const btn1 = document.getElementById('lupaStage1Btn');
-  btn1.style.pointerEvents = '';
-  btn1.classList.remove('loading');
-  btn1.querySelector('.btn-teks').innerText = 'VERIFIKASI';
+  if (btn1) {
+    btn1.style.pointerEvents = '';
+    btn1.classList.remove('loading');
+    const t = btn1.querySelector('.btn-teks');
+    if (t) t.innerText = 'VERIFIKASI';
+  }
   
   const btn2 = document.getElementById('lupaStage2Btn');
-  btn2.style.pointerEvents = '';
-  btn2.classList.remove('loading');
-  btn2.querySelector('.btn-teks').innerText = 'SIMPAN & LOGIN';
+  if (btn2) {
+    btn2.style.pointerEvents = '';
+    btn2.classList.remove('loading');
+    const t = btn2.querySelector('.btn-teks');
+    if (t) t.innerText = 'SIMPAN & LOGIN';
+  }
+  
+  setTimeout(() => document.getElementById('lupaCodeInput').focus(), 300);
+}
+
+function backToLoginView() {
+  document.getElementById('loginViewLupaStep1').style.display = 'none';
+  document.getElementById('loginViewLupaStep2').style.display = 'none';
+  document.getElementById('loginViewLogin').style.display = 'flex';
+  
+  // Reset fields
+  document.getElementById('lupaCodeInput').value = '';
+  document.getElementById('lupaIdLoginInput').value = '';
+  document.getElementById('lupaPasswordInput').value = '';
+  document.getElementById('lupaConfirmInput').value = '';
   
   window._lupaUid = null;
   window._lupaCode = null;
   
-  overlay.classList.add('open');
+  showLupaMessage(1, '');
+  showLupaMessage(2, '');
   
-  const stage = document.getElementById('stage');
-  if (stage) stage.classList.add('kaitkan-open');
-  
-  if (typeof updateButtons === 'function') updateButtons();
-  
-  setTimeout(() => document.getElementById('lupaCodeInput').focus(), 300);
-  
-  isKaitkanPopupOpen = true;
-}
-
-function closeLupaPassword(skipMenu = false) {
-  const overlay = document.getElementById('lupaPasswordOverlay');
-  if (!overlay) return;
-  
-  overlay.classList.remove('open');
-  
-  const stage = document.getElementById('stage');
-  if (!skipMenu && stage) stage.classList.add('modal-open');
-  if (stage) stage.classList.remove('kaitkan-open');
-  
-  isKaitkanPopupOpen = false;
-  
-  if (typeof updateButtons === 'function') updateButtons();
+  setTimeout(() => {
+    const idInput = document.getElementById('loginMemberIdLogin');
+    if (idInput) idInput.focus();
+  }, 200);
 }
 
 function showLupaMessage(stage, msg, isError = false) {
@@ -894,18 +902,24 @@ function showLupaMessage(stage, msg, isError = false) {
 }
 
 function backToLupaStage1() {
-  document.getElementById('lupaStage2').style.display = 'none';
-  document.getElementById('lupaStage1').style.display = 'flex';
+  document.getElementById('loginViewLupaStep2').style.display = 'none';
+  document.getElementById('loginViewLupaStep1').style.display = 'flex';
+  
+  // Reset field step 2
+  document.getElementById('lupaIdLoginInput').value = '';
+  document.getElementById('lupaPasswordInput').value = '';
+  document.getElementById('lupaConfirmInput').value = '';
   
   window._lupaUid = null;
   window._lupaCode = null;
+  
+  showLupaMessage(2, '');
   
   setTimeout(() => {
     const input = document.getElementById('lupaCodeInput');
     if (input) input.focus();
   }, 100);
 }
-
 async function submitLupaStage1() {
   const codeInput = document.getElementById('lupaCodeInput');
   const btn = document.getElementById('lupaStage1Btn');
@@ -934,8 +948,8 @@ async function submitLupaStage1() {
       window._lupaCode = code;
       
       document.getElementById('lupaMemberIgn').textContent = data.nama;
-      document.getElementById('lupaStage1').style.display = 'none';
-      document.getElementById('lupaStage2').style.display = 'flex';
+      document.getElementById('loginViewLupaStep1').style.display = 'none';
+      document.getElementById('loginViewLupaStep2').style.display = 'flex';
       
       setTimeout(() => document.getElementById('lupaIdLoginInput').focus(), 200);
     } else {
@@ -1023,7 +1037,7 @@ async function submitLupaStage2() {
       showLupaMessage(2, '✅ Berhasil! Login otomatis...', false);
       
       setTimeout(() => {
-        closeLupaPassword(true);
+        closeLoginModal();  // ← close login modal, bukan close lupa password overlay
         location.reload();
       }, 1000);
     } else {
@@ -1266,7 +1280,6 @@ window.executeLogoutMember = executeLogoutMember;
 window.executeLogoutGuest = executeLogoutGuest;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 window.openLupaPassword = openLupaPassword;
-window.closeLupaPassword = closeLupaPassword;
 window.submitLupaStage1 = submitLupaStage1;
 window.submitLupaStage2 = submitLupaStage2;
 window.backToLupaStage1 = backToLupaStage1;
