@@ -24,6 +24,7 @@ const CHAT_STAMP_KEY = 'umbrella_chat_stamp';
 const POLL_INTERVAL_MS = 4500;
 let chatPollingTimer = null;
 let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
+let muteRegistry = {};
 
 // ==========================================
 // 🎯 AUTO-SCROLL HELPER
@@ -194,6 +195,12 @@ function isSystemMessageMasihBerlaku(logs, index) {
         return false;
       }
     }
+    const reg = muteRegistry[parsed.uid];
+    if (reg && reg.isMuted === false) {
+      return false;
+    }
+    
+    // Cek durasi
     if (parsed.durasi > 0) {
       const msgTime = msg.timestamp || 0;
       const muteEndTime = msgTime + (parsed.durasi * 60 * 1000);
@@ -377,6 +384,10 @@ async function syncChat(force = false) {
 
     if (typeof handleMailTrigger === 'function') {
       handleMailTrigger(data.lastMailReply || 0);
+    }
+
+    if (data.muteRegistry) {
+      muteRegistry = data.muteRegistry;
     }
 
     const arrayChat = data.logs || [];
