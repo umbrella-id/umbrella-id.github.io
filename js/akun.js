@@ -1,5 +1,5 @@
 /**
- * kaitkan-akun.js — Fitur Verifikasi Akun, Login, & Logout
+ * akun.js — Fitur Verifikasi Akun, Login, & Logout
  */
 
 let isKaitkanPopupOpen = false;
@@ -512,13 +512,16 @@ function openLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
     if (!overlay) return;
     
-    const waInput = document.getElementById('loginMemberWa');
-    const kodeInput = document.getElementById('loginMemberKode');
+    const idInput = document.getElementById('loginMemberIdLogin');
+    const pwInput = document.getElementById('loginMemberPassword');
     const msgEl = document.getElementById('loginMemberMessage');
     
-    if (waInput) waInput.value = '';
-    if (kodeInput) kodeInput.value = '';
-    if (msgEl) { msgEl.innerText = ''; msgEl.classList.remove('show', 'error', 'success'); }
+    if (idInput) idInput.value = '';
+    if (pwInput) pwInput.value = '';
+    if (msgEl) { 
+        msgEl.innerText = ''; 
+        msgEl.classList.remove('show', 'error', 'success'); 
+    }
     
     const btn = document.getElementById('loginMemberSubmitBtn');
     if (btn) {
@@ -528,11 +531,10 @@ function openLoginModal() {
     }
     
     overlay.classList.add('open');
-    
     updateGateLoginBtn(true);
     
     setTimeout(() => {
-        if (waInput) waInput.focus();
+        if (idInput) idInput.focus();
     }, 300);
 }
 
@@ -568,24 +570,23 @@ function updateGateLoginBtn(isOpen) {
 // 🎯 SUBMIT LOGIN
 // ==========================================
 async function submitLoginModal() {
-    const waInput = document.getElementById('loginMemberWa');
-    const kodeInput = document.getElementById('loginMemberKode');
+    const idInput = document.getElementById('loginMemberIdLogin');
+    const pwInput = document.getElementById('loginMemberPassword');
     const btn = document.getElementById('loginMemberSubmitBtn');
     
-    if (!waInput || !kodeInput || !btn) return;
+    if (!idInput || !pwInput || !btn) return;
     
-    let wa = waInput.value.trim().replace(/\D/g, '');
-    let kode = kodeInput.value.trim();
+    const idLogin = idInput.value.trim();
+    const password = pwInput.value;
     
-    if (!wa || wa.length < 10) {
-        showLoginMemberMessage('Masukkan nomor WA lengkap', true);
-        waInput.focus();
+    if (!idLogin || idLogin.length < 3) {
+        showLoginMemberMessage('ID Login minimal 3 karakter', true);
+        idInput.focus();
         return;
     }
-    
-    if (!kode || kode.length !== 6) {
-        showLoginMemberMessage('Masukkan kode 6 digit', true);
-        kodeInput.focus();
+    if (!password || password.length < 6) {
+        showLoginMemberMessage('Password minimal 6 karakter', true);
+        pwInput.focus();
         return;
     }
     
@@ -595,19 +596,23 @@ async function submitLoginModal() {
     showLoginMemberMessage('');
     
     try {
-        const url = `${GAS.MAIN}?action=loginVerified&wa=${encodeURIComponent(wa)}&code=${encodeURIComponent(kode)}`;
+        const url = `${GAS.MAIN}?action=loginWithIdPassword` +
+            `&idLogin=${encodeURIComponent(idLogin)}` +
+            `&password=${encodeURIComponent(password)}`;
         const res = await fetch(url);
         const data = await res.json();
         
         if (data.success) {
+            // Update identity
             localStorage.setItem('u_uid', data.webUID);
-            localStorage.setItem('u_ign', data.ign);
             localStorage.setItem('u_web_uid', data.webUID);
-            localStorage.setItem('u_web_kode', kode);
             localStorage.setItem('u_class', 'member');
             
+            if (data.ign) {
+                localStorage.setItem('u_ign', data.ign);
+                window.myIGN = data.ign;
+            }
             window.myUID = data.webUID;
-            window.myIGN = data.ign;
             
             if (typeof updateIdentityUI === 'function') updateIdentityUI();
             
@@ -616,8 +621,7 @@ async function submitLoginModal() {
             setTimeout(() => {
                 closeLoginModal();
                 if (typeof closeGate === 'function') closeGate(true);
-                if (typeof buildMenu === 'function') setTimeout(() => buildMenu(), 300);
-                if (typeof cekStatusAkun === 'function') setTimeout(() => cekStatusAkun(), 500);
+                if (typeof updateModalMenuItems === 'function') updateModalMenuItems();
             }, 800);
         } else {
             showLoginMemberMessage(data.message || 'Login gagal', true);
@@ -625,6 +629,7 @@ async function submitLoginModal() {
             if (btnText) btnText.innerText = 'LOGIN';
         }
     } catch(e) {
+        console.error('Login error:', e);
         showLoginMemberMessage('Koneksi gagal. Coba lagi.', true);
         btn.style.pointerEvents = '';
         if (btnText) btnText.innerText = 'LOGIN';
