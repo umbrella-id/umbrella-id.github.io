@@ -389,7 +389,6 @@ function showKaitkanSuccess() {
 async function openAkunSaya() {
     const uid = localStorage.getItem('u_uid') || '';
     const ign = localStorage.getItem('u_ign') || 'Member';
-    const savedKode = localStorage.getItem('u_web_kode') || '';
     const isVerified = uid.endsWith('-v');
     
     if (typeof closeModal === 'function') closeModal(true);
@@ -752,7 +751,6 @@ function executeLogoutMember() {
     localStorage.removeItem('u_uid');
     localStorage.removeItem('u_ign');
     localStorage.removeItem('u_web_uid');
-    localStorage.removeItem('u_web_kode');
     localStorage.removeItem('u_class');
     localStorage.removeItem('u_ign_changed_at');
     
