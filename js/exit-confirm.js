@@ -42,7 +42,13 @@ function adaModalBuka() {
     'modalOverlay',
     'gatekeeper',
     'chatInputOverlay',
-    'galleryLightbox'
+    'galleryLightbox',
+    'kaitkanOverlay',
+    'kaitkanAkunSayaOverlay',
+    'logoutConfirmOverlay',
+    'loginMemberOverlay',
+    'lupaPasswordOverlay',
+    'changePasswordOverlay'
   ];
 
   for (const id of checks) {
