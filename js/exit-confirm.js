@@ -47,7 +47,6 @@ function adaModalBuka() {
     'kaitkanAkunSayaOverlay',
     'logoutConfirmOverlay',
     'loginMemberOverlay',
-    'lupaPasswordOverlay',
     'changePasswordOverlay'
   ];
 
