@@ -108,14 +108,16 @@ function closeKaitkanAkun(skipMenu = false) {
     const overlay = document.getElementById('kaitkanOverlay');
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
     const overlayLogout = document.getElementById('logoutConfirmOverlay');
+    const overlayLupa = document.getElementById('lupaPasswordOverlay');
+    const overlayChange = document.getElementById('changePasswordOverlay');
     const stage = document.getElementById('stage');
     
     if (overlay) overlay.classList.remove('open');
     if (overlayAkun) overlayAkun.classList.remove('open');
     if (overlayLogout) overlayLogout.classList.remove('open');
+    if (overlayLupa) overlayLupa.classList.remove('open');
+    if (overlayChange) overlayChange.classList.remove('open');
     
-    // 🎯 Set 'modal-open' DULU (sebelum remove 'kaitkan-open')
-    // Biar banner mini tidak flicker di transisi
     if (!skipMenu && stage) {
         stage.classList.add('modal-open');
     }
@@ -134,7 +136,7 @@ function closeKaitkanAkun(skipMenu = false) {
 }
 
 // ==========================================
-// 🎯 TAHAP 1: VERIFIKASI KODE
+// TAHAP 1: VERIFIKASI KODE
 // ==========================================
 async function submitStage1() {
     const codeInput = document.getElementById('verifyCodeInput');
@@ -186,7 +188,7 @@ async function submitStage1() {
 }
 
 // ==========================================
-// 🎯 TAHAP 2: SIMPAN ID + PASSWORD
+// TAHAP 2: SIMPAN ID + PASSWORD
 // ==========================================
 async function submitStage2() {
     const idInput = document.getElementById('verifyIdLoginInput');
@@ -287,7 +289,7 @@ async function submitStage2() {
 }
 
 // ==========================================
-// 🎯 PINDAH KE TAHAP 2
+// PINDAH KE TAHAP 2
 // ==========================================
 function showStage2(ign) {
     document.getElementById('verifyStage1').style.display = 'none';
@@ -312,7 +314,7 @@ function backToStage1() {
 }
 
 // ==========================================
-// 🎯 TOGGLE HINT
+// TOGGLE HINT
 // ==========================================
 function toggleHint() {
     const hint = document.getElementById('verifyHint');
@@ -326,7 +328,7 @@ function toggleHint() {
 }
 
 // ==========================================
-// 🎯 PESAN ERROR
+// PESAN ERROR
 // ==========================================
 function showVerifyMessage(stage, msg, isError = false) {
     const el = document.getElementById(`verifyMessage${stage}`);
@@ -384,7 +386,7 @@ function showKaitkanSuccess() {
 }
 
 // ==========================================
-// 🎯 AKUN SAYA — Ukuran Tombol Tetap
+// AKUN SAYA — Ukuran Tombol Tetap
 // ==========================================
 async function openAkunSaya() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -401,7 +403,7 @@ async function openAkunSaya() {
     
     if (isVerified) {
         // ==========================================
-        // VERIFIED — 1 tombol
+        // VERIFIED — 2 tombol (Ganti Password + Logout)
         // ==========================================
         bodyEl.innerHTML = `
             <p class="kaitkan-desc">Akun Anda sudah terverifikasi</p>
@@ -419,6 +421,14 @@ async function openAkunSaya() {
             <p class="kaitkan-save-text">Gunakan ID Login & password untuk masuk di device lain</p>
             
             <div class="akun-btn-row">
+                <div class="btn-svg akun-btn-verify" onclick="openChangePasswordForm()">
+                    <div class="btn-ujung-kiri"></div>
+                    <div class="btn-tengah"><span class="btn-teks">GANTI PASSWORD</span></div>
+                    <div class="btn-ujung-kanan"></div>
+                </div>
+            </div>
+            
+            <div class="akun-btn-row" style="margin-top:8px;">
                 <div class="btn-svg akun-btn-logout" onclick="logoutAccount()">
                     <div class="btn-ujung-kiri"></div>
                     <div class="btn-tengah"><span class="btn-teks">LOGOUT</span></div>
@@ -474,7 +484,7 @@ async function openAkunSaya() {
 }
 
 // ==========================================
-// 🎯 BUKA VERIFIKASI DARI AKUN SAYA
+// BUKA VERIFIKASI DARI AKUN SAYA
 // ==========================================
 function openVerifikasiFromAkun() {
     const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
@@ -486,7 +496,7 @@ function openVerifikasiFromAkun() {
 }
 
 // ==========================================
-// 🎯 TOGGLE MODAL LOGIN
+// TOGGLE MODAL LOGIN
 // ==========================================
 function toggleLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
@@ -500,7 +510,7 @@ function toggleLoginModal() {
 }
 
 // ==========================================
-// 🎯 BUKA MODAL LOGIN
+// BUKA MODAL LOGIN
 // ==========================================
 function openLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
@@ -533,7 +543,7 @@ function openLoginModal() {
 }
 
 // ==========================================
-// 🎯 TUTUP MODAL LOGIN
+// TUTUP MODAL LOGIN
 // ==========================================
 function closeLoginModal() {
     const overlay = document.getElementById('loginMemberOverlay');
@@ -543,7 +553,7 @@ function closeLoginModal() {
 }
 
 // ==========================================
-// 🎯 UPDATE TEKS TOMBOL GATE LOGIN
+// UPDATE TEKS TOMBOL GATE LOGIN
 // ==========================================
 function updateGateLoginBtn(isOpen) {
     const btnText = document.getElementById('gateLoginBtnText');
@@ -561,7 +571,7 @@ function updateGateLoginBtn(isOpen) {
 }
 
 // ==========================================
-// 🎯 SUBMIT LOGIN
+// SUBMIT LOGIN
 // ==========================================
 async function submitLoginModal() {
     const idInput = document.getElementById('loginMemberIdLogin');
@@ -641,7 +651,7 @@ function showLoginMemberMessage(msg, isError = false, isSuccess = false) {
 }
 
 // ==========================================
-// 🎯 HANDLE TOMBOL BACK — Modal Login
+// HANDLE TOMBOL BACK — Modal Login
 // ==========================================
 function handleLoginModalBack() {
     const overlay = document.getElementById('loginMemberOverlay');
@@ -665,7 +675,7 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// 🎯 LOGOUT — Modal Konfirmasi
+// LOGOUT — Modal Konfirmasi
 // ==========================================
 function logoutAccount() {
     const overlay = document.getElementById('logoutConfirmOverlay');
@@ -697,7 +707,7 @@ function logoutAccount() {
 }
 
 // ==========================================
-// 🎯 KONFIRMASI LOGOUT — YES
+// KONFIRMASI LOGOUT — YES
 // ==========================================
 function confirmLogoutYes() {
     const uid = localStorage.getItem('u_uid') || '';
@@ -714,7 +724,7 @@ function confirmLogoutYes() {
 }
 
 // ==========================================
-// 🎯 TUTUP MODAL KONFIRMASI LOGOUT
+// TUTUP MODAL KONFIRMASI LOGOUT
 // ==========================================
 function closeLogoutConfirm(skipMenu = false) {
     const overlay = document.getElementById('logoutConfirmOverlay');
@@ -729,7 +739,7 @@ function closeLogoutConfirm(skipMenu = false) {
 }
 
 // ==========================================
-// 🎯 LOGOUT GUEST
+// LOGOUT GUEST
 // ==========================================
 function executeLogoutGuest() {
     localStorage.setItem('u_ign', '');
@@ -745,7 +755,7 @@ function executeLogoutGuest() {
 }
 
 // ==========================================
-// 🎯 LOGOUT MEMBER
+// LOGOUT MEMBER
 // ==========================================
 function executeLogoutMember() {
     localStorage.removeItem('u_uid');
@@ -764,7 +774,7 @@ function executeLogoutMember() {
 }
 
 // ==========================================
-// 🎯 HELPER
+// HELPER
 // ==========================================
 function clearUmbrellaSession() {
     Object.keys(sessionStorage).forEach(key => {
@@ -790,6 +800,347 @@ function escapeHtmlKaitkan(str) {
 }
 
 // ==========================================
+// FASE 4: LUPA PASSWORD
+// ==========================================
+function openLupaPassword() {
+  closeLoginModal();
+  
+  const overlay = document.getElementById('lupaPasswordOverlay');
+  if (!overlay) return;
+  
+  backToLupaStage1();
+  
+  document.getElementById('lupaCodeInput').value = '';
+  document.getElementById('lupaIdLoginInput').value = '';
+  document.getElementById('lupaPasswordInput').value = '';
+  document.getElementById('lupaConfirmInput').value = '';
+  document.getElementById('lupaMemberIgn').textContent = '-';
+  
+  showLupaMessage(1, '');
+  showLupaMessage(2, '');
+  
+  const btn1 = document.getElementById('lupaStage1Btn');
+  btn1.style.pointerEvents = '';
+  btn1.classList.remove('loading');
+  btn1.querySelector('.btn-teks').innerText = 'VERIFIKASI';
+  
+  const btn2 = document.getElementById('lupaStage2Btn');
+  btn2.style.pointerEvents = '';
+  btn2.classList.remove('loading');
+  btn2.querySelector('.btn-teks').innerText = 'SIMPAN & LOGIN';
+  
+  window._lupaUid = null;
+  window._lupaCode = null;
+  
+  overlay.classList.add('open');
+  
+  const stage = document.getElementById('stage');
+  if (stage) stage.classList.add('kaitkan-open');
+  
+  if (typeof updateButtons === 'function') updateButtons();
+  
+  setTimeout(() => document.getElementById('lupaCodeInput').focus(), 300);
+  
+  isKaitkanPopupOpen = true;
+}
+
+function closeLupaPassword(skipMenu = false) {
+  const overlay = document.getElementById('lupaPasswordOverlay');
+  if (!overlay) return;
+  
+  overlay.classList.remove('open');
+  
+  const stage = document.getElementById('stage');
+  if (!skipMenu && stage) stage.classList.add('modal-open');
+  if (stage) stage.classList.remove('kaitkan-open');
+  
+  isKaitkanPopupOpen = false;
+  
+  if (typeof updateButtons === 'function') updateButtons();
+}
+
+function showLupaMessage(stage, msg, isError = false) {
+  const el = document.getElementById(`lupaMessage${stage}`);
+  if (!el) return;
+  
+  el.innerText = msg || '';
+  el.classList.remove('error', 'show');
+  
+  if (msg) {
+    el.classList.add('show');
+    if (isError) el.classList.add('error');
+  }
+}
+
+function backToLupaStage1() {
+  document.getElementById('lupaStage2').style.display = 'none';
+  document.getElementById('lupaStage1').style.display = 'flex';
+  
+  window._lupaUid = null;
+  window._lupaCode = null;
+  
+  setTimeout(() => {
+    const input = document.getElementById('lupaCodeInput');
+    if (input) input.focus();
+  }, 100);
+}
+
+async function submitLupaStage1() {
+  const codeInput = document.getElementById('lupaCodeInput');
+  const btn = document.getElementById('lupaStage1Btn');
+  if (!codeInput || !btn) return;
+  
+  const code = codeInput.value.trim().toUpperCase();
+  
+  if (!code || code.length !== 8) {
+    showLupaMessage(1, 'Kode verifikasi harus 8 karakter', true);
+    codeInput.focus();
+    return;
+  }
+  
+  btn.classList.add('loading');
+  btn.style.pointerEvents = 'none';
+  btn.querySelector('.btn-teks').innerText = 'MEMPROSES...';
+  showLupaMessage(1, '');
+  
+  try {
+    const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.success) {
+      window._lupaUid = data.uid;
+      window._lupaCode = code;
+      
+      document.getElementById('lupaMemberIgn').textContent = data.nama;
+      document.getElementById('lupaStage1').style.display = 'none';
+      document.getElementById('lupaStage2').style.display = 'flex';
+      
+      setTimeout(() => document.getElementById('lupaIdLoginInput').focus(), 200);
+    } else {
+      showLupaMessage(1, data.message || 'Kode verifikasi salah', true);
+      btn.classList.remove('loading');
+      btn.style.pointerEvents = '';
+      btn.querySelector('.btn-teks').innerText = 'VERIFIKASI';
+    }
+  } catch(e) {
+    console.error('Lupa stage1 error:', e);
+    showLupaMessage(1, 'Koneksi gagal. Coba lagi.', true);
+    btn.classList.remove('loading');
+    btn.style.pointerEvents = '';
+    btn.querySelector('.btn-teks').innerText = 'VERIFIKASI';
+  }
+}
+
+async function submitLupaStage2() {
+  const idInput = document.getElementById('lupaIdLoginInput');
+  const pwInput = document.getElementById('lupaPasswordInput');
+  const confirmInput = document.getElementById('lupaConfirmInput');
+  const btn = document.getElementById('lupaStage2Btn');
+  if (!idInput || !pwInput || !confirmInput || !btn) return;
+  
+  const idLogin = idInput.value.trim();
+  const password = pwInput.value;
+  const confirm = confirmInput.value;
+  
+  if (!idLogin || idLogin.length < 3) {
+    showLupaMessage(2, 'ID Login minimal 3 karakter', true);
+    idInput.focus();
+    return;
+  }
+  if (!/^[a-zA-Z0-9_]+$/.test(idLogin)) {
+    showLupaMessage(2, 'ID Login hanya boleh huruf, angka, underscore', true);
+    idInput.focus();
+    return;
+  }
+  if (!password || password.length < 6) {
+    showLupaMessage(2, 'Password minimal 6 karakter', true);
+    pwInput.focus();
+    return;
+  }
+  if (password !== confirm) {
+    showLupaMessage(2, 'Password tidak cocok dengan konfirmasi', true);
+    confirmInput.focus();
+    return;
+  }
+  
+  if (!window._lupaUid || !window._lupaCode) {
+    showLupaMessage(2, 'Sesi habis. Ulangi dari awal.', true);
+    backToLupaStage1();
+    return;
+  }
+  
+  btn.classList.add('loading');
+  btn.style.pointerEvents = 'none';
+  btn.querySelector('.btn-teks').innerText = 'MENYIMPAN...';
+  showLupaMessage(2, '');
+  
+  try {
+    const url = `${GAS.MAIN}?action=resetMemberPassword` +
+      `&uid=${encodeURIComponent(window._lupaUid)}` +
+      `&code=${encodeURIComponent(window._lupaCode)}` +
+      `&idLogin=${encodeURIComponent(idLogin)}` +
+      `&password=${encodeURIComponent(password)}`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.success) {
+      localStorage.setItem('u_uid', data.webUID);
+      localStorage.setItem('u_web_uid', data.webUID);
+      localStorage.setItem('u_class', 'member');
+      if (data.ign) localStorage.setItem('u_ign', data.ign);
+      
+      window.myUID = data.webUID;
+      window.myIGN = data.ign || '';
+      
+      window._lupaUid = null;
+      window._lupaCode = null;
+      
+      showLupaMessage(2, '✅ Berhasil! Login otomatis...', false);
+      
+      setTimeout(() => {
+        closeLupaPassword(true);
+        location.reload();
+      }, 1000);
+    } else {
+      showLupaMessage(2, data.message || 'Gagal menyimpan', true);
+      btn.classList.remove('loading');
+      btn.style.pointerEvents = '';
+      btn.querySelector('.btn-teks').innerText = 'SIMPAN & LOGIN';
+    }
+  } catch(e) {
+    console.error('Lupa stage2 error:', e);
+    showLupaMessage(2, 'Koneksi gagal. Coba lagi.', true);
+    btn.classList.remove('loading');
+    btn.style.pointerEvents = '';
+    btn.querySelector('.btn-teks').innerText = 'SIMPAN & LOGIN';
+  }
+}
+
+// ==========================================
+// FASE 4: GANTI PASSWORD
+// ==========================================
+function openChangePasswordForm() {
+  const overlayAkun = document.getElementById('kaitkanAkunSayaOverlay');
+  if (overlayAkun) overlayAkun.classList.remove('open');
+  
+  const overlay = document.getElementById('changePasswordOverlay');
+  if (!overlay) return;
+  
+  document.getElementById('changePwdOldInput').value = '';
+  document.getElementById('changePwdNewInput').value = '';
+  document.getElementById('changePwdConfirmInput').value = '';
+  showChangePwdMessage('');
+  
+  const btn = document.getElementById('changePwdSubmitBtn');
+  btn.style.pointerEvents = '';
+  btn.classList.remove('loading');
+  btn.querySelector('.btn-teks').innerText = 'SIMPAN';
+  
+  overlay.classList.add('open');
+  
+  const stage = document.getElementById('stage');
+  if (stage) stage.classList.add('kaitkan-open');
+  
+  if (typeof updateButtons === 'function') updateButtons();
+  
+  setTimeout(() => document.getElementById('changePwdOldInput').focus(), 200);
+  
+  isKaitkanPopupOpen = true;
+}
+
+function closeChangePasswordForm(skipMenu = false) {
+  const overlay = document.getElementById('changePasswordOverlay');
+  if (!overlay) return;
+  
+  overlay.classList.remove('open');
+  
+  const stage = document.getElementById('stage');
+  if (!skipMenu && stage) stage.classList.add('modal-open');
+  if (stage) stage.classList.remove('kaitkan-open');
+  
+  isKaitkanPopupOpen = false;
+  
+  if (typeof updateButtons === 'function') updateButtons();
+  
+  if (!skipMenu) {
+    setTimeout(() => {
+      if (typeof openAkunSaya === 'function') openAkunSaya();
+    }, 150);
+  }
+}
+
+function showChangePwdMessage(msg, isError = false) {
+  const el = document.getElementById('changePwdMessage');
+  if (!el) return;
+  
+  el.innerText = msg || '';
+  el.classList.remove('error', 'show');
+  
+  if (msg) {
+    el.classList.add('show');
+    if (isError) el.classList.add('error');
+  }
+}
+
+async function submitChangePassword() {
+  const oldInput = document.getElementById('changePwdOldInput');
+  const newInput = document.getElementById('changePwdNewInput');
+  const confirmInput = document.getElementById('changePwdConfirmInput');
+  const btn = document.getElementById('changePwdSubmitBtn');
+  if (!oldInput || !newInput || !confirmInput || !btn) return;
+  
+  const oldPassword = oldInput.value;
+  const newPassword = newInput.value;
+  const confirm = confirmInput.value;
+  
+  const uid = localStorage.getItem('u_uid') || '';
+  if (!uid.endsWith('-v')) {
+    showChangePwdMessage('Akun tidak valid', true);
+    return;
+  }
+  
+  if (!oldPassword) { showChangePwdMessage('Password lama harus diisi', true); oldInput.focus(); return; }
+  if (!newPassword || newPassword.length < 6) { showChangePwdMessage('Password baru minimal 6 karakter', true); newInput.focus(); return; }
+  if (newPassword !== confirm) { showChangePwdMessage('Password baru tidak cocok dengan konfirmasi', true); confirmInput.focus(); return; }
+  
+  btn.classList.add('loading');
+  btn.style.pointerEvents = 'none';
+  btn.querySelector('.btn-teks').innerText = 'MENYIMPAN...';
+  showChangePwdMessage('');
+  
+  try {
+    const url = `${GAS.MAIN}?action=changeMemberPassword` +
+      `&uid=${encodeURIComponent(uid)}` +
+      `&oldPassword=${encodeURIComponent(oldPassword)}` +
+      `&newPassword=${encodeURIComponent(newPassword)}`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.success) {
+      showChangePwdMessage('✅ Password berhasil diubah', false);
+      setTimeout(() => {
+        closeChangePasswordForm(true);
+        if (typeof showToast === 'function') showToast('✅ Password berhasil diubah');
+      }, 800);
+    } else {
+      showChangePwdMessage(data.message || 'Gagal mengubah password', true);
+      btn.classList.remove('loading');
+      btn.style.pointerEvents = '';
+      btn.querySelector('.btn-teks').innerText = 'SIMPAN';
+    }
+  } catch(e) {
+    console.error('Change pwd error:', e);
+    showChangePwdMessage('Koneksi gagal. Coba lagi.', true);
+    btn.classList.remove('loading');
+    btn.style.pointerEvents = '';
+    btn.querySelector('.btn-teks').innerText = 'SIMPAN';
+  }
+}
+
+// ==========================================
 // EXPOSE
 // ==========================================
 window.openKaitkanAkun = openKaitkanAkun;
@@ -809,5 +1160,13 @@ window.closeLogoutConfirm = closeLogoutConfirm;
 window.executeLogoutMember = executeLogoutMember;
 window.executeLogoutGuest = executeLogoutGuest;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
+window.openLupaPassword = openLupaPassword;
+window.closeLupaPassword = closeLupaPassword;
+window.submitLupaStage1 = submitLupaStage1;
+window.submitLupaStage2 = submitLupaStage2;
+window.backToLupaStage1 = backToLupaStage1;
+window.openChangePasswordForm = openChangePasswordForm;
+window.closeChangePasswordForm = closeChangePasswordForm;
+window.submitChangePassword = submitChangePassword;
 
 console.log('✅ kaitkan-akun.js loaded (V3 — Modal Konfirmasi Logout)');
