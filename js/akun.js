@@ -939,7 +939,7 @@ async function submitLupaStage1() {
   showLupaMessage(1, '');
   
   try {
-    const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}`;
+    const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}&mode=reset`;
     const res = await fetch(url);
     const data = await res.json();
     
