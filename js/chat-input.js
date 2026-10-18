@@ -200,6 +200,33 @@ async function kirimChat() {
 
       return;
     }
+    
+    if (res && res.status === 'muted') {
+      if (optimisticEl && optimisticEl.parentNode) {
+        optimisticEl.remove();
+      }
+
+      const sisaMenit = res.sisaMenit || 0;
+      const waitMsg = `Kamu sedang dibisukan. Sisa ${sisaMenit} menit.`;
+
+      if (chatLogs) {
+        const sysEl = document.createElement('div');
+        sysEl.className = 'chat-line chat-system';
+        sysEl.innerHTML = `<span class="chat-text">🔇 ${escapeHtml(waitMsg)}</span>`;
+        chatLogs.appendChild(sysEl);
+        chatLogs.scrollTop = chatLogs.scrollHeight;
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(`🔇 ${waitMsg}`, true);
+      }
+
+      // Sync ulang supaya localStorage mute state akurat
+      if (typeof syncChat === 'function') {
+        setTimeout(() => syncChat(true), 500);
+      }
+      return;
+    }
 
     if (typeof syncChat === 'function') {
       setTimeout(() => syncChat(true), 500);
