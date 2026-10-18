@@ -417,12 +417,7 @@ async function openAkunSaya() {
                 <strong class="kaitkan-info-value" style="color:#4ade80;">Terverifikasi</strong>
             </div>
             
-            <div class="kaitkan-info-row">
-                <span class="kaitkan-info-label">Kode:</span>
-                <strong class="kaitkan-info-value" style="color:#4ade80; font-family:monospace; letter-spacing:3px;">${savedKode ? escapeHtmlKaitkan(savedKode) : '—'}</strong>
-            </div>
-            
-            <p class="kaitkan-save-text">Simpan kode ini untuk login</p>
+            <p class="kaitkan-save-text">Gunakan ID Login & password untuk masuk di device lain</p>
             
             <div class="akun-btn-row">
                 <div class="btn-svg akun-btn-logout" onclick="logoutAccount()">
