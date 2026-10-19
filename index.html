@@ -114,125 +114,129 @@
                 <div class="pojok"></div>
               </div>
             </div>
-            
-            <!-- ============ VIEW 1: LOGIN ============ -->
-            <div id="loginViewLogin" class="login-modal-view">
-              <div class="login-modal-header">LOGIN MEMBER</div>
-              <div class="login-modal-body">
-                <div class="login-modal-form">
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-user"></i> ID LOGIN</label>
-                    <input type="text" 
-                           id="loginMemberIdLogin" 
-                           placeholder="idLogin Anda"
-                           autocomplete="username">
-                  </div>
-                  
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-lock"></i> PASSWORD</label>
-                    <input type="password" 
-                           id="loginMemberPassword" 
-                           placeholder="••••••••"
-                           autocomplete="current-password">
-                  </div>
-                  
-                  <div id="loginMemberMessage" class="login-modal-message"></div>
-                  
-                  <div class="btn-svg login-modal-btn" id="loginMemberSubmitBtn" onclick="submitLoginModal()">
-                    <div class="btn-ujung-kiri"></div>
-                    <div class="btn-tengah"><span class="btn-teks">LOGIN</span></div>
-                    <div class="btn-ujung-kanan"></div>
-                  </div>
-                  
-                  <div class="login-modal-forgot" onclick="openLupaPassword()">
-                    Lupa Password?
+
+            <div class="login-modal-content">
+              
+              <!-- ============ VIEW 1: LOGIN ============ -->
+              <div id="loginViewLogin" class="login-modal-view">
+                <div class="login-modal-header">LOGIN MEMBER</div>
+                <div class="login-modal-body">
+                  <div class="login-modal-form">
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-user"></i> ID LOGIN</label>
+                      <input type="text" 
+                             id="loginMemberIdLogin" 
+                             placeholder="idLogin Anda"
+                             autocomplete="username">
+                    </div>
+                    
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-lock"></i> PASSWORD</label>
+                      <input type="password" 
+                             id="loginMemberPassword" 
+                             placeholder="••••••••"
+                             autocomplete="current-password">
+                    </div>
+                    
+                    <div id="loginMemberMessage" class="login-modal-message"></div>
+                    
+                    <div class="btn-svg login-modal-btn" id="loginMemberSubmitBtn" onclick="submitLoginModal()">
+                      <div class="btn-ujung-kiri"></div>
+                      <div class="btn-tengah"><span class="btn-teks">LOGIN</span></div>
+                      <div class="btn-ujung-kanan"></div>
+                    </div>
+                    
+                    <div class="login-modal-forgot" onclick="openLupaPassword()">
+                      Lupa Password?
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <!-- ============ VIEW 2: LUPA PASSWORD - STEP 1 ============ -->
-            <div id="loginViewLupaStep1" class="login-modal-view" style="display: none;">
-              <div class="login-modal-header">LUPA PASSWORD</div>
-              <div class="login-modal-body">
-                <div class="login-modal-form">
-                  
-                  <p class="login-modal-desc">Hubungi admin via WA untuk dapat kode verifikasi</p>
-                  
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-key"></i> KODE VERIFIKASI</label>
-                    <input type="text" 
-                           id="lupaCodeInput" 
-                           placeholder="A7K9M2P4"
-                           maxlength="8"
-                           autocomplete="off"
-                           style="text-transform: uppercase;"
-                           oninput="this.value = this.value.toUpperCase();">
+              
+              <!-- ============ VIEW 2: LUPA PASSWORD - STEP 1 ============ -->
+              <div id="loginViewLupaStep1" class="login-modal-view" style="display: none;">
+                <div class="login-modal-header">LUPA PASSWORD</div>
+                <div class="login-modal-body">
+                  <div class="login-modal-form">
+                    
+                    <p class="login-modal-desc">Hubungi admin via WA untuk dapat kode verifikasi</p>
+                    
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-key"></i> KODE VERIFIKASI</label>
+                      <input type="text" 
+                             id="lupaCodeInput" 
+                             placeholder="A7K9M2P4"
+                             maxlength="8"
+                             autocomplete="off"
+                             style="text-transform: uppercase;"
+                             oninput="this.value = this.value.toUpperCase();">
+                    </div>
+                    
+                    <div id="lupaMessage1" class="login-modal-message"></div>
+                    
+                    <div class="btn-svg login-modal-btn" id="lupaStage1Btn" onclick="submitLupaStage1()">
+                      <div class="btn-ujung-kiri"></div>
+                      <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
+                      <div class="btn-ujung-kanan"></div>
+                    </div>
+                    
+                    <div class="login-modal-forgot" onclick="backToLoginView()">
+                      ← Kembali ke Login
+                    </div>
+                    
                   </div>
-                  
-                  <div id="lupaMessage1" class="login-modal-message"></div>
-                  
-                  <div class="btn-svg login-modal-btn" id="lupaStage1Btn" onclick="submitLupaStage1()">
-                    <div class="btn-ujung-kiri"></div>
-                    <div class="btn-tengah"><span class="btn-teks">VERIFIKASI</span></div>
-                    <div class="btn-ujung-kanan"></div>
-                  </div>
-                  
-                  <div class="login-modal-forgot" onclick="backToLoginView()">
-                    ← Kembali ke Login
-                  </div>
-                  
                 </div>
               </div>
-            </div>
-            
-            <!-- ============ VIEW 3: LUPA PASSWORD - STEP 2 ============ -->
-            <div id="loginViewLupaStep2" class="login-modal-view" style="display: none;">
-              <div class="login-modal-header">PASSWORD BARU</div>
-              <div class="login-modal-body">
-                <div class="login-modal-form">
-                  
-                  <div class="verify-member-info">
-                    <i class="fas fa-check-circle" style="color: #4ade80;"></i>
-                    Kode valid! Member: <strong id="lupaMemberIgn">-</strong>
+              
+              <!-- ============ VIEW 3: LUPA PASSWORD - STEP 2 ============ -->
+              <div id="loginViewLupaStep2" class="login-modal-view" style="display: none;">
+                <div class="login-modal-header">PASSWORD BARU</div>
+                <div class="login-modal-body">
+                  <div class="login-modal-form">
+                    
+                    <div class="verify-member-info">
+                      <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                      Kode valid! Member: <strong id="lupaMemberIgn">-</strong>
+                    </div>
+                    
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-user"></i> ID LOGIN BARU</label>
+                      <input type="text" 
+                             id="lupaIdLoginInput" 
+                             placeholder="budi"
+                             autocomplete="off">
+                      <small style="font-size: 0.6rem; color: #c9a55a; margin-top: 2px; display: block; opacity: 0.85;">Boleh sama dengan ID lama</small>
+                    </div>
+                    
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-lock"></i> PASSWORD BARU</label>
+                      <input type="password" 
+                             id="lupaPasswordInput" 
+                             placeholder="••••••••"
+                             autocomplete="new-password">
+                      <small style="font-size: 0.6rem; color: #c9a55a; margin-top: 2px; display: block; opacity: 0.85;">Minimal 6 karakter</small>
+                    </div>
+                    
+                    <div class="login-modal-group">
+                      <label><i class="fas fa-lock"></i> KONFIRMASI</label>
+                      <input type="password" 
+                             id="lupaConfirmInput" 
+                             placeholder="••••••••"
+                             autocomplete="new-password">
+                    </div>
+                    
+                    <div id="lupaMessage2" class="login-modal-message"></div>
+                    
+                    <div class="btn-svg login-modal-btn" id="lupaStage2Btn" onclick="submitLupaStage2()">
+                      <div class="btn-ujung-kiri"></div>
+                      <div class="btn-tengah"><span class="btn-teks">SIMPAN & LOGIN</span></div>
+                      <div class="btn-ujung-kanan"></div>
+                    </div>
+                    
                   </div>
-                  
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-user"></i> ID LOGIN BARU</label>
-                    <input type="text" 
-                           id="lupaIdLoginInput" 
-                           placeholder="budi"
-                           autocomplete="off">
-                    <small style="font-size: 0.6rem; color: #c9a55a; margin-top: 2px; display: block; opacity: 0.85;">Boleh sama dengan ID lama</small>
-                  </div>
-                  
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-lock"></i> PASSWORD BARU</label>
-                    <input type="password" 
-                           id="lupaPasswordInput" 
-                           placeholder="••••••••"
-                           autocomplete="new-password">
-                    <small style="font-size: 0.6rem; color: #c9a55a; margin-top: 2px; display: block; opacity: 0.85;">Minimal 6 karakter</small>
-                  </div>
-                  
-                  <div class="login-modal-group">
-                    <label><i class="fas fa-lock"></i> KONFIRMASI</label>
-                    <input type="password" 
-                           id="lupaConfirmInput" 
-                           placeholder="••••••••"
-                           autocomplete="new-password">
-                  </div>
-                  
-                  <div id="lupaMessage2" class="login-modal-message"></div>
-                  
-                  <div class="btn-svg login-modal-btn" id="lupaStage2Btn" onclick="submitLupaStage2()">
-                    <div class="btn-ujung-kiri"></div>
-                    <div class="btn-tengah"><span class="btn-teks">SIMPAN & LOGIN</span></div>
-                    <div class="btn-ujung-kanan"></div>
-                  </div>
-                  
                 </div>
               </div>
+
             </div>
             
           </div>
