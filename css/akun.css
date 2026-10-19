@@ -481,143 +481,102 @@
 .gate-login-btn:active { opacity: 0.7; }
 .gate-login-btn:focus { outline: none; box-shadow: none; }
 
-.login-modal-overlay {
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 970;
-    background: rgba(0, 0, 0, 0.2);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    animation: fadeInLoginModal 0.25s ease;
-    cursor: pointer;
-}
-
-.login-modal-overlay.open { display: flex; }
-
-@keyframes fadeInLoginModal {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
+/* Container modal login — max 80% stage, frame di luar konten */
 .login-modal {
     position: relative;
     max-width: 360px;
     width: 100%;
+    max-height: 240px;              /* 80% dari stage height (300px) */
     background: rgba(15, 10, 6, 0.95);
     border-radius: 12px;
-    padding: 22px 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     animation: slideUpLoginModal 0.3s ease;
     cursor: default;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;              /* frame SVG bisa keluar */
+    padding: 0;
 }
 
-@keyframes slideUpLoginModal {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+/* Wrapper scrollable — konten di sini */
+.login-modal-content {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;                  /* wajib untuk flex overflow */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 12px;
 }
 
-.login-modal-header {
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #f0d78c;
-    margin-bottom: 18px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
-    position: relative;
-    z-index: 2;
+.login-modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+.login-modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+.login-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(201, 165, 90, 0.4);
+    border-radius: 2px;
 }
 
-.login-modal-body {
+/* View wrapper */
+.login-modal-view {
     display: flex;
     flex-direction: column;
     position: relative;
     z-index: 2;
+    flex-shrink: 0;
+}
+/* ==========================================
+   🎯 COMPACT SPACING LOGIN MODAL (max-height fix)
+   ========================================== */
+
+.login-modal-header {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    padding: 8px 0 10px;
 }
 
 .login-modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.login-modal-group {
-    display: flex;
-    flex-direction: column;
+    gap: 7px;
 }
 
 .login-modal-group label {
-    font-size: 0.6rem;
-    color: #f0d78c;
-    margin-bottom: 3px;
-    letter-spacing: 0.7px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.login-modal-group label i {
-    color: #c9a55a;
-    margin-right: 3px;
-    font-size: 0.62rem;
+    font-size: 0.58rem;
+    margin-bottom: 2px;
 }
 
 .login-modal-group input {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid rgba(201, 165, 90, 0.6);
-    border-radius: 5px;
-    padding: 8px 11px;
-    color: #000000;
-    font-size: 0.82rem;
-    font-family: inherit;
-    transition: all 0.2s;
-    outline: none;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-}
-
-.login-modal-group input:focus {
-    border-color: #f0d78c;
-    box-shadow: 0 0 8px rgba(201, 165, 90, 0.4);
-}
-
-.login-modal-message {
-    font-size: 0.66rem;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: none;
-    line-height: 1.3;
-}
-
-.login-modal-message.show { display: block; }
-
-.login-modal-message.error {
-    background: rgba(255, 68, 68, 0.15);
-    color: #ff8888;
-    border: 1px solid rgba(255, 68, 68, 0.4);
-}
-
-.login-modal-message.success {
-    background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(74, 222, 128, 0.4);
+    padding: 6px 10px;
+    font-size: 0.8rem;
 }
 
 .login-modal-btn {
     margin-top: 4px;
-    width: 100%;
-    justify-content: center;
-    height: 30px !important;
+    height: 28px !important;
 }
 
-.login-modal-btn .btn-tengah { padding: 0 24px; }
-
 .login-modal-btn .btn-teks {
-    font-size: 10.5px;
-    letter-spacing: 2px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+.login-modal-forgot {
+    font-size: 0.68rem;
+    margin-top: 6px;
+}
+
+.login-modal-desc {
+    font-size: 0.7rem;
+    margin-bottom: 6px;
+}
+
+.login-modal .verify-member-info {
+    padding: 5px 8px;
+    font-size: 0.68rem;
+    margin-bottom: 6px;
 }
 
 /* ==========================================
