@@ -12,38 +12,98 @@ const CHAT_MAX_CHARS = 100;
 // ===== STATE MUTE =====
 let muteExpiryTime = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
 
-// Daftar kata kasar / porno (dasar)
-const KATA_TERLARANG = [
+// ===== DATABASE KATA KASAR (BUG-10) =====
+let badwordsDB = null;          // Set dari kata utuh
+let badwordsPatterns = [];      // Array RegExp dari pola
+
+// Fallback hardcoded (kalau fetch gagal)
+const KATA_TERLARANG_FALLBACK = [
   'anjing', 'anjg', 'anjir', 'bangsat', 'bajingan', 'kontol', 'kntl',
   'memek', 'mmk', 'ngentot', 'ngentod', 'ngewe', 'pepek', 'peler',
   'titit', 'tai', 'tahi', 'kampret', 'keparat', 'sialan', 'babi',
   'monyet', 'kadal', 'asu', 'bedebah', 'brengsek', 'setan', 'iblis',
-  'anj*ng', 'b*ngs*t', 'k*nt*l', 'm*m*k', 'ng*nt*t',
   'fuck', 'fck', 'shit', 'bitch', 'asshole', 'dick', 'pussy',
-  'cock', 'cunt', 'whore', 'slut', 'porn', 'sex', 'xxx',
+  'cock', 'cunt', 'whore', 'slut', 'porn', 'sex', 'xxx'
 ];
+
+async function loadBadwordsDB() {
+  try {
+    const res = await fetch('Assets/badwords.json', { cache: 'force-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    
+    badwordsDB = new Set(
+      (data.words || []).map(w => w.toLowerCase().trim()).filter(Boolean)
+    );
+    badwordsPatterns = (data.patterns || [])
+      .map(p => { try { return new RegExp(p, 'i'); } catch(e) { return null; } })
+      .filter(Boolean);
+    
+    console.log('✅ Badwords DB loaded:', badwordsDB.size, 'words,', badwordsPatterns.length, 'patterns');
+  } catch(e) {
+    console.warn('⚠️ Badwords DB gagal load, pakai fallback:', e);
+    badwordsDB = new Set(KATA_TERLARANG_FALLBACK);
+    badwordsPatterns = [];
+  }
+}
+
+// ===== NORMALISASI TEKS (untuk deteksi variasi) =====
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .replace(/[0]/g, 'o')
+    .replace(/[1!|]/g, 'i')
+    .replace(/[3]/g, 'e')
+    .replace(/[4@]/g, 'a')
+    .replace(/[5$]/g, 's')
+    .replace(/[7]/g, 't')
+    .replace(/[8]/g, 'b')
+    .replace(/[9]/g, 'g')
+    .replace(/[^a-z\s]/g, '')
+    .replace(/\s+/g, ' ');
+}
 
 let chatInputOpen = false;
 
 // ===== FILTER =====
 function filterPesan(text) {
+  // Strip karakter kontrol di awal (cegah formula injection)
   let cleaned = text.replace(/^[=+\-@<>]+/, '');
+  // Strip HTML tag
   cleaned = cleaned.replace(/<[^>]*>/g, '');
-
-  const lowerText = cleaned.toLowerCase();
-  const foundBad = KATA_TERLARANG.some(kata => lowerText.includes(kata));
-  if (foundBad) {
-    return { ok: false, reason: 'Pesan mengandung kata yang tidak pantas' };
-  }
-
+  
+  // Cek panjang dan kosong
   if (cleaned.length > CHAT_MAX_CHARS) {
     return { ok: false, reason: `Maksimal ${CHAT_MAX_CHARS} karakter` };
   }
-
   if (cleaned.trim() === '') {
     return { ok: false, reason: 'Pesan tidak boleh kosong' };
   }
-
+  
+  // ==========================================
+  // BARU: deteksi kata kasar
+  // ==========================================
+  const normalized = normalizeText(cleaned);
+  const words = normalized.split(/\s+/);
+  
+  // 1. Cek kata utuh (dari Set, exact match)
+  if (badwordsDB) {
+    for (const word of words) {
+      if (word && badwordsDB.has(word)) {
+        return { ok: false, reason: 'Pesan mengandung kata yang tidak pantas' };
+      }
+    }
+  }
+  
+  // 2. Cek pola regex (untuk variasi seperti "anj1ng", "a n j i n g")
+  //    Cek pada versi tanpa spasi juga (untuk deteksi "a n j i n g")
+  const normalizedNoSpace = normalized.replace(/\s+/g, '');
+  for (const pattern of badwordsPatterns) {
+    if (pattern.test(normalized) || pattern.test(normalizedNoSpace)) {
+      return { ok: false, reason: 'Pesan mengandung kata yang tidak pantas' };
+    }
+  }
+  
   return { ok: true, text: cleaned.trim() };
 }
 
@@ -268,6 +328,7 @@ function escapeHtml(str) {
 
 // ===== AUTO-GROW =====
 document.addEventListener('DOMContentLoaded', () => {
+  loadBadwordsDB();
   const input = document.getElementById('chatInputBox');
   if (input) {
     input.addEventListener('input', () => {
