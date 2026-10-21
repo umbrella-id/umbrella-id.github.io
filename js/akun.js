@@ -5,6 +5,18 @@
 let isKaitkanPopupOpen = false;
 
 // ==========================================
+// HELPER: POST ke GAS
+// ==========================================
+async function gasPost(payload) {
+  const res = await fetch(GAS.MAIN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  return res.json();
+}
+
+// ==========================================
 // CEK STATUS AKUN
 // ==========================================
 async function cekStatusAkun() {
@@ -239,14 +251,13 @@ async function submitStage2() {
     showVerifyMessage(2, '');
     
     try {
-        const url = `${GAS.MAIN}?action=activateAccount` +
-            `&uid=${encodeURIComponent(window._verifyUid)}` +
-            `&idLogin=${encodeURIComponent(idLogin)}` +
-            `&password=${encodeURIComponent(password)}` +
-            `&localUid=${encodeURIComponent(localUid)}`;
-        
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await gasPost({
+            action: 'activateAccount',
+            uid: window._verifyUid,
+            idLogin: idLogin,
+            password: password,
+            localUid: localUid
+        });
         
         if (data.success) {
             // Update identity
@@ -620,11 +631,11 @@ async function submitLoginModal() {
     showLoginMemberMessage('');
     
     try {
-        const url = `${GAS.MAIN}?action=loginWithIdPassword` +
-            `&idLogin=${encodeURIComponent(idLogin)}` +
-            `&password=${encodeURIComponent(password)}`;
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await gasPost({
+            action: 'loginWithIdPassword',
+            idLogin: idLogin,
+            password: password
+        });
         
         if (data.success) {
             // Update identity
@@ -992,14 +1003,13 @@ async function submitLupaStage2() {
   showLupaMessage(2, '');
   
   try {
-    const url = `${GAS.MAIN}?action=resetMemberPassword` +
-      `&uid=${encodeURIComponent(window._lupaUid)}` +
-      `&code=${encodeURIComponent(window._lupaCode)}` +
-      `&idLogin=${encodeURIComponent(idLogin)}` +
-      `&password=${encodeURIComponent(password)}`;
-    
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await gasPost({
+      action: 'resetMemberPassword',
+      uid: window._lupaUid,
+      code: window._lupaCode,
+      idLogin: idLogin,
+      password: password
+    });
     
     if (data.success) {
       localStorage.setItem('u_uid', data.webUID);
@@ -1129,13 +1139,12 @@ async function submitChangePassword() {
   showChangePwdMessage('');
   
   try {
-    const url = `${GAS.MAIN}?action=changeMemberPassword` +
-      `&uid=${encodeURIComponent(uid)}` +
-      `&oldPassword=${encodeURIComponent(oldPassword)}` +
-      `&newPassword=${encodeURIComponent(newPassword)}`;
-    
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await gasPost({
+      action: 'changeMemberPassword',
+      uid: uid,
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    });
     
     if (data.success) {
       showChangePwdMessage('✅ Password berhasil diubah', false);
@@ -1191,11 +1200,11 @@ async function validateMemberSessionOnce() {
   }
   
   try {
-    const url = `${GAS.MAIN}?action=validateMemberSession` +
-      `&uid=${encodeURIComponent(uid)}` +
-      `&password=${encodeURIComponent(session.password)}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await gasPost({
+      action: 'validateMemberSession',
+      uid: uid,
+      password: session.password
+    });
     
     if (!data.valid) {
       console.log('🔒 Member session invalid:', data.reason);
