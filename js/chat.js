@@ -144,19 +144,6 @@ chatDrag.addEventListener('touchstart', onDown, { passive: true });
 document.addEventListener('touchmove', onMove, { passive: false });
 document.addEventListener('touchend', onUp);
 
-// ===== ESCAPE HTML =====
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
-}
-
 // ===== PARSE COMMAND =====
 function parseCommand(msgText) {
   if (msgText.startsWith('MUTE_')) {
