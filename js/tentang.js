@@ -112,45 +112,32 @@ function formatTentangText(text) {
 
     if (line.startsWith('### ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h3>${escapeTentang(line.substring(4))}</h3>`;
+      html += `<h3>${escapeHtml(line.substring(4))}</h3>`;
       continue;
     }
     if (line.startsWith('## ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h2>${escapeTentang(line.substring(3))}</h2>`;
+      html += `<h2>${escapeHtml(line.substring(3))}</h2>`;
       continue;
     }
     if (line.startsWith('# ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h1>${escapeTentang(line.substring(2))}</h1>`;
+      html += `<h1>${escapeHtml(line.substring(2))}</h1>`;
       continue;
     }
 
     if (line.startsWith('- ')) {
       if (!inList) { html += '<ul>'; inList = true; }
-      html += `<li>${escapeTentang(line.substring(2))}</li>`;
+      html += `<li>${escapeHtml(line.substring(2))}</li>`;
       continue;
     }
 
     if (inList) { html += '</ul>'; inList = false; }
-    html += `<p>${escapeTentang(line)}</p>`;
+    html += `<p>${escapeHtml(line)}</p>`;
   }
 
   if (inList) html += '</ul>';
   return html;
-}
-
-// ===== ESCAPE =====
-function escapeTentang(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
 }
 
 // ===== ESC =====
