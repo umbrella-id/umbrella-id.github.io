@@ -348,12 +348,12 @@ function buildMailCardHTML(mail) {
   const ts = new Date(mail.timestamp);
   const tgl = ts.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
   const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-  const preview = escapeMail(mail.message).substring(0, 100) + (mail.message.length > 100 ? '...' : '');
+  const preview = escapeHtml(mail.message).substring(0, 100) + (mail.message.length > 100 ? '...' : '');
   const fromAdmin = mail.isFromAdmin;
   
   const senderLabel = fromAdmin 
-    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
-    : escapeMail(mail.ign);
+    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeHtml(mail.ign)}`
+    : escapeHtml(mail.ign);
   
   return `
     <div class="mail-card" onclick="openMailDetailById('${getMessageId(mail)}')">
@@ -361,7 +361,7 @@ function buildMailCardHTML(mail) {
         <span class="mail-card-sender">${senderLabel}</span>
         <span class="mail-card-time">${tgl} ${jam}</span>
       </div>
-      <div class="mail-card-category">${escapeMail(mail.category || 'Umum')}</div>
+      <div class="mail-card-category">${escapeHtml(mail.category || 'Umum')}</div>
       <div class="mail-card-preview">${preview}</div>
     </div>
   `;
@@ -421,8 +421,8 @@ function openMailDetail(messageId) {
   const fromAdmin = mail.isFromAdmin;
   
   const senderLabel = fromAdmin 
-    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeMail(mail.ign)}`
-    : escapeMail(mail.ign);
+    ? `<span class="mail-sender-tag">[ADMIN]</span>${escapeHtml(mail.ign)}`
+    : escapeHtml(mail.ign);
   
   const showReplyButton = isLastAdminReplyInCategory(mail);
   
@@ -430,12 +430,12 @@ function openMailDetail(messageId) {
     <div class="mail-detail">
       <div class="mail-detail-header">
         <span class="mail-detail-sender">${senderLabel}</span>
-        <span class="mail-detail-category">${escapeMail(mail.category || 'Umum')}</span>
+        <span class="mail-detail-category">${escapeHtml(mail.category || 'Umum')}</span>
       </div>
       
       <div class="mail-detail-time">${tgl} ${jam}</div>
       
-      <div class="mail-detail-body">${escapeMail(mail.message)}</div>
+      <div class="mail-detail-body">${escapeHtml(mail.message)}</div>
       
       ${showReplyButton ? `
         <div class="mail-detail-actions">
@@ -469,7 +469,7 @@ function openMailReplyForm(messageId) {
     <div class="mail-compose">
       <div class="mail-compose-context">
         <div class="mail-compose-context-label">Pesan admin:</div>
-        <div class="mail-compose-context-body">${escapeMail(mail.message)}</div>
+        <div class="mail-compose-context-body">${escapeHtml(mail.message)}</div>
       </div>
       
       <div class="mail-compose-group">
@@ -861,21 +861,6 @@ function openMailFromNotif() {
       openMailModal();
     }, 200);
   }
-}
-
-// ==========================================
-// ESCAPE HTML
-// ==========================================
-function escapeMail(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
 }
 
 // ==========================================
