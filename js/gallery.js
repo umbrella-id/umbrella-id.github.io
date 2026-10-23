@@ -216,13 +216,13 @@ function renderGalleryGrid() {
     html += `
       <div class="gallery-card" data-idx="${idx}">
         <img class="gallery-card-img" 
-             src="${escapeGallery(item.img)}" 
-             alt="${escapeGallery(item.judul)}"
+             src="${escapeHtml(item.img)}" 
+             alt="${escapeHtml(item.judul)}"
              loading="lazy"
              onerror="this.src='Assets/placeholder.png'; this.classList.add('error');">
         <div class="gallery-card-info">
-          <div class="gallery-card-title">${escapeGallery(item.judul)}</div>
-          ${item.caption ? `<div class="gallery-card-caption">${escapeGallery(item.caption)}</div>` : ''}
+          <div class="gallery-card-title">${escapeHtml(item.judul)}</div>
+          ${item.caption ? `<div class="gallery-card-caption">${escapeHtml(item.caption)}</div>` : ''}
         </div>
       </div>
     `;
@@ -616,21 +616,6 @@ function getTouchDistance(t1, t2) {
   const dx = t1.clientX - t2.clientX;
   const dy = t1.clientY - t2.clientY;
   return Math.sqrt(dx * dx + dy * dy);
-}
-
-// ==========================================
-// ESCAPE HTML
-// ==========================================
-function escapeGallery(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
 }
 
 // ==========================================
