@@ -436,7 +436,7 @@ async function openAkunSaya() {
             
             <div class="kaitkan-info-row">
                 <span class="kaitkan-info-label">IGN:</span>
-                <strong class="kaitkan-info-value">${escapeHtmlKaitkan(ign)}</strong>
+                <strong class="kaitkan-info-value">${escapeHtml(ign)}</strong>
             </div>
             
             <div class="kaitkan-info-row">
@@ -471,7 +471,7 @@ async function openAkunSaya() {
             
             <div class="kaitkan-info-row">
                 <span class="kaitkan-info-label">IGN:</span>
-                <strong class="kaitkan-info-value">${escapeHtmlKaitkan(ign)}</strong>
+                <strong class="kaitkan-info-value">${escapeHtml(ign)}</strong>
             </div>
             
             <div class="kaitkan-info-row">
@@ -816,21 +816,6 @@ function clearUmbrellaSession() {
         if (key.startsWith('umbrella_')) {
             sessionStorage.removeItem(key);
         }
-    });
-}
-
-// ==========================================
-// UTILITY
-// ==========================================
-function escapeHtmlKaitkan(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>"']/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        if (m === "'") return '&#39;';
-        return m;
     });
 }
 
