@@ -17,19 +17,6 @@ function getBrosurData() {
   return { profilList: profil, openmember: openmember };
 }
 
-// ===== ESCAPE HTML =====
-function brosurEscapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
-}
-
 // ===== FORMAT TEKS (TANPA GAMBAR) =====
 function brosurFormatText(text) {
   if (!text) return '';
@@ -56,10 +43,10 @@ function brosurFormatText(text) {
 
     if (line.startsWith('-')) {
       if (!inList) { html += '<ul>'; inList = true; }
-      html += `<li>${brosurEscapeHtml(line.substring(1).trim())}</li>`;
+      html += `<li>${escapeHtml(line.substring(1).trim())}</li>`;
     } else {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<p>${brosurEscapeHtml(line)}</p>`;
+      html += `<p>${escapeHtml(line)}</p>`;
     }
   }
   if (inList) html += '</ul>';
@@ -110,7 +97,7 @@ function createBrosurElement() {
   html += `<img src="Assets/logo.svg" class="brosur-logo" alt="Logo">`;
   html += `</div>`;
   html += `<h1 class="brosur-guild-name">UMBRELLA</h1>`;
-  html += `<p class="brosur-open-header">${brosurEscapeHtml(openHeader)}</p>`;
+  html += `<p class="brosur-open-header">${escapeHtml(openHeader)}</p>`;
   html += `</div>`;   // close header
 
   // --- BODY ---
@@ -128,7 +115,7 @@ function createBrosurElement() {
     const items = profilList.slice(0, 4);
     items.forEach(item => {
       html += `<div class="brosur-item">`;
-      html += `<h3>${brosurEscapeHtml(item.Header || 'Profil')}</h3>`;
+      html += `<h3>${escapeHtml(item.Header || 'Profil')}</h3>`;
       html += `<div class="brosur-item-body">${brosurFormatText(item.Body)}</div>`;
       html += `</div>`;
     });
