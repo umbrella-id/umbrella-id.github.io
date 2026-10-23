@@ -59,8 +59,11 @@ async function preloadGalleryData() {
     const rawData = await API.getContent();
     if (!rawData || !Array.isArray(rawData)) return;
 
-    const items = rawData.filter(item => (item.ID || '').toLowerCase() === 'gallery');
-    galleryData = items.map(item => parseGalleryItem(item)).filter(Boolean);
+const items = rawData.filter(item => (item.ID || '').toLowerCase() === 'gallery');
+galleryData = items
+  .map(item => parseGalleryItem(item))
+  .filter(Boolean)
+  .sort((a, b) => b.timestamp - a.timestamp);
 
     galleryPreloaded = true;
     console.log('✅ Gallery preloaded:', galleryData.length, 'foto');
@@ -94,7 +97,32 @@ function parseGalleryItem(item) {
     judul: judul,
     img: imgUrl,
     caption: caption,
+    timestamp: parseGalleryTimestamp(item.Timestamp)   // 🆕
   };
+}
+
+// 🆕 Helper: parse timestamp dari GAS (bisa Date, ISO string, atau epoch)
+function parseGalleryTimestamp(raw) {
+  if (raw === null || raw === undefined || raw === '') return 0;
+  if (typeof raw === 'number') return raw > 0 ? raw : 0;
+  if (raw instanceof Date) {
+    const t = raw.getTime();
+    return isNaN(t) ? 0 : t;
+  }
+  const str = String(raw).trim();
+  if (!str) return 0;
+
+  // ISO string
+  const t = new Date(str).getTime();
+  if (!isNaN(t) && t > 0) return t;
+
+  // Epoch (ms atau detik)
+  if (/^\d+$/.test(str)) {
+    const num = parseInt(str);
+    if (num > 1000000000000) return num;     // ms
+    if (num > 1000000000) return num * 1000;  // detik → ms
+  }
+  return 0;
 }
 
 // ==========================================
@@ -156,8 +184,11 @@ async function fetchGalleryData() {
     const rawData = await API.getContent();
     if (!rawData || !Array.isArray(rawData)) return;
 
-    const items = rawData.filter(item => (item.ID || '').toLowerCase() === 'gallery');
-    galleryData = items.map(item => parseGalleryItem(item)).filter(Boolean);
+const items = rawData.filter(item => (item.ID || '').toLowerCase() === 'gallery');
+galleryData = items
+  .map(item => parseGalleryItem(item))
+  .filter(Boolean)
+  .sort((a, b) => b.timestamp - a.timestamp);
 
     renderGalleryGrid();
   } catch (err) {
