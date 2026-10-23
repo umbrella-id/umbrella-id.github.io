@@ -233,19 +233,6 @@ function sanitizeHtml(html) {
   return cleaned;
 }
 
-// ===== ESCAPE =====
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    if (m === '"') return '&quot;';
-    if (m === "'") return '&#39;';
-    return m;
-  });
-}
-
 // ===== HANDLE TOMBOL BACK =====
 function infoGoBack() {
   if (currentView === 'detail') {
