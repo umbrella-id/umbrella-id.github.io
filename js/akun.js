@@ -793,6 +793,7 @@ function executeLogoutGuest() {
 // ==========================================
 function executeLogoutMember() {
     localStorage.removeItem('u_uid');
+    localStorage.removeItem('u_last_verify');
     localStorage.removeItem('u_ign');
     localStorage.removeItem('u_web_uid');
     localStorage.removeItem('u_class');
