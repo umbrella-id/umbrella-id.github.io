@@ -24,7 +24,40 @@
 <link rel="stylesheet" href="css/tentang.css">
 <link rel="stylesheet" href="css/gallery.css">
 <link rel="stylesheet" href="css/akun.css">
+
 </head>
+
+<!-- Preload aset kritis — hindari flicker saat render -->
+<link rel="preload" as="image" href="Assets/Background.webp" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/NPC.webp" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/SVG_BG-MENU.svg" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/SVG_BTN-MENU.svg" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/SVG_ICON-MENU.svg" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/SVG_ICON-CHAT.svg" fetchpriority="high">
+<link rel="preload" as="image" href="Assets/logo.svg">
+<link rel="preload" as="image" href="Assets/SVG_IGN-L.svg">
+<link rel="preload" as="image" href="Assets/SVG_IGN-R.svg">
+
+<!-- Modal & button — preload tapi prioritas rendah -->
+<link rel="preload" as="image" href="Assets/MODAL-CORNER.svg">
+<link rel="preload" as="image" href="Assets/MODAL-HEADER.svg">
+<link rel="preload" as="image" href="Assets/MODAL-H.svg">
+<link rel="preload" as="image" href="Assets/MODAL-V.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-L.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-M.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-R.svg">
+
+<!-- Button varian color — dipakai saat butuh (mail/akun) -->
+<link rel="preload" as="image" href="Assets/SVG_BTN-L-GREEN.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-M-GREEN.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-R-GREEN.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-L-RED.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-M-RED.svg">
+<link rel="preload" as="image" href="Assets/SVG_BTN-R-RED.svg">
+
+<!-- Brosur (dipakai saat user klik share) -->
+<link rel="preload" as="image" href="Assets/BROSUR-FRAME.svg">
+
 <body>
 
   <div class="rotate-wrapper">
