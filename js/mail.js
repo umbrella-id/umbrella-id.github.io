@@ -72,8 +72,9 @@ async function fetchMailFresh() {
   const uid = window.myUID;
   if (!uid) return;
   
+  const token = localStorage.getItem('umbrella_session_token') || '';
   try {
-    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=all`;
+    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=all&token=${encodeURIComponent(token)}`;
     const res = await fetch(url);
     const data = await res.json();
     
@@ -521,7 +522,7 @@ async function submitMailReply(messageId) {
   }
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(reply)}`;
+    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(reply)}&token=${encodeURIComponent(localStorage.getItem('umbrella_session_token') || '')}`;
     const res = await fetch(url);
     const data = await res.json();
     
@@ -702,7 +703,7 @@ async function submitMailCompose() {
   }
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}`;
+    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}submitMailCompose`;
     const res = await fetch(url);
     const data = await res.json();
     
