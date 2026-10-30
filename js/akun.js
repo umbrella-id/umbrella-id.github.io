@@ -2,6 +2,8 @@
  * akun.js — Fitur Verifikasi Akun, Login, & Logout
  */
 
+const GAS5_URL = "https://script.google.com/macros/s/AKfycbzTP1-9KuQ2iz4ffTfhujqkSIQqQxXWMXY-BHljCVU_Zzm0Ept8j4AJUCBHqB-ZSZk/exec";
+
 let isKaitkanPopupOpen = false;
 
 // ==========================================
@@ -260,18 +262,23 @@ async function submitStage2() {
         });
         
         if (data.success) {
-            // Update identity
-            localStorage.setItem('u_uid', data.webUID);
-            localStorage.setItem('u_web_uid', data.webUID);
-            localStorage.setItem('u_class', 'member');
-            
-            if (data.ign) {
-                localStorage.setItem('u_ign', data.ign);
-                window.myIGN = data.ign;
-            }
-            window.myUID = data.webUID;
-            
-            saveMemberSession(data.webUID, password);
+          localStorage.setItem('u_uid', data.webUID);
+          localStorage.setItem('u_web_uid', data.webUID);
+          localStorage.setItem('u_class', 'member');
+          
+          // BARU: simpan session token
+          if (data.sessionToken) {
+            localStorage.setItem('umbrella_session_token', data.sessionToken);
+            console.log('🔑 Session token (aktivasi) tersimpan');
+          }
+          
+          if (data.ign) {
+            localStorage.setItem('u_ign', data.ign);
+            window.myIGN = data.ign;
+          }
+          window.myUID = data.webUID;
+          
+          saveMemberSession(data.webUID, password);
             
             window._verifyUid = null;
             window._verifyNama = null;
@@ -638,18 +645,23 @@ async function submitLoginModal() {
         });
         
         if (data.success) {
-            // Update identity
-            localStorage.setItem('u_uid', data.webUID);
-            localStorage.setItem('u_web_uid', data.webUID);
-            localStorage.setItem('u_class', 'member');
-            
-            if (data.ign) {
-                localStorage.setItem('u_ign', data.ign);
-                window.myIGN = data.ign;
-            }
-            window.myUID = data.webUID;
-            
-            saveMemberSession(data.webUID, password);
+          localStorage.setItem('u_uid', data.webUID);
+          localStorage.setItem('u_web_uid', data.webUID);
+          localStorage.setItem('u_class', 'member');
+          
+          // BARU: simpan session token
+          if (data.sessionToken) {
+            localStorage.setItem('umbrella_session_token', data.sessionToken);
+            console.log('🔑 Session token (login) tersimpan');
+          }
+          
+          if (data.ign) {
+            localStorage.setItem('u_ign', data.ign);
+            window.myIGN = data.ign;
+          }
+          window.myUID = data.webUID;
+          
+          saveMemberSession(data.webUID, password);
             
             if (typeof updateIdentityUI === 'function') updateIdentityUI();
             
@@ -775,38 +787,47 @@ function closeLogoutConfirm(skipMenu = false) {
 // LOGOUT GUEST
 // ==========================================
 function executeLogoutGuest() {
-    localStorage.setItem('u_ign', '');
-    localStorage.removeItem('umbrella_member_session');   // ← BARU (safety)
-    clearUmbrellaSession();
-    
-    window.myIGN = '';
-    
-    if (typeof showToast === 'function') showToast('✅ Logout berhasil');
-    
-    setTimeout(() => {
-        location.reload();
-    }, 500);
+  localStorage.setItem('u_ign', '');
+  localStorage.removeItem('umbrella_member_session');
+  localStorage.removeItem('umbrella_session_token');   // ← BARU (jaga-jaga)
+  clearUmbrellaSession();
+  
+  window.myIGN = '';
+  
+  if (typeof showToast === 'function') showToast('✅ Logout berhasil');
+  
+  setTimeout(() => {
+    location.reload();
+  }, 500);
 }
-
 // ==========================================
 // LOGOUT MEMBER
 // ==========================================
 function executeLogoutMember() {
-    localStorage.removeItem('u_uid');
-    localStorage.removeItem('u_last_verify');
-    localStorage.removeItem('u_ign');
-    localStorage.removeItem('u_web_uid');
-    localStorage.removeItem('u_class');
-    localStorage.removeItem('u_ign_changed_at');
-    localStorage.removeItem('umbrella_member_session');
-    
-    clearUmbrellaSession();
-    
-    if (typeof showToast === 'function') showToast('✅ Logout berhasil');
-    
-    setTimeout(() => {
-        location.reload();
-    }, 500);
+  const token = localStorage.getItem('umbrella_session_token');
+  
+  // BARU: hapus session di server (fire-and-forget)
+  if (token) {
+    fetch(`${GAS5_URL}?action=memberLogout&token=${encodeURIComponent(token)}`, { keepalive: true })
+      .catch(() => {});
+  }
+  
+  localStorage.removeItem('u_uid');
+  localStorage.removeItem('u_last_verify');
+  localStorage.removeItem('u_ign');
+  localStorage.removeItem('u_web_uid');
+  localStorage.removeItem('u_class');
+  localStorage.removeItem('u_ign_changed_at');
+  localStorage.removeItem('umbrella_member_session');
+  localStorage.removeItem('umbrella_session_token');   // ← BARU
+  
+  clearUmbrellaSession();
+  
+  if (typeof showToast === 'function') showToast('✅ Logout berhasil');
+  
+  setTimeout(() => {
+    location.reload();
+  }, 500);
 }
 
 // ==========================================
@@ -1001,6 +1022,13 @@ async function submitLupaStage2() {
       localStorage.setItem('u_uid', data.webUID);
       localStorage.setItem('u_web_uid', data.webUID);
       localStorage.setItem('u_class', 'member');
+      
+      // BARU: simpan session token
+      if (data.sessionToken) {
+        localStorage.setItem('umbrella_session_token', data.sessionToken);
+        console.log('🔑 Session token (reset pwd) tersimpan');
+      }
+      
       if (data.ign) localStorage.setItem('u_ign', data.ign);
       
       window.myUID = data.webUID;
@@ -1125,11 +1153,14 @@ async function submitChangePassword() {
   showChangePwdMessage('');
   
   try {
+    const sessionToken = localStorage.getItem('umbrella_session_token') || '';
+    
     const data = await gasPost({
       action: 'changeMemberPassword',
       uid: uid,
       oldPassword: oldPassword,
-      newPassword: newPassword
+      newPassword: newPassword,
+      sessionToken: sessionToken   // ← BARU
     });
     
     if (data.success) {
