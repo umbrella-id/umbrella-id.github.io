@@ -219,14 +219,18 @@ async function kirimChat() {
     return;
   }
 
-  // 🎯 OPTIMISTIC UI — dengan class yang sesuai
+  // 🎯 OPTIMISTIC UI — append ke .chat-inner (bukan .chat-body)
   const chatLogs = document.getElementById('chatLogs');
   let optimisticEl = null;
-
+  
   if (chatLogs) {
+    const inner = chatLogs.querySelector('.chat-inner') || chatLogs;
     optimisticEl = buildOptimisticElement(ign, result.text);
-    chatLogs.appendChild(optimisticEl);
-    chatLogs.scrollTop = chatLogs.scrollHeight;
+    inner.appendChild(optimisticEl);
+    // column-reverse: scrollTop 0 = bottom visual
+    requestAnimationFrame(() => {
+      chatLogs.scrollTop = 0;
+    });
   }
 
   closeChatInput();
