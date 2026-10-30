@@ -61,11 +61,13 @@ const API = {
      MAIL (PIPE 1)
      ========================================== */
   async sendMail(uid, ign, msg, category) {
+    const token = localStorage.getItem('umbrella_session_token') || '';
     const url = `${GAS.MAIN}?type=mail`
       + `&uid=${encodeURIComponent(uid)}`
       + `&ign=${encodeURIComponent(ign)}`
       + `&msg=${encodeURIComponent(msg)}`
-      + `&category=${encodeURIComponent(category)}`;
+      + `&category=${encodeURIComponent(category)}`
+      + `&token=${encodeURIComponent(token)}`;
     const res = await fetch(url);
     return res.json();
   },
@@ -86,10 +88,12 @@ const API = {
      CHAT WRITE (PIPE 3)
      ========================================== */
   async sendChat(uid, ign, msg, type = 'msg') {
+    const token = localStorage.getItem('umbrella_session_token') || '';
     const url = `${GAS.WRITE}?uid=${encodeURIComponent(uid)}`
       + `&ign=${encodeURIComponent(ign)}`
       + `&msg=${encodeURIComponent(msg)}`
-      + `&type=${encodeURIComponent(type)}`;
+      + `&type=${encodeURIComponent(type)}`
+      + `&token=${encodeURIComponent(token)}`;
     const res = await fetch(url);
     return res.json();
   }
