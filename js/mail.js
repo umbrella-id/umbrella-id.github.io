@@ -703,7 +703,7 @@ async function submitMailCompose() {
   }
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}submitMailCompose`;
+    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}`;
     const res = await fetch(url);
     const data = await res.json();
     
