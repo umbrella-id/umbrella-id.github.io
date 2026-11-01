@@ -277,8 +277,6 @@ async function submitStage2() {
             window.myIGN = data.ign;
           }
           window.myUID = data.webUID;
-          
-          saveMemberSession(data.webUID, password);
             
             window._verifyUid = null;
             window._verifyNama = null;
@@ -303,22 +301,6 @@ async function submitStage2() {
         btn.style.pointerEvents = '';
         if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
     }
-}
-
-// ==========================================
-// HELPER SIMPAN SESSION
-// ==========================================
-function saveMemberSession(uid, password) {
-  if (!uid || !password) return;
-  try {
-    localStorage.setItem('umbrella_member_session', JSON.stringify({
-      uid: uid,
-      password: password,
-      loggedInAt: Date.now()
-    }));
-  } catch(e) {
-    console.warn('saveMemberSession error:', e);
-  }
 }
 
 // ==========================================
@@ -660,8 +642,6 @@ async function submitLoginModal() {
             window.myIGN = data.ign;
           }
           window.myUID = data.webUID;
-          
-          saveMemberSession(data.webUID, password);
             
             if (typeof updateIdentityUI === 'function') updateIdentityUI();
             
@@ -1034,8 +1014,6 @@ async function submitLupaStage2() {
       window.myUID = data.webUID;
       window.myIGN = data.ign || '';
       
-      saveMemberSession(data.webUID, password);
-      
       window._lupaUid = null;
       window._lupaCode = null;
       
@@ -1166,8 +1144,6 @@ async function submitChangePassword() {
     if (data.success) {
       showChangePwdMessage('✅ Password berhasil diubah', false);
       
-      saveMemberSession(uid, newPassword);
-      
       setTimeout(() => {
         closeChangePasswordForm(true);
         if (typeof showToast === 'function') showToast('✅ Password berhasil diubah');
@@ -1188,31 +1164,19 @@ async function submitChangePassword() {
 }
 
 // ==========================================
-// VALIDASI SESSION PER PAGE LOAD
-// Async, tidak block render. Fail-open kalau server error.
+// VALIDASI SESSION PER PAGE LOAD (BERBASIS TOKEN)
 // ==========================================
 async function validateMemberSessionOnce() {
   const uid = localStorage.getItem('u_uid') || '';
-  const sessionRaw = localStorage.getItem('umbrella_member_session');
+  const token = localStorage.getItem('umbrella_session_token');
   
   // Skip kalau bukan member verified
   if (!uid.endsWith('-v')) return;
   
-  // Skip kalau tidak ada session tersimpan (member lama sebelum fitur ini)
-  // Session akan di-set saat login/activate/reset/ganti password berikutnya
-  if (!sessionRaw) return;
-  
-  let session;
-  try {
-    session = JSON.parse(sessionRaw);
-  } catch(e) {
-    localStorage.removeItem('umbrella_member_session');
-    return;
-  }
-  
-  // Cek konsistensi session dengan u_uid
-  if (!session.uid || session.uid !== uid || !session.password) {
-    localStorage.removeItem('umbrella_member_session');
+  // Jika tidak ada token, paksa logout
+  if (!token) {
+    console.log('🔒 Token tidak ditemukan, paksa logout');
+    executeLogoutMember();
     return;
   }
   
@@ -1220,19 +1184,19 @@ async function validateMemberSessionOnce() {
     const data = await gasPost({
       action: 'validateMemberSession',
       uid: uid,
-      password: session.password
+      token: token // Kirim token, BUKAN password
     });
     
     if (!data.valid) {
-      console.log('🔒 Member session invalid:', data.reason);
+      console.log('🔒 Token tidak valid:', data.reason);
       
-      // Clear semua identity & session
+      // Bersihkan semua data identitas & token
       localStorage.removeItem('u_uid');
       localStorage.removeItem('u_ign');
       localStorage.removeItem('u_web_uid');
       localStorage.removeItem('u_class');
-      localStorage.removeItem('u_ign_changed_at');
-      localStorage.removeItem('umbrella_member_session');
+      localStorage.removeItem('umbrella_session_token');
+      localStorage.removeItem('umbrella_member_session'); // Sisa-sisa lama
       
       Object.keys(sessionStorage).forEach(key => {
         if (key.startsWith('umbrella_')) sessionStorage.removeItem(key);
@@ -1242,20 +1206,15 @@ async function validateMemberSessionOnce() {
       window.myIGN = '';
       
       if (typeof showToast === 'function') {
-        const msg = data.reason === 'inactive' 
-          ? 'Akun dinonaktifkan. Hubungi admin.' 
-          : (data.reason === 'not_found'
-              ? 'Akun tidak ditemukan. Hubungi admin.'
-              : 'Password telah diubah di device lain. Silakan login ulang.');
-        showToast(`🔒 ${msg}`, true);
+        showToast(`🔒 Sesi berakhir. Silakan login ulang.`, true);
       }
       
       setTimeout(() => location.reload(), 1500);
     } else {
-      console.log('✅ Member session valid');
+      console.log('✅ Session token valid');
     }
   } catch(e) {
-    // Fail-open: jangan kick kalau server error
+    // Fail-open: jangan kick kalau server error (mencegah user ter-logout massal saat GAS down)
     console.warn('validateMemberSession error (fail-open):', e);
   }
 }
@@ -1293,6 +1252,5 @@ window.openChangePasswordForm = openChangePasswordForm;
 window.closeChangePasswordForm = closeChangePasswordForm;
 window.submitChangePassword = submitChangePassword;
 window.validateMemberSessionOnce = validateMemberSessionOnce;
-window.saveMemberSession = saveMemberSession;
 
 console.log('✅ kaitkan-akun.js loaded (V3 — Modal Konfirmasi Logout)');
