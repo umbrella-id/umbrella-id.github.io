@@ -264,7 +264,6 @@ async function submitStage2() {
         if (data.success) {
           localStorage.setItem('u_uid', data.webUID);
           localStorage.setItem('u_web_uid', data.webUID);
-          localStorage.setItem('u_class', 'member');
           
           // BARU: simpan session token
           if (data.sessionToken) {
@@ -629,7 +628,6 @@ async function submitLoginModal() {
         if (data.success) {
           localStorage.setItem('u_uid', data.webUID);
           localStorage.setItem('u_web_uid', data.webUID);
-          localStorage.setItem('u_class', 'member');
           
           // BARU: simpan session token
           if (data.sessionToken) {
@@ -1001,7 +999,6 @@ async function submitLupaStage2() {
     if (data.success) {
       localStorage.setItem('u_uid', data.webUID);
       localStorage.setItem('u_web_uid', data.webUID);
-      localStorage.setItem('u_class', 'member');
       
       // BARU: simpan session token
       if (data.sessionToken) {
