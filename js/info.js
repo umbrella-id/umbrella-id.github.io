@@ -224,13 +224,24 @@ function formatIsiCard(text) {
   return escapeHtml(text).replace(/\n/g, '<br>');
 }
 
-// ===== SANITIZE =====
 function sanitizeHtml(html) {
-  let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  cleaned = cleaned.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
-  cleaned = cleaned.replace(/on\w+="[^"]*"/gi, '');
-  cleaned = cleaned.replace(/javascript:/gi, '');
-  return cleaned;
+    if (!html) return '';
+    if (typeof DOMPurify === 'undefined') {
+        console.warn('⚠️ DOMPurify tidak ter-load, headline fallback');
+        return escapeHtml(html);
+    }
+    return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: [
+            'p', 'br', 'strong', 'b', 'em', 'i', 'u',
+            'ul', 'ol', 'li',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'a', 'img', 'span', 'div',
+            'blockquote', 'code', 'pre'
+        ],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'style'],
+        ALLOW_DATA_ATTR: false,
+        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i
+    });
 }
 
 // ===== HANDLE TOMBOL BACK =====
