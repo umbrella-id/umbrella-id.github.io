@@ -19,38 +19,45 @@ function getBrosurData() {
 
 // ===== FORMAT TEKS (TANPA GAMBAR) =====
 function brosurFormatText(text) {
-  if (!text) return '';
+    if (!text) return '';
 
-  let cleaned = text;
-  cleaned = cleaned.replace(/<img[^>]*>/gi, '');
-  cleaned = cleaned.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
+    let cleaned = text;
+    // Strip gambar & figure (brosur tidak render gambar, hanya teks)
+    cleaned = cleaned.replace(/<img[^>]*>/gi, '');
+    cleaned = cleaned.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
 
-  if (/<[a-z][\s\S]*>/i.test(cleaned)) {
-    cleaned = cleaned.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    cleaned = cleaned.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
-    cleaned = cleaned.replace(/on\w+="[^"]*"/gi, '');
-    cleaned = cleaned.replace(/javascript:/gi, '');
-    return cleaned;
-  }
-
-  const lines = cleaned.split('\n');
-  let inList = false;
-  let html = '';
-
-  for (let line of lines) {
-    line = line.trim();
-    if (line === '') continue;
-
-    if (line.startsWith('-')) {
-      if (!inList) { html += '<ul>'; inList = true; }
-      html += `<li>${escapeHtml(line.substring(1).trim())}</li>`;
-    } else {
-      if (inList) { html += '</ul>'; inList = false; }
-      html += `<p>${escapeHtml(line)}</p>`;
+    // Kalau ada HTML tag → sanitize via DOMPurify
+    if (/<[a-z][\s\S]*>/i.test(cleaned)) {
+        if (typeof DOMPurify === 'undefined') {
+            console.warn('⚠️ DOMPurify tidak ter-load, brosur fallback');
+            return escapeHtml(cleaned);
+        }
+        return DOMPurify.sanitize(cleaned, {
+            ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li'],
+            ALLOWED_ATTR: [],
+            ALLOW_DATA_ATTR: false
+        });
     }
-  }
-  if (inList) html += '</ul>';
-  return html;
+
+    // Plain text → convert to HTML (existing behavior)
+    const lines = cleaned.split('\n');
+    let inList = false;
+    let html = '';
+
+    for (let line of lines) {
+        line = line.trim();
+        if (line === '') continue;
+
+        if (line.startsWith('-')) {
+            if (!inList) { html += '<ul>'; inList = true; }
+            html += `<li>${escapeHtml(line.substring(1).trim())}</li>`;
+        } else {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += `<p>${escapeHtml(line)}</p>`;
+        }
+    }
+    if (inList) html += '</ul>';
+    return html;
 }
 
 // ===== AMBIL BACKGROUND IMAGE (KONDISIONAL) =====
