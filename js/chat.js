@@ -374,7 +374,24 @@ async function syncChat(force = false) {
     }
 
     if (data.muteRegistry) {
-      muteRegistry = data.muteRegistry;
+        muteRegistry = data.muteRegistry;
+        
+        // 🆕 SYNC local state dari server
+        const myUid = window.myUID;
+        if (myUid) {
+            const serverMute = muteRegistry[myUid];
+            const localExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+            
+            if (serverMute && serverMute.isMuted && serverMute.muteExpiry > Date.now()) {
+                if (localExpiry !== serverMute.muteExpiry) {
+                    localStorage.setItem('umbrella_mute_expiry', serverMute.muteExpiry.toString());
+                }
+            } else if (localExpiry > 0) {
+                console.log('🔓 Server says unmuted — clearing local');
+                localStorage.removeItem('umbrella_mute_expiry');
+                if (typeof hideMuteNotif === 'function') hideMuteNotif();
+            }
+        }
     }
 
     const arrayChat = data.logs || [];
