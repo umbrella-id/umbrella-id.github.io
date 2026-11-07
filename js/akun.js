@@ -27,9 +27,7 @@ async function cekStatusAkun() {
     if (!uUid.startsWith('M-')) return { hasAccount: false };
     
     try {
-        const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uUid)}`;
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await API.checkAccountStatus(uUid);
         
         if (data.hasAccount && data.webUID && data.webUID !== uUid) {
             localStorage.setItem('u_uid', data.webUID);
