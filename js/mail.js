@@ -69,24 +69,20 @@ function loadMailFromCache() {
 // FETCH FRESH
 // ==========================================
 async function fetchMailFresh() {
-  
   if (!await requireSession()) return;
   
   const uid = window.myUID;
   if (!uid) return;
   
   const token = localStorage.getItem('umbrella_session_token') || '';
+  
   try {
-    const url = `${GAS_MAIL_URL}?type=mail-list&uid=${encodeURIComponent(uid)}&filter=all&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await API.getMailList(uid, token);
     
     if (data.status === 'success' && data.mails) {
       const newStamp = JSON.stringify(data.mails);
       
-      if (newStamp === mailStamp) {
-        return;
-      }
+      if (newStamp === mailStamp) return;
       
       mailCache = data.mails;
       mailStamp = newStamp;
@@ -505,7 +501,6 @@ function openMailReplyForm(messageId) {
 // KIRIM BALASAN
 // ==========================================
 async function submitMailReply(messageId) {
-
   if (!await requireSession()) return;
   
   const input = document.getElementById('mailReplyInput');
@@ -528,9 +523,7 @@ async function submitMailReply(messageId) {
   }
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(reply)}&token=${encodeURIComponent(localStorage.getItem('umbrella_session_token') || '')}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await API.sendMail(uid, ign, reply, category);
     
     if (data.status === 'rate_limited') {
       const waitMsg = data.retryAfter 
@@ -546,15 +539,10 @@ async function submitMailReply(messageId) {
     
     if (data.status === 'success') {
       showMailReplyMessage('✅ Balasan terkirim', 'success');
-      
       window._mailFromInfo = false;
-      
       mailStamp = '';
       await fetchMailFresh();
-      
-      setTimeout(() => {
-        renderMailMenu();
-      }, 800);
+      setTimeout(() => renderMailMenu(), 800);
     } else {
       showMailReplyMessage('Gagal mengirim', 'error');
       if (btn) {
@@ -690,7 +678,6 @@ function openMailCompose() {
 // KIRIM SURAT BARU
 // ==========================================
 async function submitMailCompose() {
-
   if (!await requireSession()) return;
   
   const input = document.getElementById('mailComposeInput');
@@ -712,9 +699,7 @@ async function submitMailCompose() {
   }
   
   try {
-    const url = `${GAS_MAIL_URL}?type=mail&uid=${encodeURIComponent(uid)}&ign=${encodeURIComponent(ign)}&category=${encodeURIComponent(category)}&msg=${encodeURIComponent(pesan)}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await API.sendMail(uid, ign, pesan, category);
     
     if (data.status === 'rate_limited') {
       const waitMsg = data.retryAfter 
@@ -730,7 +715,6 @@ async function submitMailCompose() {
     
     if (data.status === 'success') {
       showMailComposeMessage('✅ Surat terkirim', 'success');
-      
       mailStamp = '';
       await fetchMailFresh();
       
@@ -738,14 +722,10 @@ async function submitMailCompose() {
         window._mailFromInfo = false;
         setTimeout(() => {
           closeMailModal(true);
-          setTimeout(() => {
-            if (typeof openInfoModal === 'function') openInfoModal();
-          }, 200);
+          setTimeout(() => openInfoModal?.(), 200);
         }, 800);
       } else {
-        setTimeout(() => {
-          renderMailMenu();
-        }, 800);
+        setTimeout(() => renderMailMenu(), 800);
       }
     } else {
       showMailComposeMessage('Gagal mengirim', 'error');
