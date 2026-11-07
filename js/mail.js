@@ -69,6 +69,9 @@ function loadMailFromCache() {
 // FETCH FRESH
 // ==========================================
 async function fetchMailFresh() {
+  
+  if (!await requireSession()) return;
+  
   const uid = window.myUID;
   if (!uid) return;
   
@@ -502,6 +505,9 @@ function openMailReplyForm(messageId) {
 // KIRIM BALASAN
 // ==========================================
 async function submitMailReply(messageId) {
+
+  if (!await requireSession()) return;
+  
   const input = document.getElementById('mailReplyInput');
   const reply = input ? input.value.trim() : '';
   
@@ -684,6 +690,9 @@ function openMailCompose() {
 // KIRIM SURAT BARU
 // ==========================================
 async function submitMailCompose() {
+
+  if (!await requireSession()) return;
+  
   const input = document.getElementById('mailComposeInput');
   const pesan = input ? input.value.trim() : '';
   
