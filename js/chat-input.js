@@ -269,9 +269,16 @@ async function kirimChat() {
       if (optimisticEl && optimisticEl.parentNode) {
         optimisticEl.remove();
       }
-
+      
       const sisaMenit = res.sisaMenit || 0;
       const waitMsg = `Kamu sedang dibisukan. Sisa ${sisaMenit} menit.`;
+      
+      // 🆕 SYNC localStorage dari response server
+      // (handles rotation edge case — kalau command MUTE_ sudah rotasi dari CHAT_LOG)
+      if (res.expiresAt) {
+        localStorage.setItem('umbrella_mute_expiry', res.expiresAt.toString());
+        if (typeof showMuteNotif === 'function') showMuteNotif();
+      }
 
       if (chatLogs) {
         const sysEl = document.createElement('div');
