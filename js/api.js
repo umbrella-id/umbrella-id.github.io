@@ -106,7 +106,7 @@ const API = {
       + `&token=${encodeURIComponent(token)}`;
     const res = await fetch(url);
     return res.json();
-  }
+  },
   
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
