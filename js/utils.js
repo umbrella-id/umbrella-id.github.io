@@ -18,11 +18,22 @@
   window.escapeHtml = escapeHtml;
 
   window.requireSession = async function() {
-    if (!window.myUID || !localStorage.getItem('umbrella_session_token')) {
-      const session = await ensureGuestSession();
-      return !!session;
+    if (window.myUID && localStorage.getItem('umbrella_session_token')) {
+      return true;
     }
-    return true;
+    
+    if (typeof window.ensureGuestSession !== 'function') {
+      console.error('❌ ensureGuestSession() belum ter-load. Cek urutan script di HTML.');
+      return false;
+    }
+    
+    try {
+      const session = await window.ensureGuestSession();
+      return !!session;
+    } catch(e) {
+      console.error('requireSession error:', e);
+      return false;
+    }
   };
 
   console.log('✅ utils.js loaded');
