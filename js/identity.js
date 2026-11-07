@@ -10,9 +10,9 @@ const STORAGE_IGN = 'u_ign';
 const STORAGE_LAST_CHANGE = 'u_ign_changed_at';
 
 // ===== INISIALISASI =====
-window.myUID = localStorage.getItem(STORAGE_UID) || 'G-' + Math.random().toString(36).substring(2, 11);
+window.myUID = localStorage.getItem(STORAGE_UID) || '';
 window.myIGN = localStorage.getItem(STORAGE_IGN) || '';
-localStorage.setItem(STORAGE_UID, window.myUID);
+// Note: Guest UID sekarang dibuat server-side via ensureGuestSession()
 
 let gateMode = 'first';
 
@@ -264,14 +264,108 @@ function closeGate(skipMenu = false) {
   }, 500);
 }
 
+// ==========================================
+// 🎯 ENSURE GUEST SESSION (server-issued via GAS1)
+// ==========================================
+let __guestSessionPromise = null;
+
+function ensureGuestSession() {
+  if (__guestSessionPromise) return __guestSessionPromise;
+  
+  __guestSessionPromise = (async () => {
+    const token = localStorage.getItem('umbrella_session_token');
+    const uid = localStorage.getItem('u_uid');
+    
+    // Member sudah punya session — verify via GAS1 (which verifies via GAS5)
+    if (uid && uid.startsWith('M-') && token) {
+      try {
+        const res = await fetch(GAS.MAIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'validateGuestSession', uid: uid, token: token })
+        });
+        const data = await res.json();
+        if (data.valid) {
+          window.myUID = uid;
+          return { uid, token };
+        }
+      } catch(e) {}
+      // Invalid — clear
+      localStorage.removeItem('u_uid');
+      localStorage.removeItem('umbrella_session_token');
+    }
+    
+    // Guest punya session — verify
+    if (uid && uid.startsWith('G-') && token) {
+      try {
+        const res = await fetch(GAS.MAIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'validateGuestSession', uid: uid, token: token })
+        });
+        const data = await res.json();
+        if (data.valid) {
+          window.myUID = uid;
+          console.log('✅ Guest session valid:', uid);
+          return { uid, token };
+        }
+      } catch(e) {
+        console.warn('Session validation error:', e);
+      }
+      localStorage.removeItem('u_uid');
+      localStorage.removeItem('umbrella_session_token');
+    }
+    
+    // Create fresh guest session
+    try {
+      const ua = (navigator.userAgent || 'unknown').substring(0, 100);
+      const res = await fetch(GAS.MAIN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'createGuestSession', userAgent: ua })
+      });
+      const data = await res.json();
+      
+      if (data.status === 'success' && data.uid && data.sessionToken) {
+        localStorage.setItem('u_uid', data.uid);
+        localStorage.setItem('umbrella_session_token', data.sessionToken);
+        window.myUID = data.uid;
+        console.log('✅ Guest session created:', data.uid);
+        return { uid: data.uid, token: data.sessionToken };
+      }
+      
+      if (data.status === 'rate_limited') {
+        console.warn('⚠️ Rate limited:', data.message);
+      } else {
+        console.error('Guest session failed:', data.message || data);
+      }
+    } catch(e) {
+      console.error('Guest session creation error:', e);
+    }
+    
+    return null;
+  })();
+  
+  return __guestSessionPromise;
+}
+
 // ===== INISIALISASI =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Ensure guest session FIRST — before gate opens
+  const session = await ensureGuestSession();
+  
+  if (!session) {
+    console.error('❌ Tidak bisa membuat sesi. Guest tidak bisa chat/mail.');
+    // Still allow gate to open (user bisa lihat UI), tapi chat/mail akan fail
+    // Rate limit biasanya singkat (1 jam), user bisa reload
+  }
+  
   if (!window.myIGN) {
     openGate('first');
   } else {
     updateIdentityUI();
   }
-
+  
   const input = document.getElementById('gate-input');
   if (input) {
     input.addEventListener('keypress', (e) => {
