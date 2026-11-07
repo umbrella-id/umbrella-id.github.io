@@ -1225,7 +1225,6 @@ window.addEventListener('load', () => {
 // ==========================================
 window.openKaitkanAkun = openKaitkanAkun;
 window.closeKaitkanAkun = closeKaitkanAkun;
-window.submitKaitkanAkun = submitKaitkanAkun;
 window.openAkunSaya = openAkunSaya;
 window.openVerifikasiFromAkun = openVerifikasiFromAkun;
 window.cekStatusAkun = cekStatusAkun;
