@@ -89,11 +89,13 @@ const API = {
      ========================================== */
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
+    const ua = (navigator.userAgent || 'unknown').substring(0, 100);
     const url = `${GAS.WRITE}?uid=${encodeURIComponent(uid)}`
       + `&ign=${encodeURIComponent(ign)}`
       + `&msg=${encodeURIComponent(msg)}`
       + `&type=${encodeURIComponent(type)}`
-      + `&token=${encodeURIComponent(token)}`;
+      + `&token=${encodeURIComponent(token)}`
+      + `&userAgent=${encodeURIComponent(ua)}`;   // ← BARU
     const res = await fetch(url);
     return res.json();
   }
