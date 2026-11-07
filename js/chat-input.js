@@ -196,6 +196,16 @@ async function kirimChat() {
     return;
   }
 
+  // Safety: ensure session exists
+  if (!window.myUID || !localStorage.getItem('umbrella_session_token')) {
+    showChatInputMessage('Memuat sesi... tunggu sebentar');
+    const session = await ensureGuestSession();
+    if (!session || !session.uid) {
+      showChatInputMessage('Sesi tidak valid. Muat ulang halaman.');
+      return;
+    }
+  }
+
   const input = document.getElementById('chatInputBox');
   if (!input) return;
 
