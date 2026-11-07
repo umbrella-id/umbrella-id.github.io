@@ -96,6 +96,17 @@ const API = {
     });
     return res.json();
   },
+
+  async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
+    const token = localStorage.getItem('umbrella_session_token') || '';
+    const url = `${GAS.READ}?uid=${encodeURIComponent(uid)}`
+      + `&ign=${encodeURIComponent(ign)}`
+      + `&isMuted=${isMuted}`
+      + `&muteExpiry=${muteExpiry}`
+      + `&token=${encodeURIComponent(token)}`;
+    const res = await fetch(url);
+    return res.json();
+  }
   
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
