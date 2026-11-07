@@ -24,7 +24,6 @@ const CHAT_STAMP_KEY = 'umbrella_chat_stamp';
 const POLL_INTERVAL_MS = 4500;
 let chatPollingTimer = null;
 let lastChatStamp = sessionStorage.getItem(CHAT_STAMP_KEY) || '';
-let muteRegistry = {};
 
 // ==========================================
 // 🎯 AUTO-SCROLL HELPER
@@ -182,10 +181,6 @@ function isSystemMessageMasihBerlaku(logs, index) {
         return false;
       }
     }
-    const reg = muteRegistry[parsed.uid];
-    if (reg && reg.isMuted === false) {
-      return false;
-    }
     
     // Cek durasi
     if (parsed.durasi > 0) {
@@ -284,24 +279,37 @@ function renderChatLogs(logs) {
         if (!isSystemMessageMasihBerlaku(logs, index)) return;
 
         if (parsed.uid === window.myUID) {
-          if (parsed.type === 'mute') {
-            const existingExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
-            const now = Date.now();
-
-            if (existingExpiry > now) {
-              console.log('⏭️ Sudah di-mute, skip reset');
-              if (typeof showMuteNotif === 'function') showMuteNotif();
-            } else {
-              const expiry = now + (parsed.durasi * 60 * 1000);
-              localStorage.setItem('umbrella_mute_expiry', expiry.toString());
-              console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit');
-              if (typeof showMuteNotif === 'function') showMuteNotif();
+            if (parsed.type === 'mute') {
+                // 🎯 Hitung expiry dari TIMESTAMP COMMAND, bukan waktu polling
+                const msgTimestamp = msg.timestamp || Date.now();
+                const expiry = msgTimestamp + (parsed.durasi * 60 * 1000);
+                const now = Date.now();
+                
+                if (expiry <= now) {
+                    // Mute sudah expire, tidak perlu set
+                    console.log('⏭️ Mute command ditemukan tapi sudah expired');
+                    if (typeof hideMuteNotif === 'function') hideMuteNotif();
+                    localStorage.removeItem('umbrella_mute_expiry');
+                    return;
+                }
+                
+                // Set localStorage pakai expiry AKURAT dari command timestamp
+                const existingExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+                
+                // Update hanya kalau expiry berbeda signifikan (>2s)
+                if (Math.abs(existingExpiry - expiry) > 2000) {
+                    localStorage.setItem('umbrella_mute_expiry', expiry.toString());
+                    console.log('🔇 Kamu di-mute:', parsed.durasi, 'menit, expiry:', new Date(expiry).toISOString());
+                }
+                
+                // Selalu tampilkan notif (idempotent — tidak reset timer kalau sudah ada)
+                if (typeof showMuteNotif === 'function') showMuteNotif();
+                
+            } else if (parsed.type === 'unmute') {
+                localStorage.removeItem('umbrella_mute_expiry');
+                console.log('🔊 Kamu di-unmute');
+                if (typeof hideMuteNotif === 'function') hideMuteNotif();
             }
-          } else if (parsed.type === 'unmute') {
-            localStorage.removeItem('umbrella_mute_expiry');
-            console.log('🔊 Kamu di-unmute');
-            if (typeof hideMuteNotif === 'function') hideMuteNotif();
-          }
         }
 
         let displayText = '';
@@ -371,27 +379,6 @@ async function syncChat(force = false) {
 
     if (typeof handleMailTrigger === 'function') {
       handleMailTrigger(data.lastMailReply || 0);
-    }
-
-    if (data.muteRegistry) {
-        muteRegistry = data.muteRegistry;
-        
-        // 🆕 SYNC local state dari server
-        const myUid = window.myUID;
-        if (myUid) {
-            const serverMute = muteRegistry[myUid];
-            const localExpiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
-            
-            if (serverMute && serverMute.isMuted && serverMute.muteExpiry > Date.now()) {
-                if (localExpiry !== serverMute.muteExpiry) {
-                    localStorage.setItem('umbrella_mute_expiry', serverMute.muteExpiry.toString());
-                }
-            } else if (localExpiry > 0) {
-                console.log('🔓 Server says unmuted — clearing local');
-                localStorage.removeItem('umbrella_mute_expiry');
-                if (typeof hideMuteNotif === 'function') hideMuteNotif();
-            }
-        }
     }
 
     const arrayChat = data.logs || [];
