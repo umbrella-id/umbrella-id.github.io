@@ -62,40 +62,50 @@ const API = {
      ========================================== */
   async sendMail(uid, ign, msg, category) {
     const token = localStorage.getItem('umbrella_session_token') || '';
-    const url = `${GAS.MAIN}?type=mail`
-      + `&uid=${encodeURIComponent(uid)}`
-      + `&ign=${encodeURIComponent(ign)}`
-      + `&msg=${encodeURIComponent(msg)}`
-      + `&category=${encodeURIComponent(category)}`
-      + `&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url);
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'sendMail', uid, ign, msg, category, token })
+    });
     return res.json();
   },
-
-  /* ==========================================
-     CHAT READ + PRESENCE (PIPE 2)
-     ========================================== */
-  async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
-    const url = `${GAS.READ}?uid=${encodeURIComponent(uid)}`
-      + `&ign=${encodeURIComponent(ign)}`
-      + `&isMuted=${isMuted}`
-      + `&muteExpiry=${muteExpiry}`;
-    const res = await fetch(url);
+  
+  async getMailList(uid, token) {
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'getMailList', uid, token })
+    });
     return res.json();
   },
-
-  /* ==========================================
-     CHAT WRITE (PIPE 3)
-     ========================================== */
+  
+  async getMailHistory(uid, token) {
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'getMailHistory', uid, token })
+    });
+    return res.json();
+  },
+  
+  async checkAccountStatus(uid) {
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'checkAccountStatus', uid })
+    });
+    return res.json();
+  },
+  
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
-    const ua = (navigator.userAgent || 'unknown').substring(0, 100);
+    const ua = (navigator.userAgent || 'unknown').substring(0, 100);   // ← BARU
     const url = `${GAS.WRITE}?uid=${encodeURIComponent(uid)}`
       + `&ign=${encodeURIComponent(ign)}`
       + `&msg=${encodeURIComponent(msg)}`
       + `&type=${encodeURIComponent(type)}`
       + `&token=${encodeURIComponent(token)}`
-      + `&userAgent=${encodeURIComponent(ua)}`;   // ← BARU
+      + `&userAgent=${encodeURIComponent(ua)}`;                          // ← BARU
     const res = await fetch(url);
     return res.json();
   }
