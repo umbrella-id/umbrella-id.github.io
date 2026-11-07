@@ -17,5 +17,13 @@
 
   window.escapeHtml = escapeHtml;
 
+  window.requireSession = async function() {
+    if (!window.myUID || !localStorage.getItem('umbrella_session_token')) {
+      const session = await ensureGuestSession();
+      return !!session;
+    }
+    return true;
+  };
+
   console.log('✅ utils.js loaded');
 })();
