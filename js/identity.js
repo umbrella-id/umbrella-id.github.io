@@ -383,5 +383,6 @@ window.cekCooldownGantiNama = cekCooldownGantiNama;
 window.clearGateMessage = clearGateMessage;
 window.isMember = isMember;
 window.sanitizeIGN = sanitizeIGN;
+window.ensureGuestSession = ensureGuestSession;
 
 console.log('✅ identity.js loaded (V2 — Prefix G- + Sanitasi IGN)');
