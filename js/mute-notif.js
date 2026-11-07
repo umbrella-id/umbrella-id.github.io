@@ -56,19 +56,30 @@ function showMuteNotif() {
 
   // Update tiap detik
   muteNotifTimer = setInterval(() => {
-    const expiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
-    if (expiry <= 0 || Date.now() >= expiry) {
-      el.classList.remove('show');
-      clearInterval(muteNotifTimer);
-      muteNotifTimer = null;
-      localStorage.removeItem('umbrella_mute_expiry');
-      console.log('🔓 Mute expired, notif disembunyikan');
-
-      // 🎯 Force re-render chat
-      forceRenderChat();
-      return;
-    }
-    updateMuteNotifText();
+      const expiry = parseInt(localStorage.getItem('umbrella_mute_expiry')) || 0;
+      
+      if (expiry <= 0) {
+          // localStorage kosong — bisa dari expire natural ATAU user clear
+          el.classList.remove('show');
+          clearInterval(muteNotifTimer);
+          muteNotifTimer = null;
+          console.log('🔓 localStorage mute kosong, hide notif (akan restore jika command ada)');
+          forceRenderChat();
+          return;
+      }
+      
+      if (Date.now() >= expiry) {
+          // Benar-benar expired
+          el.classList.remove('show');
+          clearInterval(muteNotifTimer);
+          muteNotifTimer = null;
+          localStorage.removeItem('umbrella_mute_expiry');
+          console.log('⏰ Mute expired (natural)');
+          forceRenderChat();
+          return;
+      }
+      
+      updateMuteNotifText();
   }, 1000);
 
   // 🎯 Timer akurat: tepat saat expired
