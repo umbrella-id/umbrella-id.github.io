@@ -1,6 +1,6 @@
 /**
  * api.js — Wrapper Google Apps Script (dengan cache)
- */
+ */https://github.com/umbrella-id/umbrella-id.github.io/security
 
 const GAS = {
   MAIN:  'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec',
@@ -125,7 +125,7 @@ const API = {
         })
       });
       return res.json();
-  }
+  },
 
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
