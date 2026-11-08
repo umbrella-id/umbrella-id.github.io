@@ -119,14 +119,20 @@ const API = {
   
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
-    const ua = (navigator.userAgent || 'unknown').substring(0, 100);   // ← BARU
-    const url = `${GAS.WRITE}?uid=${encodeURIComponent(uid)}`
-      + `&ign=${encodeURIComponent(ign)}`
-      + `&msg=${encodeURIComponent(msg)}`
-      + `&type=${encodeURIComponent(type)}`
-      + `&token=${encodeURIComponent(token)}`
-      + `&userAgent=${encodeURIComponent(ua)}`;                          // ← BARU
-    const res = await fetch(url);
+    const ua = (navigator.userAgent || 'unknown').substring(0, 100);
+    
+    const res = await fetch(GAS.WRITE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        uid: uid,
+        ign: ign,
+        msg: msg,
+        type: type,
+        token: token,
+        userAgent: ua
+      })
+    });
     return res.json();
   }
 };
