@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // User tetap bisa lihat UI + gate. Chat/mail akan fail dengan aman
     // via requireSession() — chat-input.js & mail.js sudah handle
   } else {
-    console.log('✅ Guest session siap:', session.uid);
+    console.log('✅ Session siap:', session.uid);
   }
 });
 
