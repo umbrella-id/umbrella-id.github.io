@@ -93,6 +93,12 @@ function isMember() {
 function openGate(mode = 'first') {
   gateMode = mode;
 
+  // 🎯 Safety: kalau headline popup somehow sudah terbuka, tutup dulu
+  const headlineOverlay = document.getElementById('headlineOverlay');
+  if (headlineOverlay && headlineOverlay.classList.contains('open')) {
+    if (typeof closeHeadlinePopup === 'function') closeHeadlinePopup();
+  }
+
   const gate = document.getElementById('gatekeeper');
   const input = document.getElementById('gate-input');
   const label = document.querySelector('.gate-label');
