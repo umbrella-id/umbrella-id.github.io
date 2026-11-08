@@ -276,21 +276,15 @@ function ensureGuestSession() {
     const token = localStorage.getItem('umbrella_session_token');
     const uid = localStorage.getItem('u_uid');
     
-    // Member sudah punya session — verify via GAS1 (which verifies via GAS5)
+    // Member sudah punya session — verify
     if (uid && uid.startsWith('M-') && token) {
       try {
-        const res = await fetch(GAS.MAIN, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'validateGuestSession', uid: uid, token: token })
-        });
-        const data = await res.json();
+        const data = await API.validateGuestSession(uid, token);
         if (data.valid) {
           window.myUID = uid;
           return { uid, token };
         }
       } catch(e) {}
-      // Invalid — clear
       localStorage.removeItem('u_uid');
       localStorage.removeItem('umbrella_session_token');
     }
@@ -298,12 +292,7 @@ function ensureGuestSession() {
     // Guest punya session — verify
     if (uid && uid.startsWith('G-') && token) {
       try {
-        const res = await fetch(GAS.MAIN, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'validateGuestSession', uid: uid, token: token })
-        });
-        const data = await res.json();
+        const data = await API.validateGuestSession(uid, token);
         if (data.valid) {
           window.myUID = uid;
           console.log('✅ Guest session valid:', uid);
@@ -319,12 +308,7 @@ function ensureGuestSession() {
     // Create fresh guest session
     try {
       const ua = (navigator.userAgent || 'unknown').substring(0, 100);
-      const res = await fetch(GAS.MAIN, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'createGuestSession', userAgent: ua })
-      });
-      const data = await res.json();
+      const data = await API.createGuestSession(ua);
       
       if (data.status === 'success' && data.uid && data.sessionToken) {
         localStorage.setItem('u_uid', data.uid);
