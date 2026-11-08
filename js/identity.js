@@ -271,6 +271,44 @@ function closeGate(skipMenu = false) {
 }
 
 // ==========================================
+// 🎯 PURGE FULL USER LOCAL STATE
+// Dipanggil saat token invalid — hapus SEMUA jejak user,
+// bukan hanya uid + token. User baru tidak boleh lihat data lama.
+// ==========================================
+function purgeUserLocalState(oldUid) {
+  // === localStorage: user-scoped ===
+  localStorage.removeItem('u_uid');
+  localStorage.removeItem('u_ign');
+  localStorage.removeItem('u_web_uid');
+  localStorage.removeItem('u_class');
+  localStorage.removeItem('u_ign_changed_at');
+  localStorage.removeItem('umbrella_session_token');
+  localStorage.removeItem('umbrella_member_session');
+  localStorage.removeItem('umbrella_mute_expiry');
+  
+  // Per-uid mail read marker
+  if (oldUid) {
+    localStorage.removeItem('umbrella_mail_read_' + oldUid);
+  }
+  
+  // === In-memory ===
+  window.myUID = '';
+  window.myIGN = '';
+  
+  // === sessionStorage: semua umbrella_* ===
+  // (chat cache, mail cache, stamp, headline seen, mute notif, dll)
+  Object.keys(sessionStorage).forEach(key => {
+    if (key.startsWith('umbrella_')) {
+      sessionStorage.removeItem(key);
+    }
+  });
+  
+  console.log('🧹 Purge local state (oldUid=' + (oldUid || 'none') + ')');
+}
+
+window.purgeUserLocalState = purgeUserLocalState;
+
+// ==========================================
 // 🎯 ENSURE GUEST SESSION (server-issued via GAS1)
 // ==========================================
 let __guestSessionPromise = null;
@@ -282,7 +320,7 @@ function ensureGuestSession() {
     const token = localStorage.getItem('umbrella_session_token');
     const uid = localStorage.getItem('u_uid');
     
-    // Member sudah punya session — verify
+    // === M- SESSION (member verified) ===
     if (uid && uid.startsWith('M-') && token) {
       try {
         const data = await API.validateGuestSession(uid, token);
@@ -290,12 +328,14 @@ function ensureGuestSession() {
           window.myUID = uid;
           return { uid, token };
         }
-      } catch(e) {}
-      localStorage.removeItem('u_uid');
-      localStorage.removeItem('umbrella_session_token');
+      } catch(e) {
+        console.warn('Session validation error (M-):', e);
+      }
+      // Token invalid / expired → purge full
+      purgeUserLocalState(uid);
     }
     
-    // Guest punya session — verify
+    // === G- SESSION (guest) ===
     if (uid && uid.startsWith('G-') && token) {
       try {
         const data = await API.validateGuestSession(uid, token);
@@ -305,13 +345,13 @@ function ensureGuestSession() {
           return { uid, token };
         }
       } catch(e) {
-        console.warn('Session validation error:', e);
+        console.warn('Session validation error (G-):', e);
       }
-      localStorage.removeItem('u_uid');
-      localStorage.removeItem('umbrella_session_token');
+      // Token invalid / expired → purge full
+      purgeUserLocalState(uid);
     }
     
-    // Create fresh guest session
+    // === CREATE FRESH GUEST SESSION ===
     try {
       const ua = (navigator.userAgent || 'unknown').substring(0, 100);
       const data = await API.createGuestSession(ua);
