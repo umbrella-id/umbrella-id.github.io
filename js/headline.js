@@ -26,7 +26,13 @@ async function preloadHeadlineData() {
     console.log('✅ Headline:', headlineData ? 'ADA' : 'kosong');
     console.log('✅ Openmember:', openmemberData ? 'ADA' : 'kosong');
 
-    initHeadlineDisplay();
+    // 🎯 Hanya render kalau user sudah melewati gate.
+    // Kalau belum, closeGate() akan memicu initHeadlineDisplay setelah nama diisi.
+    if (window.myIGN) {
+      initHeadlineDisplay();
+    } else {
+      console.log('⏸️ Headline ditunda — menunggu gate selesai');
+    }
   } catch (err) {
     console.error('❌ Preload headline gagal:', err);
   }
@@ -35,6 +41,12 @@ async function preloadHeadlineData() {
 // ===== INIT =====
 function initHeadlineDisplay() {
   if (headlineDisplayed) return;
+
+  // 🎯 Guard utama: gate harus sudah lewat
+  if (!window.myIGN) {
+    console.log('⏸️ Headline ditunda — gate belum selesai');
+    return;
+  }
 
   const stage = document.getElementById('stage');
   const container = document.getElementById('headlineBannerContainer');
