@@ -341,26 +341,40 @@ function ensureGuestSession() {
 
 // ===== INISIALISASI =====
 document.addEventListener('DOMContentLoaded', async () => {
-  // Ensure guest session FIRST — before gate opens
-  const session = await ensureGuestSession();
-  
-  if (!session) {
-    console.error('❌ Tidak bisa membuat sesi. Guest tidak bisa chat/mail.');
-    // Still allow gate to open (user bisa lihat UI), tapi chat/mail akan fail
-    // Rate limit biasanya singkat (1 jam), user bisa reload
-  }
-  
+  // ==========================================
+  // 1. GATE STATE — SYNCHRONOUS (no network wait)
+  // ==========================================
   if (!window.myIGN) {
+    // First timer → buka gate INSTAN
+    // gate-first dari HTML tetap aktif → semua element hidden
     openGate('first');
   } else {
+    // Return user → remove gate-first → semua element muncul
+    const stage = document.getElementById('stage');
+    if (stage) stage.classList.remove('gate-first');
     updateIdentityUI();
   }
   
+  // ==========================================
+  // 2. INPUT HANDLER — SYNCHRONOUS
+  // ==========================================
   const input = document.getElementById('gate-input');
   if (input) {
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') saveIdentity();
     });
+  }
+  
+  // ==========================================
+  // 3. GUEST SESSION — BACKGROUND (no await blocking UI)
+  // ==========================================
+  const session = await ensureGuestSession();
+  if (!session) {
+    console.error('❌ Tidak bisa membuat sesi. Guest tidak bisa chat/mail.');
+    // User tetap bisa lihat UI + gate. Chat/mail akan fail dengan aman
+    // via requireSession() — chat-input.js & mail.js sudah handle
+  } else {
+    console.log('✅ Guest session siap:', session.uid);
   }
 });
 
