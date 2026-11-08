@@ -9,8 +9,8 @@ const GAS = {
 };
 
 // ===== CACHE UNTUK KONTEN =====
-let _contentCache = null;          // data konten
-let _contentPromise = null;        // promise fetch (buat hindari double-fetch paralel)
+let _contentCache = null;
+let _contentPromise = null;
 
 const API = {
 
@@ -18,26 +18,22 @@ const API = {
      KONTEN (PIPE 1) — dengan cache
      ========================================== */
   async getContent() {
-    // 1. Cache udah ada → langsung return
     if (_contentCache) {
       console.log('💾 Konten dari cache');
       return _contentCache;
     }
 
-    // 2. Promise fetch udah ada → tunggu promise yang sama
-    //    (cegah double-fetch kalau 2 pemanggil barengan)
     if (_contentPromise) {
       console.log('⏳ Nunggu fetch konten yang sedang jalan...');
       return _contentPromise;
     }
 
-    // 3. Belum ada → fetch
     console.log('📥 Fetch konten dari GAS...');
     _contentPromise = fetch(GAS.MAIN)
       .then(res => res.json())
       .then(data => {
-        _contentCache = data;      // simpan cache
-        _contentPromise = null;    // clear promise
+        _contentCache = data;
+        _contentPromise = null;
         console.log('✅ Konten tersimpan di cache');
         return data;
       })
@@ -50,7 +46,6 @@ const API = {
     return _contentPromise;
   },
 
-  // Force refresh cache (kalau butuh data baru)
   async refreshContent() {
     _contentCache = null;
     _contentPromise = null;
@@ -58,7 +53,7 @@ const API = {
   },
 
   /* ==========================================
-     MAIL (PIPE 1)
+     GUEST SESSION (PIPE 1) — POST
      ========================================== */
   async createGuestSession(userAgent) {
     const res = await fetch(GAS.MAIN, {
@@ -68,7 +63,7 @@ const API = {
     });
     return res.json();
   },
-  
+
   async validateGuestSession(uid, token) {
     const res = await fetch(GAS.MAIN, {
       method: 'POST',
@@ -77,7 +72,10 @@ const API = {
     });
     return res.json();
   },
-  
+
+  /* ==========================================
+     MAIL (PIPE 1)
+     ========================================== */
   async sendMail(uid, ign, msg, category) {
     const token = localStorage.getItem('umbrella_session_token') || '';
     const res = await fetch(GAS.MAIN, {
@@ -87,25 +85,28 @@ const API = {
     });
     return res.json();
   },
-  
+
   async getMailList(uid, token) {
     const url = `${GAS.MAIN}?action=getMailList&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url); // GET
+    const res = await fetch(url);
     return res.json();
   },
-  
+
   async getMailHistory(uid, token) {
     const url = `${GAS.MAIN}?action=getMailHistory&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url); // GET
+    const res = await fetch(url);
     return res.json();
   },
-  
+
   async checkAccountStatus(uid) {
     const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uid)}`;
-    const res = await fetch(url); // GET
+    const res = await fetch(url);
     return res.json();
-  }
+  },
 
+  /* ==========================================
+     CHAT (PIPE 2 READ + PIPE 3 WRITE)
+     ========================================== */
   async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
     const token = localStorage.getItem('umbrella_session_token') || '';
     const url = `${GAS.READ}?uid=${encodeURIComponent(uid)}`
@@ -116,11 +117,11 @@ const API = {
     const res = await fetch(url);
     return res.json();
   },
-  
+
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
     const ua = (navigator.userAgent || 'unknown').substring(0, 100);
-    
+
     const res = await fetch(GAS.WRITE, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
