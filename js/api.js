@@ -110,7 +110,7 @@ const API = {
   async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
       const token = localStorage.getItem('umbrella_session_token') || '';
       const ua = (navigator.userAgent || 'unknown').substring(0, 100);
-      
+  
       const res = await fetch(GAS.READ, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
