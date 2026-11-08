@@ -765,12 +765,27 @@ function closeLogoutConfirm(skipMenu = false) {
 // LOGOUT GUEST
 // ==========================================
 function executeLogoutGuest() {
-  localStorage.setItem('u_ign', '');
+  // Hygiene: full clear semua jejak guest, sama seperti member logout
+  localStorage.removeItem('u_uid');              // ← yang Anda soroti
+  localStorage.removeItem('u_ign');
+  localStorage.removeItem('u_web_uid');
+  localStorage.removeItem('u_class');
+  localStorage.removeItem('u_ign_changed_at');
   localStorage.removeItem('umbrella_member_session');
-  localStorage.removeItem('umbrella_session_token');   // ← BARU (jaga-jaga)
+  localStorage.removeItem('umbrella_session_token');
+  localStorage.removeItem('umbrella_mute_expiry');
+  
+  // Hapus mail-read markers per-uid (kalau ada)
+  const oldUid = window.myUID || '';
+  if (oldUid) {
+    localStorage.removeItem('umbrella_mail_read_' + oldUid);
+  }
+  
+  // Clear sessionStorage
   clearUmbrellaSession();
   
   window.myIGN = '';
+  window.myUID = '';
   
   if (typeof showToast === 'function') showToast('✅ Logout berhasil');
   
