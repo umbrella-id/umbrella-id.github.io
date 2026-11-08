@@ -31,7 +31,16 @@ function isMember() {
 // ==========================================
 // INIT
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // 🎯 Tunggu session validated/purged dulu — cegah render cache uid lama
+  if (typeof window.ensureGuestSession === 'function') {
+    try {
+      await window.ensureGuestSession();
+    } catch(e) {
+      console.warn('ensureGuestSession di mail.js:', e);
+    }
+  }
+  
   const loaded = loadMailFromCache();
   
   setTimeout(() => {
