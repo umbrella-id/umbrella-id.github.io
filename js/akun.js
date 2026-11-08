@@ -170,9 +170,10 @@ async function submitStage1() {
     showVerifyMessage(1, '');
     
     try {
-        const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}`;
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await gasPost({
+          action: 'verifyActivationCode',
+          code: code
+        });
         
         if (data.success) {
             // Simpan untuk Tahap 2
@@ -914,9 +915,11 @@ async function submitLupaStage1() {
   showLupaMessage(1, '');
   
   try {
-    const url = `${GAS.MAIN}?action=verifyActivationCode&code=${encodeURIComponent(code)}&mode=reset`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await gasPost({
+      action: 'verifyActivationCode',
+      code: code,
+      mode: 'reset'
+    });
     
     if (data.success) {
       window._lupaUid = data.uid;
