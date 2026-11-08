@@ -108,15 +108,24 @@ const API = {
      CHAT (PIPE 2 READ + PIPE 3 WRITE)
      ========================================== */
   async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
-    const token = localStorage.getItem('umbrella_session_token') || '';
-    const url = `${GAS.READ}?uid=${encodeURIComponent(uid)}`
-      + `&ign=${encodeURIComponent(ign)}`
-      + `&isMuted=${isMuted}`
-      + `&muteExpiry=${muteExpiry}`
-      + `&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url);
-    return res.json();
-  },
+      const token = localStorage.getItem('umbrella_session_token') || '';
+      const ua = (navigator.userAgent || 'unknown').substring(0, 100);
+      
+      const res = await fetch(GAS.READ, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'getChats',
+          uid: uid,
+          ign: ign,
+          isMuted: isMuted,
+          muteExpiry: muteExpiry,
+          token: token,
+          userAgent: ua
+        })
+      });
+      return res.json();
+  }
 
   async sendChat(uid, ign, msg, type = 'msg') {
     const token = localStorage.getItem('umbrella_session_token') || '';
