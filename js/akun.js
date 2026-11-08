@@ -619,9 +619,10 @@ async function submitLoginModal() {
     
     try {
         const data = await gasPost({
-            action: 'loginWithIdPassword',
-            idLogin: idLogin,
-            password: password
+          action: 'loginWithIdPassword',
+          idLogin: idLogin,
+          password: password,
+          userAgent: (navigator.userAgent || 'unknown').substring(0, 100)
         });
         
         if (data.success) {
