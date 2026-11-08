@@ -61,14 +61,20 @@ const API = {
      MAIL (PIPE 1)
      ========================================== */
   async createGuestSession(userAgent) {
-    const url = `${GAS.MAIN}?action=createGuestSession&userAgent=${encodeURIComponent(userAgent)}`;
-    const res = await fetch(url); // GET
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'createGuestSession', userAgent: userAgent })
+    });
     return res.json();
   },
   
   async validateGuestSession(uid, token) {
-    const url = `${GAS.MAIN}?action=validateGuestSession&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url); // GET
+    const res = await fetch(GAS.MAIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'validateGuestSession', uid: uid, token: token })
+    });
     return res.json();
   },
   
