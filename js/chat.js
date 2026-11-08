@@ -376,7 +376,12 @@ async function syncChat(force = false) {
   try {
     const data = await API.getChats(uid, ign, isMuted, muteExpiry);
     if (!data) return;
-
+    
+    if (data.status === 'rejected' || data.status === 'rate_limited') {
+        console.warn('Sync rejected:', data.reason || data.message);
+        return;   // skip this poll cycle
+    }
+    
     if (typeof handleMailTrigger === 'function') {
       handleMailTrigger(data.lastMailReply || 0);
     }
