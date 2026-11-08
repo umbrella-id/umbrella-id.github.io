@@ -60,6 +60,18 @@ const API = {
   /* ==========================================
      MAIL (PIPE 1)
      ========================================== */
+  async createGuestSession(userAgent) {
+    const url = `${GAS.MAIN}?action=createGuestSession&userAgent=${encodeURIComponent(userAgent)}`;
+    const res = await fetch(url); // GET
+    return res.json();
+  },
+  
+  async validateGuestSession(uid, token) {
+    const url = `${GAS.MAIN}?action=validateGuestSession&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
+    const res = await fetch(url); // GET
+    return res.json();
+  },
+  
   async sendMail(uid, ign, msg, category) {
     const token = localStorage.getItem('umbrella_session_token') || '';
     const res = await fetch(GAS.MAIN, {
@@ -71,31 +83,22 @@ const API = {
   },
   
   async getMailList(uid, token) {
-    const res = await fetch(GAS.MAIN, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'getMailList', uid, token })
-    });
+    const url = `${GAS.MAIN}?action=getMailList&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
+    const res = await fetch(url); // GET
     return res.json();
   },
   
   async getMailHistory(uid, token) {
-    const res = await fetch(GAS.MAIN, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'getMailHistory', uid, token })
-    });
+    const url = `${GAS.MAIN}?action=getMailHistory&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
+    const res = await fetch(url); // GET
     return res.json();
   },
   
   async checkAccountStatus(uid) {
-    const res = await fetch(GAS.MAIN, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'checkAccountStatus', uid })
-    });
+    const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uid)}`;
+    const res = await fetch(url); // GET
     return res.json();
-  },
+  }
 
   async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
     const token = localStorage.getItem('umbrella_session_token') || '';
