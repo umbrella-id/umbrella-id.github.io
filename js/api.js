@@ -65,21 +65,30 @@ const API = {
   },
 
   async getMailList(uid, token) {
-    const url = `${GAS.MAIN}?action=getMailList&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url);
-    return res.json();
+      const res = await fetch(GAS.MAIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getMailList', uid, token })
+      });
+      return res.json();
   },
 
   async getMailHistory(uid, token) {
-    const url = `${GAS.MAIN}?action=getMailHistory&uid=${encodeURIComponent(uid)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url);
-    return res.json();
+      const res = await fetch(GAS.MAIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getMailHistory', uid, token })
+      });
+      return res.json();
   },
 
   async checkAccountStatus(uid) {
-    const url = `${GAS.MAIN}?action=checkAccountStatus&uid=${encodeURIComponent(uid)}`;
-    const res = await fetch(url);
-    return res.json();
+      const res = await fetch(GAS.MAIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'checkAccountStatus', uid })
+      });
+      return res.json();
   },
 
   async getChats(uid, ign, isMuted = false, muteExpiry = 0) {
