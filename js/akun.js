@@ -10,12 +10,14 @@ let isKaitkanPopupOpen = false;
 // HELPER: POST ke GAS
 // ==========================================
 async function gasPost(payload) {
-  const res = await fetch(GAS.MAIN, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
-  });
-  return res.json();
+  const action = payload.action;
+  const rest = Object.assign({}, payload);
+  delete rest.action;
+  
+  const readActions = ['checkAccountStatus', 'validateMemberSession'];
+  const isWrite = readActions.indexOf(action) === -1;
+  
+  return await window.authFetch(action, rest, { isWrite: isWrite });
 }
 
 // ==========================================
