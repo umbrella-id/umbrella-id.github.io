@@ -252,12 +252,19 @@ async function submitStage2() {
     showVerifyMessage(2, '');
     
     try {
+        const sessionToken = localStorage.getItem('umbrella_session_token') || '';
+        if (!sessionToken) {
+            showVerifyMessage(2, '⚠️ Sesi tidak valid. Muat ulang halaman.', true);
+            return;
+        }
+        
         const data = await gasPost({
             action: 'activateAccount',
             uid: window._verifyUid,
             idLogin: idLogin,
             password: password,
-            localUid: localUid
+            localUid: localUid,
+            sessionToken: sessionToken
         });
         
         if (data.success) {
