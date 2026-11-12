@@ -3,7 +3,7 @@
  * Tanpa kas, tanpa crysta. Konten dari GAS-Content, auth dari GAS-Auth.
  */
 
-const GAS_CONTENT_URL = 'https://script.google.com/macros/s/xxx-CONTENT/exec';
+const GAS_CONTENT_URL = 'https://script.google.com/macros/s/AKfycbzlxIQc75KaCjn_05YhbQP3VMzP4W0NqpuJrGk8Vjm0F81NixhQ6RE_g55wMq_vf8cPVw/exec';
 const AUTH_FALLBACK   = 'https://script.google.com/macros/s/xxx-AUTH/exec';
 
 let _authConfigCache = null, _authConfigCacheTime = 0;
