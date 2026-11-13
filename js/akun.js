@@ -24,26 +24,17 @@ async function gasPost(payload) {
 // CEK STATUS AKUN
 // ==========================================
 async function cekStatusAkun() {
-    const uUid = localStorage.getItem('u_uid') || '';
-    if (!uUid) return { hasAccount: false };
-    if (!uUid.startsWith('M-')) return { hasAccount: false };
-    
-    try {
-        const data = await API.checkAccountStatus(uUid);
-        
-        if (data.hasAccount && data.webUID && data.webUID !== uUid) {
-            localStorage.setItem('u_uid', data.webUID);
-            window.myUID = data.webUID;
-        }
-        
-        return data;
-    } catch(e) {
-        return {
-            hasAccount: uUid.endsWith('-v'),
-            webUID: uUid.endsWith('-v') ? uUid : '',
-            ign: localStorage.getItem('u_ign') || ''
-        };
-    }
+  // Simplified: cukup baca state lokal, tidak perlu server call.
+  // validasi sesi sudah dilakukan oleh validateMemberSessionOnce().
+  const uid = localStorage.getItem('u_uid') || '';
+  if (!uid) return { hasAccount: false };
+  if (!uid.startsWith('M-')) return { hasAccount: false };
+  
+  return {
+    hasAccount: uid.endsWith('-v'),
+    webUID: uid.endsWith('-v') ? uid : '',
+    ign: localStorage.getItem('u_ign') || ''
+  };
 }
 
 // ==========================================
