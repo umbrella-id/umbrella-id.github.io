@@ -49,7 +49,7 @@ async function reportAuthIssue(failedUrl) {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action: 'reportAuthIssue',
-        uid: window.myUID || '',
+        uid: simpleHash(window.myUID || ''),   // ← hash, bukan raw
         failedUrl: failedUrl
       })
     }, 5000);
@@ -60,6 +60,15 @@ async function reportAuthIssue(failedUrl) {
     }
     return data;
   } catch(e) { return null; }
+}
+
+function simpleHash(str) {
+  if (!str) return 'anon';
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+  }
+  return 'h' + Math.abs(h).toString(36);
 }
 
 // === AUTH FETCH ===
