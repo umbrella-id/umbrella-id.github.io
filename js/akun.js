@@ -2,8 +2,6 @@
  * akun.js — Fitur Verifikasi Akun, Login, & Logout
  */
 
-const GAS5_URL = "https://script.google.com/macros/s/AKfycbzTP1-9KuQ2iz4ffTfhujqkSIQqQxXWMXY-BHljCVU_Zzm0Ept8j4AJUCBHqB-ZSZk/exec";
-
 let isKaitkanPopupOpen = false;
 
 // ==========================================
