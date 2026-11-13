@@ -111,15 +111,15 @@ function buildBannerItem(data, type) {
 
   // 🎯 KALAU ADA GAMBAR → judul menimpa gambar
   if (imgMatch && imgMatch[1]) {
-    return `
-      <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
-        <div class="headline-banner-inner">
-          <img class="banner-img" src="${imgMatch[1]}" alt="Banner">
-          <div class="banner-img-overlay"></div>
-          ${judul ? `<div class="banner-title">${escapeHtml(judul)}</div>` : ''}
+      return `
+        <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
+          <div class="headline-banner-inner">
+            <img class="banner-img" src="${escapeHtml(imgMatch[1])}" alt="Banner">
+            <div class="banner-img-overlay"></div>
+            ${judul ? `<div class="banner-title">${escapeHtml(judul)}</div>` : ''}
+          </div>
         </div>
-      </div>
-    `;
+      `;
   }
 
   // 🎯 KALAU TIDAK ADA GAMBAR → fallback teks
