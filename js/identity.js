@@ -40,20 +40,35 @@ function clearGateMessage() {
 
 // ===== VALIDASI IGN =====
 function sanitizeIGN(raw) {
-  if (!raw) return '';
+  if (!raw || typeof raw !== 'string') return { error: 'Nama tidak boleh kosong' };
   
   let value = raw.trim();
   
-  value = value.replace(/[\[\]]/g, '');
+  // Remove control chars + zero-width
+  value = value.replace(/[\u0000-\u001F\u007F\u200B-\u200D\uFEFF]/g, '');
+  
+  // Remove leading formula chars
   value = value.replace(/^[=+\-@]+/, '');
+  
+  // Collapse spaces
   value = value.replace(/\s+/g, ' ').trim();
   
-  if (/admin/i.test(value)) {
+  // Normalize untuk deteksi "admin" (l33t reverse)
+  const normalized = value.toLowerCase()
+    .replace(/0/g, 'o').replace(/1|!|\|/g, 'i').replace(/3/g, 'e')
+    .replace(/4|@/g, 'a').replace(/5|\$/g, 's').replace(/7/g, 't')
+    .replace(/8/g, 'b').replace(/9/g, 'g')
+    .replace(/[^a-z]/g, '');
+  
+  if (/admin/.test(normalized)) {
     return { error: 'Nama tidak boleh mengandung kata "admin"' };
   }
   
+  // Strip HTML special chars (defense in depth)
+  value = value.replace(/[<>"']/g, '');
+  
   if (value.length > 15) {
-    value = value.substring(0, 15);
+    value = value.substring(0, 15).trim();
   }
   
   if (value === '') {
