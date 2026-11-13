@@ -18,8 +18,6 @@ let mailStamp = '';
 const MAIL_CACHE_KEY = 'umbrella_mail_cache';
 const MAIL_STAMP_KEY = 'umbrella_mail_stamp';
 
-const GAS_MAIL_URL = 'https://script.google.com/macros/s/AKfycbyv6cBEWlT9JsprJqdRVG2EiqRYrNlyu6uHxH6xuFG9PRXSwkO6aKi8-EHXm99puRQX/exec';
-
 // ==========================================
 // CEK APAKAH MEMBER
 // ==========================================
