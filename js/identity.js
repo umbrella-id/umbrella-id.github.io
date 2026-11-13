@@ -249,20 +249,15 @@ function closeGate(skipMenu = false) {
   }
 
   if (typeof cekStatusAkun === 'function') {
-      setTimeout(() => {
-          cekStatusAkun().then(result => {
-              console.log('📊 Status akun:', result);
-              if (result.hasAccount && result.webUID) {
-                  const currentUid = localStorage.getItem('u_uid');
-                  if (result.webUID !== currentUid) {
-                      console.log('🔄 Rebuild menu karena UID sync');
-                      if (typeof updateModalMenuItems === 'function') {
-                          updateModalMenuItems();
-                      }
-                  }
-              }
-          });
-      }, 600);
+    setTimeout(() => {
+      const result = cekStatusAkun();  // sekarang sinkron
+      if (result.hasAccount && result.webUID) {
+        const currentUid = localStorage.getItem('u_uid');
+        if (result.webUID !== currentUid) {
+          if (typeof updateModalMenuItems === 'function') updateModalMenuItems();
+        }
+      }
+    }, 600);
   }
   
   setTimeout(() => {
