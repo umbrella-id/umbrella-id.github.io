@@ -733,17 +733,8 @@ function logoutAccount() {
 // KONFIRMASI LOGOUT — YES
 // ==========================================
 function confirmLogoutYes() {
-    const uid = localStorage.getItem('u_uid') || '';
-    const isGuest = uid.startsWith('G-') || !uid;
-    const isMember = uid.startsWith('M-');
-    
-    closeLogoutConfirm();
-    
-    if (isMember) {
-        executeLogoutMember();
-    } else if (isGuest) {
-        executeLogoutGuest();
-    }
+  closeLogoutConfirm();
+  executeLogout();  // ← satu fungsi untuk semua
 }
 
 // ==========================================
@@ -762,65 +753,42 @@ function closeLogoutConfirm(skipMenu = false) {
 }
 
 // ==========================================
-// LOGOUT GUEST
+// LOGOUT
 // ==========================================
-function executeLogoutGuest() {
-  // Hygiene: full clear semua jejak guest, sama seperti member logout
-  localStorage.removeItem('u_uid');              // ← yang Anda soroti
+function executeLogout() {
+  const token = localStorage.getItem('umbrella_session_token');
+  
+  // Server destroy — fire and forget, POST, tidak blocking
+  if (token && typeof API !== 'undefined' && typeof API.memberLogout === 'function') {
+    API.memberLogout(token).catch(() => {});
+  }
+  
+  // Clear semua jejak (gabungan guest + member)
+  localStorage.removeItem('u_uid');
   localStorage.removeItem('u_ign');
   localStorage.removeItem('u_web_uid');
   localStorage.removeItem('u_class');
   localStorage.removeItem('u_ign_changed_at');
+  localStorage.removeItem('u_last_verify');
   localStorage.removeItem('umbrella_member_session');
   localStorage.removeItem('umbrella_session_token');
   localStorage.removeItem('umbrella_mute_expiry');
   
-  // Hapus mail-read markers per-uid (kalau ada)
+  // Per-uid mail read marker
   const oldUid = window.myUID || '';
   if (oldUid) {
     localStorage.removeItem('umbrella_mail_read_' + oldUid);
   }
   
-  // Clear sessionStorage
   clearUmbrellaSession();
+  sessionStorage.removeItem('u_last_verify');  // juga di sessionStorage
   
   window.myIGN = '';
   window.myUID = '';
   
   if (typeof showToast === 'function') showToast('✅ Logout berhasil');
   
-  setTimeout(() => {
-    location.reload();
-  }, 500);
-}
-// ==========================================
-// LOGOUT MEMBER
-// ==========================================
-function executeLogoutMember() {
-  const token = localStorage.getItem('umbrella_session_token');
-  
-  // BARU: hapus session di server (fire-and-forget)
-  if (token) {
-    fetch(`${GAS5_URL}?action=memberLogout&token=${encodeURIComponent(token)}`, { keepalive: true })
-      .catch(() => {});
-  }
-  
-  localStorage.removeItem('u_uid');
-  localStorage.removeItem('u_last_verify');
-  localStorage.removeItem('u_ign');
-  localStorage.removeItem('u_web_uid');
-  localStorage.removeItem('u_class');
-  localStorage.removeItem('u_ign_changed_at');
-  localStorage.removeItem('umbrella_member_session');
-  localStorage.removeItem('umbrella_session_token');   // ← BARU
-  
-  clearUmbrellaSession();
-  
-  if (typeof showToast === 'function') showToast('✅ Logout berhasil');
-  
-  setTimeout(() => {
-    location.reload();
-  }, 500);
+  setTimeout(() => location.reload(), 500);
 }
 
 // ==========================================
@@ -1190,7 +1158,7 @@ async function validateMemberSessionOnce() {
   // Jika tidak ada token, paksa logout
   if (!token) {
     console.log('🔒 Token tidak ditemukan, paksa logout');
-    executeLogoutMember();
+    executeLogout();
     return;
   }
   
@@ -1203,27 +1171,8 @@ async function validateMemberSessionOnce() {
     
     if (!data.valid) {
       console.log('🔒 Token tidak valid:', data.reason);
-      
-      // Bersihkan semua data identitas & token
-      localStorage.removeItem('u_uid');
-      localStorage.removeItem('u_ign');
-      localStorage.removeItem('u_web_uid');
-      localStorage.removeItem('u_class');
-      localStorage.removeItem('umbrella_session_token');
-      localStorage.removeItem('umbrella_member_session'); // Sisa-sisa lama
-      
-      Object.keys(sessionStorage).forEach(key => {
-        if (key.startsWith('umbrella_')) sessionStorage.removeItem(key);
-      });
-      
-      window.myUID = '';
-      window.myIGN = '';
-      
-      if (typeof showToast === 'function') {
-        showToast(`🔒 Sesi berakhir. Silakan login ulang.`, true);
-      }
-      
-      setTimeout(() => location.reload(), 1500);
+      executeLogout();
+      return;
     } else {
       console.log('✅ Session token valid');
     }
@@ -1255,8 +1204,7 @@ window.handleLoginModalBack = handleLoginModalBack;
 window.logoutAccount = logoutAccount;
 window.confirmLogoutYes = confirmLogoutYes;
 window.closeLogoutConfirm = closeLogoutConfirm;
-window.executeLogoutMember = executeLogoutMember;
-window.executeLogoutGuest = executeLogoutGuest;
+window.executeLogout = executeLogout;
 window.isKaitkanPopupOpen = () => isKaitkanPopupOpen;
 window.openLupaPassword = openLupaPassword;
 window.submitLupaStage1 = submitLupaStage1;
