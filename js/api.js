@@ -4,7 +4,6 @@
  */
 
 const GAS_CONTENT_URL = 'https://script.google.com/macros/s/AKfycbzlxIQc75KaCjn_05YhbQP3VMzP4W0NqpuJrGk8Vjm0F81NixhQ6RE_g55wMq_vf8cPVw/exec';
-const AUTH_FALLBACK   = 'https://script.google.com/macros/s/-----/exec';
 
 let _authConfigCache = null, _authConfigCacheTime = 0;
 const AUTH_CONFIG_TTL = 5 * 60 * 1000;
@@ -19,11 +18,22 @@ function fetchWithTimeout(url, options, timeoutMs) {
 }
 
 // === AUTH CONFIG ===
+let _authConfigNegativeUntil = 0;
+
 async function getAuthConfig() {
   const now = Date.now();
+  
+  // Cache positif
   if (_authConfigCache && (now - _authConfigCacheTime) < AUTH_CONFIG_TTL) {
     return _authConfigCache;
   }
+  
+  // Negative cache — jangan spam server
+  if (now < _authConfigNegativeUntil) {
+    throw new Error('Server sedang sibuk. Coba lagi dalam ' + 
+                    Math.ceil((_authConfigNegativeUntil - now) / 1000) + ' detik.');
+  }
+  
   try {
     const res = await fetchWithTimeout(GAS_CONTENT_URL, {
       method: 'POST',
@@ -31,16 +41,38 @@ async function getAuthConfig() {
       body: JSON.stringify({ action: 'getAuthConfig' })
     }, 5000);
     const data = await res.json();
+    
     if (data.status === 'success' && data.activeUrl) {
-      _authConfigCache = { activeUrl: data.activeUrl, active: data.active, total: data.total };
+      _authConfigCache = {...};
       _authConfigCacheTime = now;
+      _authConfigNegativeUntil = 0;  // reset
       return _authConfigCache;
     }
   } catch(e) {
-    console.warn('getAuthConfig fallback:', e.message);
+    console.warn('getAuthConfig error:', e.message);
   }
-  return { activeUrl: AUTH_FALLBACK, active: -1, total: 0 };
+  
+  // Gagal — set cooldown 30 detik
+  _authConfigNegativeUntil = now + 30000;
+  throw new Error('Server sedang sibuk. Coba lagi dalam 30 detik.');
 }
+
+window.handleFetchError = function(err, defaultMsg) {
+  if (!err) {
+    showToast(defaultMsg || '❌ Terjadi kesalahan', true);
+    return;
+  }
+  
+  const msg = String(err.message || '');
+  
+  if (msg.includes('Server sedang sibuk') || msg.includes('Gagal resolve auth URL')) {
+    showToast('⚠️ Server sedang sibuk. Coba lagi sebentar lagi.', true);
+  } else if (msg.includes('Timeout') || msg.includes('Failed to fetch')) {
+    showToast('⚠️ Koneksi lambat. Periksa internet Anda.', true);
+  } else {
+    showToast(defaultMsg || '❌ Terjadi kesalahan', true);
+  }
+};
 
 async function reportAuthIssue(failedUrl) {
   try {
