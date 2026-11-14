@@ -11,6 +11,7 @@ let startPointer = { x: 0, y: 0 };
 let startChatHeightPct = 22;
 let currentChatHeightPct = 22;
 let hasMoved = false;
+let _chatSyncServerDownNotifiedAt = 0;
 
 const DEFAULT_PERCENT = 22;
 const SNAP_THRESHOLD = 90;
@@ -402,6 +403,16 @@ async function syncChat(force = false) {
     console.log('🔄 Chat disinkronkan:', arrayChat.length, 'pesan');
   } catch (err) {
     console.error('❌ Gagal sync chat:', err);
+    
+    // Notifikasi max 1x/menit — hindari spam polling
+    const now = Date.now();
+    if (now - _chatSyncServerDownNotifiedAt > 60000) {
+      _chatSyncServerDownNotifiedAt = now;
+      const errMsg = getFriendlyErrorMessage(err, '');
+      if (errMsg && typeof showToast === 'function') {
+        showToast(errMsg, true);
+      }
+    }
   }
 }
 
