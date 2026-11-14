@@ -291,11 +291,11 @@ async function submitStage2() {
             if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
         }
     } catch(e) {
-        console.error('Activate error:', e);
-        showVerifyMessage(2, 'Koneksi gagal. Coba lagi.', true);
-        btn.classList.remove('loading');
-        btn.style.pointerEvents = '';
-        if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
+      console.error('Activate error:', e);
+      showVerifyMessage(2, getFriendlyErrorMessage(e, 'Koneksi gagal. Coba lagi.'), true);
+      btn.classList.remove('loading');
+      btn.style.pointerEvents = '';
+      if (btnText) btnText.innerText = 'SIMPAN & LOGIN';
     }
 }
 
@@ -1136,7 +1136,7 @@ async function submitChangePassword() {
     }
   } catch(e) {
     console.error('Change pwd error:', e);
-    showChangePwdMessage('Koneksi gagal. Coba lagi.', true);
+    showChangePwdMessage(getFriendlyErrorMessage(e, 'Koneksi gagal. Coba lagi.'), true);
     btn.classList.remove('loading');
     btn.style.pointerEvents = '';
     btn.querySelector('.btn-teks').innerText = 'SIMPAN';
