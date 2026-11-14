@@ -654,10 +654,10 @@ async function submitLoginModal() {
             if (btnText) btnText.innerText = 'LOGIN';
         }
     } catch(e) {
-        console.error('Login error:', e);
-        showLoginMemberMessage('Koneksi gagal. Coba lagi.', true);
-        btn.style.pointerEvents = '';
-        if (btnText) btnText.innerText = 'LOGIN';
+      console.error('Login error:', e);
+      showLoginMemberMessage(getFriendlyErrorMessage(e, 'Koneksi gagal. Coba lagi.'), true);
+      btn.style.pointerEvents = '';
+      if (btnText) btnText.innerText = 'LOGIN';
     }
 }
 
