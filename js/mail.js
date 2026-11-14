@@ -559,7 +559,7 @@ async function submitMailReply(messageId) {
     }
   } catch(e) {
     console.error("Reply error:", e);
-    showMailReplyMessage('Koneksi gagal', 'error');
+    showMailReplyMessage(getFriendlyErrorMessage(e, 'Koneksi gagal'), 'error');
     if (btn) {
       btn.style.opacity = '';
       btn.style.pointerEvents = '';
@@ -743,7 +743,7 @@ async function submitMailCompose() {
     }
   } catch(e) {
     console.error("Compose error:", e);
-    showMailComposeMessage('Koneksi gagal', 'error');
+    showMailComposeMessage(getFriendlyErrorMessage(e, 'Koneksi gagal'), 'error');
     if (btn) {
       btn.style.opacity = '';
       btn.style.pointerEvents = '';
