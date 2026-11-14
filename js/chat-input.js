@@ -307,21 +307,23 @@ async function kirimChat() {
 
   } catch (err) {
     console.error('❌ Gagal kirim chat:', err);
-
+    
     if (optimisticEl && optimisticEl.parentNode) {
       optimisticEl.remove();
     }
-
+    
+    const errMsg = getFriendlyErrorMessage(err, '⚠️ Gagal mengirim pesan. Coba lagi.');
+    
     if (chatLogs) {
       const sysEl = document.createElement('div');
       sysEl.className = 'chat-line chat-system';
-      sysEl.innerHTML = `<span class="chat-text">⚠️ Gagal mengirim pesan. Coba lagi.</span>`;
+      sysEl.innerHTML = `<span class="chat-text">${escapeHtml(errMsg)}</span>`;
       chatLogs.appendChild(sysEl);
       chatLogs.scrollTop = chatLogs.scrollHeight;
     }
-
+    
     if (typeof showToast === 'function') {
-      showToast('❌ Gagal mengirim pesan', true);
+      showToast(errMsg, true);
     }
   }
 }
