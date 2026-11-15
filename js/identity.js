@@ -323,8 +323,17 @@ window.purgeUserLocalState = purgeUserLocalState;
 // ==========================================
 let __guestSessionPromise = null;
 
-function ensureGuestSession() {
-  if (__guestSessionPromise) return __guestSessionPromise;
+async function ensureGuestSession() {
+  if (__guestSessionPromise) {
+    const current = __guestSessionPromise;
+    const result = await current;
+    if (result) return result;
+    // Failed (rate-limit / network) → reset supaya bisa retry
+    // Guard: hanya reset kalau masih promise yang sama
+    // (cegah race condition jika ada caller lain sudah mulai baru)
+    if (__guestSessionPromise === current) __guestSessionPromise = null;
+    if (__guestSessionPromise) return __guestSessionPromise;
+  }
   
   __guestSessionPromise = (async () => {
     const token = localStorage.getItem('umbrella_session_token');
