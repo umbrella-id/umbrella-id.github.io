@@ -755,10 +755,28 @@ function closeLogoutConfirm(skipMenu = false) {
 // ==========================================
 function executeLogout() {
   const token = localStorage.getItem('umbrella_session_token');
+  const authUrl = window.__umbrellaAuthUrl;
   
-  // Server destroy — fire and forget, POST, tidak blocking
-  if (token && typeof API !== 'undefined' && typeof API.memberLogout === 'function') {
-    API.memberLogout(token).catch(() => {});
+  // 1. Fire destroy ke server via sendBeacon (guaranteed delivery, tidak blocking)
+  //    sendBeacon dijamin terkirim browser walau tab langsung close/reload
+  if (token && authUrl) {
+    try {
+      const payload = JSON.stringify({ action: 'memberLogout', token: token });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(authUrl, new Blob([payload], { type: 'text/plain;charset=utf-8' }));
+        console.log('🔒 Logout beacon dikirim');
+      } else {
+        // Fallback browser lama — keepalive tetap jalan meski page unload
+        fetch(authUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: payload,
+          keepalive: true
+        }).catch(() => {});
+      }
+    } catch(e) {
+      console.warn('Logout beacon error:', e);
+    }
   }
   
   // Clear semua jejak (gabungan guest + member)
