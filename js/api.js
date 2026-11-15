@@ -42,6 +42,7 @@ async function getAuthConfig() {
       _authConfigCache = { activeUrl: data.activeUrl, active: data.active, total: data.total };
       _authConfigCacheTime = now;
       _authConfigNegativeUntil = 0;
+      window.__umbrellaAuthUrl = data.activeUrl;  // ← expose untuk logout beacon
       return _authConfigCache;
     }
   } catch(e) {
