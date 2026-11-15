@@ -56,9 +56,7 @@ const FORMAT_TO_MIME = {
     'png': 'image/png',
     'webp': 'image/webp',
     'gif': 'image/gif',
-    'avif': 'image/avif',
-    'svg': 'image/svg+xml',
-    'svg+xml': 'image/svg+xml'
+    'avif': 'image/avif'
 };
 
 // Global reference untuk blob URL aktif (untuk di-revoke)
