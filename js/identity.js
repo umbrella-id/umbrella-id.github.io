@@ -44,8 +44,16 @@ function sanitizeIGN(raw) {
   
   let value = raw.trim();
   
-  // Remove control chars + zero-width
-  value = value.replace(/[\u0000-\u001F\u007F\u200B-\u200D\uFEFF]/g, '');
+  // Remove control chars + zero-width + bidi marks (anti visual spoofing)
+  // Range:
+  //  \u0000-\u001F  control
+  //  \u007F         DEL
+  //  \u061C         Arabic Letter Mark
+  //  \u200B-\u200F  ZWSP, ZWNJ, ZWJ, LRM, RLM
+  //  \u202A-\u202E  LRE, RLE, PDF, LRO, RLO
+  //  \u2066-\u2069  LRI, RLI, FSI, PDI
+  //  \uFEFF         BOM
+  value = value.replace(/[\u0000-\u001F\u007F\u061C\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '');
   
   // Remove leading formula chars
   value = value.replace(/^[=+\-@]+/, '');
