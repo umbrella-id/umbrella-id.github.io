@@ -226,6 +226,10 @@ const API = {
   async getMailList(uid, token) {
     return authFetch('getMailList', { uid, token });
   },
+
+  async markMemberMailRead(uid, token, timestamp) {
+    return authFetch('markMemberMailRead', { uid, token, timestamp }, { isWrite: true });
+  },
   
   async getMailHistory(uid, token) {
     return authFetch('getMailHistory', { uid, token });
