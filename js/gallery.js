@@ -218,8 +218,7 @@ function renderGalleryGrid() {
         <img class="gallery-card-img" 
              src="${escapeHtml(item.img)}" 
              alt="${escapeHtml(item.judul)}"
-             loading="lazy"
-             onerror="this.src='Assets/placeholder.png'; this.classList.add('error');">
+             loading="lazy">
         <div class="gallery-card-info">
           <div class="gallery-card-title">${escapeHtml(item.judul)}</div>
           ${item.caption ? `<div class="gallery-card-caption">${escapeHtml(item.caption)}</div>` : ''}
@@ -227,10 +226,18 @@ function renderGalleryGrid() {
       </div>
     `;
   });
-
+  
   html += '</div>';
   body.innerHTML = html;
-
+  
+  // Pasang error handler untuk broken images (CSP-safe, tidak inline)
+  body.querySelectorAll('.gallery-card-img').forEach(img => {
+    img.addEventListener('error', function() {
+      this.src = 'Assets/placeholder.png';
+      this.classList.add('error');
+    }, { once: true });
+  });
+  
   // Pasang listener via event delegation
   body.querySelectorAll('.gallery-card').forEach(card => {
     card.addEventListener('click', () => {
