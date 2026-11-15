@@ -416,10 +416,8 @@ function openMailDetail(messageId) {
   
   mailCurrentDetail = mail;
   
-  if (mail.isFromAdmin && !isMailReadLocal(messageId)) {
-    markMailReadLocal(messageId);
-    mail.status = 'READ';
-    updateBadgeFromCache();
+  if (mail.isFromAdmin && !isMailReadLocal(mail)) {
+    markMailReadLocal(mail);
   }
   
   const container = document.getElementById('mailContent');
@@ -785,15 +783,33 @@ function pilihMailKategori(val) {
 // ==========================================
 // LOCAL STORAGE — Status Baca
 // ==========================================
-function isMailReadLocal(messageId) {
+async function markMailReadLocal(mailOrId) {
+  let mail;
+  if (typeof mailOrId === 'object' && mailOrId !== null) {
+    mail = mailOrId;
+  } else {
+    mail = mailCache.find(m => getMessageId(m) === String(mailOrId));
+  }
+  if (!mail || !mail.isFromAdmin) return;
+  if ((parseInt(mail.userReadAt) || 0) > 0) return;  // sudah read
+  
   const uid = window.myUID;
-  if (!uid) return false;
-  const key = `umbrella_mail_read_${uid}`;
+  const token = localStorage.getItem('umbrella_session_token');
+  if (!uid || !token) return;
+  
+  // Optimistic
+  const now = Date.now();
+  mail.userReadAt = now;
+  updateMailNotifIcon();
+  updateBadgeFromCache();
+  
   try {
-    const readList = JSON.parse(localStorage.getItem(key) || '[]');
-    return readList.includes(messageId);
+    const data = await API.markMemberMailRead(uid, token, mail.timestamp);
+    if (data.status === 'success' && data.userReadAt) {
+      mail.userReadAt = data.userReadAt;
+    }
   } catch(e) {
-    return false;
+    console.warn('markMemberMailRead error:', e);
   }
 }
 
