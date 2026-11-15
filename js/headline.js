@@ -112,7 +112,7 @@ function buildBannerItem(data, type) {
   // 🎯 KALAU ADA GAMBAR → judul menimpa gambar
   if (imgMatch && imgMatch[1]) {
       return `
-        <div class="headline-banner" onclick="openHeadlinePopup('${type}')">
+        <div class="headline-banner" onclick="openHeadlinePopup('${escapeJs(type)}')">
           <div class="headline-banner-inner">
             <img class="banner-img" src="${escapeHtml(imgMatch[1])}" alt="Banner">
             <div class="banner-img-overlay"></div>
@@ -133,7 +133,7 @@ function buildBannerItem(data, type) {
   }
 
   return `
-    <div class="headline-banner no-img" onclick="openHeadlinePopup('${type}')">
+    <div class="headline-banner no-img" onclick="openHeadlinePopup('${escapeJs(type)}')">
       ${textHtml}
     </div>
   `;
@@ -190,11 +190,11 @@ function openHeadlinePopup(type) {
   if (!overlay || !header || !body) return;
 
   header.innerText = data.Header || '';
-  body.innerHTML = formatHeadlineBody(data.Body || '');
 
-  // 🎯 Tambah tombol share KALAU type = 'openmember'
+  // Build body sekali (hindari innerHTML += yang re-parse seluruh DOM)
+  let bodyHtml = formatHeadlineBody(data.Body || '');
   if (isOpenmember) {
-    body.innerHTML += `
+    bodyHtml += `
       <div style="text-align: center; margin-top: 20px;">
         <div class="btn-svg headline-share-btn" onclick="triggerShare()">
           <div class="btn-ujung-kiri"></div>
@@ -204,6 +204,7 @@ function openHeadlinePopup(type) {
       </div>
     `;
   }
+  body.innerHTML = bodyHtml;
 
   // 🎯 Tambah class di stage + update tombol
   const stage = document.getElementById('stage');
