@@ -355,7 +355,10 @@ function buildMailCardHTML(mail) {
   const ts = new Date(mail.timestamp);
   const tgl = ts.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
   const jam = ts.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-  const preview = escapeHtml(mail.message).substring(0, 100) + (mail.message.length > 100 ? '...' : '');
+  // Truncate dulu, escape kemudian — cegah potong di tengah HTML entity (&lt; → &l)
+  const rawMsg = String(mail.message || '');
+  const rawPreview = rawMsg.substring(0, 100);
+  const preview = escapeHtml(rawPreview) + (rawMsg.length > 100 ? '...' : '');
   const fromAdmin = mail.isFromAdmin;
   
   const senderLabel = fromAdmin 
