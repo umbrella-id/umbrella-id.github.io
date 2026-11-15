@@ -26,17 +26,9 @@ function brosurFormatText(text) {
     cleaned = cleaned.replace(/<img[^>]*>/gi, '');
     cleaned = cleaned.replace(/<figure[^>]*>[\s\S]*?<\/figure>/gi, '');
 
-    // Kalau ada HTML tag → sanitize via DOMPurify
+    // Kalau ada HTML tag → sanitize via DOMPurify (text-only, no img/link)
     if (/<[a-z][\s\S]*>/i.test(cleaned)) {
-        if (typeof DOMPurify === 'undefined') {
-            console.warn('⚠️ DOMPurify tidak ter-load, brosur fallback');
-            return escapeHtml(cleaned);
-        }
-        return DOMPurify.sanitize(cleaned, {
-            ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li'],
-            ALLOWED_ATTR: [],
-            ALLOW_DATA_ATTR: false
-        });
+        return window.sanitizeHtmlText(cleaned);
     }
 
     // Plain text → convert to HTML (existing behavior)
