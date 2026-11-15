@@ -781,8 +781,20 @@ function pilihMailKategori(val) {
 }
 
 // ==========================================
-// LOCAL STORAGE — Status Baca
+// CEK STATUS BACA (SERVER-BASED)
 // ==========================================
+function isMailReadLocal(mailOrId) {
+  let mail;
+  if (typeof mailOrId === 'object' && mailOrId !== null) {
+    mail = mailOrId;
+  } else {
+    mail = mailCache.find(m => getMessageId(m) === String(mailOrId));
+  }
+  if (!mail) return false;
+  if (!mail.isFromAdmin) return true;   // mail sendiri = read
+  return (parseInt(mail.userReadAt) || 0) > 0;
+}
+
 async function markMailReadLocal(mailOrId) {
   let mail;
   if (typeof mailOrId === 'object' && mailOrId !== null) {
@@ -791,13 +803,12 @@ async function markMailReadLocal(mailOrId) {
     mail = mailCache.find(m => getMessageId(m) === String(mailOrId));
   }
   if (!mail || !mail.isFromAdmin) return;
-  if ((parseInt(mail.userReadAt) || 0) > 0) return;  // sudah read
+  if ((parseInt(mail.userReadAt) || 0) > 0) return;
   
   const uid = window.myUID;
   const token = localStorage.getItem('umbrella_session_token');
   if (!uid || !token) return;
   
-  // Optimistic
   const now = Date.now();
   mail.userReadAt = now;
   updateMailNotifIcon();
@@ -811,23 +822,6 @@ async function markMailReadLocal(mailOrId) {
   } catch(e) {
     console.warn('markMemberMailRead error:', e);
   }
-}
-
-function markMailReadLocal(messageId) {
-  const uid = window.myUID;
-  if (!uid) return;
-  const key = `umbrella_mail_read_${uid}`;
-  try {
-    const readList = JSON.parse(localStorage.getItem(key) || '[]');
-    if (!readList.includes(messageId)) {
-      readList.push(messageId);
-      if (readList.length > 500) {
-        readList.splice(0, readList.length - 500);
-      }
-      localStorage.setItem(key, JSON.stringify(readList));
-      updateMailNotifIcon();
-    }
-  } catch(e) {}
 }
 
 // ==========================================
