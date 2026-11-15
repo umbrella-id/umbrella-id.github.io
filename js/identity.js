@@ -427,6 +427,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ==========================================
   // 3. GUEST SESSION — BACKGROUND (no await blocking UI)
   // ==========================================
+  
+  // Warm up auth URL (async, tidak blocking) — dipakai logout beacon nanti
+  if (typeof getAuthConfig === 'function') {
+    getAuthConfig().catch(() => {});
+  }
+  
   const session = await ensureGuestSession();
   if (!session) {
     console.error('❌ Tidak bisa membuat sesi. Guest tidak bisa chat/mail.');
